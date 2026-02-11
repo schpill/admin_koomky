@@ -238,7 +238,7 @@ jobs:
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
         with:
-          files: ./frontend/coverage/*.xml
+          files: ./frontend/coverage/cobertura-coverage.xml
           flags: frontend
           name: frontend-coverage
         if: always()
