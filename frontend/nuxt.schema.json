@@ -1,0 +1,4 @@
+{
+  "$schema": "https://nuxt.com/schema/nuxt.config.json",
+  "extends": "./.nuxt/nuxt.schema.json"
+}
