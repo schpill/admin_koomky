@@ -90,7 +90,7 @@ jobs:
         id: pnpm-cache
         shell: bash
         run: |
-          STORE_PATH=$(pnpm store path --silent 2>/dev/null | tr -d '\n\r' ')
+          STORE_PATH=$(pnpm store path --silent 2>/dev/null | tr -d '\n\r')
           echo "STORE_PATH=${STORE_PATH}" >> $GITHUB_OUTPUT
 
       - name: Cache pnpm dependencies
@@ -206,7 +206,7 @@ jobs:
         id: pnpm-cache
         shell: bash
         run: |
-          STORE_PATH=$(pnpm store path --silent 2>/dev/null | tr -d '\n\r' ')
+          STORE_PATH=$(pnpm store path --silent 2>/dev/null | tr -d '\n\r')
           echo "STORE_PATH=${STORE_PATH}" >> $GITHUB_OUTPUT
 
       - name: Cache pnpm dependencies
