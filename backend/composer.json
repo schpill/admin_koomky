@@ -20,7 +20,7 @@
         "laravel/pint": "^1.0",
         "larastan/larastan": "^2.0",
         "pestphp/pest": "^3.0",
-        "pestphp/pest-plugin-laravel": "^2.0",
+        "pestphp/pest-plugin-laravel": "^2.4",
         "mockery/mockery": "^1.6"
     },
     "autoload": {
@@ -51,6 +51,6 @@
         "sort-packages": true,
         "optimize-autoloader": true
     },
-    "minimum-stability": "stable",
-    "prefer-stable": true
+    "minimum-stability": "dev",
+    "prefer-stable": false
 }

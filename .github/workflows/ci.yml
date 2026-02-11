@@ -46,7 +46,7 @@ jobs:
           restore-keys: ${{ runner.os }}-composer-
 
       - name: Install Composer dependencies
-        run: composer install --prefer-dist --no-progress --no-suggest
+        run: composer install --prefer-dist --no-progress
 
       - name: Run Laravel Pint
         run: vendor/bin/pint --test
@@ -144,7 +144,7 @@ jobs:
           tools: composer:v2, pint, phpstan
 
       - name: Install Composer dependencies
-        run: composer install --prefer-dist --no-progress --no-suggest
+        run: composer install --prefer-dist --no-progress
 
       - name: Prepare environment
         run: |
@@ -303,7 +303,7 @@ jobs:
 
       - name: Install Composer dependencies
         working-directory: ./backend
-        run: composer install --prefer-dist --no-progress --no-suggest
+        run: composer install --prefer-dist --no-progress
 
       - name: Verify backend builds
         working-directory: ./backend
