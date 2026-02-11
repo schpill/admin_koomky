@@ -1,7 +1,3 @@
-# =============================================================================
-# Koomky - CI/CD Pipeline
-# =============================================================================
-
 name: CI
 
 on:
@@ -66,8 +62,6 @@ jobs:
 
       - name: Run PHPStan
         run: ./vendor/bin/phpstan analyse --memory-limit=2G --error-format=table
-        env:
-          PHPSTAN_BOOTSTRAP: vendor/autoload.php
 
   # -----------------------------------------------------------------------------
   # Frontend Linting
@@ -105,7 +99,6 @@ jobs:
           restore-keys: ${{ runner.os }}-pnpm-
 
       - name: Install dependencies
-        working-directory: ./frontend
         run: pnpm install --frozen-lockfile
 
       - name: Run ESLint
@@ -152,7 +145,7 @@ jobs:
         uses: shivammalhotra/setup-php@v2
         with:
           php-version: ${{ env.PHP_VERSION }}
-          extensions: pdo, pdo_pgsql, bcmath, gd, intl, zip
+          extensions: pdo, pdo_pgsql, pgsql, bcmath, gd, intl, zip
           coverage: xdebug
           tools: composer:v2, pint, phpstan
 
@@ -209,8 +202,22 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Run type check
+      - name: Get pnpm cache directory
+        id: pnpm-cache
         working-directory: ./frontend
+        run: echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - name: Cache pnpm dependencies
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: ${{ runner.os }}-pnpm-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run type check
         run: pnpm nuxi typecheck
 
       - name: Run Vitest tests with coverage
