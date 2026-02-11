@@ -175,12 +175,18 @@ jobs:
       - name: Run Pest tests with coverage
         run: vendor/bin/pest --coverage --min=80
 
+      - name: List coverage files
+        working-directory: ./backend
+        run: ls -la coverage.xml || echo "Coverage file not found"
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
+        continue-on-error: true
         with:
           files: ./backend/coverage.xml
           flags: backend
           name: backend-coverage
+          fail_ci_if_error: false
         if: always()
 
   # -----------------------------------------------------------------------------
@@ -235,12 +241,18 @@ jobs:
         working-directory: ./frontend
         run: pnpm playwright test
 
+      - name: List coverage directory
+        working-directory: ./frontend
+        run: ls -la coverage/ || echo "Coverage directory not found"
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
+        continue-on-error: true
         with:
           files: ./frontend/coverage/cobertura-coverage.xml
           flags: frontend
           name: frontend-coverage
+          fail_ci_if_error: false
         if: always()
 
   # -----------------------------------------------------------------------------
