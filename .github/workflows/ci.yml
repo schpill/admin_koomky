@@ -23,7 +23,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup PHP
-        uses: shivammalhotra/setup-php@v2
+        uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ env.PHP_VERSION }}
           extensions: pdo, pdo_pgsql, pgsql, bcmath, gd, intl, zip
@@ -142,7 +142,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup PHP
-        uses: shivammalhotra/setup-php@v2
+        uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ env.PHP_VERSION }}
           extensions: pdo, pdo_pgsql, pgsql, bcmath, gd, intl, zip
