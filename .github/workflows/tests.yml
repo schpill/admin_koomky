@@ -2,8 +2,8 @@ name: Tests
 
 on:
   pull_request:
-  branches: [ main ]
-  types: [ opened, synchronize, reopened ]
+    branches: [ main ]
+    types: [ opened, synchronize, reopened ]
 
 jobs:
   backend-tests:
@@ -43,9 +43,11 @@ jobs:
           tools: composer:v2, pint, phpstan
 
       - name: Install dependencies
+        working-directory: ./backend
         run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
       - name: Prepare environment
+        working-directory: ./backend
         run: |
           cp .env.example .env
           sed -i 's/DB_CONNECTION=.*/DB_CONNECTION=pgsql/' .env
@@ -56,15 +58,19 @@ jobs:
           php artisan key:generate --ansi
 
       - name: Run migrations
+        working-directory: ./backend
         run: php artisan migrate --force
 
       - name: Run Pint
+        working-directory: ./backend
         run: vendor/bin/pint --test
 
       - name: Run PHPStan
+        working-directory: ./backend
         run: vendor/bin/phpstan analyse --memory-limit=2G
 
       - name: Run Pest
+        working-directory: ./backend
         run: vendor/bin/pest --coverage --min=80
 
       - name: Upload coverage to Codecov
