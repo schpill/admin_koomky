@@ -30,7 +30,7 @@ jobs:
         with:
           php-version: ${{ env.PHP_VERSION }}
           extensions: pdo, pdo_pgsql, pgsql, bcmath, gd, intl, zip
-          coverage: xdebug
+          coverage: none
           tools: composer:v2, pint, phpstan
 
       - name: Get Composer cache directory
@@ -47,19 +47,6 @@ jobs:
 
       - name: Install Composer dependencies
         run: composer install --prefer-dist --no-progress --no-suggest
-
-      - name: Prepare environment
-        run: |
-          cp .env.example .env
-          sed -i 's/DB_CONNECTION=.*/DB_CONNECTION=pgsql/' .env
-          sed -i 's/DB_DATABASE=.*/DB_DATABASE=koomky_test/' .env
-          sed -i 's/DB_HOST=.*/DB_HOST=postgres/' .env
-          sed -i 's/REDIS_HOST=.*/REDIS_HOST=redis/' .env
-          sed -i 's/MEILISEARCH_HOST=.*/MEILISEARCH_HOST=127.0.0.1/' .env
-          php artisan key:generate --ansi
-
-      - name: Run migrations
-        run: php artisan migrate --force
 
       - name: Run Laravel Pint
         run: vendor/bin/pint --test
