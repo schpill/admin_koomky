@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Contact extends Model
@@ -30,6 +31,14 @@ class Contact extends Model
     protected $casts = [
         'is_primary' => 'boolean',
     ];
+
+    /**
+     * Get the contact's full name.
+     */
+    public function getNameAttribute(): string
+    {
+        return trim("{$this->first_name} {$this->last_name}");
+    }
 
     /**
      * Scope to only include primary contacts.
