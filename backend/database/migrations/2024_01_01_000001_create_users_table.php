@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->text('two_factor_secret')->nullable();
             $table->string('avatar_path')->nullable();
             $table->text('business_name')->nullable();
             $table->text('business_address')->nullable();
