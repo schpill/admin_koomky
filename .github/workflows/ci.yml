@@ -159,6 +159,8 @@ jobs:
           sed -i 's/DB_CONNECTION=.*/DB_CONNECTION=pgsql/' .env
           sed -i 's/DB_DATABASE=.*/DB_DATABASE=koomky_test/' .env
           sed -i 's/DB_HOST=.*/DB_HOST=postgres/' .env
+          sed -i 's/DB_USERNAME=.*/DB_USERNAME=koomky/' .env
+          sed -i 's/DB_PASSWORD=.*/DB_PASSWORD=secret/' .env
           sed -i 's/REDIS_HOST=.*/REDIS_HOST=redis/' .env
           sed -i 's/MEILISEARCH_HOST=.*/MEILISEARCH_HOST=127.0.0.1/' .env
           php artisan key:generate --ansi
