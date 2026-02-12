@@ -7,12 +7,12 @@
         "php": "^8.4",
         "laravel/framework": "^12.0.0",
         "laravel/sanctum": "^4.0",
-        "laravel/scout": "^11.0@dev",
+        "laravel/scout": "^11.0",
         "meilisearch/meilisearch-php": "^1.10",
         "guzzlehttp/guzzle": "^7.2",
         "league/flysystem-aws-s3-v3": "^3.0",
-        "dompdf/dompdf": "^2.0",
-        "spatie/laravel-activitylog": "^4.0",
+        "dompdf/dompdf": "^3.0",
+        "spatie/laravel-activitylog": "^5.0",
         "pragmarx/google2fa-laravel": "^2.2"
     },
     "require-dev": {
