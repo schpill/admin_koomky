@@ -6,19 +6,41 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Koomky** is a Freelance CRM system designed for independent developers to manage clients, projects, invoices, quotes, and marketing campaigns.
 
-**Current Status**: Documentation/Planning Phase - This repository contains PRD and phase breakdown documents. No implementation code exists yet.
+**Current Status**: Phase 1 Foundation Complete - Authentication, Client Management, Dashboard, and Infrastructure implemented (142 files, 11,485+ LOC).
 
 ## Repository Structure
 
 ```
 /home/gerald/admin_koomky/
 ├── PRD.md              # Complete Product Requirements Document
+├── backend/            # Laravel 12.x API
+│   ├── app/
+│   │   ├── Http/Controllers/    # API endpoints
+│   │   ├── Http/Requests/       # Form validation
+│   │   ├── Http/Resources/      # API resources
+│   │   ├── Models/              # Eloquent models
+│   │   ├── Services/            # Business logic
+│   │   └── Exceptions/Handler.php
+│   ├── database/migrations/     # DB schema
+│   ├── tests/                   # Pest tests
+│   └── composer.json
+├── frontend/           # Nuxt 3.x SPA
+│   ├── composables/     # Vue composables (useApi, useAuth, useToast)
+│   ├── components/      # Vue components
+│   ├── layouts/         # Nuxt layouts
+│   ├── middleware/      # Route middleware (auth, guest)
+│   ├── pages/           # File-based routing
+│   ├── tests/           # Vitest + Playwright tests
+│   └── package.json
+├── docker/             # Docker build files
+├── docker-compose.yml  # 9 services orchestration
 ├── docs/
 │   └── phases/
-│       ├── phase1.md    # Foundation and Core CRM (Weeks 1-6)
-│       ├── phase2.md    # Project and Financial Management (Weeks 7-14)
-│       ├── phase3.md    # Marketing and Communication Campaigns (Weeks 15-20)
-│       └── phase4.md    # Polish, Optimization, Production Release (Weeks 21-24)
+│       ├── phase1.md    # ✓ COMPLETED - Foundation and Core CRM
+│       ├── phase2.md    # NEXT - Project and Financial Management
+│       ├── phase3.md    # Marketing and Communication Campaigns
+│       └── phase4.md    # Polish, Optimization, Production Release
+├── .github/workflows/  # CI/CD (tests.yml, ci.yml)
 └── CLAUDE.md          # This file
 ```
 
@@ -88,43 +110,77 @@ Auto-generated references follow pattern: `{PREFIX}-{YEAR}-{SEQUENTIAL_4_DIGITS}
 - **Timestamps**: `created_at`, `updated_at` on all tables
 - **JSONB Columns**: Used for filters (segments), settings, metadata
 
-### Status Workflows
-Many entities have enforced status transitions:
+### Implemented Features (Phase 1)
+
+**Authentication System** (`backend/app/Http/Controllers/AuthController.php`)
+- JWT-based authentication (access: 15min, refresh: 30 days)
+- Two-factor authentication (TOTP + recovery codes)
+- Password reset via email
+- Audit logging for all auth events
+
+**Client Management** (`backend/app/Http/Controllers/ClientController.php`)
+- Full CRUD operations
+- Meilisearch integration for full-text search
+- Tag system for categorization
+- Activity timeline
+- CSV import/export
+- Soft delete with `archived_at`
+
+**Dashboard** (`frontend/pages/index.vue`)
+- KPI widgets (total clients, active projects, revenue)
+- Recent activity feed
+- Command palette (Ctrl+K)
+
+**UI Components** (`frontend/components/`)
+- AppButton, AppInput, AppModal, AppDrawer
+- AppCard, AppBadge, AppSelect, AppTextarea
+- AppDataTable, AppPagination, AppEmptyState
+- CommandPalette, AppToast
+
+### Status Workflows (Planned - Phase 2)
+Many entities will have enforced status transitions:
 - **Invoice**: draft → sent → (viewed|paid|partially_paid|overdue) → cancelled
 - **Project**: draft → proposal_sent → in_progress → (on_hold|completed|cancelled)
 - **Quote**: draft → sent → (accepted|rejected|expired)
 
 ## Common Development Commands (When Code Exists)
 
+## Development Commands
+
 ### Docker
 ```bash
 make up          # Start all services
 make down        # Stop all services
-make fresh       # Rebuild from scratch
+make restart     # Restart services
 make logs        # View logs
-make shell       # SSH into API container
-make shell-fe    # SSH into frontend container
 ```
 
-### Backend (Laravel)
+### Backend (Laravel) - Run from `backend/` directory
 ```bash
-make test        # Run all tests (Pest)
-make test-coverage # Run tests with coverage report
-make lint        # Run Laravel Pint + PHPStan
-make migrate     # Run database migrations
-make seed        # Seed database with test data
-make tinker      # Open Laravel Tinker REPL
+cd backend
+composer install                    # Install dependencies
+php artisan migrate                 # Run migrations
+php artisan migrate:fresh --seed    # Reset DB with seeders
+php artisan serve                   # Start dev server (port 8000)
+vendor/bin/pint                     # Fix code style (PSR-12)
+vendor/bin/phpstan analyse          # Static analysis (level 8)
+vendor/bin/pest                     # Run all tests
+vendor/bin/pest --filter test_name  # Run single test
+vendor/bin/pest --coverage          # Run with coverage (80%+ required)
 ```
 
-### Frontend (Nuxt)
+### Frontend (Nuxt) - Run from `frontend/` directory
 ```bash
 cd frontend
 pnpm install        # Install dependencies
-pnpm dev           # Development server
-pnpm build         # Production build
-pnpm test           # Run Vitest unit tests
-pnpm test:e2e       # Run Playwright E2E tests
-pnpm lint          # Run ESLint + Prettier
+pnpm run dev        # Start dev server (port 3000)
+pnpm run build      # Production build
+pnpm lint           # ESLint check
+pnpm format         # Prettier fix
+pnpm nuxi typecheck # TypeScript check
+pnpm vitest run     # Unit tests
+pnpm vitest run AppButton.test.ts  # Single test
+pnpm playwright test # E2E tests
 ```
 
 ## Testing Requirements
@@ -163,6 +219,21 @@ pnpm lint          # Run ESLint + Prettier
 - **GDPR**: Data export (JSON) and account deletion endpoints
 - **Consent**: Email/SMS consent tracking on contacts
 
+## CI/CD Workflow Notes
+
+**Critical Configuration Details** (learned from debugging):
+- Use `shivammathur/setup-php@v2` (NOT `shivammalhotra`)
+- Backend jobs must set `defaults: run: working-directory: ./backend`
+- Frontend jobs must set `defaults: run: working-directory: ./frontend`
+- pnpm cache requires uppercase `STORE_PATH` output variable
+- Use `--no-color` flag for `pnpm store path` to avoid ANSI codes
+- Laravel Scout requires `^11.0@dev` for Scout 11.x compatibility
+- PHP 8.3+ for Laravel 12.x (composer.json: `^8.3` or `^8.4`)
+
+**Active Workflows**:
+- `.github/workflows/tests.yml` - Main testing workflow (PRs to main)
+- `.github/workflows/ci.yml` - CI for all branches
+
 ## Code Style Guidelines
 
 ### Backend (PHP)
@@ -181,3 +252,16 @@ pnpm lint          # Run ESLint + Prettier
 - Zod schemas for validation
 - Auto-imports: components, composables, utilities
 - Type-safe API calls via `useApi` composable
+
+**Key Composables**:
+- `useApi()` - HTTP client with 401 auto-refresh interceptor
+- `useAuth()` - Pinia store for authentication state
+- `useToast()` - Toast notification system
+
+**Key Services** (Backend):
+- `AuthService` - Login, logout, token management
+- `JWTService` - JWT token generation and validation
+- `TwoFactorAuthService` - 2FA setup, verification, recovery codes
+- `HealthCheckService` - System health status
+- `ExportService` - CSV/Excel export
+- `ImportService` - CSV import with validation
