@@ -45,7 +45,7 @@ final readonly class ImportClientJob implements ShouldQueue
                 'id' => $referenceGenerator->generateUuid(),
                 'user_id' => $this->user->id,
                 'action' => 'imported',
-                'description' => "Client imported via CSV",
+                'description' => 'Client imported via CSV',
             ]);
         });
     }

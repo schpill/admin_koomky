@@ -3,8 +3,8 @@
 namespace Tests\Unit\Models;
 
 use App\Models\User;
-use Tests\TestCase;
 use Illuminate\Support\Facades\Hash;
+use Tests\TestCase;
 
 class UserTest extends TestCase
 {

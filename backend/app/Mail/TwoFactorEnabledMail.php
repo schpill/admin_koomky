@@ -20,8 +20,7 @@ final readonly class TwoFactorEnabledMail extends Mailable
      */
     public function __construct(
         public User $user
-    ) {
-    }
+    ) {}
 
     /**
      * Get the message envelope.
@@ -29,7 +28,7 @@ final readonly class TwoFactorEnabledMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Two-Factor Authentication Enabled - ' . config('app.name'),
+            subject: 'Two-Factor Authentication Enabled - '.config('app.name'),
         );
     }
 

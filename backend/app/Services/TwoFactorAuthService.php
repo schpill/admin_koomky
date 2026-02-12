@@ -175,6 +175,6 @@ final readonly class TwoFactorAuthService
      */
     private function generateRecoveryCode(): string
     {
-        return strtoupper(bin2hex(random_bytes(4)) . '-' . bin2hex(random_bytes(4)));
+        return strtoupper(bin2hex(random_bytes(4)).'-'.bin2hex(random_bytes(4)));
     }
 }

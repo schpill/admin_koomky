@@ -4,12 +4,13 @@ namespace App\Services;
 
 use App\Models\User;
 use Illuminate\Support\Str;
-use Laravel\Sanctum\NewAccessToken;
 
 class JWTService
 {
     private ?string $accessToken = null;
+
     private ?string $refreshToken = null;
+
     private ?string $tempToken = null;
 
     /**

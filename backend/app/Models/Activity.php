@@ -34,9 +34,13 @@ class Activity extends Model
      * Activity types enum.
      */
     const TYPE_FINANCIAL = 'financial';
+
     const TYPE_PROJECT = 'project';
+
     const TYPE_COMMUNICATION = 'communication';
+
     const TYPE_NOTE = 'note';
+
     const TYPE_SYSTEM = 'system';
 
     /**

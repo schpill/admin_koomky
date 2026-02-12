@@ -2,22 +2,19 @@
 
 namespace App\Services;
 
-use App\Models\User;
-use App\Models\AuditLog;
 use App\Enums\AuthEventType;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Redis;
-use Illuminate\Auth\AuthenticationException;
-use Laravel\Sanctum\NewAccessToken;
-use Illuminate\Support\Str;
+use App\Models\AuditLog;
+use App\Models\User;
 use Carbon\Carbon;
-use Exception;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Redis;
 
 class AuthService
 {
     private const LOCKOUT_ATTEMPTS = 5;
+
     private const LOCKOUT_DURATION = 15; // minutes
+
     private const REFRESH_TOKEN_TTL = 43200; // 30 days in seconds
 
     public function __construct(

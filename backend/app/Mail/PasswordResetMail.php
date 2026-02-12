@@ -21,8 +21,7 @@ final readonly class PasswordResetMail extends Mailable
     public function __construct(
         public User $user,
         public string $token
-    ) {
-    }
+    ) {}
 
     /**
      * Get the message envelope.
@@ -30,7 +29,7 @@ final readonly class PasswordResetMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Reset Your Password - ' . config('app.name'),
+            subject: 'Reset Your Password - '.config('app.name'),
         );
     }
 
@@ -39,7 +38,7 @@ final readonly class PasswordResetMail extends Mailable
      */
     public function content(): Content
     {
-        $resetUrl = config('app.frontend_url') . '/auth/reset-password?token=' . $this->token . '&email=' . urlencode($this->user->email);
+        $resetUrl = config('app.frontend_url').'/auth/reset-password?token='.$this->token.'&email='.urlencode($this->user->email);
 
         return new Content(
             view: 'emails.password-reset',

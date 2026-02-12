@@ -87,6 +87,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Prepare Nuxt
+        run: pnpm nuxi prepare
+
       - name: Run ESLint
         working-directory: ./frontend
         run: pnpm lint
@@ -200,6 +203,9 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Prepare Nuxt
+        run: pnpm nuxi prepare
 
       - name: Run type check
         run: pnpm nuxi typecheck

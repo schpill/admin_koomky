@@ -4,7 +4,6 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
-use Illuminate\Support\Facades\Log;
 
 class HealthCheckService
 {
@@ -27,7 +26,7 @@ class HealthCheckService
             $checks['status'] = 'error';
             $checks['services']['postgres'] = [
                 'status' => 'error',
-                'message' => 'Database connection failed: ' . $e->getMessage(),
+                'message' => 'Database connection failed: '.$e->getMessage(),
             ];
         }
 
@@ -42,14 +41,14 @@ class HealthCheckService
             $checks['status'] = 'error';
             $checks['services']['redis'] = [
                 'status' => 'error',
-                'message' => 'Redis connection failed: ' . $e->getMessage(),
+                'message' => 'Redis connection failed: '.$e->getMessage(),
             ];
         }
 
         // Check Meilisearch
         try {
             $client = new \GuzzleHttp\Client();
-            $response = $client->get(config('scout.meilisearch.host') . '/health', [
+            $response = $client->get(config('scout.meilisearch.host').'/health', [
                 'timeout' => 2,
             ]);
 
@@ -65,7 +64,7 @@ class HealthCheckService
             $checks['status'] = 'degraded';
             $checks['services']['meilisearch'] = [
                 'status' => 'error',
-                'message' => 'Meilisearch unavailable: ' . $e->getMessage(),
+                'message' => 'Meilisearch unavailable: '.$e->getMessage(),
             ];
         }
 

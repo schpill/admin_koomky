@@ -20,8 +20,7 @@ final readonly class WelcomeMail extends Mailable
      */
     public function __construct(
         public User $user
-    ) {
-    }
+    ) {}
 
     /**
      * Get the message envelope.
@@ -29,7 +28,7 @@ final readonly class WelcomeMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Welcome to ' . config('app.name') . '!',
+            subject: 'Welcome to '.config('app.name').'!',
         );
     }
 
@@ -38,7 +37,7 @@ final readonly class WelcomeMail extends Mailable
      */
     public function content(): Content
     {
-        $setupUrl = config('app.frontend_url') . '/settings/security';
+        $setupUrl = config('app.frontend_url').'/settings/security';
 
         return new Content(
             view: 'emails.welcome',

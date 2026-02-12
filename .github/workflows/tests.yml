@@ -110,6 +110,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Prepare Nuxt
+        run: pnpm nuxi prepare
+
       - name: Run type check
         working-directory: ./frontend
         run: pnpm nuxi typecheck

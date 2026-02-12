@@ -34,6 +34,7 @@ class AuditLog extends Model
     protected $dateFormat = 'Y-m-d H:i:s';
 
     const CREATED_AT = 'created_at';
+
     const UPDATED_AT = null; // Audit logs are immutable
 
     /**
