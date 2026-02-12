@@ -11,7 +11,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-final readonly class TwoFactorEnabledMail extends Mailable
+final class TwoFactorEnabledMail extends Mailable
 {
     use Queueable, SerializesModels;
 

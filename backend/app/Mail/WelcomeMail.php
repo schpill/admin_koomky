@@ -11,7 +11,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-final readonly class WelcomeMail extends Mailable
+final class WelcomeMail extends Mailable
 {
     use Queueable, SerializesModels;
 

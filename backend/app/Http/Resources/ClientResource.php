@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace App\Http\Resources;
 
+use App\Models\Client;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * @property Client $resource
+ */
 final class ClientResource extends JsonResource
 {
     /**

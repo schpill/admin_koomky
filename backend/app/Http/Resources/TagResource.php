@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace App\Http\Resources;
 
+use App\Models\Tag;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * @property Tag $resource
+ */
 final class TagResource extends JsonResource
 {
     /**

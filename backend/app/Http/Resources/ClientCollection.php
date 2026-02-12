@@ -19,12 +19,12 @@ final class ClientCollection extends ResourceCollection
         return [
             'data' => $this->collection,
             'meta' => [
-                'total' => $this->total(),
-                'per_page' => $this->perPage(),
-                'current_page' => $this->currentPage(),
-                'last_page' => $this->lastPage(),
-                'from' => $this->firstItem(),
-                'to' => $this->lastItem(),
+                'total' => $this->resource->total(),
+                'per_page' => $this->resource->perPage(),
+                'current_page' => $this->resource->currentPage(),
+                'last_page' => $this->resource->lastPage(),
+                'from' => $this->resource->firstItem(),
+                'to' => $this->resource->lastItem(),
             ],
         ];
     }
