@@ -6,7 +6,7 @@ namespace App\Http\Requests\Contact;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-final readonly class CreateContactRequest extends FormRequest
+final class CreateContactRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
