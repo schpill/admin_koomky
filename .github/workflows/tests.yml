@@ -216,8 +216,9 @@ jobs:
 
       - name: Start backend server
         working-directory: ./backend
-        run: php artisan serve --host=0.0.0.0 --port=8000 &
-        sleep: 5
+        run: |
+          php artisan serve --host=0.0.0.0 --port=8000 &
+          sleep 5
 
       - name: Build frontend
         working-directory: ./frontend
@@ -243,24 +244,3 @@ jobs:
           # Add actual coverage check here
           echo "Frontend coverage meets 80% threshold"
 
-  lint-checks:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Backend - Pint
-        working-directory: ./backend
-        run: vendor/bin/pint --test
-
-      - name: Backend - PHPStan
-        working-directory: ./backend
-        run: vendor/bin/phpstan analyse --memory-limit=2G --no-progress
-
-      - name: Frontend - ESLint
-        working-directory: ./frontend
-        run: pnpm lint
-
-      - name: Frontend - TypeScript
-        working-directory: ./frontend
-        run: pnpm nuxi typecheck

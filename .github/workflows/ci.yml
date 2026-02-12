@@ -322,7 +322,6 @@ jobs:
       - name: Get pnpm cache directory
         id: pnpm-cache
         shell: bash
-        working-directory: ./frontend
         run: |
           STORE_PATH=$(pnpm store path --silent 2>/dev/null | tr -d '\n\r')
           echo "STORE_PATH=${STORE_PATH}" >> $GITHUB_OUTPUT
