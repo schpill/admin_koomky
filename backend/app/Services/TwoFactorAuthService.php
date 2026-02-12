@@ -8,7 +8,8 @@ use App\Models\User;
 use Illuminate\Support\Facades\Cache;
 use PragmaRX\Google2FA\Google2FA;
 
-final readonly class TwoFactorAuthService {
+final readonly class TwoFactorAuthService
+{
     public function __construct(
         private Google2FA $google2FA
     ) {}
@@ -63,7 +64,7 @@ final readonly class TwoFactorAuthService {
             // Check recovery codes
             $recoveryCodes = json_decode(decrypt($setupData['recovery_codes']), true);
 
-            if (!in_array($code, $recoveryCodes, true)) {
+            if (! in_array($code, $recoveryCodes, true)) {
                 return false;
             }
         }
@@ -98,7 +99,7 @@ final readonly class TwoFactorAuthService {
      */
     public function verifyCode(User $user, string $code): bool
     {
-        if (!$user->hasTwoFactorEnabled()) {
+        if (! $user->hasTwoFactorEnabled()) {
             return true;
         }
 
@@ -133,12 +134,13 @@ final readonly class TwoFactorAuthService {
     {
         $user = User::findOrFail($userId);
 
-        if (!$this->verifyCode($user, $code)) {
+        if (! $this->verifyCode($user, $code)) {
             throw new \Exception('Invalid two-factor authentication code.');
         }
 
         /** @var AuthService */
         $authService = app(AuthService::class);
+
         return $authService->generateTokens($user);
     }
 

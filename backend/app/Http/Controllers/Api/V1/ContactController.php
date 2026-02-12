@@ -15,7 +15,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
-final readonly class ContactController extends Controller {
+final readonly class ContactController extends Controller
+{
     public function __construct(
         private ReferenceGeneratorService $referenceGenerator
     ) {}
@@ -76,7 +77,7 @@ final readonly class ContactController extends Controller {
         $validated = $request->validated();
 
         // If this is set as primary, remove primary from other contacts
-        if (($validated['is_primary'] ?? false) === true && !$contact->is_primary) {
+        if (($validated['is_primary'] ?? false) === true && ! $contact->is_primary) {
             $contact->client->contacts()->where('id', '!=', $contact->id)->update(['is_primary' => false]);
         }
 

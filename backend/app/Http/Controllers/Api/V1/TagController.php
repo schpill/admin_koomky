@@ -108,6 +108,7 @@ final class TagController extends Controller
     protected function getRandomTagColor(): string
     {
         $colors = ['blue', 'green', 'yellow', 'red', 'purple', 'pink', 'indigo'];
+
         return $colors[array_rand($colors)];
     }
 }

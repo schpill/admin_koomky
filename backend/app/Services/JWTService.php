@@ -58,6 +58,7 @@ class JWTService
     public function generateTempToken(User $user): string
     {
         $this->tempToken = Str::random(60);
+
         return $this->tempToken;
     }
 

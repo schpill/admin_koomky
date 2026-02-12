@@ -47,7 +47,7 @@ class HealthCheckService
 
         // Check Meilisearch
         try {
-            $response = (new \GuzzleHttp\Client())->get(config('scout.meilisearch.host').'/health', [
+            $response = (new \GuzzleHttp\Client)->get(config('scout.meilisearch.host').'/health', [
                 'timeout' => 2,
             ]);
 

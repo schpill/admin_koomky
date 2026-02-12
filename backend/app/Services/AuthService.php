@@ -19,9 +19,7 @@ class AuthService
 
     public function __construct(
         private JWTService $jwtService
-    )
-    {
-    }
+    ) {}
 
     /**
      * Register a new user.
@@ -81,6 +79,7 @@ class AuthService
 
         if (! $user || ! Hash::check($credentials['password'], $user->password)) {
             $this->incrementFailedAttempts($credentials['email']);
+
             return [
                 'error' => [
                     'message' => 'The provided credentials are incorrect.',
@@ -216,7 +215,7 @@ class AuthService
         $key = "lockout:{$email}:until";
         $lockoutUntil = Redis::get($key);
 
-        if (!$lockoutUntil) {
+        if (! $lockoutUntil) {
             return 0;
         }
 

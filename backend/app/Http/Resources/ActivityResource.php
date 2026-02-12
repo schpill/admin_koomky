@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Resources;
 
-use App\Models\Activity;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 final class ActivityResource extends JsonResource

@@ -17,9 +17,7 @@ final class ImportController extends Controller
     public function __construct(
         private ImportService $importService,
         private ExportService $exportService
-    )
-    {
-    }
+    ) {}
 
     /**
      * Get import template.
@@ -52,9 +50,9 @@ final class ImportController extends Controller
         $user = Auth::user();
 
         // Store file temporarily
-        $filePath = $file->storeAs('imports', 'import_' . now()->format('YmdHis') . '.csv');
+        $filePath = $file->storeAs('imports', 'import_'.now()->format('YmdHis').'.csv');
 
-        $result = $this->importService->importClientsFromCsv($user, storage_path('app/' . $filePath));
+        $result = $this->importService->importClientsFromCsv($user, storage_path('app/'.$filePath));
 
         return response()->json([
             'data' => [
@@ -86,14 +84,14 @@ final class ImportController extends Controller
         }
 
         $clients = $query->get();
-        $fileName = 'clients_export_' . now()->format('YmdHis');
+        $fileName = 'clients_export_'.now()->format('YmdHis');
         $filePath = $this->exportService->exportClientsToCsv($clients, $fileName);
 
         return response()->json([
             'data' => [
                 'type' => 'export',
                 'attributes' => [
-                    'filename' => $fileName . '.csv',
+                    'filename' => $fileName.'.csv',
                     'size' => filesize($filePath),
                 ],
             ],
