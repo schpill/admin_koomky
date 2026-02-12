@@ -31,9 +31,10 @@ final class ClientController extends Controller
             ->where('user_id', Auth::id())
             ->with(['tags', 'contacts']);
 
-        // Search
+        // Search via Scout
         if ($request->has('search')) {
-            $query->search($request->input('search'));
+            $searchIds = Client::search($request->input('search'))->keys()->all();
+            $query->whereIn('id', $searchIds);
         }
 
         // Filter by status

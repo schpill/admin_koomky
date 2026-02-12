@@ -33,6 +33,7 @@ final class ContactController extends Controller
             $client->contacts()->update(['is_primary' => false]);
         }
 
+        /** @var Contact $contact */
         $contact = $client->contacts()->create([
             'id' => $this->referenceGenerator->generateUuid(),
             'name' => $validated['name'],
