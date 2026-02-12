@@ -197,6 +197,22 @@ class AuthService
     }
 
     /**
+     * Generate tokens for a user (used by 2FA confirmation).
+     *
+     * @return array{token: string, refresh_token: string, expires_in: int}
+     */
+    public function generateTokens(User $user): array
+    {
+        $this->jwtService->generateTokens($user);
+
+        return [
+            'token' => $this->jwtService->getAccessToken(),
+            'refresh_token' => $this->jwtService->getRefreshToken(),
+            'expires_in' => config('sanctum.expiration') ?? 15 * 60,
+        ];
+    }
+
+    /**
      * Check if user is locked.
      */
     private function isLocked(string $email): bool

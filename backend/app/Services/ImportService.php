@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Jobs\ImportClientJob;
 use App\Models\User;
 use Illuminate\Support\Facades\Bus;
 
-final readonly class ImportService
+final class ImportService
 {
     public function __construct(
         private ReferenceGeneratorService $referenceGenerator
@@ -24,9 +25,9 @@ final readonly class ImportService
 
         $batch = Bus::batch(
             collect($csvData)->map(function ($row) use ($user) {
-                return new Jobs\ImportClientJob($user, $row);
+                return new ImportClientJob($user, $row);
             })
-        );
+        )->dispatch();
 
         return [
             'total' => count($csvData),
@@ -39,7 +40,7 @@ final readonly class ImportService
     /**
      * Parse CSV file into array.
      *
-     * @return array<array<string, string>>
+     * @return array<array<string, string|null>>
      */
     private function parseCsv(string $filePath): array
     {
@@ -51,19 +52,23 @@ final readonly class ImportService
             while (($data = fgetcsv($handle, 1000, ',')) !== false) {
                 $row = array_combine($headers, $data);
 
-                // Validate required fields
-                if (empty($row['name'] ?? '')) {
+                // Skip rows without at least company_name or first_name
+                if (empty($row['company_name'] ?? '') && empty($row['first_name'] ?? '')) {
                     continue;
                 }
 
                 $rows[] = [
-                    'name' => $row['name'] ?? '',
+                    'company_name' => $row['company_name'] ?? null,
+                    'first_name' => $row['first_name'] ?? null,
+                    'last_name' => $row['last_name'] ?? null,
                     'email' => $row['email'] ?? null,
                     'phone' => $row['phone'] ?? null,
-                    'company' => $row['company'] ?? null,
                     'vat_number' => $row['vat_number'] ?? null,
                     'website' => $row['website'] ?? null,
-                    'billing_address' => $row['billing_address'] ?? null,
+                    'address' => $row['address'] ?? null,
+                    'city' => $row['city'] ?? null,
+                    'postal_code' => $row['postal_code'] ?? null,
+                    'country' => $row['country'] ?? null,
                     'notes' => $row['notes'] ?? null,
                 ];
             }
@@ -79,7 +84,7 @@ final readonly class ImportService
      */
     public function generateCsvTemplate(): string
     {
-        $headers = ['name', 'email', 'phone', 'company', 'vat_number', 'website', 'billing_address', 'notes'];
+        $headers = ['company_name', 'first_name', 'last_name', 'email', 'phone', 'vat_number', 'website', 'address', 'city', 'postal_code', 'country', 'notes'];
 
         $fp = fopen('php://temp', 'w+');
         fputcsv($fp, $headers);
@@ -87,12 +92,16 @@ final readonly class ImportService
         // Add example row
         fputcsv($fp, [
             'Acme Corporation',
+            'John',
+            'Doe',
             'contact@acme.com',
             '+33 1 23 45 67 89',
-            'Acme Corp',
             'FR12345678901',
             'https://acme.com',
-            '123 Business Street\n75001 Paris\nFrance',
+            '123 Business Street',
+            'Paris',
+            '75001',
+            'France',
             'Premium client - prioritize requests',
         ]);
 
