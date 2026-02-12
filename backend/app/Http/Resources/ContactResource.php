@@ -7,9 +7,6 @@ namespace App\Http\Resources;
 use App\Models\Contact;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-/**
- * @property Contact $resource
- */
 final class ContactResource extends JsonResource
 {
     /**
@@ -19,17 +16,20 @@ final class ContactResource extends JsonResource
      */
     public function toArray($request): array
     {
+        /** @var Contact $contact */
+        $contact = $this->resource;
+
         return [
             'type' => 'contact',
-            'id' => $this->id,
+            'id' => $contact->id,
             'attributes' => [
-                'name' => $this->name,
-                'email' => $this->email,
-                'phone' => $this->phone,
-                'position' => $this->position,
-                'is_primary' => $this->is_primary,
-                'created_at' => $this->created_at?->toIso8601String(),
-                'updated_at' => $this->updated_at?->toIso8601String(),
+                'name' => $contact->name,
+                'email' => $contact->email,
+                'phone' => $contact->phone,
+                'position' => $contact->position,
+                'is_primary' => $contact->is_primary,
+                'created_at' => $contact->created_at?->toIso8601String(),
+                'updated_at' => $contact->updated_at?->toIso8601String(),
             ],
         ];
     }

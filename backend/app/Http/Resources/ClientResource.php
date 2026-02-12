@@ -7,9 +7,6 @@ namespace App\Http\Resources;
 use App\Models\Client;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-/**
- * @property Client $resource
- */
 final class ClientResource extends JsonResource
 {
     /**
@@ -19,22 +16,25 @@ final class ClientResource extends JsonResource
      */
     public function toArray($request): array
     {
+        /** @var Client $client */
+        $client = $this->resource;
+
         return [
             'type' => 'client',
-            'id' => $this->id,
+            'id' => $client->id,
             'attributes' => [
-                'reference' => $this->reference,
-                'name' => $this->name,
-                'email' => $this->email,
-                'phone' => $this->phone,
-                'company' => $this->company,
-                'vat_number' => $this->vat_number,
-                'website' => $this->website,
-                'billing_address' => $this->billing_address,
-                'notes' => $this->notes,
-                'status' => $this->status,
-                'created_at' => $this->created_at?->toIso8601String(),
-                'updated_at' => $this->updated_at?->toIso8601String(),
+                'reference' => $client->reference,
+                'name' => $client->name,
+                'email' => $client->email,
+                'phone' => $client->phone,
+                'company' => $client->company,
+                'vat_number' => $client->vat_number,
+                'website' => $client->website,
+                'billing_address' => $client->billing_address,
+                'notes' => $client->notes,
+                'status' => $client->status,
+                'created_at' => $client->created_at?->toIso8601String(),
+                'updated_at' => $client->updated_at?->toIso8601String(),
             ],
             'relationships' => [
                 'tags' => TagResource::collection($this->whenLoaded('tags')),

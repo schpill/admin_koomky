@@ -7,32 +7,32 @@ namespace App\Http\Resources;
 use App\Models\Activity;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-/**
- * @property Activity $resource
- */
 final class ActivityResource extends JsonResource
 {
     /**
-     * Transform the resource into an array.
+     * Transform resource into an array.
      *
      * @return array<string, mixed>
      */
     public function toArray($request): array
     {
+        /** @var Activity $activity */
+        $activity = $this->resource;
+
         return [
             'type' => 'activity',
-            'id' => $this->id,
+            'id' => $activity->id,
             'attributes' => [
-                'action' => $this->type,
-                'description' => $this->description,
-                'changes' => $this->metadata,
-                'created_at' => $this->created_at->toIso8601String(),
+                'action' => $activity->type,
+                'description' => $activity->description,
+                'changes' => $activity->metadata,
+                'created_at' => $activity->created_at->toIso8601String(),
             ],
             'relationships' => [
                 'user' => [
                     'data' => [
-                        'id' => $this->user_id,
-                        'name' => $this->user?->name,
+                        'id' => $activity->user_id,
+                        'name' => $activity->user?->name,
                     ],
                 ],
             ],

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravel\Scout\Searchable;
 
@@ -77,9 +78,9 @@ class Client extends Model
     /**
      * Tags relationship.
      */
-    public function tags(): HasMany
+    public function tags(): BelongsToMany
     {
-        return $this->hasMany(Tag::class);
+        return $this->belongsToMany(Tag::class, 'client_tag');
     }
 
     /**
