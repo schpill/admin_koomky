@@ -13,18 +13,18 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Mail;
 
-final readonly class SendTwoFactorEnabledEmail implements ShouldQueue
+final class SendTwoFactorEnabledEmail implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    public string $queue = 'emails';
 
     /**
      * Create a new job instance.
      */
     public function __construct(
         public User $user
-    ) {
-        $this->onQueue('emails');
-    }
+    ) {}
 
     /**
      * Execute the job.

@@ -13,9 +13,11 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Mail;
 
-final readonly class SendPasswordResetEmail implements ShouldQueue
+final class SendPasswordResetEmail implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    public string $queue = 'emails';
 
     /**
      * Create a new job instance.
@@ -23,9 +25,7 @@ final readonly class SendPasswordResetEmail implements ShouldQueue
     public function __construct(
         public User $user,
         public string $token
-    ) {
-        $this->onQueue('emails');
-    }
+    ) {}
 
     /**
      * Execute the job.

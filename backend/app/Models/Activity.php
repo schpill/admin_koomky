@@ -20,7 +20,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\User $user
  * @property-read \App\Models\Client|null $client
- * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $subject
+ * @property-read \Illuminate\Database\Eloquent\Model|null $subject
  */
 class Activity extends Model
 {

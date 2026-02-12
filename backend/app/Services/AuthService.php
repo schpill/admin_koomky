@@ -202,7 +202,7 @@ class AuthService
     private function isLocked(string $email): bool
     {
         $key = "lockout:{$email}";
-        $attempts = Redis::get($key, 0);
+        $attempts = (int) Redis::get($key);
 
         return $attempts >= self::LOCKOUT_ATTEMPTS;
     }
