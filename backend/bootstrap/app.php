@@ -1,10 +1,8 @@
 <?php
 
-declare(strict_types=1);
-
 use Illuminate\Foundation\Application;
-use Illuminate\Foundation\Configuration\DisplayExceptions;
 use Illuminate\Foundation\Configuration\Exceptions;
+use Illuminate\Foundation\Configuration\Middleware;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withProviders([
@@ -16,17 +14,10 @@ return Application::configure(basePath: dirname(__DIR__))
         api: __DIR__.'/../routes/api.php',
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
-        then: function () {
-            return Application::configure(basePath: dirname(__DIR__))
-                ->withExceptions(function (Exceptions $exceptions) {
-                    $exceptions->stopIgnoring(
-                        E_USER_DEPRECATED,
-                    );
-                })
-                ->withDisplayExceptions(function (DisplayExceptions $displayExceptions) {
-                    $displayExceptions
-                        ->debug(config('app.debug'))
-                        ->withLogger();
-                });
-        },
-    );
+    )
+    ->withMiddleware(function (Middleware $middleware) {
+        //
+    })
+    ->withExceptions(function (Exceptions $exceptions) {
+        //
+    })->create();

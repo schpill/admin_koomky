@@ -127,7 +127,7 @@ class Client extends Model
             'email' => $this->email,
             'reference' => $this->reference,
             'notes' => $this->notes,
-            'archived_at' => $this->archived_at?->toIso8601String() : null,
+            'archived_at' => $this->archived_at ? $this->archived_at->toIso8601String() : null,
         ];
     }
 }

@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Redis;
 use App\Services\HealthCheckService;
+use Illuminate\Http\JsonResponse;
 
 class HealthController extends Controller
 {
