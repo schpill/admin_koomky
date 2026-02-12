@@ -15,8 +15,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
-final readonly class ContactController extends Controller
-{
+final readonly class ContactController extends Controller {
     public function __construct(
         private ReferenceGeneratorService $referenceGenerator
     ) {}

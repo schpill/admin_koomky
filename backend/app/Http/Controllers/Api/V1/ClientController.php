@@ -16,8 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
-final readonly class ClientController extends Controller
-{
+final readonly class ClientController extends Controller {
     public function __construct(
         private ReferenceGeneratorService $referenceGenerator
     ) {}
@@ -85,12 +84,12 @@ final readonly class ClientController extends Controller
         ]);
 
         // Attach tags if provided
-        if (!empty($validated['tags'] ?? [])) {
+        if (! empty($validated['tags'] ?? [])) {
             $this->syncTags($client, $validated['tags']);
         }
 
         // Create contacts if provided
-        if (!empty($validated['contacts'] ?? [])) {
+        if (! empty($validated['contacts'] ?? [])) {
             foreach ($validated['contacts'] as $contactData) {
                 $client->contacts()->create([
                     'id' => $this->referenceGenerator->generateUuid(),

@@ -8,8 +8,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Cache;
 use PragmaRX\Google2FA\Google2FA;
 
-final readonly class TwoFactorAuthService
-{
+final readonly class TwoFactorAuthService {
     public function __construct(
         private Google2FA $google2FA
     ) {}
