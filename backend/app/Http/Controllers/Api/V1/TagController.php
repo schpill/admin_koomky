@@ -62,9 +62,9 @@ final class TagController extends Controller
      */
     public function show(Tag $tag): TagResource
     {
-        $this->authorize('view', $tag);
+        $tag->load('clients');
 
-        return new TagResource($tag->load('clients'));
+        return new TagResource($tag);
     }
 
     /**
@@ -72,8 +72,6 @@ final class TagController extends Controller
      */
     public function update(Request $request, Tag $tag): JsonResponse
     {
-        $this->authorize('update', $tag);
-
         $validated = $request->validate([
             'name' => ['nullable', 'string', 'max:255'],
             'color' => ['nullable', 'string', 'in:blue,green,yellow,red,purple,pink,indigo'],
@@ -91,8 +89,6 @@ final class TagController extends Controller
      */
     public function destroy(Tag $tag): JsonResponse
     {
-        $this->authorize('delete', $tag);
-
         $tag->delete();
 
         return response()->json([

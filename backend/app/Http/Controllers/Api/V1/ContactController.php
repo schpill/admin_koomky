@@ -15,7 +15,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
-final readonly class ContactController extends Controller
+final class ContactController extends Controller
 {
     public function __construct(
         private ReferenceGeneratorService $referenceGenerator
@@ -26,8 +26,6 @@ final readonly class ContactController extends Controller
      */
     public function store(CreateContactRequest $request, Client $client): JsonResponse
     {
-        $this->authorize('update', $client);
-
         $validated = $request->validated();
 
         // If this is set as primary, remove primary from other contacts
@@ -48,7 +46,7 @@ final readonly class ContactController extends Controller
         $client->activities()->create([
             'id' => $this->referenceGenerator->generateUuid(),
             'user_id' => Auth::id(),
-            'action' => 'contact_added',
+            'type' => 'system',
             'description' => "Contact {$contact->name} was added to client {$client->name}",
         ]);
 
@@ -62,8 +60,6 @@ final readonly class ContactController extends Controller
      */
     public function show(Contact $contact): ContactResource
     {
-        $this->authorize('view', $contact->client);
-
         return new ContactResource($contact);
     }
 
@@ -72,8 +68,6 @@ final readonly class ContactController extends Controller
      */
     public function update(UpdateContactRequest $request, Contact $contact): JsonResponse
     {
-        $this->authorize('update', $contact->client);
-
         $validated = $request->validated();
 
         // If this is set as primary, remove primary from other contacts
@@ -93,7 +87,7 @@ final readonly class ContactController extends Controller
         $contact->client->activities()->create([
             'id' => $this->referenceGenerator->generateUuid(),
             'user_id' => Auth::id(),
-            'action' => 'contact_updated',
+            'type' => 'system',
             'description' => "Contact {$contact->name} was updated",
         ]);
 
@@ -107,8 +101,6 @@ final readonly class ContactController extends Controller
      */
     public function destroy(Contact $contact): JsonResponse
     {
-        $this->authorize('update', $contact->client);
-
         $client = $contact->client;
         $contactName = $contact->name;
 
@@ -118,7 +110,7 @@ final readonly class ContactController extends Controller
         $client->activities()->create([
             'id' => $this->referenceGenerator->generateUuid(),
             'user_id' => Auth::id(),
-            'action' => 'contact_deleted',
+            'type' => 'system',
             'description' => "Contact {$contactName} was removed from client {$client->name}",
         ]);
 

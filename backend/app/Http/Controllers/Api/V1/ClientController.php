@@ -16,7 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
-final readonly class ClientController extends Controller
+final class ClientController extends Controller
 {
     public function __construct(
         private ReferenceGeneratorService $referenceGenerator
@@ -107,7 +107,7 @@ final readonly class ClientController extends Controller
         $client->activities()->create([
             'id' => $this->referenceGenerator->generateUuid(),
             'user_id' => Auth::id(),
-            'action' => 'created',
+            'type' => 'system',
             'description' => "Client {$client->name} was created",
         ]);
 
@@ -117,12 +117,10 @@ final readonly class ClientController extends Controller
     }
 
     /**
-     * Display the specified client.
+     * Display specified client.
      */
     public function show(Client $client): ClientResource
     {
-        $this->authorize('view', $client);
-
         return new ClientResource($client->load(['tags', 'contacts', 'activities']));
     }
 
@@ -131,8 +129,6 @@ final readonly class ClientController extends Controller
      */
     public function update(UpdateClientRequest $request, Client $client): JsonResponse
     {
-        $this->authorize('update', $client);
-
         $validated = $request->validated();
 
         $client->update([
@@ -171,7 +167,7 @@ final readonly class ClientController extends Controller
         $client->activities()->create([
             'id' => $this->referenceGenerator->generateUuid(),
             'user_id' => Auth::id(),
-            'action' => 'updated',
+            'type' => 'system',
             'description' => "Client {$client->name} was updated",
         ]);
 
@@ -185,8 +181,6 @@ final readonly class ClientController extends Controller
      */
     public function destroy(Client $client): JsonResponse
     {
-        $this->authorize('delete', $client);
-
         $client->delete();
 
         return response()->json([
@@ -201,14 +195,12 @@ final readonly class ClientController extends Controller
      */
     public function archive(Client $client): JsonResponse
     {
-        $this->authorize('update', $client);
-
-        $client->update(['status' => 'archived']);
+        $client->update(['archived_at' => now()]);
 
         $client->activities()->create([
             'id' => $this->referenceGenerator->generateUuid(),
             'user_id' => Auth::id(),
-            'action' => 'archived',
+            'type' => 'system',
             'description' => "Client {$client->name} was archived",
         ]);
 
@@ -222,14 +214,12 @@ final readonly class ClientController extends Controller
      */
     public function restore(Client $client): JsonResponse
     {
-        $this->authorize('update', $client);
-
-        $client->update(['status' => 'active']);
+        $client->update(['archived_at' => null]);
 
         $client->activities()->create([
             'id' => $this->referenceGenerator->generateUuid(),
             'user_id' => Auth::id(),
-            'action' => 'restored',
+            'type' => 'system',
             'description' => "Client {$client->name} was restored",
         ]);
 
