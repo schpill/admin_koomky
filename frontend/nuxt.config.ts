@@ -9,14 +9,6 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     '@nuxt/eslint',
   ],
-  icon: {
-    // Icon component configuration
-    size: '24px',
-    class: 'inline-block',
-    aliases: {
-      // Custom icon aliases can be added here
-    },
-  },
   css: ['~/assets/css/main.css'],
   app: {
     head: {

@@ -24,7 +24,7 @@ final class TagController extends Controller
 
         // Search
         if ($request->has('search')) {
-            $query->where('name', 'like', '%' . $request->input('search') . '%');
+            $query->where('name', 'like', '%'.$request->input('search').'%');
         }
 
         $tags = $query->orderBy('name')->get();

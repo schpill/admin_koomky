@@ -14,8 +14,7 @@ final class TwoFactorAuthController extends Controller
 {
     public function __construct(
         private readonly TwoFactorAuthService $twoFactorService
-    ) {
-    }
+    ) {}
 
     /**
      * Enable 2FA for the authenticated user.

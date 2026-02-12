@@ -17,7 +17,9 @@ final class ImportController extends Controller
     public function __construct(
         private ImportService $importService,
         private ExportService $exportService
-    ) {}
+    )
+    {
+    }
 
     /**
      * Get import template.

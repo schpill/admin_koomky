@@ -35,7 +35,7 @@ abstract class Controller extends BaseController
             ],
         ];
 
-        if (!empty($errors)) {
+        if (! empty($errors)) {
             $response['error']['errors'] = $errors;
         }
 

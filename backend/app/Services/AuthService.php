@@ -19,7 +19,9 @@ class AuthService
 
     public function __construct(
         private JWTService $jwtService
-    ) {}
+    )
+    {
+    }
 
     /**
      * Register a new user.
@@ -77,7 +79,7 @@ class AuthService
 
         $user = User::where('email', $credentials['email'])->first();
 
-        if (!$user || !Hash::check($credentials['password'], $user->password)) {
+        if (! $user || ! Hash::check($credentials['password'], $user->password)) {
             $this->incrementFailedAttempts($credentials['email']);
             return [
                 'error' => [

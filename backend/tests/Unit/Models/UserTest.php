@@ -10,7 +10,11 @@ class UserTest extends TestCase
 {
     public function test_user_has_correct_fillable_attributes(): void
     {
-        $user = new User();
+        $user = new User([
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'password' => bcrypt('password'),
+        ]);
         $expected = [
             'name',
             'email',
@@ -39,7 +43,11 @@ class UserTest extends TestCase
 
     public function test_two_factor_secret_is_cast_to_encrypted(): void
     {
-        $user = new User();
+        $user = new User([
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'password' => bcrypt('password'),
+        ]);
         $casts = $user->getCasts();
 
         $this->assertArrayHasKey('two_factor_secret', $casts);
@@ -48,7 +56,11 @@ class UserTest extends TestCase
 
     public function test_bank_details_is_cast_to_encrypted(): void
     {
-        $user = new User();
+        $user = new User([
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'password' => bcrypt('password'),
+        ]);
         $casts = $user->getCasts();
 
         $this->assertArrayHasKey('bank_details', $casts);
@@ -57,7 +69,11 @@ class UserTest extends TestCase
 
     public function test_two_factor_secret_is_hidden(): void
     {
-        $user = new User();
+        $user = new User([
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'password' => bcrypt('password'),
+        ]);
         $hidden = $user->getHidden();
 
         $this->assertContains('two_factor_secret', $hidden);

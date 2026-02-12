@@ -55,13 +55,13 @@ final readonly class TwoFactorAuthService
     {
         $setupData = Cache::get("2fa:setup:{$user->id}");
 
-        if (!$setupData) {
+        if (! $setupData) {
             throw new \Exception('Two-factor authentication setup expired. Please try again.');
         }
 
         $secret = $setupData['secret'];
 
-        if (!$this->google2FA->verifyKey($secret, $code)) {
+        if (! $this->google2FA->verifyKey($secret, $code)) {
             // Check recovery codes
             $recoveryCodes = json_decode(decrypt($setupData['recovery_codes']), true);
 

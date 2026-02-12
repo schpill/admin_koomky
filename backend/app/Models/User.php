@@ -62,7 +62,7 @@ class User extends Authenticatable
      */
     public function getAvatarUrlAttribute(): ?string
     {
-        if (!$this->avatar_path) {
+        if (! $this->avatar_path) {
             return null;
         }
 

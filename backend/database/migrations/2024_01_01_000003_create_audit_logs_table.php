@@ -11,7 +11,8 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('audit_logs', function (Blueprint $table) {
+        Schema::create('audit_logs', function (Blueprint $table)
+        {
             $table->uuid('id')->primary();
             $table->uuid('user_id');
             $table->string('event');
