@@ -9,6 +9,9 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     '@nuxt/eslint',
   ],
+  icon: {
+    mode: 'svg',
+  },
   css: ['~/assets/css/main.css'],
   app: {
     head: {
