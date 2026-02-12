@@ -115,6 +115,45 @@ class Client extends Model
     }
 
     /**
+     * Get the client's display name.
+     * Returns company name if available, otherwise full name.
+     */
+    public function getNameAttribute(): string
+    {
+        return $this->company_name ?: $this->getFullNameAttribute();
+    }
+
+    /**
+     * Get the client's company name.
+     */
+    public function getCompanyAttribute(): ?string
+    {
+        return $this->company_name;
+    }
+
+    /**
+     * Get the client's status.
+     */
+    public function getStatusAttribute(): string
+    {
+        return $this->archived_at ? 'archived' : 'active';
+    }
+
+    /**
+     * Get the client's billing address.
+     */
+    public function getBillingAddressAttribute(): ?string
+    {
+        $parts = array_filter([
+            $this->address,
+            trim("{$this->postal_code} {$this->city}"),
+            $this->country,
+        ]);
+
+        return $parts ? implode("\n", $parts) : null;
+    }
+
+    /**
      * Meilisearch indexing configuration.
      */
     public function toSearchableArray(): array
