@@ -20,8 +20,7 @@ final readonly class ClientController extends Controller
 {
     public function __construct(
         private ReferenceGeneratorService $referenceGenerator
-    ) {
-    }
+    ) {}
 
     /**
      * Display a listing of clients.

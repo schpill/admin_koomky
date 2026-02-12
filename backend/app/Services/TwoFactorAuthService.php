@@ -12,8 +12,7 @@ final readonly class TwoFactorAuthService
 {
     public function __construct(
         private Google2FA $google2FA
-    ) {
-    }
+    ) {}
 
     /**
      * Enable 2FA for a user.

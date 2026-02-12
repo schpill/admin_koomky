@@ -19,8 +19,7 @@ final readonly class ContactController extends Controller
 {
     public function __construct(
         private ReferenceGeneratorService $referenceGenerator
-    ) {
-    }
+    ) {}
 
     /**
      * Store a newly created contact for a client.
