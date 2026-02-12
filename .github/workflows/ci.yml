@@ -147,6 +147,12 @@ jobs:
       - name: Install Composer dependencies
         run: composer install --prefer-dist --no-progress
 
+      - name: Create Laravel cache directories
+        run: |
+          mkdir -p bootstrap/cache
+          mkdir -p storage/framework/{sessions,views,cache}
+          chmod -R 775 bootstrap/cache storage
+
       - name: Prepare environment
         run: |
           cp .env.example .env
