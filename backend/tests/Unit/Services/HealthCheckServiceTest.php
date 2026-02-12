@@ -3,8 +3,8 @@
 namespace Tests\Unit\Services;
 
 use App\Services\HealthCheckService;
-use Tests\TestCase;
 use Illuminate\Support\Facades\Config;
+use Tests\TestCase;
 
 class HealthCheckServiceTest extends TestCase
 {

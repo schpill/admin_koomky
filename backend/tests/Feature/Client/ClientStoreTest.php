@@ -5,7 +5,8 @@ declare(strict_types=1);
 use App\Models\Client;
 use App\Models\User;
 use Illuminate\Support\Facades\Queue;
-use function Pest\Laravel\{actingAs, get};
+
+use function Pest\Laravel\actingAs;
 
 beforeEach(function () {
     Queue::fake();

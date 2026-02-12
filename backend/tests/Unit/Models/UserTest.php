@@ -79,6 +79,6 @@ class UserTest extends TestCase
             'two_factor_secret' => null,
         ]);
 
-        $this->assertFalse($userWithout2FA->->hasTwoFactorEnabled());
+        $this->assertFalse($userWithout2FA->hasTwoFactorEnabled());
     }
 }

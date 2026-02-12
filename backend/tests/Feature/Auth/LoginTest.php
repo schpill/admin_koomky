@@ -3,9 +3,9 @@
 namespace Tests\Feature\Auth;
 
 use App\Models\User;
-use Tests\TestCase;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redis;
+use Tests\TestCase;
 
 class LoginTest extends TestCase
 {
