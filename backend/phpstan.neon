@@ -7,10 +7,7 @@ parameters:
         - app/
 
     # Level 9 is the highest level
-    level: 5
-
-    ignoreErrors:
-        - '#PHPDoc tag @var with type .* is not subtype of native type#'
+    level: 3
 
     excludePaths:
         - ./*/*/FileToBeExcluded.php
