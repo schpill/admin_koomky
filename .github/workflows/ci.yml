@@ -113,6 +113,15 @@ jobs:
     defaults:
       run:
         working-directory: ./backend
+    env:
+      DB_CONNECTION: pgsql
+      DB_HOST: 127.0.0.1
+      DB_PORT: 5432
+      DB_DATABASE: koomky_test
+      DB_USERNAME: koomky
+      DB_PASSWORD: secret
+      REDIS_HOST: 127.0.0.1
+      REDIS_PORT: 6379
     services:
       postgres:
         image: postgres:16-alpine
@@ -120,6 +129,8 @@ jobs:
           POSTGRES_USER: koomky
           POSTGRES_PASSWORD: secret
           POSTGRES_DB: koomky_test
+        ports:
+          - 5432:5432
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -127,6 +138,8 @@ jobs:
           --health-retries 5
       redis:
         image: redis:7-alpine
+        ports:
+          - 6379:6379
         options: >-
           --health-cmd "redis-cli ping"
           --health-interval 10s
@@ -156,13 +169,7 @@ jobs:
       - name: Prepare environment
         run: |
           cp .env.example .env
-          sed -i 's/DB_CONNECTION=.*/DB_CONNECTION=pgsql/' .env
-          sed -i 's/DB_DATABASE=.*/DB_DATABASE=koomky_test/' .env
-          sed -i 's/DB_HOST=.*/DB_HOST=postgres/' .env
-          sed -i 's/DB_USERNAME=.*/DB_USERNAME=koomky/' .env
-          sed -i 's/DB_PASSWORD=.*/DB_PASSWORD=secret/' .env
-          sed -i 's/REDIS_HOST=.*/REDIS_HOST=redis/' .env
-          sed -i 's/MEILISEARCH_HOST=.*/MEILISEARCH_HOST=127.0.0.1/' .env
+          sed -i 's|MEILISEARCH_HOST=.*|MEILISEARCH_HOST=http://127.0.0.1:7700|' .env
           php artisan key:generate --ansi
 
       - name: Run migrations
