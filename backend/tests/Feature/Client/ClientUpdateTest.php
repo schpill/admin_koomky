@@ -6,6 +6,7 @@ use App\Models\Client;
 use App\Models\User;
 
 use function Pest\Laravel\actingAs;
+use function Pest\Laravel\putJson;
 
 beforeEach(function () {
     User::unsetEventDispatcher();
@@ -14,7 +15,8 @@ beforeEach(function () {
 it('updates a client', function () {
     $user = User::factory()->create();
     $client = Client::factory()->for($user)->create([
-        'name' => 'Old Name',
+        'first_name' => 'Old Name',
+        'company_name' => null,
         'email' => 'old@example.com',
     ]);
 
@@ -27,7 +29,7 @@ it('updates a client', function () {
         ->assertJsonPath('data.attributes.name', 'New Name')
         ->assertJsonPath('data.attributes.email', 'new@example.com');
 
-    expect($client->fresh()->name)->toBe('New Name');
+    expect($client->fresh()->first_name)->toBe('New Name');
 });
 
 it('requires a name', function () {
@@ -56,7 +58,7 @@ it('forbids updating other users clients', function () {
 
 it('archives a client', function () {
     $user = User::factory()->create();
-    $client = Client::factory()->for($user)->create(['status' => 'active']);
+    $client = Client::factory()->for($user)->create(['archived_at' => null]);
 
     actingAs($user)
         ->postJson("/api/v1/clients/{$client->id}/archive")
@@ -68,7 +70,7 @@ it('archives a client', function () {
 
 it('restores an archived client', function () {
     $user = User::factory()->create();
-    $client = Client::factory()->for($user)->create(['status' => 'archived']);
+    $client = Client::factory()->for($user)->create(['archived_at' => now()]);
 
     actingAs($user)
         ->postJson("/api/v1/clients/{$client->id}/restore")
@@ -87,4 +89,59 @@ it('deletes a client', function () {
         ->assertStatus(204);
 
     expect(Client::find($client->id))->toBeNull();
+});
+
+it('syncs tags on update', function () {
+    $user = User::factory()->create();
+    $client = Client::factory()->for($user)->create();
+
+    actingAs($user)
+        ->putJson("/api/v1/clients/{$client->id}", [
+            'name' => $client->first_name,
+            'tags' => ['VIP', 'Enterprise'],
+        ])
+        ->assertStatus(200);
+
+    expect($client->fresh()->tags)->toHaveCount(2);
+});
+
+it('replaces contacts on update', function () {
+    $user = User::factory()->create();
+    $client = Client::factory()->for($user)->create();
+    \App\Models\Contact::factory()->create(['client_id' => $client->id]);
+
+    actingAs($user)
+        ->putJson("/api/v1/clients/{$client->id}", [
+            'name' => $client->first_name,
+            'contacts' => [
+                ['name' => 'New Contact', 'email' => 'new@example.com'],
+            ],
+        ])
+        ->assertStatus(200);
+
+    expect($client->fresh()->contacts)->toHaveCount(1);
+    expect($client->fresh()->contacts->first()->email)->toBe('new@example.com');
+});
+
+it('logs activity on update', function () {
+    $user = User::factory()->create();
+    $client = Client::factory()->for($user)->create();
+
+    actingAs($user)
+        ->putJson("/api/v1/clients/{$client->id}", [
+            'name' => 'Updated Name',
+        ])
+        ->assertStatus(200);
+
+    expect($client->activities()->count())->toBeGreaterThanOrEqual(1);
+});
+
+it('requires authentication to update', function () {
+    $user = User::factory()->create();
+    $client = Client::factory()->for($user)->create();
+
+    putJson("/api/v1/clients/{$client->id}", [
+        'name' => 'Hacked',
+    ])
+        ->assertStatus(401);
 });

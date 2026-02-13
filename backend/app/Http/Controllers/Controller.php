@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller as BaseController;
 
 abstract class Controller extends BaseController
 {
-    use DispatchesJobs;
+    use AuthorizesRequests, DispatchesJobs;
 
     /**
      * Success response helper.

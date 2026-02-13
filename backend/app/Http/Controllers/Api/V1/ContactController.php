@@ -36,7 +36,7 @@ final class ContactController extends Controller
         /** @var Contact $contact */
         $contact = $client->contacts()->create([
             'id' => $this->referenceGenerator->generateUuid(),
-            'name' => $validated['name'],
+            'first_name' => $validated['name'],
             'email' => $validated['email'] ?? null,
             'phone' => $validated['phone'] ?? null,
             'position' => $validated['position'] ?? null,
@@ -59,7 +59,7 @@ final class ContactController extends Controller
     /**
      * Display the specified contact.
      */
-    public function show(Contact $contact): ContactResource
+    public function show(Client $client, Contact $contact): ContactResource
     {
         return new ContactResource($contact);
     }
@@ -67,7 +67,7 @@ final class ContactController extends Controller
     /**
      * Update the specified contact.
      */
-    public function update(UpdateContactRequest $request, Contact $contact): JsonResponse
+    public function update(UpdateContactRequest $request, Client $client, Contact $contact): JsonResponse
     {
         $validated = $request->validated();
 
@@ -76,13 +76,18 @@ final class ContactController extends Controller
             $contact->client->contacts()->where('id', '!=', $contact->id)->update(['is_primary' => false]);
         }
 
-        $contact->update([
-            'name' => $validated['name'] ?? $contact->name,
+        $updateData = [
             'email' => $validated['email'] ?? $contact->email,
             'phone' => $validated['phone'] ?? $contact->phone,
             'position' => $validated['position'] ?? $contact->position,
             'is_primary' => $validated['is_primary'] ?? $contact->is_primary,
-        ]);
+        ];
+
+        if (isset($validated['name'])) {
+            $updateData['first_name'] = $validated['name'];
+        }
+
+        $contact->update($updateData);
 
         // Log activity
         $contact->client->activities()->create([
@@ -100,7 +105,7 @@ final class ContactController extends Controller
     /**
      * Remove the specified contact.
      */
-    public function destroy(Contact $contact): JsonResponse
+    public function destroy(Client $client, Contact $contact): JsonResponse
     {
         $client = $contact->client;
         $contactName = $contact->name;

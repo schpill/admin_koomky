@@ -21,6 +21,7 @@
         "larastan/larastan": "^3.0",
         "pestphp/pest": "^3.0",
         "pestphp/pest-plugin-laravel": "^3.0",
+        "fakerphp/faker": "^1.23",
         "mockery/mockery": "^1.6"
     },
     "autoload": {

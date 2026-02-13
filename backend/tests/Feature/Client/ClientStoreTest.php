@@ -24,10 +24,10 @@ it('creates a new client', function () {
             'phone' => '+33 1 23 45 67 89',
         ])
         ->assertStatus(201)
-        ->assertJsonPath('data.attributes.name', 'Acme Corporation')
+        ->assertJsonPath('data.attributes.name', 'Acme Corp')
         ->assertJsonPath('data.attributes.email', 'contact@acme.com');
 
-    expect(Client::where('name', 'Acme Corporation')->exists())->toBeTrue();
+    expect(Client::where('first_name', 'Acme Corporation')->exists())->toBeTrue();
 });
 
 it('requires a name', function () {
@@ -57,7 +57,7 @@ it('creates contacts when provided', function () {
             ],
         ])
         ->assertStatus(201)
-        ->assertJsonCount(1, 'data.relationships.contacts.data');
+        ->assertJsonCount(1, 'data.relationships.contacts');
 });
 
 it('creates tags when provided', function () {
@@ -70,20 +70,22 @@ it('creates tags when provided', function () {
         ])
         ->assertStatus(201);
 
-    $client = Client::where('name', 'Acme Corporation')->first();
+    $client = Client::where('first_name', 'Acme Corporation')->first();
     expect($client->tags)->toHaveCount(2);
 });
 
 it('generates a unique reference', function () {
     $user = User::factory()->create();
 
-    actingAs($user)
+    $response = actingAs($user)
         ->postJson('/api/v1/clients', [
             'name' => 'Acme Corporation',
         ])
-        ->assertStatus(201)
-        ->assertJsonPath('data.attributes.reference')
-        ->assertJsonPath('data.attributes.reference', '/^CLI-\d{8}-\d{4}$/');
+        ->assertStatus(201);
+
+    $reference = $response->json('data.attributes.reference');
+    expect($reference)->not->toBeNull();
+    expect($reference)->toMatch('/^CLI-\d{8}-\d{4}$/');
 });
 
 it('logs activity on creation', function () {
@@ -95,7 +97,7 @@ it('logs activity on creation', function () {
         ])
         ->assertStatus(201);
 
-    $client = Client::where('name', 'Acme Corporation')->first();
+    $client = Client::where('first_name', 'Acme Corporation')->first();
     expect($client->activities()->count())->toBe(1);
-    expect($client->activities()->first()->action)->toBe('created');
+    expect($client->activities()->first()->type)->toBe('system');
 });

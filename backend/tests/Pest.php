@@ -14,7 +14,7 @@ use Tests\TestCase;
 |--------------------------------------------------------------------------
 */
 
-uses(TestCase::class)
+uses(TestCase::class, Illuminate\Foundation\Testing\RefreshDatabase::class)
     ->in('Feature', 'Unit')
     ->beforeEach(function () {
         // Setup before each test

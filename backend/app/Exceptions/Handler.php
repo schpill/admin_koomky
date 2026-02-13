@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -46,8 +47,12 @@ class Handler extends ExceptionHandler
             ], $e->status);
         });
 
-        // Handle all other exceptions
+        // Handle all other exceptions (except auth, which is handled in bootstrap/app.php)
         $this->renderable(function (Throwable $e, Request $request) {
+            if ($e instanceof AuthenticationException) {
+                return;
+            }
+
             $status = $e instanceof HttpExceptionInterface ? $e->getStatusCode() : 500;
 
             return response()->json([

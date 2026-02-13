@@ -6,6 +6,7 @@ use App\Models\Client;
 use App\Models\User;
 
 use function Pest\Laravel\actingAs;
+use function Pest\Laravel\getJson;
 
 beforeEach(function () {
     User::unsetEventDispatcher();
@@ -38,8 +39,8 @@ it('paginates clients', function () {
 it('filters clients by status', function () {
     $user = User::factory()->create();
 
-    Client::factory()->for($user)->create(['status' => 'active']);
-    Client::factory()->for($user)->create(['status' => 'archived']);
+    Client::factory()->for($user)->create(['archived_at' => null]);
+    Client::factory()->for($user)->create(['archived_at' => now()]);
 
     actingAs($user)
         ->getJson('/api/v1/clients?status=active')
@@ -51,8 +52,8 @@ it('filters clients by status', function () {
 it('searches clients by name', function () {
     $user = User::factory()->create();
 
-    Client::factory()->for($user)->create(['name' => 'Acme Corporation']);
-    Client::factory()->for($user)->create(['name' => 'Globex Inc']);
+    Client::factory()->for($user)->create(['company_name' => 'Acme Corporation']);
+    Client::factory()->for($user)->create(['company_name' => 'Globex Inc']);
 
     actingAs($user)
         ->getJson('/api/v1/clients?search=acme')
@@ -65,10 +66,56 @@ it('forbids accessing other users clients', function () {
     $user = User::factory()->create();
     $otherUser = User::factory()->create();
 
-    Client::factory()->for($otherUser)->create(['name' => 'Secret Client']);
+    Client::factory()->for($otherUser)->create(['company_name' => 'Secret Client']);
 
     actingAs($user)
         ->getJson('/api/v1/clients')
         ->assertStatus(200)
         ->assertJsonCount(0, 'data');
+});
+
+it('sorts clients by name ascending', function () {
+    $user = User::factory()->create();
+
+    Client::factory()->for($user)->create(['first_name' => 'Charlie']);
+    Client::factory()->for($user)->create(['first_name' => 'Alice']);
+    Client::factory()->for($user)->create(['first_name' => 'Bob']);
+
+    $response = actingAs($user)
+        ->getJson('/api/v1/clients?sort_by=first_name&sort_order=asc')
+        ->assertStatus(200);
+
+    $names = collect($response->json('data'))->pluck('attributes.name')->toArray();
+    expect($names)->toBe(array_values(array_sort($names)));
+});
+
+it('filters clients by tag', function () {
+    $user = User::factory()->create();
+
+    $taggedClient = Client::factory()->for($user)->create();
+    $untaggedClient = Client::factory()->for($user)->create();
+
+    $tag = \App\Models\Tag::factory()->create(['user_id' => $user->id, 'name' => 'VIP']);
+    $taggedClient->tags()->attach($tag);
+
+    actingAs($user)
+        ->getJson('/api/v1/clients?tag=VIP')
+        ->assertStatus(200)
+        ->assertJsonCount(1, 'data');
+});
+
+it('caps per_page at 100', function () {
+    $user = User::factory()->create();
+
+    Client::factory()->for($user)->count(5)->create();
+
+    actingAs($user)
+        ->getJson('/api/v1/clients?per_page=500')
+        ->assertStatus(200)
+        ->assertJsonPath('meta.per_page', 100);
+});
+
+it('requires authentication', function () {
+    getJson('/api/v1/clients')
+        ->assertStatus(401);
 });

@@ -16,12 +16,12 @@ final class ImportClientJob implements ShouldQueue
 {
     use Batchable, Queueable;
 
-    public string $queue = 'imports';
-
     public function __construct(
         public User $user,
         public array $data
-    ) {}
+    ) {
+        $this->onQueue('imports');
+    }
 
     public function handle(ReferenceGeneratorService $referenceGenerator): void
     {

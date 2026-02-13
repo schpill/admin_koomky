@@ -38,7 +38,6 @@ class Contact extends Model
         'last_name',
         'email',
         'phone',
-        'role',
         'is_primary',
         'notes',
         'position',

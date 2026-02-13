@@ -28,6 +28,7 @@ class User extends Authenticatable
         'vat_number',
         'default_payment_terms',
         'invoice_footer',
+        'avatar_path',
     ];
 
     /**

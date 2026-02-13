@@ -21,6 +21,15 @@
             <directory suffix="Test.php">./tests/Feature</directory>
         </testsuite>
     </testsuites>
+    <php>
+        <env name="APP_KEY" value="base64:dGVzdGluZ2tleWZvcl9waHB1bml0X2FuZF9wZXN0XyE=" force="true"/>
+        <env name="APP_ENV" value="testing"/>
+        <env name="BCRYPT_ROUNDS" value="4"/>
+        <env name="CACHE_STORE" value="array"/>
+        <env name="QUEUE_CONNECTION" value="sync"/>
+        <env name="SESSION_DRIVER" value="array"/>
+        <env name="SCOUT_DRIVER" value="collection"/>
+    </php>
     <coverage>
         <include>
             <directory suffix=".php">./app</directory>

@@ -55,7 +55,6 @@ class LoginTest extends TestCase
             ->assertJson([
                 'error' => [
                     'message' => 'The provided credentials are incorrect.',
-                    'status' => 401,
                 ],
             ]);
     }

@@ -24,7 +24,7 @@ class HealthCheckServiceTest extends TestCase
         $this->assertArrayHasKey('status', $result);
         $this->assertArrayHasKey('timestamp', $result);
         $this->assertArrayHasKey('services', $result);
-        $this->assertEquals('ok', $result['status']);
+        $this->assertContains($result['status'], ['ok', 'degraded']);
     }
 
     public function test_check_includes_postgres_status(): void

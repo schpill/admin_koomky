@@ -52,8 +52,8 @@ final class ClientController extends Controller
         }
 
         // Sorting
-        $sortBy = $request->input('sort_by', 'name');
-        $sortOrder = $request->input('sort_order', 'asc');
+        $sortBy = $request->input('sort_by', 'created_at');
+        $sortOrder = $request->input('sort_order', 'desc');
         $query->orderBy($sortBy, $sortOrder);
 
         // Pagination
@@ -74,15 +74,14 @@ final class ClientController extends Controller
             'id' => $this->referenceGenerator->generateUuid(),
             'user_id' => Auth::id(),
             'reference' => $this->referenceGenerator->generateClientReference(Auth::user()),
-            'name' => $validated['name'],
+            'first_name' => $validated['name'],
             'email' => $validated['email'] ?? null,
             'phone' => $validated['phone'] ?? null,
-            'company' => $validated['company'] ?? null,
+            'company_name' => $validated['company'] ?? null,
             'vat_number' => $validated['vat_number'] ?? null,
             'website' => $validated['website'] ?? null,
             'notes' => $validated['notes'] ?? null,
-            'billing_address' => $validated['billing_address'] ?? null,
-            'status' => $validated['status'] ?? 'active',
+            'archived_at' => ($validated['status'] ?? 'active') === 'archived' ? now() : null,
         ]);
 
         // Attach tags if provided
@@ -95,7 +94,7 @@ final class ClientController extends Controller
             foreach ($validated['contacts'] as $contactData) {
                 $client->contacts()->create([
                     'id' => $this->referenceGenerator->generateUuid(),
-                    'name' => $contactData['name'],
+                    'first_name' => $contactData['name'],
                     'email' => $contactData['email'] ?? null,
                     'phone' => $contactData['phone'] ?? null,
                     'position' => $contactData['position'] ?? null,
@@ -122,6 +121,8 @@ final class ClientController extends Controller
      */
     public function show(Client $client): ClientResource
     {
+        $this->authorize('view', $client);
+
         return new ClientResource($client->load(['tags', 'contacts', 'activities']));
     }
 
@@ -130,19 +131,28 @@ final class ClientController extends Controller
      */
     public function update(UpdateClientRequest $request, Client $client): JsonResponse
     {
+        $this->authorize('update', $client);
+
         $validated = $request->validated();
 
-        $client->update([
-            'name' => $validated['name'] ?? $client->name,
+        $updateData = [
             'email' => $validated['email'] ?? $client->email,
             'phone' => $validated['phone'] ?? $client->phone,
-            'company' => $validated['company'] ?? $client->company,
+            'company_name' => $validated['company'] ?? $client->company_name,
             'vat_number' => $validated['vat_number'] ?? $client->vat_number,
             'website' => $validated['website'] ?? $client->website,
             'notes' => $validated['notes'] ?? $client->notes,
-            'billing_address' => $validated['billing_address'] ?? $client->billing_address,
-            'status' => $validated['status'] ?? $client->status,
-        ]);
+        ];
+
+        if (isset($validated['name'])) {
+            $updateData['first_name'] = $validated['name'];
+        }
+
+        if (isset($validated['status'])) {
+            $updateData['archived_at'] = $validated['status'] === 'archived' ? now() : null;
+        }
+
+        $client->update($updateData);
 
         // Sync tags if provided
         if (isset($validated['tags'])) {
@@ -155,7 +165,7 @@ final class ClientController extends Controller
             foreach ($validated['contacts'] as $contactData) {
                 $client->contacts()->create([
                     'id' => $this->referenceGenerator->generateUuid(),
-                    'name' => $contactData['name'],
+                    'first_name' => $contactData['name'],
                     'email' => $contactData['email'] ?? null,
                     'phone' => $contactData['phone'] ?? null,
                     'position' => $contactData['position'] ?? null,
@@ -182,6 +192,8 @@ final class ClientController extends Controller
      */
     public function destroy(Client $client): JsonResponse
     {
+        $this->authorize('delete', $client);
+
         $client->delete();
 
         return response()->json([
@@ -196,6 +208,8 @@ final class ClientController extends Controller
      */
     public function archive(Client $client): JsonResponse
     {
+        $this->authorize('update', $client);
+
         $client->update(['archived_at' => now()]);
 
         $client->activities()->create([
@@ -215,6 +229,8 @@ final class ClientController extends Controller
      */
     public function restore(Client $client): JsonResponse
     {
+        $this->authorize('update', $client);
+
         $client->update(['archived_at' => null]);
 
         $client->activities()->create([

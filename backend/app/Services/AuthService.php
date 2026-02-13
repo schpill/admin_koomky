@@ -235,7 +235,7 @@ class AuthService
             return 0;
         }
 
-        return max(0, Carbon::parse($lockoutUntil)->diffInSeconds(now()));
+        return (int) max(0, now()->diffInSeconds(Carbon::parse($lockoutUntil), false));
     }
 
     /**
