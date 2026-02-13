@@ -25,5 +25,4 @@ uses(TestCase::class, Illuminate\Foundation\Testing\RefreshDatabase::class)
             app()->forgetInstance('encrypter');
             app()->forgetInstance(\Illuminate\Contracts\Encryption\Encrypter::class);
         }
-    })
-;
+    });
