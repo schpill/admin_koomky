@@ -44,11 +44,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 └── CLAUDE.md          # This file
 ```
 
-## Tech Stack (Planned)
+## Tech Stack
 
 ### Backend
 - **Framework**: Laravel 12.x
-- **PHP Version**: 8.3+
+- **PHP Version**: 8.4+
 - **Database**: PostgreSQL 16.x with `uuid-ossp` and `pg_trgm` extensions
 - **Cache/Queue/Session**: Redis 7.x
 - **Search**: Meilisearch 1.x (via Laravel Scout)
@@ -143,8 +143,6 @@ Many entities will have enforced status transitions:
 - **Project**: draft → proposal_sent → in_progress → (on_hold|completed|cancelled)
 - **Quote**: draft → sent → (accepted|rejected|expired)
 
-## Common Development Commands (When Code Exists)
-
 ## Development Commands
 
 ### Docker
@@ -172,15 +170,16 @@ vendor/bin/pest --coverage          # Run with coverage (80%+ required)
 ### Frontend (Nuxt) - Run from `frontend/` directory
 ```bash
 cd frontend
-pnpm install        # Install dependencies
-pnpm run dev        # Start dev server (port 3000)
-pnpm run build      # Production build
-pnpm lint           # ESLint check
-pnpm format         # Prettier fix
-pnpm nuxi typecheck # TypeScript check
-pnpm vitest run     # Unit tests
-pnpm vitest run AppButton.test.ts  # Single test
-pnpm playwright test # E2E tests
+pnpm install           # Install dependencies
+pnpm run dev           # Start dev server (port 3000)
+pnpm run build         # Production build
+pnpm lint              # ESLint check
+pnpm lint:fix          # ESLint auto-fix
+pnpm format            # Prettier fix
+pnpm typecheck         # TypeScript check
+pnpm test              # Unit tests (vitest)
+pnpm test:coverage     # Unit tests with coverage
+pnpm test:e2e          # E2E tests (playwright)
 ```
 
 ## Testing Requirements
@@ -227,8 +226,9 @@ pnpm playwright test # E2E tests
 - Frontend jobs must set `defaults: run: working-directory: ./frontend`
 - pnpm cache requires uppercase `STORE_PATH` output variable
 - Use `--no-color` flag for `pnpm store path` to avoid ANSI codes
-- Laravel Scout requires `^11.0@dev` for Scout 11.x compatibility
-- PHP 8.3+ for Laravel 12.x (composer.json: `^8.3` or `^8.4`)
+- PHP 8.4 required for Laravel 12.x
+- PCOV coverage driver is used (`coverage: pcov` in workflow)
+- Pest coverage command: `vendor/bin/pest --coverage --coverage-clover=coverage/clover.xml --min=80`
 
 **Active Workflows**:
 - `.github/workflows/tests.yml` - Main testing workflow (PRs to main)
@@ -265,3 +265,13 @@ pnpm playwright test # E2E tests
 - `HealthCheckService` - System health status
 - `ExportService` - CSV/Excel export
 - `ImportService` - CSV import with validation
+
+## Known Issues / Current Work
+
+**Frontend Linting Issues** (need fixing):
+- TypeScript errors in `layouts/auth.vue` and `layouts/default.vue` (line 19, 94: ',' expected)
+- Unused variables in components (`props`, `computed`, `config`)
+- `@typescript-eslint/no-explicit-any` violations in several files
+- Unused imports (`ofetch`, `Ref`) in composables
+
+Run `pnpm lint:fix` to auto-fix what's possible, then manually address remaining issues.
