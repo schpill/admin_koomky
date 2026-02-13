@@ -58,6 +58,7 @@ jobs:
         working-directory: ./backend
         run: |
           cp .env.example .env
+          sed -i 's/^APP_ENV=.*/APP_ENV=testing/' .env
           sed -i 's/^DB_CONNECTION=.*/DB_CONNECTION=pgsql/' .env
           sed -i 's/^DB_DATABASE=.*/DB_DATABASE=koomky_test/' .env
           sed -i 's/^DB_HOST=.*/DB_HOST=postgres/' .env
@@ -65,6 +66,7 @@ jobs:
           sed -i 's/^DB_PASSWORD=.*/DB_PASSWORD=secret/' .env
           sed -i 's/^REDIS_HOST=.*/REDIS_HOST=redis/' .env
           sed -i 's/^MEILISEARCH_HOST=.*/MEILISEARCH_HOST=127.0.0.1/' .env
+          php artisan config:clear
           php artisan key:generate --ansi
 
       - name: Run migrations
@@ -224,6 +226,7 @@ jobs:
         working-directory: ./backend
         run: |
           cp .env.example .env
+          sed -i 's/^APP_ENV=.*/APP_ENV=testing/' .env
           sed -i 's/^DB_CONNECTION=.*/DB_CONNECTION=pgsql/' .env
           sed -i 's/^DB_DATABASE=.*/DB_DATABASE=koomky_test/' .env
           sed -i 's/^DB_HOST=.*/DB_HOST=postgres/' .env
@@ -231,6 +234,7 @@ jobs:
           sed -i 's/^DB_PASSWORD=.*/DB_PASSWORD=secret/' .env
           sed -i 's/^REDIS_HOST=.*/REDIS_HOST=redis/' .env
           sed -i 's/^MEILISEARCH_HOST=.*/MEILISEARCH_HOST=127.0.0.1/' .env
+          php artisan config:clear
           php artisan key:generate --ansi
 
       - name: Run backend migrations

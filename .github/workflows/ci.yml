@@ -170,7 +170,9 @@ jobs:
       - name: Prepare environment
         run: |
           cp .env.example .env
-          sed -i 's|MEILISEARCH_HOST=.*|MEILISEARCH_HOST=http://127.0.0.1:7700|' .env
+          sed -i 's|^APP_ENV=.*|APP_ENV=testing|' .env
+          sed -i 's|^MEILISEARCH_HOST=.*|MEILISEARCH_HOST=http://127.0.0.1:7700|' .env
+          php artisan config:clear
           php artisan key:generate --ansi
 
       - name: Run migrations
