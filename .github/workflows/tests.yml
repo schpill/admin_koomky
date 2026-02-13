@@ -91,6 +91,8 @@ jobs:
         run: vendor/bin/phpstan analyse --memory-limit=2G
 
       - name: Run Pest
+        env:
+          XDEBUG_MODE: coverage
         working-directory: ./backend
         run: vendor/bin/pest --coverage --coverage-clover=coverage/clover.xml --min=80
 
