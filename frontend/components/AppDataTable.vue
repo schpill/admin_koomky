@@ -93,7 +93,7 @@
           v-if="loading"
           class="absolute inset-0 bg-white/50 dark:bg-gray-900/50 flex items-center justify-center"
         >
-          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"/>
         </div>
       </div>
     </div>

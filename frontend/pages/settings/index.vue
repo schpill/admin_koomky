@@ -31,7 +31,7 @@
       <!-- Profile Tab -->
       <div v-if="activeTab === 'profile'">
         <AppCard title="Profile Information">
-          <form @submit.prevent="updateProfile" class="space-y-6">
+          <form class="space-y-6" @submit.prevent="updateProfile">
             <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
               <AppInput
                 v-model="profile.name"
@@ -67,7 +67,7 @@
       <!-- Business Tab -->
       <div v-if="activeTab === 'business'">
         <AppCard title="Business Information">
-          <form @submit.prevent="updateBusiness" class="space-y-6">
+          <form class="space-y-6" @submit.prevent="updateBusiness">
             <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
               <AppInput
                 v-model="business.company_name"
@@ -107,7 +107,7 @@
       <!-- Security Tab -->
       <div v-if="activeTab === 'security'">
         <AppCard title="Change Password">
-          <form @submit.prevent="changePassword" class="space-y-6">
+          <form class="space-y-6" @submit.prevent="changePassword">
             <AppInput
               v-model="password.current_password"
               label="Current Password"

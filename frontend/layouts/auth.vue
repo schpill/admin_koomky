@@ -16,7 +16,7 @@
             'bg-red-50 border-red-200 text-red-800 dark:bg-red-900 dark:border-red-800': toast.type === 'error',
             'bg-yellow-50 border-yellow-200 text-yellow-800 dark:bg-yellow-900 dark:border-yellow-800': toast.type === 'warning',
             'bg-blue-50 border-blue-200 text-blue-800 dark:bg-blue-900 dark:border-blue-800': toast.type === 'info',
-          }[toast.type]"
+          }"
       >
         <div class="flex">
           <div class="flex-shrink-0">
@@ -30,8 +30,8 @@
           <p class="ml-3 text-sm font-medium">{{ toast.message }}</p>
         </div>
         <button
-          @click="removeToast(toast.id)"
           class="ml-4 flex-shrink-0 inline-flex text-slate-400 hover:text-slate-500"
+          @click="removeToast(toast.id)"
         >
           <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
             <path fill-rule="evenodd" d="M4.293 4.707a4 4 0 00-4 4 4.707 2.293 2 2a2 2 0 00-2 4.586 2.293-2 2.415-2.415-2.415 2.415c0 2 0-1.065 1.065l-2.293 2.293-2.586 2.293-2.586c-1.065-1.065 2-2.15-2.15 1.122 0 1.122 0 1.22 1.22 1.065 1.065s-.811.846-1.415-1.415-2.463 2.96-1.122 0-1.065-1.065-1.415-1.415-2.15-2.15 1.122-0 1.22c0 2 0-2.15-2.15-.811.846-1.415-1.415-2.463-2.96-.811.846-1.415-1.415z" clip-rule="evenodd" />
@@ -45,5 +45,5 @@
 <script setup lang="ts">
 import { useToast } from '~/composables/useToast'
 
-const { toasts, remove } = useToast()
+const { toasts, remove: removeToast } = useToast()
 </script>

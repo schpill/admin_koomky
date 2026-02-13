@@ -12,7 +12,7 @@
 
     <!-- Form -->
     <AppCard>
-      <form @submit.prevent="submitForm" class="space-y-6">
+      <form class="space-y-6" @submit.prevent="submitForm">
         <!-- Client Information -->
         <div>
           <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">
@@ -145,8 +145,8 @@
                 <button
                   v-if="form.contacts.length > 1"
                   type="button"
-                  @click="removeContact(index)"
                   class="text-red-600 hover:text-red-700 text-sm"
+                  @click="removeContact(index)"
                 >
                   Remove
                 </button>
@@ -184,7 +184,7 @@
                     v-model="contact.is_primary"
                     type="checkbox"
                     class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                  />
+                  >
                   <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">
                     Primary contact
                   </span>

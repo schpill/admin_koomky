@@ -11,14 +11,14 @@
       :placeholder="placeholder"
       :disabled="disabled"
       :required="required"
-      @input="onInput"
-      @change="onChange"
       :class="[
         'block w-full rounded-lg border-slate-300 bg-slate-50 px-3 py-2 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm',
         error && 'border-red-300 focus:border-red-500 focus:ring-red-500',
         customClass
       ]"
-    />
+      @input="onInput"
+      @change="onChange"
+    >
     <p v-if="error" class="mt-1 text-sm text-red-600">
       {{ error }}
     </p>

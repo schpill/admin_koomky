@@ -2,7 +2,7 @@
   <div class="space-y-6">
     <!-- Loading State -->
     <div v-if="isLoading" class="flex justify-center py-12">
-      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"/>
     </div>
 
     <!-- Client Details -->
@@ -33,8 +33,8 @@
               Edit
             </NuxtLink>
             <button
-              @click="confirmArchive"
               class="inline-flex items-center px-4 py-2 border border-transparent rounded-lg text-sm font-medium text-white bg-yellow-600 hover:bg-yellow-700"
+              @click="confirmArchive"
             >
               {{ client.attributes.status === 'active' ? 'Archive' : 'Restore' }}
             </button>

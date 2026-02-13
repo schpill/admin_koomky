@@ -116,8 +116,8 @@
             View
           </NuxtLink>
           <button
-            @click="confirmDelete(record)"
             class="text-red-600 hover:text-red-700"
+            @click="confirmDelete(record)"
           >
             Delete
           </button>

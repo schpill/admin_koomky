@@ -36,7 +36,7 @@
               required
               class="mt-1 block w-full rounded-lg border-slate-300 bg-slate-50 px-3 py-2 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-100 shadow-sm focus:ring-blue-500 focus:border-blue-500"
               placeholder="you@example.com"
-            />
+            >
             <p v-if="errors.email" class="mt-1 text-sm text-red-600">
               {{ errors.email }}
             </p>
@@ -55,7 +55,7 @@
               required
               class="mt-1 block w-full rounded-lg border-slate-300 bg-slate-50 px-3 py-2 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-100 shadow-sm focus:ring-blue-500 focus:border-blue-500"
               placeholder="••••••••"
-            />
+            >
             <p v-if="errors.password" class="mt-1 text-sm text-red-600">
               {{ errors.password }}
             </p>
@@ -70,8 +70,8 @@
             class="flex w-full justify-center rounded-lg bg-blue-600 px-3 py-3 text-sm font-semibold text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <svg v-if="isLoading" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 00-8 8v8a8 8 0 0014.4 8 8 004 4 4 4 4 1.707 1.293 2 2a2 2 0 008-2 8v8a2 2 0 012-2v12a2 2 0 00-2 2 2a2 2 0 014-2 2a2 2 0 00-2 2 2a2 2 0 014-2v12a2 2 0 012-2v12a2 2 0 014-2v12a2 2 0 024-2v6z"></path>
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 00-8 8v8a8 8 0 0014.4 8 8 004 4 4 4 4 1.707 1.293 2 2a2 2 0 008-2 8v8a2 2 0 012-2v12a2 2 0 00-2 2 2a2 2 0 014-2 2a2 2 0 00-2 2 2a2 2 0 014-2v12a2 2 0 012-2v12a2 2 0 014-2v12a2 2 0 024-2v6z"/>
             </svg>
             <span v-else>Sign in</span>
           </button>
@@ -116,7 +116,8 @@ const handleLogin = async () => {
       email: form.email,
       password: form.password,
     })
-  } catch (error: any) {
+  } catch (err) {
+    const error = err as { response?: { _data?: { error?: { message?: string; errors?: Record<string, string[]> } } } }
     const errorData = error.response?._data as { error?: { message?: string; errors?: Record<string, string[]> } }
 
     if (errorData?.error?.errors) {

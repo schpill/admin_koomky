@@ -123,7 +123,7 @@ export function useApi() {
             Authorization: `Bearer ${newToken}`,
           }
 
-          const retryRequest = request || response.url || (response as any).request?.url
+          const retryRequest = request || response.url || (response as unknown as { request?: { url: string } }).request?.url
 
           if (!retryRequest) {
             throw new Error('Cannot retry request: URL not found')
@@ -134,7 +134,7 @@ export function useApi() {
             ...options,
             headers: options.headers,
           })
-        } catch (e) {
+        } catch (_e) {
           clearTokens()
           window.location.href = '/auth/login'
         }

@@ -67,7 +67,7 @@
               <div class="max-h-[60vh] overflow-y-auto">
                 <!-- Loading state -->
                 <div v-if="loading" class="flex items-center justify-center py-12">
-                  <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                  <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"/>
                 </div>
 
                 <!-- No results -->
@@ -147,7 +147,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, nextTick, onMounted, onUnmounted, Component } from 'vue'
+import type { Component } from 'vue';
+import { ref, computed, watch, nextTick, onMounted, onUnmounted } from 'vue'
 
 interface CommandItem {
   id: string
