@@ -92,7 +92,7 @@ jobs:
 
       - name: Run Pest
         working-directory: ./backend
-        run: php -d memory_limit=512M vendor/bin/pest --coverage --min=80
+        run: XDEBUG_MODE=coverage php -d memory_limit=512M vendor/bin/pest --coverage --min=80
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
