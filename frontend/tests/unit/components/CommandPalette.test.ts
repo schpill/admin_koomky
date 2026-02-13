@@ -49,7 +49,7 @@ describe('CommandPalette', () => {
     const clientsButton = wrapper.findAll('button').find(btn => btn.text().includes('View Clients'))
     await clientsButton?.trigger('click')
 
-    expect((globalThis as any).navigateTo).toHaveBeenCalledWith('/clients')
+    expect((globalThis as unknown as Record<string, unknown>).navigateTo).toHaveBeenCalledWith('/clients')
     expect(wrapper.emitted('update:isOpen')?.[0]).toEqual([false])
   })
 

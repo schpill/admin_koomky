@@ -120,7 +120,7 @@ interface Column {
 
 interface Props {
   columns: Column[]
-  data: Record<string, any>[]
+  data: Record<string, unknown>[]
   itemKey?: string
   loading?: boolean
   emptyTitle?: string
@@ -154,12 +154,12 @@ const emit = defineEmits<{
 const sortColumn = defineModel<string>('sortColumn')
 const sortOrder = defineModel<'asc' | 'desc'>('sortOrder', { default: 'asc' })
 
-const getItemKey = (item: Record<string, any>, index: number) => {
+const getItemKey = (item: Record<string, unknown>, index: number) => {
   return item[props.itemKey] || index
 }
 
-const getItemValue = (item: Record<string, any>, key: string) => {
-  return key.split('.').reduce((obj, k) => obj?.[k], item)
+const getItemValue = (item: Record<string, unknown>, key: string) => {
+  return key.split('.').reduce((obj: unknown, k) => (obj as Record<string, unknown>)?.[k], item as unknown)
 }
 
 const handleSort = (column: string) => {

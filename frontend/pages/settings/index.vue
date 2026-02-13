@@ -242,7 +242,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, onMounted } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 
 definePageMeta({
   middleware: ['auth'],
@@ -307,10 +307,12 @@ const updateProfile = async () => {
     })
 
     toast.success('Profile updated successfully!')
+    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
     Object.keys(errors).forEach(key => delete errors[key])
-  } catch (error: any) {
-    if (error.response?._data?.errors) {
-      Object.assign(errors, error.response._data.errors)
+  } catch (err: unknown) {
+    const errorData = err as { response?: { _data?: { errors?: Record<string, string> } } }
+    if (errorData.response?._data?.errors) {
+      Object.assign(errors, errorData.response._data.errors)
     }
   } finally {
     isSaving.value = false
@@ -327,10 +329,12 @@ const updateBusiness = async () => {
     })
 
     toast.success('Business information updated!')
+    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
     Object.keys(errors).forEach(key => delete errors[key])
-  } catch (error: any) {
-    if (error.response?._data?.errors) {
-      Object.assign(errors, error.response._data.errors)
+  } catch (err: unknown) {
+    const errorData = err as { response?: { _data?: { errors?: Record<string, string> } } }
+    if (errorData.response?._data?.errors) {
+      Object.assign(errors, errorData.response._data.errors)
     }
   } finally {
     isSaving.value = false
@@ -350,10 +354,12 @@ const changePassword = async () => {
     password.current_password = ''
     password.password = ''
     password.password_confirmation = ''
+    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
     Object.keys(errors).forEach(key => delete errors[key])
-  } catch (error: any) {
-    if (error.response?._data?.errors) {
-      Object.assign(errors, error.response._data.errors)
+  } catch (err: unknown) {
+    const errorData = err as { response?: { _data?: { errors?: Record<string, string> } } }
+    if (errorData.response?._data?.errors) {
+      Object.assign(errors, errorData.response._data.errors)
     }
   } finally {
     isSaving.value = false
@@ -371,7 +377,7 @@ const disable2FA = async () => {
     await $fetch('/v1/auth/2fa', { method: 'DELETE' })
     toast.success('Two-factor authentication disabled')
     user.value.two_factor_enabled = false
-  } catch (error) {
+  } catch {
     toast.error('Failed to disable two-factor authentication')
   }
 }
@@ -381,7 +387,7 @@ const generateRecoveryCodes = async () => {
     const response = await $fetch('/v1/auth/2fa/recovery-codes', { method: 'POST' })
     recoveryCodes.value = response.data.attributes.codes
     toast.success('New recovery codes generated')
-  } catch (error) {
+  } catch {
     toast.error('Failed to generate recovery codes')
   }
 }

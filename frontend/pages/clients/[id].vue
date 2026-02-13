@@ -272,8 +272,8 @@ interface Client {
     updated_at: string
   }
   relationships?: {
-    contacts?: { data: any[] }
-    activities?: { data: any[] }
+    contacts?: { data: unknown[] }
+    activities?: { data: unknown[] }
   }
 }
 

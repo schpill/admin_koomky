@@ -147,7 +147,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Component } from 'vue';
+import type { Component, ComponentPublicInstance } from 'vue'
 import { ref, computed, watch, nextTick, onMounted, onUnmounted } from 'vue'
 
 interface CommandItem {
@@ -301,7 +301,7 @@ const scrollToItem = (item: CommandItem) => {
   element?.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
 }
 
-const setItemRef = (el: any, groupIndex: number, itemIndex: number) => {
+const setItemRef = (el: Element | ComponentPublicInstance | null, groupIndex: number, itemIndex: number) => {
   if (el) {
     const group = groupedResults.value[groupIndex]
     if (group && group.items[itemIndex]) {
@@ -310,9 +310,9 @@ const setItemRef = (el: any, groupIndex: number, itemIndex: number) => {
   }
 }
 
-const getIcon = (name?: string): Component => {
+const getIcon = (_name?: string): Component => {
   // Return icon components - simplified for now
-  return 'div' as any
+  return 'div' as unknown as Component
 }
 
 const toggleDarkMode = () => {

@@ -1,5 +1,4 @@
-import { defineConfig, devices, type PlaywrightTestConfig } from '@playwright/test'
-import { nuxt } from './nuxt.config'
+import { defineConfig, devices } from '@playwright/test'
 
 export default defineConfig({
   testDir: './tests/e2e',

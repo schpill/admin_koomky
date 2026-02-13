@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { setActivePinia, createPinia } from 'pinia'
-import { createTestingPinia } from '@pinia/testing'
 import { useAuth } from '~/composables/useAuth'
 import { useApi } from '~/composables/useApi'
 

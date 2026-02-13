@@ -65,9 +65,9 @@ export const useAuth = () => {
 
       toast.success('Welcome back!')
       router.push('/')
-    } catch (error: any) {
+    } catch (err: unknown) {
       authStore.isLoading = false
-      const errorData = error.response?._data as { error?: { message: string } }
+      const errorData = (err as { response?: { _data?: { error?: { message: string } } } }).response?._data as { error?: { message: string } } | undefined
 
       if (errorData?.error?.message) {
         toast.error(errorData.error.message)
@@ -100,9 +100,9 @@ export const useAuth = () => {
 
       toast.success('Account created successfully!')
       router.push('/')
-    } catch (error: any) {
+    } catch (err: unknown) {
       authStore.isLoading = false
-      const errorData = error.response?._data as { error?: { message?: string; errors?: Record<string, string[]> } }
+      const errorData = (err as { response?: { _data?: { error?: { message?: string; errors?: Record<string, string[]> } } } }).response?._data as { error?: { message?: string; errors?: Record<string, string[]> } } | undefined
 
       if (errorData?.error?.errors) {
         const firstError = Object.values(errorData.error.errors)[0]
@@ -130,7 +130,7 @@ export const useAuth = () => {
 
       toast.success('Logged out successfully')
       router.push('/auth/login')
-    } catch (error) {
+    } catch {
       toast.error('Failed to logout')
     }
   }

@@ -249,7 +249,7 @@ const form = reactive({
       position: '',
       is_primary: true,
     },
-  ] as any[],
+  ] as Array<{ name: string; email: string; phone: string; position: string; is_primary: boolean }>,
 })
 
 const errors = reactive<Record<string, string>>({})
@@ -284,6 +284,7 @@ const removeContact = (index: number) => {
 }
 
 const validateForm = (): boolean => {
+  // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
   Object.keys(errors).forEach(key => delete errors[key])
 
   let isValid = true
@@ -316,9 +317,10 @@ const submitForm = async () => {
     toast.success('Client created successfully!')
 
     router.push('/clients')
-  } catch (error: any) {
-    if (error.response?._data?.errors) {
-      Object.assign(errors, error.response._data.errors)
+  } catch (err: unknown) {
+    const errorData = err as { response?: { _data?: { errors?: Record<string, string> } } }
+    if (errorData.response?._data?.errors) {
+      Object.assign(errors, errorData.response._data.errors)
     }
   } finally {
     isSubmitting.value = false

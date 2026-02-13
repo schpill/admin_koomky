@@ -163,7 +163,7 @@ definePageMeta({
 const { $fetch } = useApi()
 
 // State
-const clients = ref<any[]>([])
+const clients = ref<Record<string, unknown>[]>([])
 const isLoading = ref(false)
 const searchQuery = ref('')
 const statusFilter = ref('all')
@@ -173,7 +173,7 @@ const perPage = ref(15)
 const totalPages = ref(1)
 const totalItems = ref(0)
 const showDeleteModal = ref(false)
-const clientToDelete = ref<any>(null)
+const clientToDelete = ref<Record<string, unknown> | null>(null)
 
 // Table configuration
 const tableColumns = [
@@ -201,7 +201,7 @@ const fetchClients = async () => {
   isLoading.value = true
 
   try {
-    const params: Record<string, any> = {
+    const params: Record<string, string | number> = {
       page: currentPage.value,
       per_page: perPage.value,
     }
@@ -235,11 +235,11 @@ const handlePageChange = (page: number) => {
   fetchClients()
 }
 
-const handleSort = (column: string, order: 'asc' | 'desc') => {
+const handleSort = (_column: string, _order: 'asc' | 'desc') => {
   // Implement sorting
 }
 
-const confirmDelete = (client: any) => {
+const confirmDelete = (client: Record<string, unknown>) => {
   clientToDelete.value = client
   showDeleteModal.value = true
 }

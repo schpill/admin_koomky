@@ -1,5 +1,4 @@
 import { vi } from 'vitest'
-import { configDefaults } from 'vitest/config'
 import { ofetch } from 'ofetch'
 
 // Mock window.matchMedia
@@ -19,22 +18,20 @@ Object.defineProperty(window, 'matchMedia', {
 
 // Mock IntersectionObserver
 global.IntersectionObserver = class IntersectionObserver {
-  constructor() {}
   disconnect() {}
   observe() {}
   takeRecords() {
     return []
   }
   unobserve() {}
-} as any
+} as unknown as typeof globalThis.IntersectionObserver
 
 // Mock ResizeObserver
 global.ResizeObserver = class ResizeObserver {
-  constructor() {}
   disconnect() {}
   observe() {}
   unobserve() {}
-} as any
+} as unknown as typeof globalThis.ResizeObserver
 
 // Mock localStorage
 const localStorageMock = (() => {
@@ -45,13 +42,14 @@ const localStorageMock = (() => {
       store[key] = value.toString()
     },
     removeItem: (key: string) => {
+      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
       delete store[key]
     },
     clear: () => {
       store = {}
     },
     length: 0,
-    key: (index: number) => null,
+    key: (_index: number) => null,
   }
 })()
 

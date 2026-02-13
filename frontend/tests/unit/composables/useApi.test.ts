@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { setActivePinia, createPinia } from 'pinia'
 import { useApi } from '~/composables/useApi'
 
@@ -72,7 +72,7 @@ describe('useApi', () => {
     
     try {
       await fetch('/test')
-    } catch (e) {
+    } catch {
       // Expected to throw due to 401 propagation
     }
 
