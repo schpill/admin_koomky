@@ -177,11 +177,11 @@ jobs:
         run: php artisan migrate --force
 
       - name: Run Pest tests with coverage
-        run: vendor/bin/pest --coverage --min=80
+        run: vendor/bin/pest --coverage --coverage-clover=coverage/clover.xml --min=80
 
       - name: List coverage files
         working-directory: ./backend
-        run: ls -la coverage.xml || echo "Coverage file not found"
+        run: ls -la coverage/clover.xml || echo "Coverage file not found"
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
