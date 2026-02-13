@@ -54,6 +54,15 @@ jobs:
           mkdir -p storage/framework/{sessions,views,cache}
           chmod -R 775 bootstrap/cache storage
 
+      - name: Wait for PostgreSQL
+        run: |
+          until pg_isready -h localhost -p 5432 -U koomky; do
+            echo "Waiting for PostgreSQL..."
+            sleep 2
+          done
+        env:
+          PGPASSWORD: secret
+
       - name: Prepare environment
         working-directory: ./backend
         run: |
@@ -61,10 +70,10 @@ jobs:
           sed -i 's/^APP_ENV=.*/APP_ENV=testing/' .env
           sed -i 's/^DB_CONNECTION=.*/DB_CONNECTION=pgsql/' .env
           sed -i 's/^DB_DATABASE=.*/DB_DATABASE=koomky_test/' .env
-          sed -i 's/^DB_HOST=.*/DB_HOST=postgres/' .env
+          sed -i 's/^DB_HOST=.*/DB_HOST=127.0.0.1/' .env
           sed -i 's/^DB_USERNAME=.*/DB_USERNAME=koomky/' .env
           sed -i 's/^DB_PASSWORD=.*/DB_PASSWORD=secret/' .env
-          sed -i 's/^REDIS_HOST=.*/REDIS_HOST=redis/' .env
+          sed -i 's/^REDIS_HOST=.*/REDIS_HOST=127.0.0.1/' .env
           sed -i 's/^MEILISEARCH_HOST=.*/MEILISEARCH_HOST=127.0.0.1/' .env
           php artisan config:clear
           php artisan key:generate --ansi
@@ -201,6 +210,15 @@ jobs:
           mkdir -p storage/framework/{sessions,views,cache}
           chmod -R 775 bootstrap/cache storage
 
+      - name: Wait for PostgreSQL
+        run: |
+          until pg_isready -h localhost -p 5432 -U koomky; do
+            echo "Waiting for PostgreSQL..."
+            sleep 2
+          done
+        env:
+          PGPASSWORD: secret
+
       - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
@@ -229,10 +247,10 @@ jobs:
           sed -i 's/^APP_ENV=.*/APP_ENV=testing/' .env
           sed -i 's/^DB_CONNECTION=.*/DB_CONNECTION=pgsql/' .env
           sed -i 's/^DB_DATABASE=.*/DB_DATABASE=koomky_test/' .env
-          sed -i 's/^DB_HOST=.*/DB_HOST=postgres/' .env
+          sed -i 's/^DB_HOST=.*/DB_HOST=127.0.0.1/' .env
           sed -i 's/^DB_USERNAME=.*/DB_USERNAME=koomky/' .env
           sed -i 's/^DB_PASSWORD=.*/DB_PASSWORD=secret/' .env
-          sed -i 's/^REDIS_HOST=.*/REDIS_HOST=redis/' .env
+          sed -i 's/^REDIS_HOST=.*/REDIS_HOST=127.0.0.1/' .env
           sed -i 's/^MEILISEARCH_HOST=.*/MEILISEARCH_HOST=127.0.0.1/' .env
           php artisan config:clear
           php artisan key:generate --ansi
