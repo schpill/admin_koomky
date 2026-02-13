@@ -5,7 +5,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Project Overview
 
 **Koomky** is a Freelance CRM system designed for independent developers to manage clients, projects, invoices, quotes, and marketing campaigns.
-
 **Current Status**: Phase 1 Foundation Complete - Authentication, Client Management, Dashboard, and Infrastructure implemented (142 files, 11,485+ LOC).
 
 ## Repository Structure
