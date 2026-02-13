@@ -19,7 +19,7 @@ class UserFactory extends Factory
             'business_address' => fake()->address(),
             'siret' => fake()->numerify('##############'),
             'ape_code' => fake()->numerify('####'),
-            'vat_number' => 'FR' . fake()->numerify('###########'),
+            'vat_number' => 'FR'.fake()->numerify('###########'),
             'default_payment_terms' => 30,
         ];
     }

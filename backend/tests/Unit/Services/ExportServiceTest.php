@@ -5,10 +5,9 @@ declare(strict_types=1);
 use App\Models\Client;
 use App\Models\User;
 use App\Services\ExportService;
-use Illuminate\Support\Facades\Storage;
 
 beforeEach(function () {
-    $this->service = new ExportService();
+    $this->service = new ExportService;
 
     // Ensure temp directory exists
     $tempDir = storage_path('app/temp');

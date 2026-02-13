@@ -7,7 +7,7 @@ use App\Services\ImportService;
 use App\Services\ReferenceGeneratorService;
 
 beforeEach(function () {
-    $this->service = new ImportService(new ReferenceGeneratorService());
+    $this->service = new ImportService(new ReferenceGeneratorService);
 });
 
 it('generates a CSV template with correct headers', function () {

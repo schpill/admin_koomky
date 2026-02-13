@@ -24,7 +24,7 @@ it('belongs to many clients', function () {
 });
 
 it('has correct fillable attributes', function () {
-    $tag = new Tag();
+    $tag = new Tag;
 
     expect($tag->getFillable())->toEqual(['user_id', 'name', 'color']);
 });

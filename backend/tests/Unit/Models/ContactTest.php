@@ -44,7 +44,7 @@ it('uses UUID as primary key', function () {
 });
 
 it('has correct fillable attributes', function () {
-    $contact = new Contact();
+    $contact = new Contact;
 
     expect($contact->getFillable())->toContain('first_name');
     expect($contact->getFillable())->toContain('last_name');

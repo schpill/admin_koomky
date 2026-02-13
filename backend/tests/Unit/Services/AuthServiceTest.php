@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Redis;
 
 beforeEach(function () {
     Redis::flushall();
-    $this->jwtService = new JWTService();
+    $this->jwtService = new JWTService;
     $this->authService = new AuthService($this->jwtService);
 });
 

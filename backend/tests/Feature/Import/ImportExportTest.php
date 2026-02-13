@@ -72,7 +72,7 @@ it('exports specific clients by IDs', function () {
     }
 
     actingAs($this->user)
-        ->getJson('/api/v1/import/export?' . http_build_query(['ids' => $ids]))
+        ->getJson('/api/v1/import/export?'.http_build_query(['ids' => $ids]))
         ->assertStatus(200);
 });
 

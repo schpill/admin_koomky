@@ -7,7 +7,7 @@ use App\Models\User;
 use App\Policies\ClientPolicy;
 
 beforeEach(function () {
-    $this->policy = new ClientPolicy();
+    $this->policy = new ClientPolicy;
 });
 
 it('allows owner to view their client', function () {

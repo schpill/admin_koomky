@@ -136,7 +136,7 @@ it('verifies 2FA setup with valid code', function () {
     $secret = $response->json('data.attributes.secret');
 
     // Generate valid TOTP code
-    $google2FA = new \PragmaRX\Google2FA\Google2FA();
+    $google2FA = new \PragmaRX\Google2FA\Google2FA;
     $validCode = $google2FA->getCurrentOtp($secret);
 
     actingAs($this->user)

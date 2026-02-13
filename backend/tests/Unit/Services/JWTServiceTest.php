@@ -6,7 +6,7 @@ use App\Models\User;
 use App\Services\JWTService;
 
 beforeEach(function () {
-    $this->jwtService = new JWTService();
+    $this->jwtService = new JWTService;
 });
 
 it('generates access and refresh tokens for a user', function () {

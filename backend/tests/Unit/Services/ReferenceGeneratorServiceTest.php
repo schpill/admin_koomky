@@ -7,7 +7,7 @@ use App\Models\User;
 use App\Services\ReferenceGeneratorService;
 
 beforeEach(function () {
-    $this->service = new ReferenceGeneratorService();
+    $this->service = new ReferenceGeneratorService;
 });
 
 it('generates a valid UUID', function () {

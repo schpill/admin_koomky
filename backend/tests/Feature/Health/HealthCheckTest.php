@@ -7,10 +7,10 @@ it('returns health status via HTTP endpoint', function () {
 
     expect($response->status())->toBeIn([200, 503]);
     $response->assertJsonStructure([
-            'status',
-            'timestamp',
-            'services',
-        ]);
+        'status',
+        'timestamp',
+        'services',
+    ]);
 });
 
 it('returns a valid status value', function () {

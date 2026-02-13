@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Cache;
 use PragmaRX\Google2FA\Google2FA;
 
 beforeEach(function () {
-    $this->google2FA = new Google2FA();
+    $this->google2FA = new Google2FA;
     $this->service = new TwoFactorAuthService($this->google2FA);
 });
 

@@ -14,7 +14,7 @@ class ClientFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
-            'reference' => 'CLI-' . now()->format('Ymd') . '-' . fake()->unique()->numerify('####'),
+            'reference' => 'CLI-'.now()->format('Ymd').'-'.fake()->unique()->numerify('####'),
             'company_name' => fake()->company(),
             'first_name' => fake()->firstName(),
             'last_name' => fake()->lastName(),
@@ -24,7 +24,7 @@ class ClientFactory extends Factory
             'city' => fake()->city(),
             'postal_code' => fake()->postcode(),
             'country' => fake()->country(),
-            'vat_number' => 'FR' . fake()->numerify('###########'),
+            'vat_number' => 'FR'.fake()->numerify('###########'),
             'website' => fake()->url(),
             'notes' => fake()->sentence(),
             'archived_at' => null,
