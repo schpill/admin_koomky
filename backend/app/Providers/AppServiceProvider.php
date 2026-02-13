@@ -13,9 +13,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        Blade::directive('currency', function ($expression) {
-            return "<?php echo number_format($expression, 2, ',', ' ') . ' €'; ?>";
-        });
+        //
     }
 
     /**
@@ -24,5 +22,9 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Sanctum::usePersonalAccessTokenModel(\App\Models\PersonalAccessToken::class);
+
+        Blade::directive('currency', function ($expression) {
+            return "<?php echo number_format($expression, 2, ',', ' ') . ' €'; ?>";
+        });
     }
 }

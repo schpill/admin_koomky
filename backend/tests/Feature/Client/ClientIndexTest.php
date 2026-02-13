@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 use App\Models\Client;
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\getJson;
+
+uses(RefreshDatabase::class);
 
 beforeEach(function () {
     User::unsetEventDispatcher();
@@ -77,16 +80,17 @@ it('forbids accessing other users clients', function () {
 it('sorts clients by name ascending', function () {
     $user = User::factory()->create();
 
-    Client::factory()->for($user)->create(['first_name' => 'Charlie']);
-    Client::factory()->for($user)->create(['first_name' => 'Alice']);
-    Client::factory()->for($user)->create(['first_name' => 'Bob']);
+    Client::factory()->for($user)->create(['first_name' => 'Charlie', 'company_name' => null]);
+    Client::factory()->for($user)->create(['first_name' => 'Alice', 'company_name' => null]);
+    Client::factory()->for($user)->create(['first_name' => 'Bob', 'company_name' => null]);
 
     $response = actingAs($user)
         ->getJson('/api/v1/clients?sort_by=first_name&sort_order=asc')
         ->assertStatus(200);
 
     $names = collect($response->json('data'))->pluck('attributes.name')->toArray();
-    expect($names)->toBe(array_values(array_sort($names)));
+    $sortedNames = collect($names)->sort()->values()->toArray();
+    expect($names)->toBe($sortedNames);
 });
 
 it('filters clients by tag', function () {

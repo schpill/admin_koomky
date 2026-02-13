@@ -3,10 +3,13 @@
 namespace Tests\Feature\Auth;
 
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class RegisterTest extends TestCase
 {
+    use RefreshDatabase;
+
     public function test_user_can_register_with_valid_data(): void
     {
         $response = $this->postJson('/api/v1/auth/register', [

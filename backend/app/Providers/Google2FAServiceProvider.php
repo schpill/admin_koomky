@@ -15,7 +15,7 @@ final class Google2FAServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(Google2FA::class, function ($app) {
-            return $app->make(Google2FA::class);
+            return new Google2FA;
         });
     }
 

@@ -11,6 +11,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 final class ImportController extends Controller
 {
@@ -52,7 +53,7 @@ final class ImportController extends Controller
         // Store file temporarily
         $filePath = $file->storeAs('imports', 'import_'.now()->format('YmdHis').'.csv');
 
-        $result = $this->importService->importClientsFromCsv($user, storage_path('app/'.$filePath));
+        $result = $this->importService->importClientsFromCsv($user, Storage::disk('local')->path($filePath));
 
         return response()->json([
             'data' => [
