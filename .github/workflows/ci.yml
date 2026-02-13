@@ -156,7 +156,7 @@ jobs:
           extensions: pdo, pdo_pgsql, pgsql, bcmath, gd, intl, zip
           coverage: xdebug
           tools: composer:v2, pint, phpstan
-          ini-values: xdebug.mode=coverage, xdebug.start_with_request=yes
+          ini-values: xdebug.mode=coverage
 
       - name: Install Composer dependencies
         run: composer install --prefer-dist --no-progress
@@ -176,13 +176,16 @@ jobs:
           php artisan config:clear
           php artisan key:generate --ansi
 
-      - name: Run migrations
-        run: php artisan migrate --force
+      - name: Verify Xdebug configuration
+        run: |
+          php -v
+          php -m | grep xdebug
+          php -i | grep xdebug.mode
 
       - name: Run Pest tests with coverage
         env:
           XDEBUG_MODE: coverage
-        run: vendor/bin/pest --coverage --coverage-clover=coverage/clover.xml --min=80
+        run: php -d xdebug.mode=coverage vendor/bin/pest --coverage --coverage-clover=coverage/clover.xml --min=80
 
       - name: List coverage files
         working-directory: ./backend

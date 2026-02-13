@@ -41,7 +41,7 @@ jobs:
           extensions: mbstring, pdo, pdo_pgsql, bcmath, gd, intl, zip
           coverage: xdebug
           tools: composer:v2, pint, phpstan
-          ini-values: xdebug.mode=coverage, xdebug.start_with_request=yes
+          ini-values: xdebug.mode=coverage
 
       - name: Install dependencies
         working-directory: ./backend
@@ -91,11 +91,17 @@ jobs:
         working-directory: ./backend
         run: vendor/bin/phpstan analyse --memory-limit=2G
 
+      - name: Verify Xdebug configuration
+        run: |
+          php -v
+          php -m | grep xdebug
+          php -i | grep xdebug.mode
+
       - name: Run Pest
         env:
           XDEBUG_MODE: coverage
         working-directory: ./backend
-        run: vendor/bin/pest --coverage --coverage-clover=coverage/clover.xml --min=80
+        run: php -d xdebug.mode=coverage vendor/bin/pest --coverage --coverage-clover=coverage/clover.xml --min=80
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
