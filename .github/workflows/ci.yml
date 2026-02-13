@@ -156,7 +156,7 @@ jobs:
           extensions: pdo, pdo_pgsql, pgsql, bcmath, gd, intl, zip
           coverage: xdebug
           tools: composer:v2, pint, phpstan
-          ini-values: xdebug.mode=coverage
+          ini-values: xdebug.mode=coverage, xdebug.start_with_request=yes
 
       - name: Install Composer dependencies
         run: composer install --prefer-dist --no-progress
@@ -165,7 +165,8 @@ jobs:
         run: |
           mkdir -p bootstrap/cache
           mkdir -p storage/framework/{sessions,views,cache}
-          chmod -R 775 bootstrap/cache storage
+          mkdir -p coverage
+          chmod -R 775 bootstrap/cache storage coverage
 
       - name: Prepare environment
         run: |
