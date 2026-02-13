@@ -64,10 +64,15 @@ interface Props {
   customClass?: string
 }
 
-const props = withDefaults(defineProps<Props>(), {
+const _props = withDefaults(defineProps<Props>(), {
+  id: '',
+  label: '',
+  modelValue: null,
   placeholder: 'Select an option',
   required: false,
   disabled: false,
+  hint: '',
+  error: '',
   customClass: '',
 })
 

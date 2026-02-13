@@ -1,4 +1,3 @@
-import type { Ref } from 'vue'
 import { ref } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import { useApi } from './useApi'
@@ -39,7 +38,7 @@ export const useAuth = () => {
   const api = useApi()
   const toast = useToast()
   const router = useRouter()
-  const config = useRuntimeConfig()
+  const _config = useRuntimeConfig()
 
   const authStore = useAuthStore()
 

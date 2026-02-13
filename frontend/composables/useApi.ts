@@ -1,5 +1,5 @@
 // https://nuxt.com/docs/api/composables/use-fetch
-import type { FetchOptions, ofetch } from 'ofetch'
+import type { FetchOptions } from 'ofetch'
 import { useToast } from './useToast'
 
 export interface ApiError {
@@ -134,7 +134,7 @@ export function useApi() {
             ...options,
             headers: options.headers,
           })
-        } catch (_e) {
+        } catch {
           clearTokens()
           window.location.href = '/auth/login'
         }

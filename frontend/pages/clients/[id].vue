@@ -223,7 +223,6 @@
         </AppCard>
       </div>
     </div>
-    </div>
 
     <!-- Archive Confirmation Modal -->
     <AppModal
@@ -264,8 +263,22 @@ definePageMeta({
 const route = useRoute()
 const { $fetch } = useApi()
 
+interface Client {
+  id: string
+  attributes: {
+    name: string
+    status: string
+    created_at: string
+    updated_at: string
+  }
+  relationships?: {
+    contacts?: { data: any[] }
+    activities?: { data: any[] }
+  }
+}
+
 const isLoading = ref(true)
-const client = ref<any>(null)
+const client = ref<Client | null>(null)
 const showArchiveModal = ref(false)
 
 const contacts = computed(() => client.value?.relationships?.contacts?.data || [])
@@ -275,7 +288,7 @@ const fetchClient = async () => {
   isLoading.value = true
 
   try {
-    const response = await $fetch(`/v1/clients/${route.params.id}`)
+    const response = await $fetch<{ data: Client }>(`/v1/clients/${route.params.id}`)
     client.value = response.data
   } catch (error) {
     console.error('Failed to fetch client:', error)
@@ -291,8 +304,8 @@ const confirmArchive = () => {
 const handleArchive = async () => {
   if (!client.value) return
 
+  const action = client.value.attributes.status === 'active' ? 'archive' : 'restore'
   try {
-    const action = client.value.attributes.status === 'active' ? 'archive' : 'restore'
     await $fetch(`/v1/clients/${route.params.id}/${action}`, { method: 'POST' })
 
     const toast = useToast()

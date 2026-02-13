@@ -16,7 +16,8 @@
             'bg-red-50 border-red-200 text-red-800 dark:bg-red-900 dark:border-red-800': toast.type === 'error',
             'bg-yellow-50 border-yellow-200 text-yellow-800 dark:bg-yellow-900 dark:border-yellow-800': toast.type === 'warning',
             'bg-blue-50 border-blue-200 text-blue-800 dark:bg-blue-900 dark:border-blue-800': toast.type === 'info',
-          }"
+          }
+        ]"
       >
         <div class="flex">
           <div class="flex-shrink-0">

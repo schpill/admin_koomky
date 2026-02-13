@@ -59,8 +59,6 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-
 interface Toast {
   id: string | number
   type: 'success' | 'error' | 'warning' | 'info'
@@ -68,7 +66,7 @@ interface Toast {
   message: string
 }
 
-const props = defineProps<{
+const _props = defineProps<{
   toasts: Toast[]
 }>()
 
