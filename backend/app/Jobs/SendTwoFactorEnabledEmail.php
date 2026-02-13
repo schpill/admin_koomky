@@ -17,14 +17,14 @@ final class SendTwoFactorEnabledEmail implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public string $queue = 'emails';
-
     /**
      * Create a new job instance.
      */
     public function __construct(
         public User $user
-    ) {}
+    ) {
+        $this->onQueue('emails');
+    }
 
     /**
      * Execute the job.
