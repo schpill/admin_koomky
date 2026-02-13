@@ -41,6 +41,7 @@ jobs:
           extensions: mbstring, pdo, pdo_pgsql, bcmath, gd, intl, zip
           coverage: xdebug
           tools: composer:v2, pint, phpstan
+          ini-values: xdebug.mode=coverage
 
       - name: Install dependencies
         working-directory: ./backend
@@ -85,7 +86,7 @@ jobs:
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
         with:
-          files: ./backend/coverage.xml
+          files: ./backend/coverage/clover.xml
           flags: backend
           name: backend-coverage
         if: always()

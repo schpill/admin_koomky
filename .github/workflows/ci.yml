@@ -156,6 +156,7 @@ jobs:
           extensions: pdo, pdo_pgsql, pgsql, bcmath, gd, intl, zip
           coverage: xdebug
           tools: composer:v2, pint, phpstan
+          ini-values: xdebug.mode=coverage
 
       - name: Install Composer dependencies
         run: composer install --prefer-dist --no-progress
@@ -186,7 +187,7 @@ jobs:
         uses: codecov/codecov-action@v3
         continue-on-error: true
         with:
-          files: ./backend/coverage.xml
+          files: ./backend/coverage/clover.xml
           flags: backend
           name: backend-coverage
           fail_ci_if_error: false
