@@ -26,8 +26,4 @@ uses(TestCase::class, Illuminate\Foundation\Testing\RefreshDatabase::class)
             app()->forgetInstance(\Illuminate\Contracts\Encryption\Encrypter::class);
         }
     })
-    ->afterEach(function () {
-        if (function_exists('pcov\clear')) {
-            pcov\clear();
-        }
-    });
+;

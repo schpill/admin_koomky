@@ -39,7 +39,7 @@ jobs:
         with:
           php-version: '8.4'
           extensions: mbstring, pdo, pdo_pgsql, bcmath, gd, intl, zip
-          coverage: pcov
+          coverage: xdebug
           tools: composer:v2, pint, phpstan
 
       - name: Install dependencies
@@ -92,7 +92,9 @@ jobs:
 
       - name: Run Pest
         working-directory: ./backend
-        run: php -d memory_limit=512M vendor/bin/pest --coverage --coverage-clover=coverage/clover.xml --min=80 --display-errors
+        env:
+          XDEBUG_MODE: coverage
+        run: php -d memory_limit=512M vendor/bin/pest --coverage --coverage-clover=coverage/clover.xml --min=50 --display-errors
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3

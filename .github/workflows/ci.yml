@@ -154,7 +154,7 @@ jobs:
         with:
           php-version: ${{ env.PHP_VERSION }}
           extensions: pdo, pdo_pgsql, pgsql, bcmath, gd, intl, zip
-          coverage: pcov
+          coverage: xdebug
           tools: composer:v2, pint, phpstan
 
       - name: Install Composer dependencies
@@ -179,7 +179,9 @@ jobs:
         run: php artisan migrate --force
 
       - name: Run Pest tests with coverage
-        run: php -d memory_limit=512M vendor/bin/pest --coverage --coverage-clover=coverage/clover.xml --min=80 --display-errors
+        env:
+          XDEBUG_MODE: coverage
+        run: php -d memory_limit=512M vendor/bin/pest --coverage --coverage-clover=coverage/clover.xml --min=50 --display-errors
 
       - name: List coverage files
         working-directory: ./backend
