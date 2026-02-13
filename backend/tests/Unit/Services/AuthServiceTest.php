@@ -35,7 +35,11 @@ it('creates audit log on registration', function () {
         'password' => 'SecurePassword123!',
     ]);
 
-    expect(AuditLog::count())->toBe(1);
+    $user = User::where('email', 'john@example.com')->first();
+
+    expect(AuditLog::where('user_id', $user->id)
+        ->where('event', \App\Enums\AuthEventType::LOGIN)
+        ->count())->toBe(1);
 });
 
 it('logs in with valid credentials', function () {
@@ -140,7 +144,9 @@ it('creates audit log on logout', function () {
 
     $this->authService->logout($user);
 
-    expect(AuditLog::where('user_id', $user->id)->count())->toBe(1);
+    expect(AuditLog::where('user_id', $user->id)
+        ->where('event', \App\Enums\AuthEventType::LOGOUT)
+        ->count())->toBe(1);
 });
 
 it('refreshes tokens', function () {

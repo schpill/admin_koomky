@@ -46,6 +46,13 @@ jobs:
         working-directory: ./backend
         run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
+      - name: Create Laravel cache directories
+        working-directory: ./backend
+        run: |
+          mkdir -p bootstrap/cache
+          mkdir -p storage/framework/{sessions,views,cache}
+          chmod -R 775 bootstrap/cache storage
+
       - name: Prepare environment
         working-directory: ./backend
         run: |
@@ -53,6 +60,8 @@ jobs:
           sed -i 's/DB_CONNECTION=.*/DB_CONNECTION=pgsql/' .env
           sed -i 's/DB_DATABASE=.*/DB_DATABASE=koomky_test/' .env
           sed -i 's/DB_HOST=.*/DB_HOST=postgres/' .env
+          sed -i 's/DB_USERNAME=.*/DB_USERNAME=koomky/' .env
+          sed -i 's/DB_PASSWORD=.*/DB_PASSWORD=secret/' .env
           sed -i 's/REDIS_HOST=.*/REDIS_HOST=redis/' .env
           sed -i 's/MEILISEARCH_HOST=.*/MEILISEARCH_HOST=127.0.0.1/' .env
           php artisan key:generate --ansi
@@ -182,6 +191,13 @@ jobs:
         working-directory: ./backend
         run: composer install --no-interaction --prefer-dist
 
+      - name: Create Laravel cache directories
+        working-directory: ./backend
+        run: |
+          mkdir -p bootstrap/cache
+          mkdir -p storage/framework/{sessions,views,cache}
+          chmod -R 775 bootstrap/cache storage
+
       - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
@@ -210,6 +226,8 @@ jobs:
           sed -i 's/DB_CONNECTION=.*/DB_CONNECTION=pgsql/' .env
           sed -i 's/DB_DATABASE=.*/DB_DATABASE=koomky_test/' .env
           sed -i 's/DB_HOST=.*/DB_HOST=postgres/' .env
+          sed -i 's/DB_USERNAME=.*/DB_USERNAME=koomky/' .env
+          sed -i 's/DB_PASSWORD=.*/DB_PASSWORD=secret/' .env
           sed -i 's/REDIS_HOST=.*/REDIS_HOST=redis/' .env
           sed -i 's/MEILISEARCH_HOST=.*/MEILISEARCH_HOST=127.0.0.1/' .env
           php artisan key:generate --ansi
