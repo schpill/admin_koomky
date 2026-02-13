@@ -53,6 +53,13 @@ it('imports clients from CSV file', function () {
     $csvContent .= "Beta Inc,Jane,Smith,jane@beta.com,+33456,FR456,https://beta.com,456 Ave,Lyon,69001,France,Other\n";
 
     $filePath = storage_path('app/test_import.csv');
+
+    // Ensure the directory exists
+    $directory = dirname($filePath);
+    if (! is_dir($directory)) {
+        mkdir($directory, 0755, true);
+    }
+
     file_put_contents($filePath, $csvContent);
 
     $result = $this->service->importClientsFromCsv($user, $filePath);
