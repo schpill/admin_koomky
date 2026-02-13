@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import { ref, readonly } from 'vue'
 
 export type ToastType = 'success' | 'error' | 'warning' | 'info'
 
@@ -58,7 +58,7 @@ export function useToast() {
   }
 
   return {
-    toasts: readonly toasts,
+    toasts: readonly(toasts),
     add,
     remove,
     success,

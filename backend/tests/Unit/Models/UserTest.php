@@ -26,6 +26,7 @@ class UserTest extends TestCase
             'vat_number',
             'default_payment_terms',
             'invoice_footer',
+            'avatar_path',
         ];
 
         $this->assertEquals($expected, $user->getFillable());

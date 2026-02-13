@@ -4,6 +4,15 @@ import { createTestingPinia } from '@pinia/testing'
 import { useAuth } from '~/composables/useAuth'
 import { useApi } from '~/composables/useApi'
 
+// Mock useApi
+vi.mock('~/composables/useApi', () => ({
+  useApi: vi.fn(() => ({
+    fetch: vi.fn(),
+    clearTokens: vi.fn(),
+    setTokens: vi.fn(),
+  })),
+}))
+
 vi.mock('~/composables/useToast', () => ({
   useToast: () => ({
     toasts: { value: [] },
@@ -60,31 +69,35 @@ describe('useAuth', () => {
 
   describe('login', () => {
     it('sets user and tokens on success', async () => {
-      const mockedApi = {
-        fetch: vi.fn().mockResolvedValue({
-          _data: {
-            data: {
-              type: 'user',
-              id: '123',
-              attributes: { name: 'Test User', email: 'test@example.com' },
-            },
-            meta: {
-              token: {
-                access_token: 'test-token',
-                refresh_token: 'test-refresh',
-                expires_in: 900,
-              },
-            },
+      const mockFetch = vi.fn().mockResolvedValue({
+        data: {
+          type: 'user',
+          id: '123',
+          attributes: { name: 'Test User', email: 'test@example.com' },
+        },
+        meta: {
+          token: {
+            access_token: 'test-token',
+            refresh_token: 'test-refresh',
+            expires_in: 900,
           },
-        }),
-      }
-
-      vi.do('~/composables/useApi', () => mockedApi)
+        },
+      })
+      
+      vi.mocked(useApi).mockReturnValue({
+        fetch: mockFetch,
+        clearTokens: vi.fn(),
+        setTokens: vi.fn(),
+        refreshAccessToken: vi.fn(),
+        getAccessToken: vi.fn(),
+        getRefreshToken: vi.fn(),
+        subscribeToRefresh: vi.fn(),
+      })
 
       const { login } = useAuth()
       await login({ email: 'test@example.com', password: 'password' })
 
-      expect(mockedApi.fetch).toHaveBeenCalledWith('/auth/login', {
+      expect(mockFetch).toHaveBeenCalledWith('/auth/login', {
         method: 'POST',
         body: { email: 'test@example.com', password: 'password' },
       })
@@ -93,17 +106,23 @@ describe('useAuth', () => {
 
   describe('logout', () => {
     it('clears tokens and resets user state', async () => {
-      const mockedApi = {
-        fetch: vi.fn().mockResolvedValue({}),
-        clearTokens: vi.fn(),
-      }
-
-      vi.do('~/composables/useApi', () => mockedApi)
+      const mockClearTokens = vi.fn()
+      const mockFetch = vi.fn().mockResolvedValue({})
+      
+      vi.mocked(useApi).mockReturnValue({
+        fetch: mockFetch,
+        clearTokens: mockClearTokens,
+        setTokens: vi.fn(),
+        refreshAccessToken: vi.fn(),
+        getAccessToken: vi.fn(),
+        getRefreshToken: vi.fn(),
+        subscribeToRefresh: vi.fn(),
+      })
 
       const { logout } = useAuth()
       await logout()
 
-      expect(mockedApi.clearTokens).toHaveBeenCalled()
+      expect(mockClearTokens).toHaveBeenCalled()
     })
   })
 })

@@ -17,7 +17,14 @@ use Tests\TestCase;
 uses(TestCase::class, Illuminate\Foundation\Testing\RefreshDatabase::class)
     ->in('Feature', 'Unit')
     ->beforeEach(function () {
-        // Setup before each test
+        $key = 'base64:dGVzdGluZ2tleWZvcl9waHB1bml0X2FuZF9wZXN0XyE=';
+
+        if (! config('app.key')) {
+            putenv("APP_KEY={$key}");
+            config(['app.key' => $key]);
+            app()->forgetInstance('encrypter');
+            app()->forgetInstance(\Illuminate\Contracts\Encryption\Encrypter::class);
+        }
     })
     ->afterEach(function () {
         // Cleanup after each test

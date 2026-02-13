@@ -1,5 +1,6 @@
 import type { Ref } from 'vue'
-import { defineStore, store } from 'pinia'
+import { ref } from 'vue'
+import { defineStore, storeToRefs } from 'pinia'
 import { useApi } from './useApi'
 import { useToast } from './useToast'
 
@@ -21,18 +22,24 @@ export interface LoginCredentials {
   two_factor_code?: string
 }
 
+// Initialize auth store
+const useAuthStore = defineStore('auth', () => {
+  const user = ref<User | null>(null)
+  const isAuthenticated = ref(false)
+  const isLoading = ref(false)
+  
+  return {
+    user,
+    isAuthenticated,
+    isLoading,
+  }
+})
+
 export const useAuth = () => {
   const api = useApi()
   const toast = useToast()
   const router = useRouter()
   const config = useRuntimeConfig()
-
-  // Initialize auth store
-  const useAuthStore = defineStore('auth', () => ({
-    user: null as User | null,
-    isAuthenticated: false,
-    isLoading: false,
-  }))
 
   const authStore = useAuthStore()
 
@@ -140,10 +147,12 @@ export const useAuth = () => {
     }
   }
 
+  const { user, isAuthenticated, isLoading } = storeToRefs(authStore)
+
   return {
-    user: store.toRef(() => authStore.user),
-    isAuthenticated: store.toRef(() => authStore.isAuthenticated),
-    isLoading: store.toRef(() => authStore.isLoading),
+    user,
+    isAuthenticated,
+    isLoading,
     login,
     register,
     logout,

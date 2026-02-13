@@ -1,5 +1,6 @@
 import { vi } from 'vitest'
 import { configDefaults } from 'vitest/config'
+import { ofetch } from 'ofetch'
 
 // Mock window.matchMedia
 Object.defineProperty(window, 'matchMedia', {
@@ -49,9 +50,33 @@ const localStorageMock = (() => {
     clear: () => {
       store = {}
     },
+    length: 0,
+    key: (index: number) => null,
   }
 })()
 
 Object.defineProperty(window, 'localStorage', {
   value: localStorageMock,
+  writable: true
 })
+
+// Mock Nuxt runtime config
+global.useRuntimeConfig = vi.fn(() => ({
+  public: {
+    apiBase: 'http://localhost/api/v1'
+  }
+}))
+
+// Mock other Nuxt composables
+global.navigateTo = vi.fn()
+global.definePageMeta = vi.fn()
+global.useHead = vi.fn()
+global.useRouter = vi.fn(() => ({
+  push: vi.fn(),
+  replace: vi.fn(),
+  currentRoute: { value: { path: '/' } }
+}))
+
+// Mock $fetch using real ofetch to test interceptors
+global.$fetch = ofetch
+global.$fetch.create = ofetch.create

@@ -14,27 +14,29 @@ let refreshSubscribers: Array<(token: string) => void> = []
 export function useApi() {
   const config = useRuntimeConfig()
   const toast = useToast()
+  
+  const isClient = import.meta.client || typeof localStorage !== 'undefined'
 
   // Get tokens from localStorage
   const getAccessToken = () => {
-    if (import.meta.client) return localStorage.getItem('access_token')
+    if (isClient) return localStorage.getItem('access_token')
     return null
   }
 
   const getRefreshToken = () => {
-    if (import.meta.client) return localStorage.getItem('refresh_token')
+    if (isClient) return localStorage.getItem('refresh_token')
     return null
   }
 
   const setTokens = (accessToken: string, refreshToken: string) => {
-    if (import.meta.client) {
+    if (isClient) {
       localStorage.setItem('access_token', accessToken)
       localStorage.setItem('refresh_token', refreshToken)
     }
   }
 
   const clearTokens = () => {
-    if (import.meta.client) {
+    if (isClient) {
       localStorage.removeItem('access_token')
       localStorage.removeItem('refresh_token')
     }
@@ -70,7 +72,7 @@ export function useApi() {
         },
       })
 
-      const result = response._data as { meta?: { token?: string } }
+      const result = response as unknown as { meta?: { token?: string } }
 
       if (result.meta?.token) {
         const newToken = result.meta.token
@@ -110,23 +112,29 @@ export function useApi() {
       }
     },
 
-    async onResponse({ response }) {
+    async onResponse({ request, response, options }) {
       // Handle 401 Unauthorized - try to refresh token
       if (response.status === 401) {
         try {
           const newToken = await refreshAccessToken()
 
           options.headers = {
-            ...options.request?.headers || {},
+            ...options.headers || {},
             Authorization: `Bearer ${newToken}`,
           }
 
+          const retryRequest = request || response.url || (response as any).request?.url
+
+          if (!retryRequest) {
+            throw new Error('Cannot retry request: URL not found')
+          }
+
           // Retry the original request with new token
-          return $fetch(response.request.url, {
-            ...options.request,
+          return $fetch(retryRequest, {
+            ...options,
             headers: options.headers,
           })
-        } catch {
+        } catch (e) {
           clearTokens()
           window.location.href = '/auth/login'
         }

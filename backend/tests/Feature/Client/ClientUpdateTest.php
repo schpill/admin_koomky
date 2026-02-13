@@ -16,6 +16,7 @@ it('updates a client', function () {
     $user = User::factory()->create();
     $client = Client::factory()->for($user)->create([
         'first_name' => 'Old Name',
+        'last_name' => null,
         'company_name' => null,
         'email' => 'old@example.com',
     ]);

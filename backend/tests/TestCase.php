@@ -14,7 +14,14 @@ abstract class TestCase extends BaseTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        // Additional setup if needed
+        $key = 'base64:dGVzdGluZ2tleWZvcl9waHB1bml0X2FuZF9wZXN0XyE=';
+
+        if (! config('app.key')) {
+            putenv("APP_KEY={$key}");
+            config(['app.key' => $key]);
+            app()->forgetInstance('encrypter');
+            app()->forgetInstance(\Illuminate\Contracts\Encryption\Encrypter::class);
+        }
     }
 
     /**
