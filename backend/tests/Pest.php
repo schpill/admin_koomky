@@ -27,5 +27,7 @@ uses(TestCase::class, Illuminate\Foundation\Testing\RefreshDatabase::class)
         }
     })
     ->afterEach(function () {
-        // Cleanup after each test
+        if (function_exists('pcov\clear')) {
+            pcov\clear();
+        }
     });
