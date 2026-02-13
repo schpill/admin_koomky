@@ -89,6 +89,7 @@ describe('useAuth', () => {
         body: { email: 'test@example.com', password: 'password' },
       })
     })
+  })
 
   describe('logout', () => {
     it('clears tokens and resets user state', async () => {
