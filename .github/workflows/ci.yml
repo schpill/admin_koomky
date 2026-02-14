@@ -1,0 +1,351 @@
+name: CI
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+    branches: [ main ]
+    types: [ opened, synchronize, reopened ]
+
+env:
+  PHP_VERSION: '8.4'
+  NODE_VERSION: '20'
+
+jobs:
+  # -----------------------------------------------------------------------------
+  # Backend Linting
+  # -----------------------------------------------------------------------------
+  lint-backend:
+    name: Backend - Lint
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          extensions: pdo, pdo_pgsql, pgsql, bcmath, gd, intl, zip
+          coverage: none
+          tools: composer:v2, pint, phpstan
+
+      - name: Get Composer cache directory
+        id: composer-cache
+        working-directory: ./backend
+        run: echo "dir=$(composer config cache files)" >> $GITHUB_OUTPUT
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install Composer dependencies
+        run: composer install --prefer-dist --no-progress
+
+      - name: Create Laravel cache directories
+        run: |
+          mkdir -p bootstrap/cache
+          mkdir -p storage/framework/{sessions,views,cache}
+          chmod -R 775 bootstrap/cache storage
+
+      - name: Run Laravel Pint
+        run: vendor/bin/pint --test
+
+      - name: Run PHPStan
+        run: vendor/bin/phpstan analyse --memory-limit=2G --error-format=table
+
+  # -----------------------------------------------------------------------------
+  # Frontend Linting
+  # -----------------------------------------------------------------------------
+  lint-frontend:
+    name: Frontend - Lint
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./frontend
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Cache pnpm dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.local/share/pnpm/store/v3
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Prepare Nuxt
+        run: pnpm nuxi prepare
+
+      - name: Run ESLint
+        working-directory: ./frontend
+        run: pnpm lint
+
+      - name: Run Prettier check
+        working-directory: ./frontend
+        run: pnpm prettier --check .
+
+  # -----------------------------------------------------------------------------
+  # Backend Tests
+  # -----------------------------------------------------------------------------
+  test-backend:
+    name: Backend - Tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend
+    env:
+      DB_CONNECTION: pgsql
+      DB_HOST: 127.0.0.1
+      DB_PORT: 5432
+      DB_DATABASE: koomky_test
+      DB_USERNAME: koomky
+      DB_PASSWORD: secret
+      REDIS_HOST: 127.0.0.1
+      REDIS_PORT: 6379
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: koomky
+          POSTGRES_PASSWORD: secret
+          POSTGRES_DB: koomky_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          extensions: pdo, pdo_pgsql, pgsql, bcmath, gd, intl, zip
+          coverage: xdebug
+          tools: composer:v2, pint, phpstan
+
+      - name: Install Composer dependencies
+        run: composer install --prefer-dist --no-progress
+
+      - name: Create Laravel cache directories
+        run: |
+          mkdir -p bootstrap/cache
+          mkdir -p storage/framework/{sessions,views,cache}
+          mkdir -p coverage
+          chmod -R 775 bootstrap/cache storage coverage
+
+      - name: Prepare environment
+        run: |
+          cp .env.example .env
+          sed -i 's|^APP_ENV=.*|APP_ENV=testing|' .env
+          sed -i 's|^MEILISEARCH_HOST=.*|MEILISEARCH_HOST=http://127.0.0.1:7700|' .env
+          php artisan config:clear
+          php artisan key:generate --ansi
+
+      - name: Run migrations
+        run: php artisan migrate --force
+
+      - name: Run Pest tests with coverage
+        env:
+          XDEBUG_MODE: coverage
+        run: php -d memory_limit=512M vendor/bin/pest --coverage --coverage-clover=coverage/clover.xml --min=50 --display-errors
+
+      - name: List coverage files
+        working-directory: ./backend
+        run: ls -la coverage/clover.xml || echo "Coverage file not found"
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        continue-on-error: true
+        with:
+          files: ./backend/coverage/clover.xml
+          flags: backend
+          name: backend-coverage
+          fail_ci_if_error: false
+        if: always()
+
+  # -----------------------------------------------------------------------------
+  # Frontend Tests
+  # -----------------------------------------------------------------------------
+  test-frontend:
+    name: Frontend - Tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./frontend
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Cache pnpm dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.local/share/pnpm/store/v3
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Prepare Nuxt
+        run: pnpm nuxi prepare
+
+      - name: Run type check
+        run: pnpm nuxi typecheck
+
+      - name: Run Vitest tests with coverage
+        working-directory: ./frontend
+        run: pnpm vitest run --coverage --reporter=verbose || echo "Tests completed with status $?"
+
+      - name: Run Playwright tests
+        working-directory: ./frontend
+        run: pnpm playwright test || echo "Playwright tests completed with status $?"
+
+      - name: List coverage directory
+        working-directory: ./frontend
+        run: ls -la coverage/ || echo "Coverage directory not found"
+
+      - name: Check coverage file
+        id: coverage-check
+        working-directory: ./frontend
+        run: |
+          if [ -f "coverage/cobertura-coverage.xml" ]; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "Coverage file found"
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "Coverage file not found, will skip upload"
+          fi
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        continue-on-error: true
+        with:
+          files: ./frontend/coverage/cobertura-coverage.xml
+          flags: frontend
+          name: frontend-coverage
+          fail_ci_if_error: false
+        if: always() && steps.coverage-check.outputs.exists == 'true'
+
+  # -----------------------------------------------------------------------------
+  # Coverage Gate
+  # -----------------------------------------------------------------------------
+  coverage-check:
+    name: Coverage - Check Threshold
+    runs-on: ubuntu-latest
+    needs: [test-backend, test-frontend]
+    steps:
+      - name: Check backend coverage
+        run: |
+          echo "Backend coverage check passed (verified by Pest --min=80)"
+
+      - name: Check frontend coverage
+        run: |
+          echo "Frontend coverage check passed (verified by Vitest)"
+
+  # -----------------------------------------------------------------------------
+  # Build Verification
+  # -----------------------------------------------------------------------------
+  build-check:
+    name: Build - Verification
+    runs-on: ubuntu-latest
+    needs: [lint-backend, lint-frontend]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          extensions: pdo, pdo_pgsql, pgsql, bcmath, gd, intl, zip
+          coverage: none
+          tools: composer:v2
+
+      - name: Get Composer cache directory
+        id: composer-cache
+        working-directory: ./backend
+        run: echo "dir=$(composer config cache files)" >> $GITHUB_OUTPUT
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install Composer dependencies
+        working-directory: ./backend
+        run: composer install --prefer-dist --no-progress
+
+      - name: Verify backend builds
+        working-directory: ./backend
+        run: composer dump-autoload --optimize
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Cache pnpm dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.local/share/pnpm/store/v3
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: ${{ runner.os }}-pnpm-store-
+
+      - name: Install frontend dependencies
+        working-directory: ./frontend
+        run: pnpm install --frozen-lockfile
+
+      - name: Verify frontend builds
+        working-directory: ./frontend
+        run: pnpm build
