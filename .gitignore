@@ -10,7 +10,6 @@ dist/
 # PHP
 backend/vendor/
 backend/.env
-backend/.env.example
 backend/storage/*.key
 backend/public/storage
 backend/public/hot

@@ -4,11 +4,11 @@
 
 | Field             | Value                                      |
 |-------------------|--------------------------------------------|
-| **Document Version** | 1.0.0                                   |
+| **Document Version** | 1.1.0                                   |
 | **Status**           | Draft                                   |
 | **Author**           | Senior Freelance Developer              |
 | **Date**             | 2026-02-11                              |
-| **Last Updated**     | 2026-02-11                              |
+| **Last Updated**     | 2026-02-14                              |
 | **Confidentiality**  | Internal                                |
 
 ---
@@ -39,7 +39,7 @@
 
 **Koomky** is a comprehensive, self-hosted Customer Relationship Management (CRM) platform purpose-built for freelance professionals. It consolidates client management, project tracking, financial document generation (invoices, quotes, credit notes), and marketing campaign orchestration (email and SMS) into a single, unified application.
 
-The platform is architected as a modern, containerized web application leveraging Laravel for the back-end API, Nuxt.js with Vite for the front-end, PostgreSQL for data persistence, Meilisearch for full-text search, and Redis for caching and session management. All services run within Docker containers, ensuring reproducible environments across development, staging, and production.
+The platform is architected as a modern, containerized web application leveraging Laravel for the back-end API, Next.js 15 (React 19) for the front-end, PostgreSQL for data persistence, Meilisearch for full-text search, and Redis for caching and session management. All services run within Docker containers, ensuring reproducible environments across development, staging, and production.
 
 ### 1.2 Project Overview
 
@@ -539,9 +539,9 @@ Freelance professionals face a fragmented tooling landscape that forces them to 
 | ID          | Requirement                                                                                    |
 |-------------|-----------------------------------------------------------------------------------------------|
 | NFR-MNT-001  | The codebase SHALL follow PSR-12 coding standard for PHP (back-end).                          |
-| NFR-MNT-002  | The codebase SHALL follow the Vue.js/Nuxt.js style guide for the front-end.                   |
+| NFR-MNT-002  | The codebase SHALL follow the React/Next.js conventions and ESLint rules for the front-end.   |
 | NFR-MNT-003  | All public API methods SHALL have PHPDoc annotations.                                         |
-| NFR-MNT-004  | All Vue components SHALL have TypeScript type definitions for props and emits.                 |
+| NFR-MNT-004  | All React components SHALL have TypeScript type definitions for props.                         |
 | NFR-MNT-005  | The project SHALL use database migrations for all schema changes (never manual SQL).           |
 | NFR-MNT-006  | The project SHALL maintain a CHANGELOG.md following Keep a Changelog format.                  |
 | NFR-MNT-007  | Code complexity (cyclomatic) per method SHALL not exceed 10 (enforced via static analysis).    |
@@ -584,7 +584,7 @@ The application follows a **decoupled, containerized architecture** with a clear
 │                          Docker Network                             │
 │                                                                     │
 │  ┌──────────────┐   ┌──────────────┐   ┌──────────────────────┐    │
-│  │   Nginx      │   │   Nuxt.js    │   │   Laravel API        │    │
+│  │   Nginx      │   │   Next.js    │   │   Laravel API        │    │
 │  │   Reverse    │──▶│   Front-end  │   │   (PHP-FPM)          │    │
 │  │   Proxy      │──▶│   (SSR/SPA)  │   │                      │    │
 │  │   :80/:443   │   │   :3000      │   │   :8000              │    │
@@ -618,7 +618,7 @@ The application follows a **decoupled, containerized architecture** with a clear
 |--------------------|---------------------------|-----------------------------------------------------------------|
 | **Framework**      | Laravel 12.x              | Mature ecosystem, excellent ORM (Eloquent), built-in queue system, robust ecosystem for API development |
 | **PHP Version**    | 8.3+                      | Latest performance improvements, typed properties, enums, fibers |
-| **API Style**      | RESTful JSON API           | Industry standard, well-supported by Nuxt.js and any HTTP client |
+| **API Style**      | RESTful JSON API           | Industry standard, well-supported by Next.js and any HTTP client |
 | **Authentication** | Laravel Sanctum + JWT      | Token-based auth suitable for SPA front-end, API token support  |
 | **Queue System**   | Laravel Queues with Redis driver | Asynchronous processing for emails, SMS, PDF generation, search indexing |
 | **Scheduler**      | Laravel Task Scheduling    | Cron-based jobs for overdue invoice marking, campaign scheduling, backup triggers |
@@ -629,23 +629,27 @@ The application follows a **decoupled, containerized architecture** with a clear
 | **Static Analysis**| PHPStan (Level 8+)         | Catch type errors and logic issues before runtime                |
 | **Code Style**     | Laravel Pint (PSR-12)      | Automated code formatting                                        |
 
-#### 6.2.2 Front-end: Nuxt.js
+#### 6.2.2 Front-end: Next.js
 
 | Component          | Technology                | Rationale                                                       |
 |--------------------|---------------------------|-----------------------------------------------------------------|
-| **Framework**      | Nuxt 3.x                  | Vue.js meta-framework with SSR, auto-imports, file-based routing |
-| **Vue Version**    | Vue 3.x (Composition API) | Modern reactivity system, TypeScript support, better performance |
-| **Build Tool**     | Vite                       | Blazing fast HMR, optimized production builds                    |
-| **Styling**        | Tailwind CSS 3.x           | Utility-first CSS, rapid prototyping, consistent design system   |
-| **State Management** | Pinia                   | Official Vue.js store, TypeScript-first, devtools integration    |
-| **HTTP Client**    | ofetch (Nuxt built-in)     | Universal fetch with interceptors, auto-retry, type safety       |
-| **Form Handling**  | VeeValidate + Zod          | Schema-based validation with TypeScript integration              |
-| **UI Components**  | Headless UI + custom       | Accessible, unstyled primitives styled with Tailwind CSS         |
-| **Charts**         | Chart.js via vue-chartjs   | Lightweight charting for dashboard and analytics                 |
+| **Framework**      | Next.js 15.x (App Router) | React meta-framework with SSR/SSG, file-based routing, Server Components |
+| **React Version**  | React 19.x                | Latest concurrent features, Server Components, improved performance |
+| **Build Tool**     | Turbopack (via Next.js)    | Blazing fast HMR, optimized production builds                    |
+| **Styling**        | Tailwind CSS 4.x           | Utility-first CSS, rapid prototyping, consistent design system   |
+| **State Management** | Zustand                  | Lightweight, TypeScript-first, minimal boilerplate               |
+| **HTTP Client**    | fetch (native) + custom hooks | Native browser API, Server Actions for mutations              |
+| **Form Handling**  | react-hook-form + Zod      | Schema-based validation with TypeScript integration              |
+| **UI Components**  | shadcn/ui + Radix UI       | Accessible, copy-paste components built on Radix primitives, styled with Tailwind CSS |
+| **Icons**          | Lucide React               | Consistent, tree-shakeable icon library                          |
+| **Charts**         | Recharts                   | React-native charting library for dashboard and analytics        |
 | **Rich Text Editor** | TipTap                  | Modern, extensible WYSIWYG for email campaign editor             |
-| **Testing**        | Vitest + Vue Test Utils    | Fast unit testing with Vite-native runner                        |
+| **Internationalization** | next-intl            | Internationalization support for multi-language UI                |
+| **Theming**        | next-themes                | Dark mode support with system preference detection               |
+| **Toasts**         | Sonner                     | Lightweight, accessible toast notifications                      |
+| **Testing**        | Vitest + React Testing Library | Fast unit testing with Vite-native runner                    |
 | **E2E Testing**    | Playwright                 | Cross-browser end-to-end testing                                 |
-| **Linting**        | ESLint + Prettier          | Consistent code style enforcement                                |
+| **Linting**        | ESLint (eslint-config-next) | Consistent code style enforcement with Next.js best practices   |
 | **TypeScript**     | Full TypeScript support    | Type safety across the entire front-end codebase                 |
 
 #### 6.2.3 Database: PostgreSQL
@@ -683,20 +687,20 @@ The application follows a **decoupled, containerized architecture** with a clear
 | Aspect             | Detail                                                                |
 |--------------------|-----------------------------------------------------------------------|
 | **Role**           | TLS termination, request routing, static asset serving, rate limiting |
-| **Routing**        | `/api/*` → Laravel, `/*` → Nuxt.js SSR server                        |
+| **Routing**        | `/api/*` → Laravel, `/*` → Next.js server                            |
 | **TLS**            | Let's Encrypt certificates (production), self-signed (development)    |
 
 ### 6.3 Service Communication
 
 ```
-Browser ──HTTPS──▶ Nginx ──HTTP──▶ Nuxt.js (SSR)
+Browser ──HTTPS──▶ Nginx ──HTTP──▶ Next.js (SSR)
                           ──HTTP──▶ Laravel API ──TCP──▶ PostgreSQL
                                                 ──TCP──▶ Redis
                                                 ──HTTP─▶ Meilisearch
                                                 ──SMTP─▶ Mail Provider
                                                 ──HTTP─▶ SMS Provider
 
-Nuxt.js (Client-side) ──HTTPS──▶ Nginx ──HTTP──▶ Laravel API
+Next.js (Client-side) ──HTTPS──▶ Nginx ──HTTP──▶ Laravel API
 ```
 
 All inter-service communication occurs within the Docker network (no external exposure except Nginx on ports 80/443).
@@ -1252,13 +1256,13 @@ Every feature, bug fix, and refactoring effort begins with writing tests first.
 - **External Services:** Mocked using Laravel's built-in fakes (Mail::fake, Queue::fake, Http::fake) and Mockery.
 - **Factories:** Every model has a corresponding factory for consistent test data generation.
 
-#### 10.3.2 Front-end Tests (Nuxt.js)
+#### 10.3.2 Front-end Tests (Next.js)
 
-| Test Type         | Scope                                              | Tools              |
-|-------------------|----------------------------------------------------|---------------------|
-| **Unit Tests**    | Composables, utility functions, Pinia stores        | Vitest              |
-| **Component Tests** | Individual Vue components (render, props, emits) | Vitest + Vue Test Utils |
-| **E2E Tests**     | Full user workflows in a browser                    | Playwright          |
+| Test Type         | Scope                                                    | Tools                        |
+|-------------------|----------------------------------------------------------|------------------------------|
+| **Unit Tests**    | Custom hooks, utility functions, Zustand stores           | Vitest                       |
+| **Component Tests** | Individual React components (render, props, interactions) | Vitest + React Testing Library |
+| **E2E Tests**     | Full user workflows in a browser                          | Playwright                   |
 
 - **API Mocking:** MSW (Mock Service Worker) for mocking API responses in component tests.
 - **Snapshot Tests:** Used sparingly for complex UI components to detect unintended visual changes.
@@ -1322,15 +1326,14 @@ koomky/
 │   ├── tests/
 │   ├── composer.json
 │   └── phpunit.xml
-├── frontend/                   # Nuxt.js application
-│   ├── assets/
-│   ├── components/
-│   ├── composables/
-│   ├── layouts/
-│   ├── pages/
-│   ├── stores/
+├── frontend/                   # Next.js application
+│   ├── app/                   # App Router (pages, layouts, routes)
+│   ├── components/            # Reusable React components (shadcn/ui + custom)
+│   ├── hooks/                 # Custom React hooks
+│   ├── lib/                   # Utilities, API client, Zustand stores
 │   ├── tests/
-│   ├── nuxt.config.ts
+│   ├── next.config.ts
+│   ├── tsconfig.json
 │   └── package.json
 ├── docker/
 │   ├── nginx/
@@ -1375,6 +1378,8 @@ stages:
 | **Coverage Check**        | Fail if back-end or front-end coverage < 80%                    |
 | **Build Docker Images**   | Build and tag images (only on `main` branch merges)             |
 
+> **Note:** `npm audit` references in the CI apply to `pnpm audit` as pnpm is the package manager.
+
 #### 11.3.2 PR Workflow
 
 1. Developer creates a feature branch from `main`.
@@ -1391,7 +1396,7 @@ Triggered on: merge to `main` (after CI passes).
 
 | Stage                  | Actions                                                        |
 |------------------------|----------------------------------------------------------------|
-| **Build**              | Build production Docker images for Laravel, Nuxt.js, Nginx     |
+| **Build**              | Build production Docker images for Laravel, Next.js, Nginx     |
 | **Tag**                | Tag images with commit SHA and `latest`                         |
 | **Push**               | Push images to container registry (GitHub Container Registry)   |
 | **Deploy**             | SSH to production server, pull new images, `docker compose up -d` |
@@ -1441,7 +1446,7 @@ Each phase MUST be fully completed and validated (all tests passing, coverage >=
 
 | Week  | Deliverables                                                          |
 |-------|-----------------------------------------------------------------------|
-| 1-2   | Project scaffolding: Docker setup, Laravel API skeleton, Nuxt.js skeleton, PostgreSQL schema, Redis config, CI pipeline |
+| 1-2   | Project scaffolding: Docker setup, Laravel API skeleton, Next.js skeleton, PostgreSQL schema, Redis config, CI pipeline |
 | 3-4   | Authentication system (registration, login, JWT, 2FA), user settings  |
 | 4-5   | Client management (full CRUD, contacts, tags, timeline, search)       |
 | 5-6   | Dashboard (basic version with client metrics), global search integration |
@@ -1568,7 +1573,8 @@ Each phase MUST be fully completed and validated (all tests passing, coverage >=
 | Document                       | Purpose                                               |
 |--------------------------------|-------------------------------------------------------|
 | Laravel Documentation          | Back-end framework reference                          |
-| Nuxt.js Documentation          | Front-end framework reference                         |
+| Next.js Documentation          | Front-end framework reference                         |
+| shadcn/ui Documentation        | UI component library reference                        |
 | Tailwind CSS Documentation     | Styling framework reference                           |
 | Meilisearch Documentation      | Search engine configuration and API reference         |
 | PostgreSQL Documentation       | Database administration and query reference            |
@@ -1646,7 +1652,7 @@ AWS_BUCKET=koomky-storage
 |------------------|------------------------------|------------------------|------------------------------|
 | `nginx`          | nginx:alpine                 | 80:80, 443:443         | Reverse proxy, TLS           |
 | `api`            | Custom (PHP 8.3-FPM)        | (internal) 9000        | Laravel API                  |
-| `frontend`       | Custom (Node 20)             | (internal) 3000        | Nuxt.js SSR                  |
+| `frontend`       | Custom (Node 20)             | (internal) 3000        | Next.js SSR                  |
 | `postgres`       | postgres:16-alpine           | (internal) 5432        | Primary database             |
 | `redis`          | redis:7-alpine               | (internal) 6379        | Cache, sessions, queues      |
 | `meilisearch`    | getmeili/meilisearch:latest  | (internal) 7700        | Search engine                |

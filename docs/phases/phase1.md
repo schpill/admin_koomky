@@ -56,7 +56,7 @@
 #### 4.1.1 Objectives
 - Fully operational Docker development environment.
 - Laravel API skeleton with routing, middleware, and base configuration.
-- Nuxt.js front-end skeleton with Tailwind CSS, Pinia, and layout system.
+- Next.js front-end skeleton with Tailwind CSS, Zustand, shadcn/ui, and layout system.
 - PostgreSQL database initialized with UUID extensions.
 - Redis connected for cache and sessions.
 - Meilisearch container running and accessible.
@@ -71,7 +71,7 @@
 | P1-BE-002 | Write `docker-compose.yml` with all 9 services (nginx, api, frontend, postgres, redis, meilisearch, queue-worker, scheduler, mailpit) | §15.4 |
 | P1-BE-003 | Write `docker/php/Dockerfile` — PHP 8.3-FPM with extensions: pdo_pgsql, redis, gd, intl, zip, bcmath, pcntl | §6.2.1 |
 | P1-BE-004 | Write `docker/node/Dockerfile` — Node 20 with pnpm                                   | §6.2.2   |
-| P1-BE-005 | Write `docker/nginx/default.conf` — reverse proxy routing `/api/*` → Laravel, `/*` → Nuxt | §6.2.6 |
+| P1-BE-005 | Write `docker/nginx/default.conf` — reverse proxy routing `/api/*` → Laravel, `/*` → Next.js | §6.2.6 |
 | P1-BE-006 | Write `docker/postgres/init.sql` — enable `uuid-ossp` and `pg_trgm` extensions       | §6.2.3   |
 | P1-BE-007 | Initialize Laravel 12.x project inside `backend/`                                     | §6.2.1   |
 | P1-BE-008 | Configure Laravel: database (pgsql), cache (redis), session (redis), queue (redis)    | §6.2.1   |
@@ -88,22 +88,22 @@
 
 | ID        | Task                                                                                  | PRD Ref  |
 |-----------|---------------------------------------------------------------------------------------|----------|
-| P1-FE-001 | Initialize Nuxt 3.x project inside `frontend/` with TypeScript                       | §6.2.2   |
-| P1-FE-002 | Configure Vite as the build tool                                                      | §6.2.2   |
-| P1-FE-003 | Install and configure Tailwind CSS 3.x with custom theme (colors, fonts, border radius from §7.2) | §7.2, §7.3 |
-| P1-FE-004 | Install Pinia for state management                                                    | §6.2.2   |
-| P1-FE-005 | Install VeeValidate + Zod for form validation                                         | §6.2.2   |
-| P1-FE-006 | Install Headless UI for accessible UI primitives                                      | §6.2.2   |
-| P1-FE-007 | Configure Vitest + Vue Test Utils for unit/component testing                          | §6.2.2   |
+| P1-FE-001 | Initialize Next.js 15.x project inside `frontend/` with TypeScript and App Router     | §6.2.2   |
+| P1-FE-002 | Configure Turbopack for development builds                                            | §6.2.2   |
+| P1-FE-003 | Install and configure Tailwind CSS 4.x with custom theme (colors, fonts, border radius from §7.2) | §7.2, §7.3 |
+| P1-FE-004 | Install Zustand for state management                                                  | §6.2.2   |
+| P1-FE-005 | Install react-hook-form + Zod for form validation                                     | §6.2.2   |
+| P1-FE-006 | Install and configure shadcn/ui (Radix UI + Tailwind CSS) for accessible UI components | §6.2.2  |
+| P1-FE-007 | Configure Vitest + React Testing Library for unit/component testing                   | §6.2.2   |
 | P1-FE-008 | Configure Playwright for E2E testing                                                  | §6.2.2   |
-| P1-FE-009 | Configure ESLint + Prettier                                                           | §6.2.2   |
+| P1-FE-009 | Configure ESLint (eslint-config-next)                                                 | §6.2.2   |
 | P1-FE-010 | Create default layout with sidebar navigation, top bar, and main content area (§7.4)  | §7.4     |
-| P1-FE-011 | Create `AuthLayout` (centered card, no sidebar) for login/register pages              | §7.4     |
-| P1-FE-012 | Create reusable base components: `AppButton`, `AppInput`, `AppSelect`, `AppTextarea`, `AppBadge`, `AppModal`, `AppDrawer`, `AppToast`, `AppEmptyState`, `AppPagination`, `AppDataTable` | §7.5 |
-| P1-FE-013 | Create `useApi` composable wrapping `ofetch` with JWT interceptor, refresh logic, error handling | §6.2.2 |
-| P1-FE-014 | Create `useAuth` Pinia store (token storage, user state, login/logout actions)        | §6.2.2   |
-| P1-FE-015 | Create `auth` middleware for protecting routes                                        | §6.2.2   |
-| P1-FE-016 | Set up Inter font (headings/body) and JetBrains Mono (monospace) via `@fontsource`    | §7.2     |
+| P1-FE-011 | Create auth layout (centered card, no sidebar) for login/register pages               | §7.4     |
+| P1-FE-012 | Create reusable base components via shadcn/ui: Button, Input, Select, Textarea, Badge, Dialog, Sheet, Toast (Sonner), EmptyState, Pagination, DataTable | §7.5 |
+| P1-FE-013 | Create `useApi` hook wrapping fetch with JWT interceptor, refresh logic, error handling | §6.2.2  |
+| P1-FE-014 | Create `useAuthStore` Zustand store (token storage, user state, login/logout actions)  | §6.2.2   |
+| P1-FE-015 | Create `auth` middleware for protecting routes (Next.js middleware)                    | §6.2.2   |
+| P1-FE-016 | Set up Inter font (headings/body) and JetBrains Mono (monospace) via `next/font`      | §7.2     |
 
 #### 4.1.4 DevOps Tasks
 
@@ -122,7 +122,7 @@
 #### 4.1.5 Deliverables Checklist
 
 - [ ] `docker compose up` starts all 9 services successfully.
-- [ ] `http://localhost` serves the Nuxt.js app with the default layout.
+- [ ] `http://localhost` serves the Next.js app with the default layout.
 - [ ] `http://localhost/api/v1/health` returns `200 OK` with service statuses.
 - [ ] `make test` runs both back-end and front-end tests.
 - [ ] CI pipeline passes on the initial scaffolding commit.
@@ -190,27 +190,27 @@
 
 | ID        | Task                                                                                  | PRD Ref       |
 |-----------|---------------------------------------------------------------------------------------|---------------|
-| P1-FE-020 | Create `pages/auth/login.vue` — email/password form, "forgot password" link, 2FA code input (conditional) | FR-AUTH-002, 006 |
-| P1-FE-021 | Create `pages/auth/register.vue` — name, email, password, password confirmation       | FR-AUTH-001   |
-| P1-FE-022 | Create `pages/auth/forgot-password.vue` — email input, success message                | FR-AUTH-008   |
-| P1-FE-023 | Create `pages/auth/reset-password.vue` — new password form (token from URL query)     | FR-AUTH-008   |
-| P1-FE-024 | Create `pages/settings/profile.vue` — name, email, avatar upload, password change     | FR-SET-001    |
-| P1-FE-025 | Create `pages/settings/business.vue` — company name, address, SIRET, APE, VAT, logo  | FR-SET-002    |
-| P1-FE-026 | Create `pages/settings/security.vue` — 2FA enable/disable with QR code display        | FR-AUTH-006   |
-| P1-FE-027 | Implement `useAuth` store: login(), register(), logout(), refreshToken(), user state, isAuthenticated | §6.2.2 |
-| P1-FE-028 | Implement `useApi` composable: auto-attach Bearer token, intercept 401 → attempt refresh → retry, redirect to login on refresh failure | §6.2.2 |
-| P1-FE-029 | Implement `auth` route middleware: redirect to `/auth/login` if not authenticated     | §6.2.2        |
-| P1-FE-030 | Implement `guest` route middleware: redirect to `/` if already authenticated           | §6.2.2        |
-| P1-FE-031 | Create toast notification system (success/error/warning/info, auto-dismiss 5s)        | NFR-USA-004   |
+| P1-FE-020 | Create `app/auth/login/page.tsx` — email/password form, "forgot password" link, 2FA code input (conditional) | FR-AUTH-002, 006 |
+| P1-FE-021 | Create `app/auth/register/page.tsx` — name, email, password, password confirmation    | FR-AUTH-001   |
+| P1-FE-022 | Create `app/auth/forgot-password/page.tsx` — email input, success message             | FR-AUTH-008   |
+| P1-FE-023 | Create `app/auth/reset-password/page.tsx` — new password form (token from URL query)  | FR-AUTH-008   |
+| P1-FE-024 | Create `app/settings/profile/page.tsx` — name, email, avatar upload, password change  | FR-SET-001    |
+| P1-FE-025 | Create `app/settings/business/page.tsx` — company name, address, SIRET, APE, VAT, logo | FR-SET-002  |
+| P1-FE-026 | Create `app/settings/security/page.tsx` — 2FA enable/disable with QR code display     | FR-AUTH-006   |
+| P1-FE-027 | Implement `useAuthStore` Zustand store: login(), register(), logout(), refreshToken(), user state, isAuthenticated | §6.2.2 |
+| P1-FE-028 | Implement `useApi` hook: auto-attach Bearer token, intercept 401 → attempt refresh → retry, redirect to login on refresh failure | §6.2.2 |
+| P1-FE-029 | Implement Next.js middleware: redirect to `/auth/login` if not authenticated           | §6.2.2        |
+| P1-FE-030 | Implement guest guard: redirect to `/` if already authenticated                        | §6.2.2        |
+| P1-FE-031 | Configure Sonner for toast notifications (success/error/warning/info, auto-dismiss 5s) | NFR-USA-004  |
 
 #### 4.2.6 Front-end Tests
 
 | Test File                                    | Test Cases                                                  |
 |----------------------------------------------|-------------------------------------------------------------|
 | `tests/unit/stores/auth.test.ts`             | login sets token + user, logout clears state, refresh updates token |
-| `tests/unit/composables/useApi.test.ts`      | Attaches bearer token, retries on 401, redirects on refresh fail |
-| `tests/components/auth/LoginForm.test.ts`    | Renders fields, validates required, calls login action, shows 2FA input |
-| `tests/components/auth/RegisterForm.test.ts` | Renders fields, validates password complexity, calls register action |
+| `tests/unit/hooks/useApi.test.ts`            | Attaches bearer token, retries on 401, redirects on refresh fail |
+| `tests/components/auth/LoginForm.test.tsx`   | Renders fields, validates required, calls login action, shows 2FA input |
+| `tests/components/auth/RegisterForm.test.tsx` | Renders fields, validates password complexity, calls register action |
 | `tests/e2e/auth/login.spec.ts`              | Full login flow, invalid credentials, account lockout message |
 | `tests/e2e/auth/register.spec.ts`           | Full registration flow, navigate to login after success      |
 
@@ -293,18 +293,18 @@
 
 | ID        | Task                                                                                  | PRD Ref       |
 |-----------|---------------------------------------------------------------------------------------|---------------|
-| P1-FE-040 | Create `stores/clients.ts` Pinia store — CRUD actions, pagination state, filters      | §6.2.2        |
-| P1-FE-041 | Create `pages/clients/index.vue` — data table with columns: reference, company, name, email, phone, tags, created date. Sortable, filterable, paginated. | FR-CLI-002 |
-| P1-FE-042 | Create `pages/clients/create.vue` — form with all client fields, tag selector         | FR-CLI-001    |
-| P1-FE-043 | Create `pages/clients/[id].vue` — client detail page with tabs: Overview, Contacts, Timeline, Projects (empty), Finances (empty) | FR-CLI-003 |
-| P1-FE-044 | Create `pages/clients/[id]/edit.vue` — edit form pre-filled with client data          | FR-CLI-004    |
-| P1-FE-045 | Create `components/clients/ClientContactList.vue` — list contacts, add/edit/delete inline or via drawer | FR-CLI-009 → 012 |
-| P1-FE-046 | Create `components/clients/ClientTimeline.vue` — chronological activity feed with type icons and filter chips | FR-CLI-013 → 016 |
-| P1-FE-047 | Create `components/clients/ClientTagSelector.vue` — multi-select dropdown with color dots, create new tag inline | FR-CLI-017 → 019 |
-| P1-FE-048 | Create `components/common/ConfirmationModal.vue` — reusable for destructive actions   | NFR-USA-002   |
+| P1-FE-040 | Create `lib/stores/clients.ts` Zustand store — CRUD actions, pagination state, filters | §6.2.2       |
+| P1-FE-041 | Create `app/clients/page.tsx` — data table with columns: reference, company, name, email, phone, tags, created date. Sortable, filterable, paginated. | FR-CLI-002 |
+| P1-FE-042 | Create `app/clients/create/page.tsx` — form with all client fields, tag selector      | FR-CLI-001    |
+| P1-FE-043 | Create `app/clients/[id]/page.tsx` — client detail page with tabs: Overview, Contacts, Timeline, Projects (empty), Finances (empty) | FR-CLI-003 |
+| P1-FE-044 | Create `app/clients/[id]/edit/page.tsx` — edit form pre-filled with client data       | FR-CLI-004    |
+| P1-FE-045 | Create `components/clients/client-contact-list.tsx` — list contacts, add/edit/delete inline or via Sheet (shadcn/ui) | FR-CLI-009 → 012 |
+| P1-FE-046 | Create `components/clients/client-timeline.tsx` — chronological activity feed with type icons and filter chips | FR-CLI-013 → 016 |
+| P1-FE-047 | Create `components/clients/client-tag-selector.tsx` — multi-select dropdown with color dots, create new tag inline | FR-CLI-017 → 019 |
+| P1-FE-048 | Create `components/common/confirmation-dialog.tsx` — reusable AlertDialog (shadcn/ui) for destructive actions | NFR-USA-002 |
 | P1-FE-049 | Implement soft-delete UI: archive button with confirmation, "Archived" badge, restore action | FR-CLI-005 |
 | P1-FE-050 | Implement client list filter bar: status toggle (active/archived/all), tag filter multi-select, search input | FR-CLI-002, 019 |
-| P1-FE-051 | Create `components/search/CommandPalette.vue` — Ctrl+K triggered modal, debounced search, results grouped by type, keyboard navigation | FR-SRC-001, 005 |
+| P1-FE-051 | Create `components/search/command-palette.tsx` — Ctrl+K triggered Command (shadcn/ui cmdk), debounced search, results grouped by type, keyboard navigation | FR-SRC-001, 005 |
 | P1-FE-052 | Integrate command palette into default layout (accessible from any page)              | FR-SRC-001    |
 | P1-FE-053 | Implement empty states for: no clients, no contacts, no activities, no search results | NFR-USA-008   |
 
@@ -312,14 +312,14 @@
 
 | Test File                                          | Test Cases                                                |
 |----------------------------------------------------|-----------------------------------------------------------|
-| `tests/unit/stores/clients.test.ts`                | Fetch clients, create/update/delete, pagination, filters   |
-| `tests/components/clients/ClientContactList.test.ts` | Render contacts, add new, set primary, delete            |
-| `tests/components/clients/ClientTimeline.test.ts`  | Render activities, filter by type, empty state             |
-| `tests/components/clients/ClientTagSelector.test.ts` | Select tags, create inline, remove tag                  |
-| `tests/components/search/CommandPalette.test.ts`   | Opens on Ctrl+K, searches on input, navigates results, closes on Escape |
-| `tests/e2e/clients/client-crud.spec.ts`            | Create client, view in list, edit, archive, restore        |
-| `tests/e2e/clients/client-contacts.spec.ts`        | Add contact, set primary, delete contact                   |
-| `tests/e2e/search/global-search.spec.ts`           | Open palette, search client name, navigate to result       |
+| `tests/unit/stores/clients.test.ts`                    | Fetch clients, create/update/delete, pagination, filters   |
+| `tests/components/clients/client-contact-list.test.tsx` | Render contacts, add new, set primary, delete            |
+| `tests/components/clients/client-timeline.test.tsx`    | Render activities, filter by type, empty state             |
+| `tests/components/clients/client-tag-selector.test.tsx` | Select tags, create inline, remove tag                  |
+| `tests/components/search/command-palette.test.tsx`     | Opens on Ctrl+K, searches on input, navigates results, closes on Escape |
+| `tests/e2e/clients/client-crud.spec.ts`                | Create client, view in list, edit, archive, restore        |
+| `tests/e2e/clients/client-contacts.spec.ts`            | Add contact, set primary, delete contact                   |
+| `tests/e2e/search/global-search.spec.ts`               | Open palette, search client name, navigate to result       |
 
 ---
 
@@ -349,13 +349,13 @@
 
 | ID        | Task                                                                                  | PRD Ref       |
 |-----------|---------------------------------------------------------------------------------------|---------------|
-| P1-FE-060 | Create `pages/index.vue` (Dashboard) — widget grid layout                             | FR-DASH-001   |
-| P1-FE-061 | Create `components/dashboard/MetricCard.vue` — icon, label, value, trend indicator    | FR-DASH-002, 003 |
-| P1-FE-062 | Create `components/dashboard/RecentActivityWidget.vue` — last 5 activities with links | FR-DASH-004   |
-| P1-FE-063 | Create `components/dashboard/UpcomingDeadlinesWidget.vue` — placeholder for Phase 2   | FR-DASH-005   |
+| P1-FE-060 | Create `app/(dashboard)/page.tsx` (Dashboard) — widget grid layout                    | FR-DASH-001   |
+| P1-FE-061 | Create `components/dashboard/metric-card.tsx` — icon, label, value, trend indicator   | FR-DASH-002, 003 |
+| P1-FE-062 | Create `components/dashboard/recent-activity-widget.tsx` — last 5 activities with links | FR-DASH-004 |
+| P1-FE-063 | Create `components/dashboard/upcoming-deadlines-widget.tsx` — placeholder for Phase 2 | FR-DASH-005   |
 | P1-FE-064 | Implement skeleton loaders for dashboard widgets (independent loading)                | FR-DASH-008, NFR-USA-006 |
 | P1-FE-065 | Implement responsive layout for dashboard (1 col mobile, 2 col tablet, 3 col desktop) | NFR-USA-001 |
-| P1-FE-066 | Implement dark mode toggle with `dark:` Tailwind classes, persist preference in localStorage | §7.1 |
+| P1-FE-066 | Implement dark mode toggle via next-themes with `dark:` Tailwind classes              | §7.1          |
 | P1-FE-067 | Implement CSV import UI (file upload, preview, confirm) on clients page               | FR-SET-007    |
 | P1-FE-068 | Run Vitest coverage, ensure >= 80%                                                    | §10.2         |
 | P1-FE-069 | Run Lighthouse audit, address issues (target: Performance > 90, Accessibility > 90)   | §10.3.3       |
