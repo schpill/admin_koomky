@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  --color-primary-sand: oklch(0.78 0.06 85);
+  --color-secondary-charcoal: oklch(0.25 0.02 255);
+  --color-accent-steel: oklch(0.45 0.05 240);
+}
+
+:root {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.12 0.02 255);
+  --primary: var(--color-primary-sand);
+  --secondary: var(--color-secondary-charcoal);
+}
+
+.dark {
+  --background: oklch(0.12 0.02 255);
+  --foreground: oklch(0.98 0 0);
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+}

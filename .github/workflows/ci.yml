@@ -1,0 +1,66 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: koomky_test
+          POSTGRES_USER: koomky
+          POSTGRES_PASSWORD: secret
+        ports:
+          - 5432:5432
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: pdo_pgsql, mbstring, exif, pcntl, bcmath, gd, zip, intl
+      - name: Install Dependencies
+        run: composer install --working-dir=backend
+      - name: Run Lint
+        run: backend/vendor/bin/pint --test --path=backend
+      - name: Run PHPStan
+        run: backend/vendor/bin/phpstan analyse -c backend/phpstan.neon
+      - name: Run Tests
+        run: cd backend && ./vendor/bin/pest --coverage --min=80
+        env:
+          DB_CONNECTION: pgsql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 5432
+          DB_DATABASE: koomky_test
+          DB_USERNAME: koomky
+          DB_PASSWORD: secret
+
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 10
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+          cache-dependency-path: frontend/pnpm-lock.yaml
+      - name: Install Dependencies
+        run: cd frontend && pnpm install
+      - name: Run Lint
+        run: cd frontend && pnpm lint
+      - name: Run Tests
+        run: cd frontend && pnpm vitest run --coverage

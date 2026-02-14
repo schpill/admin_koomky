@@ -1,0 +1,29 @@
+{
+  "name": "admin_koomky",
+  "version": "1.0.0",
+  "description": "Koomky monorepo root",
+  "main": "index.js",
+  "scripts": {
+    "prepare": "husky",
+    "lint": "pnpm -r lint",
+    "test": "pnpm -r test"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.28.2",
+  "devDependencies": {
+    "@commitlint/cli": "^20.4.1",
+    "@commitlint/config-conventional": "^20.4.1",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7"
+  },
+  "lint-staged": {
+    "backend/**/*.php": [
+      "docker compose run --rm api ./vendor/bin/pint"
+    ],
+    "frontend/**/*.{js,jsx,ts,tsx,vue}": [
+      "docker compose run --rm frontend pnpm lint --fix"
+    ]
+  }
+}

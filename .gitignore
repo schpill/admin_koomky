@@ -1,77 +1,41 @@
-# =============================================================================
-# Koomky - Git Ignore
-# =============================================================================
+# Node
+node_modules/
+.npm/
+.pnpm-store/
+.next/
+out/
+build/
+dist/
 
-# -----------------------------------------------------------------------------
-# Dependencies
-# -----------------------------------------------------------------------------
-/backend/vendor/
-/frontend/node_modules/
-/frontend/.nuxt/
-/frontend/.output/
+# PHP
+backend/vendor/
+backend/.env
+backend/.env.example
+backend/storage/*.key
+backend/public/storage
+backend/public/hot
+backend/public/build
+backend/database/*.sqlite
 
-# -----------------------------------------------------------------------------
-# Environment files
-# -----------------------------------------------------------------------------
-.env
-.env.backup
-.env.local
-.env.*.local
+# Docker
+.docker-data/
 
-# -----------------------------------------------------------------------------
-# Laravel specific
-# -----------------------------------------------------------------------------
-/backend/storage/
-/backend/bootstrap/cache/
-/backend/bootstrap/services.php
-/backend/vendor/
-/backend/public/hot
-/backend/public/storage
-/backend/public/build
-
-# -----------------------------------------------------------------------------
-# Nuxt specific
-# -----------------------------------------------------------------------------
-/frontend/.nitro/
-/frontend/dist/
-/frontend/.cache/
-
-# -----------------------------------------------------------------------------
-# IDE
-# -----------------------------------------------------------------------------
-.idea/
-.vscode/
-*.swp
-*.swo
-*~
-.DS_Store
-
-# -----------------------------------------------------------------------------
-# Logs
-# -----------------------------------------------------------------------------
-*.log
-/backend/storage/logs/
-/nginx/logs/
-
-# -----------------------------------------------------------------------------
-# Testing
-# -----------------------------------------------------------------------------
-/backend/storage/testing/
-/backend/.phpunit.result.cache
-/backend/.phpunit.cache
-/frontend/coverage/
-
-# -----------------------------------------------------------------------------
-# Build artifacts
-# -----------------------------------------------------------------------------
-/backend/public/build
-/backend/public/hot
-/backend/public/css
-/backend/public/js
-/frontend/.turbo
-
-# -----------------------------------------------------------------------------
 # OS
-# -----------------------------------------------------------------------------
 .DS_Store
 Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Misc
+.env
+.env.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+.husky/_/
