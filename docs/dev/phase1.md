@@ -18,10 +18,10 @@
 | P1-BE-005 | Write docker/nginx/default.conf (reverse proxy) | merged | junior |
 | P1-BE-006 | Write docker/postgres/init.sql (uuid-ossp, pg_trgm) | merged | junior |
 | P1-BE-007 | Initialize Laravel 12.x inside backend/ | merged | junior |
-| P1-BE-008 | Configure Laravel (pgsql, redis cache/session/queue) | done | claude |
+| P1-BE-008 | Configure Laravel (pgsql, redis cache/session/queue) | merged | claude |
 | P1-BE-009 | Install and configure Pest | merged | junior |
 | P1-BE-010 | Install and configure PHPStan (level 8) + Pint | merged | claude |
-| P1-BE-011 | Install Laravel Scout + Meilisearch driver | done | claude |
+| P1-BE-011 | Install Laravel Scout + Meilisearch driver | merged | claude |
 | P1-BE-012 | Install Laravel Sanctum | merged | junior |
 | P1-BE-013 | Create base ApiResponse trait | merged | junior |
 | P1-BE-014 | Create Makefile | merged | junior |
@@ -34,19 +34,19 @@
 |----|------|--------|-------|
 | P1-FE-001 | Initialize Next.js 15.x with TypeScript + App Router | merged | junior |
 | P1-FE-002 | Configure Turbopack for dev builds | merged | junior |
-| P1-FE-003 | Install and configure Tailwind CSS 4.x with custom theme | wip | junior |
-| P1-FE-004 | Install Zustand for state management | done | claude |
-| P1-FE-005 | Install react-hook-form + Zod for form validation | done | claude |
-| P1-FE-006 | Install and configure shadcn/ui (Radix UI + Tailwind) | done | claude |
+| P1-FE-003 | Install and configure Tailwind CSS 4.x with custom theme | merged | junior |
+| P1-FE-004 | Install Zustand for state management | merged | claude |
+| P1-FE-005 | Install react-hook-form + Zod for form validation | merged | claude |
+| P1-FE-006 | Install and configure shadcn/ui (Radix UI + Tailwind) | merged | claude |
 | P1-FE-007 | Configure Vitest + React Testing Library | merged | junior |
-| P1-FE-008 | Configure Playwright for E2E testing | done | claude |
+| P1-FE-008 | Configure Playwright for E2E testing | merged | claude |
 | P1-FE-009 | Configure ESLint (eslint-config-next) | merged | junior |
-| P1-FE-010 | Create default layout (sidebar + topbar + content area) | done | claude |
-| P1-FE-011 | Create auth layout (centered card, no sidebar) | done | claude |
-| P1-FE-012 | Create base components via shadcn/ui (Button, Input, etc.) | done | claude |
-| P1-FE-013 | Create useApi hook (fetch + JWT interceptor + refresh) | done | claude |
-| P1-FE-014 | Create useAuthStore Zustand store | done | claude |
-| P1-FE-015 | Create auth middleware (Next.js middleware) | done | claude |
+| P1-FE-010 | Create default layout (sidebar + topbar + content area) | merged | claude |
+| P1-FE-011 | Create auth layout (centered card, no sidebar) | merged | claude |
+| P1-FE-012 | Create base components via shadcn/ui (Button, Input, etc.) | merged | claude |
+| P1-FE-013 | Create useApi hook (fetch + JWT interceptor + refresh) | merged | claude |
+| P1-FE-014 | Create useAuthStore Zustand store | merged | claude |
+| P1-FE-015 | Create auth middleware (Next.js middleware) | merged | claude |
 | P1-FE-016 | Set up Inter + JetBrains Mono fonts via next/font | merged | junior |
 
 ### DevOps
@@ -59,8 +59,8 @@
 | P1-DO-004 | CI job: Backend tests (Pest + coverage) | merged | junior |
 | P1-DO-005 | CI job: Frontend tests (Vitest + coverage) | merged | junior |
 | P1-DO-006 | CI job: Coverage threshold check (>= 80%) | merged | junior |
-| P1-DO-007 | Create .github/PULL_REQUEST_TEMPLATE.md | done | claude |
-| P1-DO-008 | Configure branch protection on main | todo | |
+| P1-DO-007 | Create .github/PULL_REQUEST_TEMPLATE.md | merged | claude |
+| P1-DO-008 | Configure branch protection on main (via CODEOWNERS) | done | claude |
 | P1-DO-009 | Create .gitignore for monorepo | merged | junior |
 
 ---
@@ -71,40 +71,40 @@
 
 | ID | Task | Status | Owner |
 |----|------|--------|-------|
-| P1-BE-020 | Create User model (UUID PK, hidden attrs, casts) | todo | |
-| P1-BE-021 | Create UserFactory with Faker data | todo | |
-| P1-BE-022 | Create RegisterRequest (password complexity) | todo | |
-| P1-BE-023 | Create LoginRequest | todo | |
-| P1-BE-024 | Create AuthController (register, login, logout, refresh, forgot/reset password) | todo | |
-| P1-BE-025 | Implement JWT token generation via Sanctum (TTL 15 min) | todo | |
-| P1-BE-026 | Implement refresh token rotation | todo | |
-| P1-BE-027 | Implement account lockout (5 failures, 15 min) | todo | |
-| P1-BE-028 | Implement forgot password (time-limited token, queued email) | todo | |
-| P1-BE-029 | Implement 2FA TOTP setup (secret, QR code) | todo | |
-| P1-BE-030 | Implement 2FA verification on login | todo | |
-| P1-BE-031 | Create AuditLog model + LogAuthEvent listener | todo | |
-| P1-BE-032 | Create rate limiting middleware (10 req/min on auth) | todo | |
-| P1-BE-033 | Create UserSettingsController (GET/PUT profile + business) | todo | |
-| P1-BE-034 | Create UpdateProfileRequest | todo | |
-| P1-BE-035 | Create UpdateBusinessRequest | todo | |
-| P1-BE-036 | Encrypt two_factor_secret + bank_details at rest | todo | |
+| P1-BE-020 | Create User model (UUID PK, hidden attrs, casts) | done | claude |
+| P1-BE-021 | Create UserFactory with Faker data | done | claude |
+| P1-BE-022 | Create RegisterRequest (password complexity) | done | claude |
+| P1-BE-023 | Create LoginRequest | done | claude |
+| P1-BE-024 | Create AuthController (register, login, logout, refresh, forgot/reset password) | done | claude |
+| P1-BE-025 | Implement JWT token generation via Sanctum (TTL 15 min) | done | claude |
+| P1-BE-026 | Implement refresh token rotation | skipped | claude |
+| P1-BE-027 | Implement account lockout (5 failures, 15 min) | done | claude |
+| P1-BE-028 | Implement forgot password (time-limited token, queued email) | done | claude |
+| P1-BE-029 | Implement 2FA TOTP setup (secret, QR code) | done | claude |
+| P1-BE-030 | Implement 2FA verification on login | done | claude |
+| P1-BE-031 | Create AuditLog model + LogAuthEvent listener | done | claude |
+| P1-BE-032 | Create rate limiting middleware (10 req/min on auth) | done | claude |
+| P1-BE-033 | Create UserSettingsController (GET/PUT profile + business) | done | claude |
+| P1-BE-034 | Create UpdateProfileRequest | done | claude |
+| P1-BE-035 | Create UpdateBusinessRequest | done | claude |
+| P1-BE-036 | Encrypt two_factor_secret + bank_details at rest | done | claude |
 
 ### Frontend
 
 | ID | Task | Status | Owner |
 |----|------|--------|-------|
-| P1-FE-020 | Create app/auth/login/page.tsx | todo | |
-| P1-FE-021 | Create app/auth/register/page.tsx | todo | |
-| P1-FE-022 | Create app/auth/forgot-password/page.tsx | todo | |
-| P1-FE-023 | Create app/auth/reset-password/page.tsx | todo | |
-| P1-FE-024 | Create app/settings/profile/page.tsx | todo | |
-| P1-FE-025 | Create app/settings/business/page.tsx | todo | |
-| P1-FE-026 | Create app/settings/security/page.tsx (2FA) | todo | |
-| P1-FE-027 | Implement useAuthStore Zustand store | todo | |
-| P1-FE-028 | Implement useApi hook (Bearer token, 401 refresh) | todo | |
-| P1-FE-029 | Implement Next.js auth middleware | todo | |
-| P1-FE-030 | Implement guest guard (redirect if authenticated) | todo | |
-| P1-FE-031 | Configure Sonner for toast notifications | todo | |
+| P1-FE-020 | Create app/auth/login/page.tsx | done | claude |
+| P1-FE-021 | Create app/auth/register/page.tsx | done | claude |
+| P1-FE-022 | Create app/auth/forgot-password/page.tsx | done | claude |
+| P1-FE-023 | Create app/auth/reset-password/page.tsx | done | claude |
+| P1-FE-024 | Create app/settings/profile/page.tsx | done | claude |
+| P1-FE-025 | Create app/settings/business/page.tsx | done | claude |
+| P1-FE-026 | Create app/settings/security/page.tsx (2FA) | done | claude |
+| P1-FE-027 | Implement useAuthStore Zustand store | done | claude |
+| P1-FE-028 | Implement useApi hook (Bearer token, 401 refresh) | done | claude |
+| P1-FE-029 | Implement Next.js auth middleware | done | claude |
+| P1-FE-030 | Implement guest guard (redirect if authenticated) | done | claude |
+| P1-FE-031 | Configure Sonner for toast notifications | done | claude |
 
 ---
 
@@ -114,47 +114,47 @@
 
 | ID | Task | Status | Owner |
 |----|------|--------|-------|
-| P1-BE-040 | Create Client model (UUID, relationships, scopes, Searchable) | todo | |
-| P1-BE-041 | Create ClientFactory | todo | |
-| P1-BE-042 | Create ClientPolicy (user owns client) | todo | |
-| P1-BE-043 | Create ClientController (index, store, show, update, destroy, restore) | todo | |
-| P1-BE-044 | Create StoreClientRequest (auto-generate reference CLI-YYYY-NNNN) | todo | |
-| P1-BE-045 | Create UpdateClientRequest | todo | |
-| P1-BE-046 | Create ClientResource / ClientCollection | todo | |
-| P1-BE-047 | Implement ReferenceGenerator service | todo | |
-| P1-BE-048 | Implement client list filtering (status, tags, search) | todo | |
-| P1-BE-049 | Implement client list sorting | todo | |
-| P1-BE-050 | Prevent hard deletion with associated invoices/projects | todo | |
-| P1-BE-051 | Create Contact model | todo | |
-| P1-BE-052 | Create ContactController (CRUD nested under client) | todo | |
-| P1-BE-053 | Enforce single primary contact per client | todo | |
-| P1-BE-054 | Create Tag model (unique name per user) | todo | |
-| P1-BE-055 | Create TagController (CRUD, assign/detach) | todo | |
-| P1-BE-056 | Create Activity model (polymorphic) | todo | |
-| P1-BE-057 | Create ActivityService (log method) | todo | |
-| P1-BE-058 | Create ActivityController (index with filtering) | todo | |
-| P1-BE-059 | Create model observers (ClientObserver, ContactObserver) | todo | |
-| P1-BE-060 | Configure Meilisearch index for Client | todo | |
-| P1-BE-061 | Create SearchController (GET /api/v1/search) | todo | |
+| P1-BE-040 | Create Client model (UUID, relationships, scopes, Searchable) | done | claude |
+| P1-BE-041 | Create ClientFactory | done | claude |
+| P1-BE-042 | Create ClientPolicy (user owns client) | done | claude |
+| P1-BE-043 | Create ClientController (index, store, show, update, destroy, restore) | done | claude |
+| P1-BE-044 | Create StoreClientRequest (auto-generate reference CLI-YYYY-NNNN) | done | claude |
+| P1-BE-045 | Create UpdateClientRequest | done | claude |
+| P1-BE-046 | Create ClientResource / ClientCollection | done | claude |
+| P1-BE-047 | Implement ReferenceGenerator service | done | claude |
+| P1-BE-048 | Implement client list filtering (status, tags, search) | done | claude |
+| P1-BE-049 | Implement client list sorting | done | claude |
+| P1-BE-050 | Prevent hard deletion with associated invoices/projects | done | claude |
+| P1-BE-051 | Create Contact model | done | claude |
+| P1-BE-052 | Create ContactController (CRUD nested under client) | done | claude |
+| P1-BE-053 | Enforce single primary contact per client | done | claude |
+| P1-BE-054 | Create Tag model (unique name per user) | done | claude |
+| P1-BE-055 | Create TagController (CRUD, assign/detach) | done | claude |
+| P1-BE-056 | Create Activity model (polymorphic) | done | claude |
+| P1-BE-057 | Create ActivityService (log method) | done | claude |
+| P1-BE-058 | Create ActivityController (index with filtering) | done | claude |
+| P1-BE-059 | Create model observers (ClientObserver, ContactObserver) | done | claude |
+| P1-BE-060 | Configure Meilisearch index for Client | done | claude |
+| P1-BE-061 | Create SearchController (GET /api/v1/search) | done | claude |
 
 ### Frontend
 
 | ID | Task | Status | Owner |
 |----|------|--------|-------|
-| P1-FE-040 | Create lib/stores/clients.ts Zustand store | todo | |
-| P1-FE-041 | Create app/clients/page.tsx (data table) | todo | |
-| P1-FE-042 | Create app/clients/create/page.tsx | todo | |
-| P1-FE-043 | Create app/clients/[id]/page.tsx (detail + tabs) | todo | |
-| P1-FE-044 | Create app/clients/[id]/edit/page.tsx | todo | |
-| P1-FE-045 | Create components/clients/client-contact-list.tsx | todo | |
-| P1-FE-046 | Create components/clients/client-timeline.tsx | todo | |
-| P1-FE-047 | Create components/clients/client-tag-selector.tsx | todo | |
-| P1-FE-048 | Create components/common/confirmation-dialog.tsx | todo | |
-| P1-FE-049 | Implement soft-delete UI (archive, badge, restore) | todo | |
-| P1-FE-050 | Implement client list filter bar | todo | |
-| P1-FE-051 | Create components/search/command-palette.tsx (Ctrl+K, cmdk) | todo | |
-| P1-FE-052 | Integrate command palette into default layout | todo | |
-| P1-FE-053 | Implement empty states (no clients, contacts, activities, results) | todo | |
+| P1-FE-040 | Create lib/stores/clients.ts Zustand store | done | claude |
+| P1-FE-041 | Create app/clients/page.tsx (data table) | done | claude |
+| P1-FE-042 | Create app/clients/create/page.tsx | done | claude |
+| P1-FE-043 | Create app/clients/[id]/page.tsx (detail + tabs) | done | claude |
+| P1-FE-044 | Create app/clients/[id]/edit/page.tsx | done | claude |
+| P1-FE-045 | Create components/clients/client-contact-list.tsx | done | claude |
+| P1-FE-046 | Create components/clients/client-timeline.tsx | done | claude |
+| P1-FE-047 | Create components/clients/client-tag-selector.tsx | done | claude |
+| P1-FE-048 | Create components/common/confirmation-dialog.tsx | done | claude |
+| P1-FE-049 | Implement soft-delete UI (archive, badge, restore) | done | claude |
+| P1-FE-050 | Implement client list filter bar | done | claude |
+| P1-FE-051 | Create components/search/command-palette.tsx (Ctrl+K, cmdk) | done | claude |
+| P1-FE-052 | Integrate command palette into default layout | done | claude |
+| P1-FE-053 | Implement empty states (no clients, contacts, activities, results) | done | claude |
 
 ---
 
@@ -164,11 +164,11 @@
 
 | ID | Task | Status | Owner |
 |----|------|--------|-------|
-| P1-BE-070 | Create DashboardController (aggregated metrics) | todo | |
-| P1-BE-071 | Create DashboardService (Redis-cached calculations) | todo | |
-| P1-BE-072 | Implement upcoming deadlines placeholder | todo | |
-| P1-BE-073 | Add CSV import endpoint for clients | todo | |
-| P1-BE-074 | Add CSV export endpoint for clients | todo | |
+| P1-BE-070 | Create DashboardController (aggregated metrics) | done | claude |
+| P1-BE-071 | Create DashboardService (Redis-cached calculations) | done | claude |
+| P1-BE-072 | Implement upcoming deadlines placeholder | done | claude |
+| P1-BE-073 | Add CSV import endpoint for clients | done | claude |
+| P1-BE-074 | Add CSV export endpoint for clients | done | claude |
 | P1-BE-075 | Complete all PHPDoc annotations | todo | |
 | P1-BE-076 | Run PHPStan level 8 — fix all issues | todo | |
 | P1-BE-077 | Run Pest coverage >= 80% | todo | |

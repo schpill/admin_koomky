@@ -1,0 +1,30 @@
+<?php
+
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Auth\Events\Lockout;
+
+uses(RefreshDatabase::class);
+
+test('user is locked out after too many failed login attempts', function () {
+    Event::fake([Lockout::class]);
+    $user = User::factory()->create();
+
+    // 5 failed attempts
+    for ($i = 0; $i < 5; $i++) {
+        $this->postJson('/api/v1/auth/login', [
+            'email' => $user->email,
+            'password' => 'wrong-password',
+        ])->assertStatus(401);
+    }
+
+    // 6th attempt should be locked out
+    $response = $this->postJson('/api/v1/auth/login', [
+        'email' => $user->email,
+        'password' => 'wrong-password',
+    ]);
+
+    $response->assertStatus(429);
+    Event::assertDispatched(Lockout::class);
+});

@@ -1,41 +1,76 @@
-import { DashboardLayout } from "@/components/layout/dashboard-layout";
+"use client";
+
+import { useEffect } from "react";
+import { Users, FolderKanban, FileText, CreditCard } from "lucide-react";
+import { MetricCard } from "@/components/dashboard/metric-card";
+import { RecentActivityWidget } from "@/components/dashboard/recent-activity-widget";
+import { UpcomingDeadlinesWidget } from "@/components/dashboard/upcoming-deadlines-widget";
+import { useDashboardStore } from "@/lib/stores/dashboard";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function DashboardPage() {
-  return (
-    <DashboardLayout>
+  const { stats, isLoading, fetchStats } = useDashboardStore();
+
+  useEffect(() => {
+    fetchStats();
+  }, [fetchStats]);
+
+  if (isLoading && !stats) {
+    return (
       <div className="space-y-6">
         <h1 className="text-3xl font-bold">Dashboard</h1>
-
-        {/* Metrics Grid - Placeholder */}
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          <div className="rounded-lg border bg-card p-6">
-            <h3 className="text-sm font-medium text-muted-foreground">
-              Total Clients
-            </h3>
-            <p className="text-2xl font-bold">0</p>
-          </div>
-          <div className="rounded-lg border bg-card p-6">
-            <h3 className="text-sm font-medium text-muted-foreground">
-              Active Projects
-            </h3>
-            <p className="text-2xl font-bold">0</p>
-          </div>
-          <div className="rounded-lg border bg-card p-6">
-            <h3 className="text-sm font-medium text-muted-foreground">
-              Pending Invoices
-            </h3>
-            <p className="text-2xl font-bold">0</p>
-          </div>
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          {[1, 2, 3, 4].map((i) => (
+            <Skeleton key={i} className="h-24 w-full" />
+          ))}
         </div>
-
-        {/* Recent Activity - Placeholder */}
-        <div className="rounded-lg border bg-card p-6">
-          <h3 className="text-lg font-semibold">Recent Activity</h3>
-          <p className="text-sm text-muted-foreground mt-2">
-            No recent activity to display.
-          </p>
+        <div className="grid gap-6 md:grid-cols-3">
+          <Skeleton className="h-64 md:col-span-2" />
+          <Skeleton className="h-64 md:col-span-1" />
         </div>
       </div>
-    </DashboardLayout>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <h1 className="text-3xl font-bold">Dashboard</h1>
+
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <MetricCard
+          title="Total Clients"
+          value={stats?.total_clients || 0}
+          icon={<Users className="h-4 w-4" />}
+          description="Directly managed"
+        />
+        <MetricCard
+          title="Active Projects"
+          value={stats?.active_projects || 0}
+          icon={<FolderKanban className="h-4 w-4" />}
+          description="In progress"
+        />
+        <MetricCard
+          title="Pending Invoices"
+          value={stats?.pending_invoices_amount || 0}
+          icon={<FileText className="h-4 w-4" />}
+          description="Amount to collect"
+        />
+        <MetricCard
+          title="Monthly Revenue"
+          value="€0.00"
+          icon={<CreditCard className="h-4 w-4" />}
+          description="Last 30 days"
+        />
+      </div>
+
+      <div className="grid gap-6 lg:grid-cols-3">
+        <div className="lg:col-span-2">
+          <RecentActivityWidget activities={stats?.recent_activities || []} />
+        </div>
+        <div className="lg:col-span-1">
+          <UpcomingDeadlinesWidget />
+        </div>
+      </div>
+    </div>
   );
 }

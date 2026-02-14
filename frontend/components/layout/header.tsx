@@ -1,9 +1,9 @@
 "use client";
 
-import { Bell, Search, Moon, Sun, User } from "lucide-react";
+import { Bell, Moon, Sun, User } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { CommandPalette } from "@/components/search/command-palette";
 
 export function Header() {
   const { theme, setTheme } = useTheme();
@@ -12,14 +12,7 @@ export function Header() {
     <header className="flex h-16 items-center justify-between border-b bg-background px-6">
       {/* Search */}
       <div className="flex items-center gap-4">
-        <div className="relative w-80">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            placeholder="Search... (Ctrl+K)"
-            className="pl-9"
-            type="search"
-          />
-        </div>
+        <CommandPalette />
       </div>
 
       {/* Right Actions */}

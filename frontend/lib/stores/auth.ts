@@ -33,28 +33,46 @@ export const useAuthStore = create<AuthState>()(
       isAuthenticated: false,
       isLoading: true,
 
-      setAuth: (user, accessToken, refreshToken) =>
+      setAuth: (user, accessToken, refreshToken) => {
+        // Set cookies for middleware
+        if (typeof window !== "undefined") {
+          document.cookie = `koomky-access-token=${accessToken}; path=/; max-age=86400; SameSite=Lax`;
+          document.cookie = `koomky-refresh-token=${refreshToken}; path=/; max-age=604800; SameSite=Lax`;
+        }
         set({
           user,
           accessToken,
           refreshToken,
           isAuthenticated: true,
           isLoading: false,
-        }),
+        });
+      },
 
-      setTokens: (accessToken, refreshToken) =>
-        set({ accessToken, refreshToken }),
+      setTokens: (accessToken, refreshToken) => {
+        // Update cookies
+        if (typeof window !== "undefined") {
+          document.cookie = `koomky-access-token=${accessToken}; path=/; max-age=86400; SameSite=Lax`;
+          document.cookie = `koomky-refresh-token=${refreshToken}; path=/; max-age=604800; SameSite=Lax`;
+        }
+        set({ accessToken, refreshToken });
+      },
 
       setUser: (user) => set({ user }),
 
-      logout: () =>
+      logout: () => {
+        // Clear cookies
+        if (typeof window !== "undefined") {
+          document.cookie = "koomky-access-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+          document.cookie = "koomky-refresh-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+        }
         set({
           user: null,
           accessToken: null,
           refreshToken: null,
           isAuthenticated: false,
           isLoading: false,
-        }),
+        });
+      },
 
       setLoading: (loading) => set({ isLoading: loading }),
     }),

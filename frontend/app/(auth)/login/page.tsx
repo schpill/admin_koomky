@@ -17,6 +17,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useAuthStore } from "@/lib/stores/auth";
+import { apiClient } from "@/lib/api";
 import { toast } from "sonner";
 
 const loginSchema = z.object({
@@ -40,23 +41,11 @@ export default function LoginPage() {
 
   const onSubmit = async (data: LoginFormData) => {
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL || "http://localhost/api/v1"}/auth/login`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        }
-      );
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || "Login failed");
-      }
-
-      const result = await response.json();
+      const result = await apiClient.post<{
+        user: any;
+        access_token: string;
+        refresh_token: string;
+      }>("/auth/login", data, { skipAuth: true });
 
       setAuth(result.data.user, result.data.access_token, result.data.refresh_token);
       toast.success("Welcome back!");
