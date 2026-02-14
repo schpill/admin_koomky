@@ -18,10 +18,10 @@
 | P1-BE-005 | Write docker/nginx/default.conf (reverse proxy) | merged | junior |
 | P1-BE-006 | Write docker/postgres/init.sql (uuid-ossp, pg_trgm) | merged | junior |
 | P1-BE-007 | Initialize Laravel 12.x inside backend/ | merged | junior |
-| P1-BE-008 | Configure Laravel (pgsql, redis cache/session/queue) | todo | |
+| P1-BE-008 | Configure Laravel (pgsql, redis cache/session/queue) | done | claude |
 | P1-BE-009 | Install and configure Pest | merged | junior |
 | P1-BE-010 | Install and configure PHPStan (level 8) + Pint | merged | claude |
-| P1-BE-011 | Install Laravel Scout + Meilisearch driver | todo | |
+| P1-BE-011 | Install Laravel Scout + Meilisearch driver | done | claude |
 | P1-BE-012 | Install Laravel Sanctum | merged | junior |
 | P1-BE-013 | Create base ApiResponse trait | merged | junior |
 | P1-BE-014 | Create Makefile | merged | junior |
@@ -35,18 +35,18 @@
 | P1-FE-001 | Initialize Next.js 15.x with TypeScript + App Router | merged | junior |
 | P1-FE-002 | Configure Turbopack for dev builds | merged | junior |
 | P1-FE-003 | Install and configure Tailwind CSS 4.x with custom theme | wip | junior |
-| P1-FE-004 | Install Zustand for state management | todo | |
-| P1-FE-005 | Install react-hook-form + Zod for form validation | todo | |
-| P1-FE-006 | Install and configure shadcn/ui (Radix UI + Tailwind) | todo | |
+| P1-FE-004 | Install Zustand for state management | done | claude |
+| P1-FE-005 | Install react-hook-form + Zod for form validation | done | claude |
+| P1-FE-006 | Install and configure shadcn/ui (Radix UI + Tailwind) | done | claude |
 | P1-FE-007 | Configure Vitest + React Testing Library | merged | junior |
-| P1-FE-008 | Configure Playwright for E2E testing | todo | |
+| P1-FE-008 | Configure Playwright for E2E testing | done | claude |
 | P1-FE-009 | Configure ESLint (eslint-config-next) | merged | junior |
-| P1-FE-010 | Create default layout (sidebar + topbar + content area) | todo | |
-| P1-FE-011 | Create auth layout (centered card, no sidebar) | todo | |
-| P1-FE-012 | Create base components via shadcn/ui (Button, Input, etc.) | todo | |
-| P1-FE-013 | Create useApi hook (fetch + JWT interceptor + refresh) | todo | |
-| P1-FE-014 | Create useAuthStore Zustand store | todo | |
-| P1-FE-015 | Create auth middleware (Next.js middleware) | todo | |
+| P1-FE-010 | Create default layout (sidebar + topbar + content area) | done | claude |
+| P1-FE-011 | Create auth layout (centered card, no sidebar) | done | claude |
+| P1-FE-012 | Create base components via shadcn/ui (Button, Input, etc.) | done | claude |
+| P1-FE-013 | Create useApi hook (fetch + JWT interceptor + refresh) | done | claude |
+| P1-FE-014 | Create useAuthStore Zustand store | done | claude |
+| P1-FE-015 | Create auth middleware (Next.js middleware) | done | claude |
 | P1-FE-016 | Set up Inter + JetBrains Mono fonts via next/font | merged | junior |
 
 ### DevOps
@@ -59,7 +59,7 @@
 | P1-DO-004 | CI job: Backend tests (Pest + coverage) | merged | junior |
 | P1-DO-005 | CI job: Frontend tests (Vitest + coverage) | merged | junior |
 | P1-DO-006 | CI job: Coverage threshold check (>= 80%) | merged | junior |
-| P1-DO-007 | Create .github/PULL_REQUEST_TEMPLATE.md | todo | |
+| P1-DO-007 | Create .github/PULL_REQUEST_TEMPLATE.md | done | claude |
 | P1-DO-008 | Configure branch protection on main | todo | |
 | P1-DO-009 | Create .gitignore for monorepo | merged | junior |
 
