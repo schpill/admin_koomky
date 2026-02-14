@@ -11,57 +11,57 @@
 
 | ID | Task | Status | Owner |
 |----|------|--------|-------|
-| P1-BE-001 | Create monorepo structure | done | junior |
-| P1-BE-002 | Write docker-compose.yml (9 services) | done | junior |
-| P1-BE-003 | Write docker/php/Dockerfile (PHP 8.3-FPM) | done | junior |
-| P1-BE-004 | Write docker/node/Dockerfile (Node 20 + pnpm) | done | junior |
-| P1-BE-005 | Write docker/nginx/default.conf (reverse proxy) | done | junior |
-| P1-BE-006 | Write docker/postgres/init.sql (uuid-ossp, pg_trgm) | done | junior |
-| P1-BE-007 | Initialize Laravel 12.x inside backend/ | done | junior |
+| P1-BE-001 | Create monorepo structure | merged | junior |
+| P1-BE-002 | Write docker-compose.yml (9 services) | merged | junior |
+| P1-BE-003 | Write docker/php/Dockerfile (PHP 8.3-FPM) | merged | junior |
+| P1-BE-004 | Write docker/node/Dockerfile (Node 20 + pnpm) | merged | junior |
+| P1-BE-005 | Write docker/nginx/default.conf (reverse proxy) | merged | junior |
+| P1-BE-006 | Write docker/postgres/init.sql (uuid-ossp, pg_trgm) | merged | junior |
+| P1-BE-007 | Initialize Laravel 12.x inside backend/ | merged | junior |
 | P1-BE-008 | Configure Laravel (pgsql, redis cache/session/queue) | todo | |
-| P1-BE-009 | Install and configure Pest | done | junior |
-| P1-BE-010 | Install and configure PHPStan (level 8) + Pint | done | claude |
+| P1-BE-009 | Install and configure Pest | merged | junior |
+| P1-BE-010 | Install and configure PHPStan (level 8) + Pint | merged | claude |
 | P1-BE-011 | Install Laravel Scout + Meilisearch driver | todo | |
-| P1-BE-012 | Install Laravel Sanctum | done | junior |
-| P1-BE-013 | Create base ApiResponse trait | done | junior |
-| P1-BE-014 | Create Makefile | done | junior |
-| P1-BE-015 | Create .env.example with all env vars | done | claude |
-| P1-BE-016 | Create health check endpoint GET /api/v1/health | done | junior |
+| P1-BE-012 | Install Laravel Sanctum | merged | junior |
+| P1-BE-013 | Create base ApiResponse trait | merged | junior |
+| P1-BE-014 | Create Makefile | merged | junior |
+| P1-BE-015 | Create .env.example with all env vars | merged | claude |
+| P1-BE-016 | Create health check endpoint GET /api/v1/health | merged | junior |
 
 ### Frontend
 
 | ID | Task | Status | Owner |
 |----|------|--------|-------|
-| P1-FE-001 | Initialize Next.js 15.x with TypeScript + App Router | done | junior |
-| P1-FE-002 | Configure Turbopack for dev builds | done | junior |
+| P1-FE-001 | Initialize Next.js 15.x with TypeScript + App Router | merged | junior |
+| P1-FE-002 | Configure Turbopack for dev builds | merged | junior |
 | P1-FE-003 | Install and configure Tailwind CSS 4.x with custom theme | wip | junior |
 | P1-FE-004 | Install Zustand for state management | todo | |
 | P1-FE-005 | Install react-hook-form + Zod for form validation | todo | |
 | P1-FE-006 | Install and configure shadcn/ui (Radix UI + Tailwind) | todo | |
-| P1-FE-007 | Configure Vitest + React Testing Library | done | junior |
+| P1-FE-007 | Configure Vitest + React Testing Library | merged | junior |
 | P1-FE-008 | Configure Playwright for E2E testing | todo | |
-| P1-FE-009 | Configure ESLint (eslint-config-next) | done | junior |
+| P1-FE-009 | Configure ESLint (eslint-config-next) | merged | junior |
 | P1-FE-010 | Create default layout (sidebar + topbar + content area) | todo | |
 | P1-FE-011 | Create auth layout (centered card, no sidebar) | todo | |
 | P1-FE-012 | Create base components via shadcn/ui (Button, Input, etc.) | todo | |
 | P1-FE-013 | Create useApi hook (fetch + JWT interceptor + refresh) | todo | |
 | P1-FE-014 | Create useAuthStore Zustand store | todo | |
 | P1-FE-015 | Create auth middleware (Next.js middleware) | todo | |
-| P1-FE-016 | Set up Inter + JetBrains Mono fonts via next/font | done | junior |
+| P1-FE-016 | Set up Inter + JetBrains Mono fonts via next/font | merged | junior |
 
 ### DevOps
 
 | ID | Task | Status | Owner |
 |----|------|--------|-------|
-| P1-DO-001 | Create .github/workflows/ci.yml | done | junior |
-| P1-DO-002 | CI job: Lint backend (Pint + PHPStan) | done | junior |
-| P1-DO-003 | CI job: Lint frontend (ESLint) | done | junior |
-| P1-DO-004 | CI job: Backend tests (Pest + coverage) | done | junior |
-| P1-DO-005 | CI job: Frontend tests (Vitest + coverage) | done | junior |
-| P1-DO-006 | CI job: Coverage threshold check (>= 80%) | done | junior |
+| P1-DO-001 | Create .github/workflows/ci.yml | merged | junior |
+| P1-DO-002 | CI job: Lint backend (Pint + PHPStan) | merged | junior |
+| P1-DO-003 | CI job: Lint frontend (ESLint) | merged | junior |
+| P1-DO-004 | CI job: Backend tests (Pest + coverage) | merged | junior |
+| P1-DO-005 | CI job: Frontend tests (Vitest + coverage) | merged | junior |
+| P1-DO-006 | CI job: Coverage threshold check (>= 80%) | merged | junior |
 | P1-DO-007 | Create .github/PULL_REQUEST_TEMPLATE.md | todo | |
 | P1-DO-008 | Configure branch protection on main | todo | |
-| P1-DO-009 | Create .gitignore for monorepo | done | junior |
+| P1-DO-009 | Create .gitignore for monorepo | merged | junior |
 
 ---
 
