@@ -20,13 +20,16 @@ services:
       dockerfile: docker/php/Dockerfile
     volumes:
       - ./backend:/var/www/html
-    environment:
+    environment: &php-env
       - DB_CONNECTION=pgsql
       - DB_HOST=postgres
       - DB_PORT=5432
       - DB_DATABASE=koomky
       - DB_USERNAME=koomky
       - DB_PASSWORD=secret
+      - REDIS_HOST=redis
+      - MAIL_HOST=mailpit
+      - MEILISEARCH_HOST=http://meilisearch:7700
     depends_on:
       - postgres
       - redis
@@ -79,6 +82,7 @@ services:
       dockerfile: docker/php/Dockerfile
     volumes:
       - ./backend:/var/www/html
+    environment: *php-env
     command: php artisan queue:work
     depends_on:
       - redis
@@ -93,6 +97,7 @@ services:
       dockerfile: docker/php/Dockerfile
     volumes:
       - ./backend:/var/www/html
+    environment: *php-env
     command: php artisan schedule:work
     depends_on:
       - postgres
