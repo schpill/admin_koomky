@@ -18,7 +18,9 @@ class DashboardController extends Controller
 
     public function __invoke(Request $request): JsonResponse
     {
-        $stats = $this->dashboardService->getStats($request->user());
+        /** @var \App\Models\User $user */
+        $user = $request->user();
+        $stats = $this->dashboardService->getStats($user);
 
         return $this->success($stats, 'Dashboard statistics retrieved');
     }

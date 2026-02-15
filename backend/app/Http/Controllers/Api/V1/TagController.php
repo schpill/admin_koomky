@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Models\Client;
 use App\Models\Tag;
+use App\Models\User;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -16,18 +17,22 @@ class TagController extends Controller
 
     public function index(Request $request): JsonResponse
     {
-        $tags = Tag::where('user_id', $request->user()->id)->get();
+        /** @var User $user */
+        $user = $request->user();
+        $tags = Tag::where('user_id', $user->id)->get();
         return $this->success($tags, 'Tags retrieved successfully');
     }
 
     public function store(Request $request): JsonResponse
     {
+        /** @var User $user */
+        $user = $request->user();
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:50'],
             'color' => ['nullable', 'string', 'max:20'],
         ]);
 
-        $tag = $request->user()->tags()->create($validated);
+        $tag = $user->tags()->create($validated);
 
         return $this->success($tag, 'Tag created successfully', 201);
     }
@@ -37,8 +42,10 @@ class TagController extends Controller
         Gate::authorize('update', $client);
 
         $request->validate(['tag_ids' => 'required|array']);
+        /** @var array<int, string> $tagIds */
+        $tagIds = $request->input('tag_ids');
         
-        $client->tags()->sync($request->tag_ids);
+        $client->tags()->sync($tagIds);
 
         return $this->success(null, 'Tags updated for client');
     }

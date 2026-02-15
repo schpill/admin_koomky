@@ -23,8 +23,11 @@ class LogAuthEvent
             default => 'auth.unknown',
         };
 
+        /** @var \App\Models\User|null $user */
+        $user = property_exists($event, 'user') ? $event->user : null;
+
         AuditLog::create([
-            'user_id' => $event->user?->id,
+            'user_id' => $user?->id,
             'event' => $eventName,
             'ip_address' => $this->request->ip(),
             'user_agent' => $this->request->userAgent(),

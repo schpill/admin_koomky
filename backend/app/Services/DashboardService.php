@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\Cache;
 
 class DashboardService
 {
+    /**
+     * @return array<string, mixed>
+     */
     public function getStats(User $user): array
     {
         $userId = $user->id;

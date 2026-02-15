@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Settings\UpdateBusinessRequest;
 use App\Http\Requests\Api\V1\Settings\UpdateProfileRequest;
+use App\Models\User;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -21,6 +22,7 @@ class UserSettingsController extends Controller
 
     public function updateProfile(UpdateProfileRequest $request): JsonResponse
     {
+        /** @var User $user */
         $user = $request->user();
         $user->update($request->validated());
 
@@ -29,6 +31,7 @@ class UserSettingsController extends Controller
 
     public function updateBusiness(UpdateBusinessRequest $request): JsonResponse
     {
+        /** @var User $user */
         $user = $request->user();
         $user->update($request->validated());
 
@@ -37,15 +40,16 @@ class UserSettingsController extends Controller
 
     public function enable2fa(Request $request): JsonResponse
     {
+        /** @var User $user */
         $user = $request->user();
         
         $secret = Google2FA::generateSecretKey();
         $user->update(['two_factor_secret' => $secret]);
 
         $qrCodeUrl = Google2FA::getQRCodeInline(
-            config('app.name'),
-            $user->email,
-            $secret
+            (string)config('app.name'),
+            (string)$user->email,
+            (string)$secret
         );
 
         return $this->success([
@@ -58,8 +62,9 @@ class UserSettingsController extends Controller
     {
         $request->validate(['code' => 'required|string|size:6']);
         
+        /** @var User $user */
         $user = $request->user();
-        $valid = Google2FA::verifyKey($user->two_factor_secret, $request->code);
+        $valid = Google2FA::verifyKey((string)$user->two_factor_secret, (string)$request->input('code'));
 
         if (!$valid) {
             return $this->error('Invalid verification code', 422);
@@ -72,7 +77,9 @@ class UserSettingsController extends Controller
 
     public function disable2fa(Request $request): JsonResponse
     {
-        $request->user()->update([
+        /** @var User $user */
+        $user = $request->user();
+        $user->update([
             'two_factor_secret' => null,
             'two_factor_confirmed_at' => null,
         ]);

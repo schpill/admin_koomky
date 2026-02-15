@@ -53,10 +53,11 @@ class AuthController extends Controller
 
     public function refresh(Request $request): JsonResponse
     {
+        /** @var User $user */
         $user = $request->user();
         $token = $user->currentAccessToken();
 
-        if (!$token || !$token->can('refresh')) {
+        if (!$token instanceof \Laravel\Sanctum\PersonalAccessToken || !$token->can('refresh')) {
             return $this->error('Invalid refresh token', 401);
         }
 
@@ -82,10 +83,13 @@ class AuthController extends Controller
 
     public function logout(Request $request): JsonResponse
     {
+        /** @var User $user */
         $user = $request->user();
         
-        // Delete the current token being used
-        $user->currentAccessToken()->delete();
+        $token = $user->currentAccessToken();
+        if ($token) {
+            $token->delete();
+        }
 
         return $this->success(null, 'Logged out successfully');
     }

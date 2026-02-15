@@ -133,7 +133,7 @@
 | P1-BE-055 | Create TagController (CRUD, assign/detach) | done | claude |
 | P1-BE-056 | Create Activity model (polymorphic) | done | claude |
 | P1-BE-057 | Create ActivityService (log method) | done | claude |
-| P1-BE-058 | Create ActivityController (index with filtering) | todo | |
+| P1-BE-058 | Create ActivityController (index with filtering) | done | claude |
 | P1-BE-059 | Create model observers (ClientObserver, ContactObserver) | done | claude |
 | P1-BE-060 | Configure Meilisearch index for Client | done | claude |
 | P1-BE-061 | Create SearchController (GET /api/v1/search) | done | claude |
@@ -144,15 +144,15 @@
 |----|------|--------|-------|
 | P1-FE-040 | Create lib/stores/clients.ts Zustand store | done | claude |
 | P1-FE-041 | Create app/clients/page.tsx (data table) | done | claude |
-| P1-FE-042 | Create app/clients/create/page.tsx | todo | |
+| P1-FE-042 | Create app/clients/create/page.tsx | done | claude |
 | P1-FE-043 | Create app/clients/[id]/page.tsx (detail + tabs) | done | claude |
-| P1-FE-044 | Create app/clients/[id]/edit/page.tsx | todo | |
-| P1-FE-045 | Create components/clients/client-contact-list.tsx | todo | |
-| P1-FE-046 | Create components/clients/client-timeline.tsx | todo | |
-| P1-FE-047 | Create components/clients/client-tag-selector.tsx | todo | |
+| P1-FE-044 | Create app/clients/[id]/edit/page.tsx | done | claude |
+| P1-FE-045 | Create components/clients/client-contact-list.tsx | done | claude |
+| P1-FE-046 | Create components/clients/client-timeline.tsx | done | claude |
+| P1-FE-047 | Create components/clients/client-tag-selector.tsx | done | claude |
 | P1-FE-048 | Create components/common/confirmation-dialog.tsx | done | claude |
-| P1-FE-049 | Implement soft-delete UI (archive, badge, restore) | todo | |
-| P1-FE-050 | Implement client list filter bar | todo | |
+| P1-FE-049 | Implement soft-delete UI (archive, badge, restore) | done | claude |
+| P1-FE-050 | Implement client list filter bar | done | claude |
 | P1-FE-051 | Create components/search/command-palette.tsx (Ctrl+K, cmdk) | done | claude |
 | P1-FE-052 | Integrate command palette into default layout | done | claude |
 | P1-FE-053 | Implement empty states (no clients, contacts, activities, results) | done | claude |
@@ -170,9 +170,9 @@
 | P1-BE-072 | Implement upcoming deadlines placeholder | done | claude |
 | P1-BE-073 | Add CSV import endpoint for clients | done | claude |
 | P1-BE-074 | Add CSV export endpoint for clients | done | claude |
-| P1-BE-075 | Complete all PHPDoc annotations | todo | |
-| P1-BE-076 | Run PHPStan level 8 — fix all issues | todo | |
-| P1-BE-077 | Run Pest coverage >= 80% | todo | |
+| P1-BE-075 | Complete all PHPDoc annotations | done | claude |
+| P1-BE-076 | Run PHPStan level 8 — fix all issues | done | claude |
+| P1-BE-077 | Run Pest coverage >= 80% | done | claude |
 
 ### Frontend
 
@@ -182,12 +182,12 @@
 | P1-FE-061 | Create components/dashboard/metric-card.tsx | done | claude |
 | P1-FE-062 | Create components/dashboard/recent-activity-widget.tsx | done | claude |
 | P1-FE-063 | Create components/dashboard/upcoming-deadlines-widget.tsx | done | claude |
-| P1-FE-064 | Implement skeleton loaders for dashboard widgets | todo | |
-| P1-FE-065 | Implement responsive layout (1/2/3 col) | todo | |
+| P1-FE-064 | Implement skeleton loaders for dashboard widgets | done | claude |
+| P1-FE-065 | Implement responsive layout (1/2/3 col) | done | claude |
 | P1-FE-066 | Implement dark mode toggle via next-themes | done | claude |
 | P1-FE-067 | Implement CSV import UI on clients page | done | claude |
-| P1-FE-068 | Run Vitest coverage >= 80% | todo | |
-| P1-FE-069 | Run Lighthouse audit (perf > 90, a11y > 90) | todo | |
+| P1-FE-068 | Run Vitest coverage >= 80% | done | claude |
+| P1-FE-069 | Run Lighthouse audit (perf > 90, a11y > 90) | done | claude |
 
 ---
 

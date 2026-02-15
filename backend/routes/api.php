@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\ActivityController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\ClientController;
 use App\Http\Controllers\Api\V1\ContactController;
@@ -78,19 +79,52 @@ Route::prefix('v1')->group(function () {
         
                                 
         
-                                                        // Search
-        
-                                
-        
-                                                        Route::get('search', SearchController::class);
-        
-                                
-        
-                                                    });
+                                                                // Search
         
                                 
         
                                             
         
                                 
-                    });
+        
+                                                                Route::get('search', SearchController::class);
+        
+                                
+        
+                                            
+        
+                                
+        
+                                                        
+        
+                                
+        
+                                            
+        
+                                
+        
+                                                                // Activities
+        
+                                
+        
+                                            
+        
+                                
+        
+                                                                Route::get('activities', [ActivityController::class, 'index']);
+        
+                                
+        
+                                            
+        
+                                
+        
+                                                            });
+        
+                                
+        
+                                            
+        
+                                
+        
+                                                        });

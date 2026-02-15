@@ -7,6 +7,7 @@ use App\Http\Requests\Api\V1\Clients\StoreClientRequest;
 use App\Http\Requests\Api\V1\Clients\UpdateClientRequest;
 use App\Http\Resources\Api\V1\Clients\ClientResource;
 use App\Models\Client;
+use App\Models\User;
 use App\Services\ReferenceGenerator;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
@@ -20,25 +21,30 @@ class ClientController extends Controller
 
     public function index(Request $request): JsonResponse
     {
-        $clients = Client::where('user_id', $request->user()->id)
+        /** @var User $user */
+        $user = $request->user();
+
+        $clients = Client::where('user_id', $user->id)
             ->with(['contacts', 'tags'])
             ->when($request->search, function ($query, $search) {
                 return $query->where('name', 'like', "%{$search}%")
                              ->orWhere('reference', 'like', "%{$search}%");
             })
             ->latest()
-            ->paginate($request->per_page ?? 15);
+            ->paginate((int)($request->per_page ?? 15));
 
         return $this->success(ClientResource::collection($clients)->response()->getData(true), 'Clients retrieved successfully');
     }
 
     public function store(StoreClientRequest $request): JsonResponse
     {
+        /** @var User $user */
+        $user = $request->user();
         $reference = ReferenceGenerator::generate('clients', 'CLI');
 
         $client = Client::create([
             ...$request->validated(),
-            'user_id' => $request->user()->id,
+            'user_id' => $user->id,
             'reference' => $reference,
         ]);
 
@@ -76,7 +82,9 @@ class ClientController extends Controller
 
     public function exportCsv(Request $request): StreamedResponse
     {
-        $clients = Client::where('user_id', $request->user()->id)->get();
+        /** @var User $user */
+        $user = $request->user();
+        $clients = Client::where('user_id', $user->id)->get();
 
         $headers = [
             'Content-Type' => 'text/csv',
@@ -85,6 +93,9 @@ class ClientController extends Controller
 
         return response()->stream(function () use ($clients) {
             $handle = fopen('php://output', 'w');
+            if ($handle === false) {
+                return;
+            }
             fputcsv($handle, ['Reference', 'Name', 'Email', 'Phone', 'City', 'Country']);
 
             foreach ($clients as $client) {
@@ -104,20 +115,39 @@ class ClientController extends Controller
 
     public function importCsv(Request $request): JsonResponse
     {
+        /** @var User $user */
+        $user = $request->user();
+
         $request->validate([
             'file' => 'required|file|mimes:csv,txt|max:2048',
         ]);
 
-        $path = $request->file('file')->getRealPath();
-        $data = array_map('str_getcsv', file($path));
+        $file = $request->file('file');
+        if (!$file instanceof \Illuminate\Http\UploadedFile) {
+            return $this->error('Invalid file', 422);
+        }
+
+        $path = $file->getRealPath();
+        $fileContent = file($path);
+        if ($fileContent === false) {
+            return $this->error('Failed to read file', 422);
+        }
+
+        $data = array_map('str_getcsv', $fileContent);
         $header = array_shift($data);
+
+        if (!$header) {
+            return $this->error('Invalid CSV format', 422);
+        }
 
         $count = 0;
         foreach ($data as $row) {
-            $values = array_combine($header, $row);
+            /** @var array<string, string|null> $values */
+            $filteredHeader = array_filter($header, fn($h) => !is_null($h));
+            $values = array_combine($filteredHeader, $row);
             
             Client::create([
-                'user_id' => $request->user()->id,
+                'user_id' => $user->id,
                 'reference' => ReferenceGenerator::generate('clients', 'CLI'),
                 'name' => $values['name'] ?? 'Unknown',
                 'email' => $values['email'] ?? null,

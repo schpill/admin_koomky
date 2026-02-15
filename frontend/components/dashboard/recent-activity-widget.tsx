@@ -1,5 +1,6 @@
 import { History } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface Activity {
   id: string;
@@ -8,10 +9,11 @@ interface Activity {
 }
 
 interface RecentActivityWidgetProps {
-  activities: Activity[];
+  activities?: Activity[];
+  isLoading?: boolean;
 }
 
-export function RecentActivityWidget({ activities }: RecentActivityWidgetProps) {
+export function RecentActivityWidget({ activities = [], isLoading }: RecentActivityWidgetProps) {
   return (
     <Card className="col-span-full">
       <CardHeader>
@@ -21,7 +23,16 @@ export function RecentActivityWidget({ activities }: RecentActivityWidgetProps) 
         </CardTitle>
       </CardHeader>
       <CardContent>
-        {activities.length > 0 ? (
+        {isLoading ? (
+          <div className="space-y-4">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="flex flex-col gap-2 border-b pb-3 last:border-0 last:pb-0">
+                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="h-3 w-1/4" />
+              </div>
+            ))}
+          </div>
+        ) : activities.length > 0 ? (
           <div className="space-y-4">
             {activities.map((activity) => (
               <div key={activity.id} className="flex items-center gap-4 text-sm border-b pb-3 last:border-0 last:pb-0">
