@@ -20,6 +20,7 @@ test('user can register with valid data', function () {
             'data' => [
                 'user' => ['id', 'name', 'email', 'business_name'],
                 'access_token',
+                'refresh_token',
             ],
             'message'
         ]);

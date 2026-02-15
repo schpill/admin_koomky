@@ -36,8 +36,9 @@ async function refreshAccessToken(): Promise<boolean> {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Accept": "application/json",
+          "Authorization": `Bearer ${refreshToken}`,
         },
-        body: JSON.stringify({ refresh_token: refreshToken }),
       }
     );
 
@@ -45,8 +46,9 @@ async function refreshAccessToken(): Promise<boolean> {
       return false;
     }
 
-    const data = await response.json();
-    useAuthStore.getState().setTokens(data.access_token, data.refresh_token);
+    const json = await response.json();
+    const { access_token, refresh_token } = json.data;
+    useAuthStore.getState().setTokens(access_token, refresh_token);
     return true;
   } catch {
     return false;

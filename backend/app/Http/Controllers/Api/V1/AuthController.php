@@ -32,13 +32,7 @@ class AuthController extends Controller
             'business_name' => $request->business_name,
         ]);
 
-        $token = $user->createToken('auth_token')->plainTextToken;
-
-        return $this->success([
-            'user' => $user,
-            'access_token' => $token,
-            'token_type' => 'Bearer',
-        ], 'User registered successfully', 201);
+        return $this->issueTokens($user, 'User registered successfully', 201);
     }
 
     public function login(LoginRequest $request): JsonResponse
@@ -53,18 +47,45 @@ class AuthController extends Controller
         RateLimiter::clear($this->throttleKey($request));
 
         $user = User::where('email', $request->email)->firstOrFail();
-        $token = $user->createToken('auth_token')->plainTextToken;
+        
+        return $this->issueTokens($user, 'Login successful');
+    }
+
+    public function refresh(Request $request): JsonResponse
+    {
+        $user = $request->user();
+        $token = $user->currentAccessToken();
+
+        if (!$token || !$token->can('refresh')) {
+            return $this->error('Invalid refresh token', 401);
+        }
+
+        // Delete the current refresh token (rotation)
+        $token->delete();
+
+        return $this->issueTokens($user, 'Token refreshed successfully');
+    }
+
+    protected function issueTokens(User $user, string $message, int $code = 200): JsonResponse
+    {
+        $accessToken = $user->createToken('access_token', ['access'], now()->addMinutes(15))->plainTextToken;
+        $refreshToken = $user->createToken('refresh_token', ['refresh'], now()->addDays(7))->plainTextToken;
 
         return $this->success([
             'user' => $user,
-            'access_token' => $token,
+            'access_token' => $accessToken,
+            'refresh_token' => $refreshToken,
             'token_type' => 'Bearer',
-        ], 'Login successful');
+            'expires_in' => 15 * 60, // in seconds
+        ], $message, $code);
     }
 
     public function logout(Request $request): JsonResponse
     {
-        $request->user()->currentAccessToken()->delete();
+        $user = $request->user();
+        
+        // Delete the current token being used
+        $user->currentAccessToken()->delete();
 
         return $this->success(null, 'Logged out successfully');
     }
