@@ -49,7 +49,7 @@ export function Sidebar({ collapsed = false, onToggle }: SidebarProps) {
     <aside
       className={cn(
         "flex flex-col border-r bg-background transition-all duration-300",
-        collapsed ? "w-16" : "w-64"
+        collapsed ? "w-16" : "w-64",
       )}
     >
       {/* Logo */}
@@ -68,7 +68,7 @@ export function Sidebar({ collapsed = false, onToggle }: SidebarProps) {
           <ChevronLeft
             className={cn(
               "h-4 w-4 transition-transform",
-              collapsed && "rotate-180"
+              collapsed && "rotate-180",
             )}
           />
         </Button>
@@ -91,7 +91,7 @@ export function Sidebar({ collapsed = false, onToggle }: SidebarProps) {
                 isActive
                   ? "bg-primary text-primary-foreground"
                   : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
-                collapsed && "justify-center px-2"
+                collapsed && "justify-center px-2",
               )}
             >
               <item.icon className="h-5 w-5 shrink-0" />
@@ -117,7 +117,7 @@ export function Sidebar({ collapsed = false, onToggle }: SidebarProps) {
                 isActive
                   ? "bg-primary text-primary-foreground"
                   : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
-                collapsed && "justify-center px-2"
+                collapsed && "justify-center px-2",
               )}
             >
               <item.icon className="h-5 w-5 shrink-0" />
@@ -133,7 +133,7 @@ export function Sidebar({ collapsed = false, onToggle }: SidebarProps) {
           onClick={handleLogout}
           className={cn(
             "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground",
-            collapsed && "justify-center px-2"
+            collapsed && "justify-center px-2",
           )}
         >
           <LogOut className="h-5 w-5 shrink-0" />

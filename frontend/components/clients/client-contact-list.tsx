@@ -35,7 +35,8 @@ import { z } from "zod";
 import { Badge } from "@/components/ui/badge";
 
 const contactSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
+  first_name: z.string().min(2, "First name must be at least 2 characters"),
+  last_name: z.string().optional().or(z.literal("")),
   email: z.string().email("Invalid email address").optional().or(z.literal("")),
   phone: z.string().optional().or(z.literal("")),
   position: z.string().optional().or(z.literal("")),
@@ -46,7 +47,8 @@ type ContactFormData = z.infer<typeof contactSchema>;
 
 interface Contact {
   id: string;
-  name: string;
+  first_name: string;
+  last_name: string | null;
   email: string | null;
   phone: string | null;
   position: string | null;
@@ -78,7 +80,9 @@ export function ClientContactList({ clientId }: ClientContactListProps) {
 
   const fetchContacts = async () => {
     try {
-      const response = await apiClient.get<Contact[]>(`/clients/${clientId}/contacts`);
+      const response = await apiClient.get<Contact[]>(
+        `/clients/${clientId}/contacts`,
+      );
       setContacts(response.data);
     } catch (error) {
       toast.error("Failed to load contacts");
@@ -94,7 +98,10 @@ export function ClientContactList({ clientId }: ClientContactListProps) {
   const onSubmit = async (data: ContactFormData) => {
     try {
       if (editingContact) {
-        await apiClient.put(`/clients/${clientId}/contacts/${editingContact.id}`, data);
+        await apiClient.put(
+          `/clients/${clientId}/contacts/${editingContact.id}`,
+          data,
+        );
         toast.success("Contact updated");
       } else {
         await apiClient.post(`/clients/${clientId}/contacts`, data);
@@ -111,7 +118,8 @@ export function ClientContactList({ clientId }: ClientContactListProps) {
 
   const handleEdit = (contact: Contact) => {
     setEditingContact(contact);
-    setValue("name", contact.name);
+    setValue("first_name", contact.first_name);
+    setValue("last_name", contact.last_name || "");
     setValue("email", contact.email || "");
     setValue("phone", contact.phone || "");
     setValue("position", contact.position || "");
@@ -145,13 +153,16 @@ export function ClientContactList({ clientId }: ClientContactListProps) {
           <CardTitle>Contacts</CardTitle>
           <CardDescription>Manage contacts for this client.</CardDescription>
         </div>
-        <Dialog open={dialogOpen} onOpenChange={(open) => {
-          setDialogOpen(open);
-          if (!open) {
-            reset();
-            setEditingContact(null);
-          }
-        }}>
+        <Dialog
+          open={dialogOpen}
+          onOpenChange={(open) => {
+            setDialogOpen(open);
+            if (!open) {
+              reset();
+              setEditingContact(null);
+            }
+          }}
+        >
           <DialogTrigger asChild>
             <Button size="sm">
               <Plus className="mr-2 h-4 w-4" /> Add Contact
@@ -159,13 +170,25 @@ export function ClientContactList({ clientId }: ClientContactListProps) {
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>{editingContact ? "Edit Contact" : "Add New Contact"}</DialogTitle>
+              <DialogTitle>
+                {editingContact ? "Edit Contact" : "Add New Contact"}
+              </DialogTitle>
             </DialogHeader>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 py-4">
-              <div className="space-y-2">
-                <Label htmlFor="contact-name">Name</Label>
-                <Input id="contact-name" {...register("name")} />
-                {errors.name && <p className="text-sm text-destructive">{errors.name.message}</p>}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="first_name">First Name</Label>
+                  <Input id="first_name" {...register("first_name")} />
+                  {errors.first_name && (
+                    <p className="text-sm text-destructive">
+                      {errors.first_name.message}
+                    </p>
+                  )}
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="last_name">Last Name</Label>
+                  <Input id="last_name" {...register("last_name")} />
+                </div>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="contact-position">Position</Label>
@@ -174,7 +197,11 @@ export function ClientContactList({ clientId }: ClientContactListProps) {
               <div className="space-y-2">
                 <Label htmlFor="contact-email">Email</Label>
                 <Input id="contact-email" type="email" {...register("email")} />
-                {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
+                {errors.email && (
+                  <p className="text-sm text-destructive">
+                    {errors.email.message}
+                  </p>
+                )}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="contact-phone">Phone</Label>
@@ -190,9 +217,17 @@ export function ClientContactList({ clientId }: ClientContactListProps) {
                 <Label htmlFor="is_primary">Primary Contact</Label>
               </div>
               <div className="flex justify-end gap-2 pt-4">
-                <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>Cancel</Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setDialogOpen(false)}
+                >
+                  Cancel
+                </Button>
                 <Button type="submit" disabled={isSubmitting}>
-                  {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  {isSubmitting && (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  )}
                   {editingContact ? "Update" : "Save"}
                 </Button>
               </div>
@@ -204,7 +239,9 @@ export function ClientContactList({ clientId }: ClientContactListProps) {
         {contacts.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-8 text-center">
             <User className="h-12 w-12 text-muted-foreground/50 mb-4" />
-            <p className="text-muted-foreground">No contacts found for this client.</p>
+            <p className="text-muted-foreground">
+              No contacts found for this client.
+            </p>
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -222,9 +259,11 @@ export function ClientContactList({ clientId }: ClientContactListProps) {
                   <TableRow key={contact.id}>
                     <TableCell className="font-medium">
                       <div className="flex items-center gap-2">
-                        {contact.name}
+                        {contact.first_name} {contact.last_name}
                         {contact.is_primary && (
-                          <Badge variant="secondary" className="text-[10px]">Primary</Badge>
+                          <Badge variant="secondary" className="text-[10px]">
+                            Primary
+                          </Badge>
                         )}
                       </div>
                     </TableCell>
@@ -245,10 +284,19 @@ export function ClientContactList({ clientId }: ClientContactListProps) {
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-2">
-                        <Button variant="ghost" size="icon" onClick={() => handleEdit(contact)}>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleEdit(contact)}
+                        >
                           <Edit2 className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="icon" className="text-destructive" onClick={() => handleDelete(contact.id)}>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="text-destructive"
+                          onClick={() => handleDelete(contact.id)}
+                        >
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>

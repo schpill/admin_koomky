@@ -21,7 +21,9 @@ import { useAuthStore } from "@/lib/stores/auth";
 import { toast } from "sonner";
 
 const businessSchema = z.object({
-  business_name: z.string().min(2, "Business name must be at least 2 characters"),
+  business_name: z
+    .string()
+    .min(2, "Business name must be at least 2 characters"),
 });
 
 type BusinessFormData = z.infer<typeof businessSchema>;
@@ -51,7 +53,7 @@ export default function BusinessSettingsPage() {
 
   const onSubmit = async (data: BusinessFormData) => {
     try {
-      const result = await apiClient.put("/settings/business", data);
+      const result = await apiClient.put<any>("/settings/business", data);
       setUser(result.data);
       toast.success("Business settings updated successfully");
       reset(data);
@@ -69,7 +71,8 @@ export default function BusinessSettingsPage() {
           <CardHeader>
             <CardTitle>Business Settings</CardTitle>
             <CardDescription>
-              Manage your business profile and information used for invoices and clients.
+              Manage your business profile and information used for invoices and
+              clients.
             </CardDescription>
           </CardHeader>
           <form onSubmit={handleSubmit(onSubmit)}>

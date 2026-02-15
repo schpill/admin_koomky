@@ -19,7 +19,7 @@ export function EmptyState({
     <div
       className={cn(
         "flex min-h-[400px] flex-col items-center justify-center rounded-lg border border-dashed p-8 text-center animate-in fade-in-50",
-        className
+        className,
       )}
     >
       {icon && <div className="mx-auto mb-4 text-muted-foreground">{icon}</div>}

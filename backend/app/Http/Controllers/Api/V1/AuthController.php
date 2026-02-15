@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
-use Illuminate\Validation\Rules\Password as PasswordRule;
+use PragmaRX\Google2FALaravel\Facade as Google2FA;
 
 class AuthController extends Controller
 {
@@ -40,7 +40,7 @@ class AuthController extends Controller
         $this->ensureIsNotRateLimited($request);
 
         if (!Auth::attempt($request->only('email', 'password'))) {
-            RateLimiter::hit($this->throttleKey($request));
+            RateLimiter::hit($this->throttleKey($request), 900);
             return $this->error('Invalid login credentials', 401);
         }
 
@@ -48,7 +48,42 @@ class AuthController extends Controller
 
         $user = User::where('email', $request->email)->firstOrFail();
         
+        if ($user->two_factor_confirmed_at) {
+            // Issue a temporary token with only 2fa-pending ability
+            $accessToken = $user->createToken('2fa_token', ['2fa-pending'], now()->addMinutes(15))->plainTextToken;
+            
+            return $this->success([
+                'requires_2fa' => true,
+                'access_token' => $accessToken,
+                'token_type' => 'Bearer',
+                'expires_in' => 15 * 60,
+            ], 'Two-factor authentication required');
+        }
+
         return $this->issueTokens($user, 'Login successful');
+    }
+
+    public function verify2fa(Request $request): JsonResponse
+    {
+        $request->validate(['code' => 'required|string|size:6']);
+        
+        /** @var User $user */
+        $user = $request->user();
+        
+        if (!$user->two_factor_secret) {
+            return $this->error('2FA not enabled', 400);
+        }
+
+        $valid = Google2FA::verifyKey((string)$user->two_factor_secret, (string)$request->input('code'));
+
+        if (!$valid) {
+            return $this->error('Invalid verification code', 422);
+        }
+
+        // Revoke the temporary token
+        $user->currentAccessToken()->delete();
+
+        return $this->issueTokens($user, '2FA verified successfully');
     }
 
     public function refresh(Request $request): JsonResponse
@@ -69,6 +104,7 @@ class AuthController extends Controller
 
     protected function issueTokens(User $user, string $message, int $code = 200): JsonResponse
     {
+        // For a real app, we might want different abilities for access and refresh tokens
         $accessToken = $user->createToken('access_token', ['access'], now()->addMinutes(15))->plainTextToken;
         $refreshToken = $user->createToken('refresh_token', ['refresh'], now()->addDays(7))->plainTextToken;
 
@@ -77,7 +113,7 @@ class AuthController extends Controller
             'access_token' => $accessToken,
             'refresh_token' => $refreshToken,
             'token_type' => 'Bearer',
-            'expires_in' => 15 * 60, // in seconds
+            'expires_in' => 15 * 60, // 15 minutes
         ], $message, $code);
     }
 

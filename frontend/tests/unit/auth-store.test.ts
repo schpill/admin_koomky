@@ -3,14 +3,17 @@ import { useAuthStore } from "../../lib/stores/auth";
 
 // Mock document.cookie
 const mockCookies: Record<string, string> = {};
-Object.defineProperty(document, 'cookie', {
-  get: () => Object.entries(mockCookies).map(([k, v]) => `${k}=${v}`).join('; '),
+Object.defineProperty(document, "cookie", {
+  get: () =>
+    Object.entries(mockCookies)
+      .map(([k, v]) => `${k}=${v}`)
+      .join("; "),
   set: (v) => {
-    const [pair] = v.split(';');
-    const [key, value] = pair.split('=');
+    const [pair] = v.split(";");
+    const [key, value] = pair.split("=");
     mockCookies[key.trim()] = value;
   },
-  configurable: true
+  configurable: true,
 });
 
 describe("useAuthStore", () => {
@@ -24,7 +27,7 @@ describe("useAuthStore", () => {
       isLoading: false,
     });
     // Reset cookies
-    Object.keys(mockCookies).forEach(key => delete mockCookies[key]);
+    Object.keys(mockCookies).forEach((key) => delete mockCookies[key]);
   });
 
   it("should have initial state", () => {
@@ -59,8 +62,8 @@ describe("useAuthStore", () => {
     const state = useAuthStore.getState();
     expect(state.user).toBeNull();
     expect(state.isAuthenticated).toBe(false);
-    
-    // In our mock, document.cookie won't automatically clear based on expires, 
+
+    // In our mock, document.cookie won't automatically clear based on expires,
     // but the logout function sets them to empty.
     expect(mockCookies["koomky-access-token"]).toBe("");
   });

@@ -7,6 +7,7 @@ interface User {
   email: string;
   avatar_path?: string;
   business_name?: string;
+  two_factor_confirmed_at?: string | null;
 }
 
 interface AuthState {
@@ -62,8 +63,10 @@ export const useAuthStore = create<AuthState>()(
       logout: () => {
         // Clear cookies
         if (typeof window !== "undefined") {
-          document.cookie = "koomky-access-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-          document.cookie = "koomky-refresh-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+          document.cookie =
+            "koomky-access-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+          document.cookie =
+            "koomky-refresh-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
         }
         set({
           user: null,
@@ -88,6 +91,6 @@ export const useAuthStore = create<AuthState>()(
       onRehydrateStorage: () => (state) => {
         state?.setLoading(false);
       },
-    }
-  )
+    },
+  ),
 );

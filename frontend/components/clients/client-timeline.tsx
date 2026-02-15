@@ -16,6 +16,7 @@ interface Activity {
   id: string;
   description: string;
   subject_type: string;
+  subject_id: string;
   created_at: string;
   metadata?: any;
 }
@@ -31,16 +32,15 @@ export function ClientTimeline({ clientId }: ClientTimelineProps) {
   useEffect(() => {
     const fetchActivities = async () => {
       try {
-        // We filter by client and also look for activities related to this client
-        // In a real scenario, we might have a dedicated endpoint or a subject_id filter
-        const response = await apiClient.get<any>(`/activities?per_page=50`);
-        
-        // Manual filtering for this demo/sprint, ideally handled by backend subject_id
-        const filtered = (response.data.data || []).filter((a: any) => 
-           a.subject_id === clientId || (a.metadata && a.metadata.client_id === clientId)
-        );
-        
-        setActivities(filtered);
+        const response = await apiClient.get<any>(`/activities`, {
+          params: {
+            subject_id: clientId,
+            subject_type: "Client",
+            per_page: 50,
+          },
+        });
+
+        setActivities(response.data.data || []);
       } catch (error) {
         console.error("Failed to load activities", error);
       } finally {
@@ -66,7 +66,9 @@ export function ClientTimeline({ clientId }: ClientTimelineProps) {
           <History className="h-5 w-5" />
           Activity Timeline
         </CardTitle>
-        <CardDescription>Recent actions related to this client.</CardDescription>
+        <CardDescription>
+          Recent actions related to this client.
+        </CardDescription>
       </CardHeader>
       <CardContent>
         {activities.length === 0 ? (
@@ -79,15 +81,18 @@ export function ClientTimeline({ clientId }: ClientTimelineProps) {
               <div key={activity.id} className="relative pl-8">
                 <Circle className="absolute left-0 top-1 h-4 w-4 fill-background stroke-primary stroke-[3px]" />
                 <div className="flex flex-col">
-                  <span className="text-sm font-medium">{activity.description}</span>
+                  <span className="text-sm font-medium">
+                    {activity.description}
+                  </span>
                   <span className="text-xs text-muted-foreground">
                     {format(new Date(activity.created_at), "PPP 'at' p")}
                   </span>
-                  {activity.metadata && Object.keys(activity.metadata).length > 0 && (
-                    <pre className="mt-2 rounded bg-muted p-2 text-[10px] overflow-x-auto">
-                      {JSON.stringify(activity.metadata, null, 2)}
-                    </pre>
-                  )}
+                  {activity.metadata &&
+                    Object.keys(activity.metadata).length > 0 && (
+                      <pre className="mt-2 rounded bg-muted p-2 text-[10px] overflow-x-auto">
+                        {JSON.stringify(activity.metadata, null, 2)}
+                      </pre>
+                    )}
                 </div>
               </div>
             ))}

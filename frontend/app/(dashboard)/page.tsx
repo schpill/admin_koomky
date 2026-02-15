@@ -53,9 +53,9 @@ export default function DashboardPage() {
       {/* Responsive Layout: 1 col on mobile/tablet, 3 cols on desktop */}
       <div className="grid gap-6 grid-cols-1 lg:grid-cols-3">
         <div className="lg:col-span-2">
-          <RecentActivityWidget 
-            activities={stats?.recent_activities} 
-            isLoading={isLoading} 
+          <RecentActivityWidget
+            activities={stats?.recent_activities}
+            isLoading={isLoading}
           />
         </div>
         <div className="lg:col-span-1">

@@ -10,12 +10,17 @@ import { Loader2 } from "lucide-react";
 
 export const clientSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string().email("Invalid email address").optional().or(z.literal("")),
-  phone: z.string().optional(),
-  address: z.string().optional(),
-  city: z.string().optional(),
-  zip_code: z.string().optional(),
-  country: z.string().optional(),
+  email: z
+    .string()
+    .email("Invalid email address")
+    .optional()
+    .or(z.literal(""))
+    .or(z.null()),
+  phone: z.string().optional().nullable(),
+  address: z.string().optional().nullable(),
+  city: z.string().optional().nullable(),
+  zip_code: z.string().optional().nullable(),
+  country: z.string().optional().nullable(),
 });
 
 export type ClientFormData = z.infer<typeof clientSchema>;
@@ -54,7 +59,12 @@ export function ClientForm({
         </div>
         <div className="space-y-2">
           <Label htmlFor="email">Email</Label>
-          <Input id="email" type="email" {...register("email")} disabled={isSubmitting} />
+          <Input
+            id="email"
+            type="email"
+            {...register("email")}
+            disabled={isSubmitting}
+          />
           {errors.email && (
             <p className="text-sm text-destructive">{errors.email.message}</p>
           )}
@@ -65,7 +75,11 @@ export function ClientForm({
         </div>
         <div className="md:col-span-2 space-y-2">
           <Label htmlFor="address">Address</Label>
-          <Input id="address" {...register("address")} disabled={isSubmitting} />
+          <Input
+            id="address"
+            {...register("address")}
+            disabled={isSubmitting}
+          />
         </div>
         <div className="space-y-2">
           <Label htmlFor="city">City</Label>
@@ -73,11 +87,19 @@ export function ClientForm({
         </div>
         <div className="space-y-2">
           <Label htmlFor="zip_code">Zip Code</Label>
-          <Input id="zip_code" {...register("zip_code")} disabled={isSubmitting} />
+          <Input
+            id="zip_code"
+            {...register("zip_code")}
+            disabled={isSubmitting}
+          />
         </div>
         <div className="md:col-span-2 space-y-2">
           <Label htmlFor="country">Country</Label>
-          <Input id="country" {...register("country")} disabled={isSubmitting} />
+          <Input
+            id="country"
+            {...register("country")}
+            disabled={isSubmitting}
+          />
         </div>
       </div>
       <div className="flex justify-end gap-4 pt-4">

@@ -28,7 +28,7 @@ class TagController extends Controller
         /** @var User $user */
         $user = $request->user();
         $validated = $request->validate([
-            'name' => ['required', 'string', 'max:50'],
+            'name' => ['required', 'string', 'max:50', 'unique:tags,name,NULL,id,user_id,' . $user->id],
             'color' => ['nullable', 'string', 'max:20'],
         ]);
 
@@ -37,9 +37,33 @@ class TagController extends Controller
         return $this->success($tag, 'Tag created successfully', 201);
     }
 
+    public function destroy(Tag $tag): JsonResponse
+    {
+        Gate::authorize('delete', $tag);
+
+        $tag->delete();
+
+        return $this->success(null, 'Tag deleted successfully');
+    }
+
     public function attachToClient(Request $request, Client $client): JsonResponse
     {
         Gate::authorize('update', $client);
+
+        // Support both single name (for quick add) and array of IDs
+        if ($request->has('name')) {
+            $tagName = $request->input('name');
+            /** @var User $user */
+            $user = $request->user();
+            
+            $tag = Tag::firstOrCreate(
+                ['name' => $tagName, 'user_id' => $user->id],
+                ['color' => '#6366f1']
+            );
+            
+            $client->tags()->syncWithoutDetaching([$tag->id]);
+            return $this->success($tag, 'Tag attached to client');
+        }
 
         $request->validate(['tag_ids' => 'required|array']);
         /** @var array<int, string> $tagIds */
@@ -48,5 +72,14 @@ class TagController extends Controller
         $client->tags()->sync($tagIds);
 
         return $this->success(null, 'Tags updated for client');
+    }
+
+    public function detachFromClient(Client $client, Tag $tag): JsonResponse
+    {
+        Gate::authorize('update', $client);
+
+        $client->tags()->detach($tag->id);
+
+        return $this->success(null, 'Tag detached from client');
     }
 }

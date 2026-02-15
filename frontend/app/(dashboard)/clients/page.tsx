@@ -1,14 +1,20 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Plus, Search, MoreHorizontal, UserPlus, Filter, ArrowUpDown, Eye, Edit, Trash2 } from "lucide-react";
+import {
+  Plus,
+  Search,
+  MoreHorizontal,
+  UserPlus,
+  Filter,
+  ArrowUpDown,
+  Eye,
+  Edit,
+  Trash2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -40,21 +46,21 @@ export default function ClientsPage() {
   const [sortOrder, setOrder] = useState<string>("desc");
 
   useEffect(() => {
-    fetchClients({ 
-      search, 
+    fetchClients({
+      search,
       status: status === "all" ? undefined : status,
       sort_by: sortBy,
-      sort_order: sortOrder
+      sort_order: sortOrder,
     });
   }, [fetchClients, status, sortBy, sortOrder]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    fetchClients({ 
-      search, 
+    fetchClients({
+      search,
       status: status === "all" ? undefined : status,
       sort_by: sortBy,
-      sort_order: sortOrder
+      sort_order: sortOrder,
     });
   };
 
@@ -97,16 +103,21 @@ export default function ClientsPage() {
               </div>
               <div className="flex items-center gap-2">
                 <ArrowUpDown className="h-4 w-4 text-muted-foreground" />
-                <Select value={`${sortBy}-${sortOrder}`} onValueChange={(val) => {
-                  const [b, o] = val.split("-");
-                  setBy(b);
-                  setOrder(o);
-                }}>
+                <Select
+                  value={`${sortBy}-${sortOrder}`}
+                  onValueChange={(val) => {
+                    const [b, o] = val.split("-");
+                    setBy(b);
+                    setOrder(o);
+                  }}
+                >
                   <SelectTrigger className="w-[180px] h-9">
                     <SelectValue placeholder="Sort by" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="created_at-desc">Newest First</SelectItem>
+                    <SelectItem value="created_at-desc">
+                      Newest First
+                    </SelectItem>
                     <SelectItem value="created_at-asc">Oldest First</SelectItem>
                     <SelectItem value="name-asc">Name (A-Z)</SelectItem>
                     <SelectItem value="name-desc">Name (Z-A)</SelectItem>
@@ -135,52 +146,90 @@ export default function ClientsPage() {
               <table className="w-full text-left text-sm">
                 <thead>
                   <tr className="border-b">
-                    <th className="pb-3 font-medium text-muted-foreground">Reference</th>
-                    <th className="pb-3 font-medium text-muted-foreground">Name</th>
-                    <th className="pb-3 font-medium text-muted-foreground">Email</th>
-                    <th className="pb-3 font-medium text-muted-foreground">Status</th>
-                    <th className="pb-3 font-medium text-muted-foreground text-right">Actions</th>
+                    <th className="pb-3 font-medium text-muted-foreground">
+                      Reference
+                    </th>
+                    <th className="pb-3 font-medium text-muted-foreground">
+                      Name
+                    </th>
+                    <th className="pb-3 font-medium text-muted-foreground">
+                      Email
+                    </th>
+                    <th className="pb-3 font-medium text-muted-foreground">
+                      Status
+                    </th>
+                    <th className="pb-3 font-medium text-muted-foreground text-right">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   {clients.map((client) => (
-                    <tr key={client.id} className="border-b last:border-0 hover:bg-muted/50 transition-colors">
-                      <td className="py-4 font-mono text-xs">{client.reference}</td>
+                    <tr
+                      key={client.id}
+                      className="border-b last:border-0 hover:bg-muted/50 transition-colors"
+                    >
+                      <td className="py-4 font-mono text-xs">
+                        {client.reference}
+                      </td>
                       <td className="py-4">
-                        <Link href={`/clients/${client.id}`} className="font-medium hover:underline text-primary">
+                        <Link
+                          href={`/clients/${client.id}`}
+                          className="font-medium hover:underline text-primary"
+                        >
                           {client.name}
                         </Link>
                       </td>
-                      <td className="py-4 text-muted-foreground">{client.email || "-"}</td>
+                      <td className="py-4 text-muted-foreground">
+                        {client.email || "-"}
+                      </td>
                       <td className="py-4">
-                        <Badge variant={client.status === 'active' ? 'default' : 'secondary'}>
+                        <Badge
+                          variant={
+                            client.status === "active" ? "default" : "secondary"
+                          }
+                        >
                           {client.status}
                         </Badge>
                       </td>
                       <td className="py-4 text-right">
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon" aria-label="Open actions menu">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              aria-label="Open actions menu"
+                            >
                               <MoreHorizontal className="h-4 w-4" />
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
                             <DropdownMenuItem asChild>
-                              <Link href={`/clients/${client.id}`} className="flex items-center">
+                              <Link
+                                href={`/clients/${client.id}`}
+                                className="flex items-center"
+                              >
                                 <Eye className="mr-2 h-4 w-4" /> View details
                               </Link>
                             </DropdownMenuItem>
                             <DropdownMenuItem asChild>
-                              <Link href={`/clients/${client.id}/edit`} className="flex items-center">
+                              <Link
+                                href={`/clients/${client.id}/edit`}
+                                className="flex items-center"
+                              >
                                 <Edit className="mr-2 h-4 w-4" /> Edit client
                               </Link>
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem 
+                            <DropdownMenuItem
                               className="text-destructive"
                               onClick={() => {
-                                if (confirm("Are you sure you want to archive this client?")) {
+                                if (
+                                  confirm(
+                                    "Are you sure you want to archive this client?",
+                                  )
+                                ) {
                                   deleteClient(client.id);
                                 }
                               }}

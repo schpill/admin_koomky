@@ -19,7 +19,9 @@ test.describe("Password Reset Flow", () => {
     await page.click('button[type="submit"]');
 
     // Should show success message (toast)
-    await expect(page.getByText("We have emailed your password reset link.")).toBeVisible();
+    await expect(
+      page.getByText("We have emailed your password reset link."),
+    ).toBeVisible();
   });
 
   test("user can reset password with token", async ({ page }) => {
@@ -36,8 +38,10 @@ test.describe("Password Reset Flow", () => {
     });
 
     // Simulate clicking a link with token
-    await page.goto("/auth/reset-password?token=mock-token&email=test@example.com");
-    
+    await page.goto(
+      "/auth/reset-password?token=mock-token&email=test@example.com",
+    );
+
     await page.fill('input[id="password"]', "NewPassword123!");
     await page.fill('input[id="password_confirmation"]', "NewPassword123!");
     await page.click('button[type="submit"]');

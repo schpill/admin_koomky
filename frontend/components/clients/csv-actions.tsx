@@ -20,9 +20,9 @@ export function CsvActions() {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("koomky-auth") ? JSON.parse(localStorage.getItem("koomky-auth")!).state.accessToken : ""}`,
           },
-        }
+        },
       );
-      
+
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -55,7 +55,7 @@ export function CsvActions() {
             Authorization: `Bearer ${localStorage.getItem("koomky-auth") ? JSON.parse(localStorage.getItem("koomky-auth")!).state.accessToken : ""}`,
           },
           body: formData,
-        }
+        },
       );
 
       if (!response.ok) throw new Error("Import failed");
@@ -79,8 +79,13 @@ export function CsvActions() {
         className="hidden"
         accept=".csv"
       />
-      <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()} disabled={isImporting}>
-        <Upload className="mr-2 h-4 w-4" /> 
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={() => fileInputRef.current?.click()}
+        disabled={isImporting}
+      >
+        <Upload className="mr-2 h-4 w-4" />
         {isImporting ? "Importing..." : "Import CSV"}
       </Button>
       <Button variant="outline" size="sm" onClick={handleExport}>

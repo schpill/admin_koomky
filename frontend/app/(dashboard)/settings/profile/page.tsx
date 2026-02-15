@@ -55,7 +55,7 @@ export default function ProfileSettingsPage() {
 
   const onSubmit = async (data: ProfileFormData) => {
     try {
-      const result = await apiClient.put("/settings/profile", data);
+      const result = await apiClient.put<any>("/settings/profile", data);
       setUser(result.data);
       toast.success("Profile updated successfully");
       reset(data); // Mark as pristine
@@ -80,16 +80,29 @@ export default function ProfileSettingsPage() {
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="name">Name</Label>
-                <Input id="name" {...register("name")} disabled={isSubmitting} />
+                <Input
+                  id="name"
+                  {...register("name")}
+                  disabled={isSubmitting}
+                />
                 {errors.name && (
-                  <p className="text-sm text-destructive">{errors.name.message}</p>
+                  <p className="text-sm text-destructive">
+                    {errors.name.message}
+                  </p>
                 )}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" {...register("email")} disabled={isSubmitting} />
+                <Input
+                  id="email"
+                  type="email"
+                  {...register("email")}
+                  disabled={isSubmitting}
+                />
                 {errors.email && (
-                  <p className="text-sm text-destructive">{errors.email.message}</p>
+                  <p className="text-sm text-destructive">
+                    {errors.email.message}
+                  </p>
                 )}
               </div>
             </CardContent>

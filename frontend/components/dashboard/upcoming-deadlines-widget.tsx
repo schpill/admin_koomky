@@ -17,7 +17,8 @@ export function UpcomingDeadlinesWidget() {
           </div>
           <p className="text-sm font-medium">No deadlines soon</p>
           <p className="text-xs text-muted-foreground max-w-[200px]">
-            Once you add projects or invoices, your upcoming deadlines will appear here.
+            Once you add projects or invoices, your upcoming deadlines will
+            appear here.
           </p>
         </div>
       </CardContent>

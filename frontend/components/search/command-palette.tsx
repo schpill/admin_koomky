@@ -45,7 +45,9 @@ export function CommandPalette() {
     const search = async () => {
       setIsLoading(true);
       try {
-        const response = await apiClient.get<any>(`/search?q=${debouncedQuery}`);
+        const response = await apiClient.get<any>(
+          `/search?q=${debouncedQuery}`,
+        );
         setResults(response.data.clients || []);
       } catch (error) {
         console.error("Search failed", error);
@@ -80,7 +82,10 @@ export function CommandPalette() {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="overflow-hidden p-0 shadow-2xl">
           <Command className="flex h-full w-full flex-col overflow-hidden rounded-md bg-popover text-popover-foreground">
-            <div className="flex items-center border-b px-3" cmdk-input-wrapper="">
+            <div
+              className="flex items-center border-b px-3"
+              cmdk-input-wrapper=""
+            >
               <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
               <Command.Input
                 placeholder="Type a command or search..."
@@ -89,27 +94,33 @@ export function CommandPalette() {
               />
             </div>
             <Command.List className="max-h-[300px] overflow-y-auto overflow-x-hidden p-2">
-              <Command.Empty className="py-6 text-center text-sm">No results found.</Command.Empty>
-              
+              <Command.Empty className="py-6 text-center text-sm">
+                No results found.
+              </Command.Empty>
+
               {results.length > 0 && (
                 <Command.Group heading="Clients">
                   {results.map((client) => (
                     <Command.Item
                       key={client.id}
                       value={client.name}
-                      onSelect={() => runCommand(() => router.push(`/clients/${client.id}`))}
+                      onSelect={() =>
+                        runCommand(() => router.push(`/clients/${client.id}`))
+                      }
                       className="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none aria-selected:bg-accent aria-selected:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
                     >
                       <User className="mr-2 h-4 w-4" />
                       <span>{client.name}</span>
-                      <span className="ml-2 text-xs text-muted-foreground">{client.reference}</span>
+                      <span className="ml-2 text-xs text-muted-foreground">
+                        {client.reference}
+                      </span>
                     </Command.Item>
                   ))}
                 </Command.Group>
               )}
 
               <Command.Separator className="-mx-1 h-px bg-border" />
-              
+
               <Command.Group heading="Quick Links">
                 <Command.Item
                   onSelect={() => runCommand(() => router.push("/"))}
@@ -119,7 +130,9 @@ export function CommandPalette() {
                   <span>Dashboard</span>
                 </Command.Item>
                 <Command.Item
-                  onSelect={() => runCommand(() => router.push("/settings/profile"))}
+                  onSelect={() =>
+                    runCommand(() => router.push("/settings/profile"))
+                  }
                   className="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none aria-selected:bg-accent aria-selected:text-accent-foreground"
                 >
                   <Settings className="mr-2 h-4 w-4" />

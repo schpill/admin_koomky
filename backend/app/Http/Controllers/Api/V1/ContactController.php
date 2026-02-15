@@ -15,6 +15,13 @@ class ContactController extends Controller
 {
     use ApiResponse;
 
+    public function index(Client $client): JsonResponse
+    {
+        Gate::authorize('view', $client);
+
+        return $this->success($client->contacts()->latest()->get(), 'Contacts retrieved successfully');
+    }
+
     public function store(Request $request, Client $client): JsonResponse
     {
         Gate::authorize('update', $client);
@@ -39,5 +46,40 @@ class ContactController extends Controller
         });
 
         return $this->success($contact, 'Contact added successfully', 201);
+    }
+
+    public function update(Request $request, Client $client, Contact $contact): JsonResponse
+    {
+        Gate::authorize('update', $client);
+
+        $validated = $request->validate([
+            'first_name' => ['required', 'string', 'max:255'],
+            'last_name' => ['nullable', 'string', 'max:255'],
+            'email' => ['nullable', 'email', 'max:255'],
+            'phone' => ['nullable', 'string', 'max:20'],
+            'position' => ['nullable', 'string', 'max:255'],
+            'is_primary' => ['nullable', 'boolean'],
+        ]);
+
+        DB::transaction(function () use ($client, $contact, $validated) {
+            if (!empty($validated['is_primary'])) {
+                Contact::where('client_id', $client->id)
+                    ->where('is_primary', true)
+                    ->update(['is_primary' => false]);
+            }
+
+            $contact->update($validated);
+        });
+
+        return $this->success($contact, 'Contact updated successfully');
+    }
+
+    public function destroy(Client $client, Contact $contact): JsonResponse
+    {
+        Gate::authorize('update', $client);
+
+        $contact->delete();
+
+        return $this->success(null, 'Contact deleted successfully');
     }
 }

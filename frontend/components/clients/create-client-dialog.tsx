@@ -43,7 +43,8 @@ export function CreateClientDialog() {
         <DialogHeader>
           <DialogTitle>Add New Client</DialogTitle>
           <DialogDescription>
-            Enter the details of the new client. Click save when you&apos;re done.
+            Enter the details of the new client. Click save when you&apos;re
+            done.
           </DialogDescription>
         </DialogHeader>
         <div className="py-4">

@@ -12,7 +12,7 @@ export default function EditClientPage() {
   const router = useRouter();
   const params = useParams();
   const id = params.id as string;
-  
+
   const { fetchClient, updateClient, currentClient } = useClientStore();
   const [loading, setLoading] = useState(true);
 

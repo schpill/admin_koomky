@@ -12,14 +12,19 @@ class RequireTwoFactorAuthentication
     {
         $user = $request->user();
 
-        if ($user && $user->two_factor_confirmed_at && !$request->session()->has('auth.2fa_verified')) {
-            // If the request is not to the 2FA verification endpoint itself
-            if (!$request->is('api/v1/auth/2fa*') && !$request->is('api/v1/auth/logout')) {
-                return response()->json([
-                    'status' => 'Error',
-                    'message' => 'Two-factor authentication required.',
-                    'code' => '2FA_REQUIRED'
-                ], 403);
+        if ($user && $user->two_factor_confirmed_at) {
+            /** @var \Laravel\Sanctum\PersonalAccessToken $token */
+            $token = $request->user()->currentAccessToken();
+            
+            if ($token && $token->can('2fa-pending')) {
+                // If the request is not to the 2FA verification endpoint itself
+                if (!$request->is('api/v1/auth/2fa/verify') && !$request->is('api/v1/auth/logout')) {
+                    return response()->json([
+                        'status' => 'Error',
+                        'message' => 'Two-factor authentication required.',
+                        'code' => '2FA_REQUIRED'
+                    ], 403);
+                }
             }
         }
 

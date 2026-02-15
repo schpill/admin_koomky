@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -17,6 +17,8 @@ import { Label } from "@/components/ui/label";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { apiClient } from "@/lib/api";
+import { useAuthStore } from "@/lib/stores/auth";
 
 const twoFaSchema = z.object({
   code: z.string().length(6, "Code must be 6 digits"),
@@ -25,9 +27,11 @@ const twoFaSchema = z.object({
 type TwoFaFormData = z.infer<typeof twoFaSchema>;
 
 export default function SecuritySettingsPage() {
-  const [isEnabled, setIsEnabled] = useState(false);
+  const { user, setUser } = useAuthStore();
   const [qrCode, setQrCode] = useState<string | null>(null);
   const [setupStep, setSetupStep] = useState<"initial" | "verify">("initial");
+
+  const isEnabled = !!user?.two_factor_confirmed_at;
 
   const {
     register,
@@ -39,33 +43,44 @@ export default function SecuritySettingsPage() {
   });
 
   const onEnable = async () => {
-    // Mock API call to get QR code
-    // In real app: const res = await apiClient.post('/settings/2fa/enable');
-    // setQrCode(res.data.qr_code_url);
-    toast.info("Backend 2FA support missing (Package install failed). Mocking flow.");
-    setQrCode("https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg"); // Placeholder
-    setSetupStep("verify");
+    try {
+      const response = await apiClient.post<any>("/settings/2fa/enable");
+      setQrCode(response.data.qr_code_url);
+      setSetupStep("verify");
+    } catch (error) {
+      toast.error("Failed to generate 2FA QR code");
+    }
   };
 
   const onVerify = async (data: TwoFaFormData) => {
     try {
-      // Mock API call to verify
-      // await apiClient.post('/settings/2fa/confirm', data);
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      setIsEnabled(true);
+      await apiClient.post("/settings/2fa/confirm", data);
+
+      // Refresh user profile to get updated 2FA status
+      const userRes = await apiClient.get<any>("/settings/profile");
+      setUser(userRes.data);
+
       setSetupStep("initial");
       setQrCode(null);
       reset();
       toast.success("Two-factor authentication enabled!");
     } catch (error) {
-      toast.error("Verification failed");
+      toast.error("Verification failed. Please check the code and try again.");
     }
   };
 
   const onDisable = async () => {
-    // Mock API call to disable
-    setIsEnabled(false);
-    toast.success("Two-factor authentication disabled");
+    try {
+      await apiClient.post("/settings/2fa/disable");
+
+      // Refresh user profile
+      const userRes = await apiClient.get<any>("/settings/profile");
+      setUser(userRes.data);
+
+      toast.success("Two-factor authentication disabled");
+    } catch (error) {
+      toast.error("Failed to disable 2FA");
+    }
   };
 
   return (
@@ -77,7 +92,8 @@ export default function SecuritySettingsPage() {
           <CardHeader>
             <CardTitle>Two-Factor Authentication</CardTitle>
             <CardDescription>
-              Add an extra layer of security to your account by requiring a verification code when signing in.
+              Add an extra layer of security to your account by requiring a
+              verification code when signing in.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -89,7 +105,9 @@ export default function SecuritySettingsPage() {
                     Your account is secure.
                   </p>
                 </div>
-                <Button variant="destructive" onClick={onDisable}>Disable</Button>
+                <Button variant="destructive" onClick={onDisable}>
+                  Disable
+                </Button>
               </div>
             ) : (
               <div className="space-y-4">
@@ -109,11 +127,15 @@ export default function SecuritySettingsPage() {
                         <img src={qrCode} alt="QR Code" className="w-48 h-48" />
                       </div>
                       <p className="text-sm text-center text-muted-foreground max-w-sm">
-                        Scan this QR code with your authenticator app (e.g. Google Authenticator) and enter the 6-digit code below.
+                        Scan this QR code with your authenticator app (e.g.
+                        Google Authenticator) and enter the 6-digit code below.
                       </p>
                     </div>
 
-                    <form onSubmit={handleSubmit(onVerify)} className="space-y-4 max-w-xs mx-auto">
+                    <form
+                      onSubmit={handleSubmit(onVerify)}
+                      className="space-y-4 max-w-xs mx-auto"
+                    >
                       <div className="space-y-2">
                         <Label htmlFor="code">Verification Code</Label>
                         <Input
@@ -142,7 +164,11 @@ export default function SecuritySettingsPage() {
                         >
                           Cancel
                         </Button>
-                        <Button type="submit" className="flex-1" disabled={isSubmitting}>
+                        <Button
+                          type="submit"
+                          className="flex-1"
+                          disabled={isSubmitting}
+                        >
                           {isSubmitting ? "Verifying..." : "Verify"}
                         </Button>
                       </div>

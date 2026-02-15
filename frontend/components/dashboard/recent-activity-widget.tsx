@@ -13,7 +13,10 @@ interface RecentActivityWidgetProps {
   isLoading?: boolean;
 }
 
-export function RecentActivityWidget({ activities = [], isLoading }: RecentActivityWidgetProps) {
+export function RecentActivityWidget({
+  activities = [],
+  isLoading,
+}: RecentActivityWidgetProps) {
   return (
     <Card className="col-span-full">
       <CardHeader>
@@ -26,7 +29,10 @@ export function RecentActivityWidget({ activities = [], isLoading }: RecentActiv
         {isLoading ? (
           <div className="space-y-4">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="flex flex-col gap-2 border-b pb-3 last:border-0 last:pb-0">
+              <div
+                key={i}
+                className="flex flex-col gap-2 border-b pb-3 last:border-0 last:pb-0"
+              >
                 <Skeleton className="h-4 w-3/4" />
                 <Skeleton className="h-3 w-1/4" />
               </div>
@@ -35,7 +41,10 @@ export function RecentActivityWidget({ activities = [], isLoading }: RecentActiv
         ) : activities.length > 0 ? (
           <div className="space-y-4">
             {activities.map((activity) => (
-              <div key={activity.id} className="flex items-center gap-4 text-sm border-b pb-3 last:border-0 last:pb-0">
+              <div
+                key={activity.id}
+                className="flex items-center gap-4 text-sm border-b pb-3 last:border-0 last:pb-0"
+              >
                 <div className="flex-1">
                   <p className="font-medium">{activity.description}</p>
                   <p className="text-xs text-muted-foreground">

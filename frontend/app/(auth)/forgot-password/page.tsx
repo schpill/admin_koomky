@@ -36,7 +36,9 @@ export default function ForgotPasswordPage() {
 
   const onSubmit = async (data: ForgotPasswordFormData) => {
     try {
-      const result = await apiClient.post("/auth/forgot-password", data, { skipAuth: true });
+      const result = await apiClient.post("/auth/forgot-password", data, {
+        skipAuth: true,
+      });
       toast.success(result.message || "Reset link sent!");
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Request failed");

@@ -4,7 +4,9 @@ import Page from "../app/(dashboard)/page";
 
 // Mock the layout to avoid sidebar/header dependencies
 vi.mock("@/components/layout/dashboard-layout", () => ({
-  DashboardLayout: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  DashboardLayout: ({ children }: { children: React.ReactNode }) => (
+    <div>{children}</div>
+  ),
 }));
 
 test("Dashboard page renders heading", () => {

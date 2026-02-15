@@ -21,7 +21,7 @@ RateLimiter::for('api_auth', function (Request $request) {
 Route::prefix('v1')->group(function () {
     Route::get('/health', HealthController::class);
 
-    // Auth Routes (Public or throttled)
+    // Auth Routes
     Route::prefix('auth')->middleware('throttle:api_auth')->group(function () {
         Route::post('/register', [AuthController::class, 'register']);
         Route::post('/login', [AuthController::class, 'login']);
@@ -30,101 +30,44 @@ Route::prefix('v1')->group(function () {
     });
 
     // Protected Routes
-    Route::middleware('auth:sanctum')->group(function () {
+    Route::middleware(['auth:sanctum', 'two-factor'])->group(function () {
         Route::get('dashboard', DashboardController::class);
 
         Route::prefix('auth')->group(function () {
             Route::get('/me', [AuthController::class, 'me']);
             Route::post('/refresh', [AuthController::class, 'refresh']);
             Route::post('/logout', [AuthController::class, 'logout']);
+            Route::post('/2fa/verify', [AuthController::class, 'verify2fa']);
         });
 
         // Settings
-                    Route::prefix('settings')->group(function () {
-                        Route::get('/profile', [UserSettingsController::class, 'profile']);
-                        Route::put('/profile', [UserSettingsController::class, 'updateProfile']);
-                        Route::put('/business', [UserSettingsController::class, 'updateBusiness']);
-                        
-                        // 2FA
-                        Route::post('/2fa/enable', [UserSettingsController::class, 'enable2fa']);
-                        Route::post('/2fa/confirm', [UserSettingsController::class, 'confirm2fa']);
-                        Route::post('/2fa/disable', [UserSettingsController::class, 'disable2fa']);
-                    });
-        
-                                                        // Clients
-        
-                                                        Route::get('clients/export/csv', [ClientController::class, 'exportCsv']);
-        
-                                                        Route::post('clients/import/csv', [ClientController::class, 'importCsv']);
-        
-                                                        Route::apiResource('clients', ClientController::class);
-        
-                                            
-        
-                                            Route::apiResource('clients.contacts', ContactController::class)->only(['index', 'store', 'update', 'destroy']);
-        
-                                            Route::post('clients/{client}/tags', [TagController::class, 'attachToClient']);
-        
-                                
-        
-                                                        // Tags
-        
-                                
-        
-                                                        Route::apiResource('tags', TagController::class)->only(['index', 'store', 'destroy']);
-        
-                                
-        
-                                            
-        
-                                
-        
-                                                                // Search
-        
-                                
-        
-                                            
-        
-                                
-        
-                                                                Route::get('search', SearchController::class);
-        
-                                
-        
-                                            
-        
-                                
-        
-                                                        
-        
-                                
-        
-                                            
-        
-                                
-        
-                                                                // Activities
-        
-                                
-        
-                                            
-        
-                                
-        
-                                                                Route::get('activities', [ActivityController::class, 'index']);
-        
-                                
-        
-                                            
-        
-                                
-        
-                                                            });
-        
-                                
-        
-                                            
-        
-                                
-        
-                                                        });
+        Route::prefix('settings')->group(function () {
+            Route::get('/profile', [UserSettingsController::class, 'profile']);
+            Route::put('/profile', [UserSettingsController::class, 'updateProfile']);
+            Route::put('/business', [UserSettingsController::class, 'updateBusiness']);
+            
+            // 2FA Management
+            Route::post('/2fa/enable', [UserSettingsController::class, 'enable2fa']);
+            Route::post('/2fa/confirm', [UserSettingsController::class, 'confirm2fa']);
+            Route::post('/2fa/disable', [UserSettingsController::class, 'disable2fa']);
+        });
+
+        // Clients
+        Route::get('clients/export/csv', [ClientController::class, 'exportCsv']);
+        Route::post('clients/import/csv', [ClientController::class, 'importCsv']);
+        Route::post('clients/{client}/restore', [ClientController::class, 'restore']);
+        Route::apiResource('clients', ClientController::class);
+
+        // Client Contacts
+        Route::apiResource('clients.contacts', ContactController::class);
+
+        // Tags
+        Route::post('clients/{client}/tags', [TagController::class, 'attachToClient']);
+        Route::delete('clients/{client}/tags/{tag}', [TagController::class, 'detachFromClient']);
+        Route::apiResource('tags', TagController::class)->only(['index', 'store', 'destroy']);
+
+        // Search & Activities
+        Route::get('search', SearchController::class);
+        Route::get('activities', [ActivityController::class, 'index']);
+    });
+});

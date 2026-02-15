@@ -2,9 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
   pull_request:
-    branches: [ main ]
 
 jobs:
   backend:
@@ -29,6 +27,7 @@ jobs:
         with:
           php-version: '8.3'
           extensions: pdo_pgsql, mbstring, exif, pcntl, bcmath, gd, zip, intl
+          coverage: pcov
       - name: Install Dependencies
         run: composer install --working-dir=backend
       - name: Run Lint
@@ -62,5 +61,7 @@ jobs:
         run: cd frontend && pnpm install
       - name: Run Lint
         run: cd frontend && pnpm lint
+      - name: Run Prettier Check
+        run: cd frontend && pnpm format:check
       - name: Run Tests
         run: cd frontend && pnpm vitest run --coverage

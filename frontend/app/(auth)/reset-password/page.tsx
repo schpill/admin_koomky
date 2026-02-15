@@ -19,22 +19,24 @@ import { apiClient } from "@/lib/api";
 import { toast } from "sonner";
 import { Suspense } from "react";
 
-const resetPasswordSchema = z.object({
-  token: z.string().min(1, "Token is missing"),
-  email: z.string().email("Invalid email address"),
-  password: z.string().min(8, "Password must be at least 8 characters"),
-  password_confirmation: z.string(),
-}).refine((data) => data.password === data.password_confirmation, {
-  message: "Passwords don't match",
-  path: ["password_confirmation"],
-});
+const resetPasswordSchema = z
+  .object({
+    token: z.string().min(1, "Token is missing"),
+    email: z.string().email("Invalid email address"),
+    password: z.string().min(8, "Password must be at least 8 characters"),
+    password_confirmation: z.string(),
+  })
+  .refine((data) => data.password === data.password_confirmation, {
+    message: "Passwords don't match",
+    path: ["password_confirmation"],
+  });
 
 type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>;
 
 function ResetPasswordForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  
+
   const {
     register,
     handleSubmit,
@@ -49,7 +51,9 @@ function ResetPasswordForm() {
 
   const onSubmit = async (data: ResetPasswordFormData) => {
     try {
-      const result = await apiClient.post("/auth/reset-password", data, { skipAuth: true });
+      const result = await apiClient.post("/auth/reset-password", data, {
+        skipAuth: true,
+      });
       toast.success(result.message || "Password reset successfully!");
       router.push("/auth/login");
     } catch (error) {
@@ -71,7 +75,7 @@ function ResetPasswordForm() {
         <CardContent className="space-y-4">
           <Input type="hidden" {...register("token")} />
           <Input type="hidden" {...register("email")} />
-          
+
           <div className="space-y-2">
             <Label htmlFor="password">New Password</Label>
             <Input
@@ -81,10 +85,12 @@ function ResetPasswordForm() {
               disabled={isSubmitting}
             />
             {errors.password && (
-              <p className="text-sm text-destructive">{errors.password.message}</p>
+              <p className="text-sm text-destructive">
+                {errors.password.message}
+              </p>
             )}
           </div>
-          
+
           <div className="space-y-2">
             <Label htmlFor="password_confirmation">Confirm New Password</Label>
             <Input

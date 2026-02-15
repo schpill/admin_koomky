@@ -26,5 +26,6 @@ test('user is locked out after too many failed login attempts', function () {
     ]);
 
     $response->assertStatus(429);
+    $response->assertJsonPath('message', fn ($message) => str_contains($message, '900 seconds') || str_contains($message, '899 seconds'));
     Event::assertDispatched(Lockout::class);
 });

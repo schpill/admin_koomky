@@ -2,18 +2,18 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { 
-  ChevronLeft, 
-  Mail, 
-  Phone, 
-  MapPin, 
-  Calendar, 
-  User, 
+import {
+  ChevronLeft,
+  Mail,
+  Phone,
+  MapPin,
+  Calendar,
+  User,
   MoreVertical,
   Trash2,
   Edit,
   Archive,
-  RefreshCw
+  RefreshCw,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -61,7 +61,11 @@ export default function ClientDetailPage() {
   const handleDelete = async () => {
     try {
       await apiClient.delete(`/clients/${id}`);
-      toast.success(client.deleted_at ? "Client deleted permanently" : "Client archived successfully");
+      toast.success(
+        client.deleted_at
+          ? "Client deleted permanently"
+          : "Client archived successfully",
+      );
       router.push("/clients");
     } catch (error) {
       toast.error("Failed to archive client");
@@ -93,16 +97,28 @@ export default function ClientDetailPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <Button variant="ghost" onClick={() => router.push("/clients")} className="-ml-2">
+        <Button
+          variant="ghost"
+          onClick={() => router.push("/clients")}
+          className="-ml-2"
+        >
           <ChevronLeft className="mr-2 h-4 w-4" /> Back to Clients
         </Button>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={() => router.push(`/clients/${id}/edit`)}>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => router.push(`/clients/${id}/edit`)}
+          >
             <Edit className="mr-2 h-4 w-4" /> Edit
           </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" aria-label="Open client options">
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="Open client options"
+              >
                 <MoreVertical className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
@@ -112,7 +128,7 @@ export default function ClientDetailPage() {
                   <RefreshCw className="mr-2 h-4 w-4" /> Restore Client
                 </DropdownMenuItem>
               ) : (
-                <DropdownMenuItem 
+                <DropdownMenuItem
                   className="text-destructive"
                   onClick={() => setDeleteOpen(true)}
                 >
@@ -154,19 +170,30 @@ export default function ClientDetailPage() {
                     <User className="h-10 w-10 text-primary" />
                   </div>
                   {client.deleted_at && (
-                    <Badge variant="destructive" className="absolute -top-2 -right-2">Archived</Badge>
+                    <Badge
+                      variant="destructive"
+                      className="absolute -top-2 -right-2"
+                    >
+                      Archived
+                    </Badge>
                   )}
                 </div>
                 <div>
                   <h2 className="text-xl font-bold">{client.name}</h2>
-                  <p className="text-sm text-muted-foreground font-mono">{client.reference}</p>
+                  <p className="text-sm text-muted-foreground font-mono">
+                    {client.reference}
+                  </p>
                 </div>
                 <div className="flex gap-2">
-                  <Badge variant={client.status === 'active' ? 'default' : 'secondary'}>
+                  <Badge
+                    variant={
+                      client.status === "active" ? "default" : "secondary"
+                    }
+                  >
                     {client.status}
                   </Badge>
                 </div>
-                
+
                 <div className="w-full space-y-3 pt-4 text-sm text-left">
                   {client.email && (
                     <div className="flex items-center gap-3">
@@ -183,19 +210,28 @@ export default function ClientDetailPage() {
                   {(client.city || client.country) && (
                     <div className="flex items-center gap-3">
                       <MapPin className="h-4 w-4 text-muted-foreground" />
-                      <span className="truncate">{[client.city, client.country].filter(Boolean).join(', ')}</span>
+                      <span className="truncate">
+                        {[client.city, client.country]
+                          .filter(Boolean)
+                          .join(", ")}
+                      </span>
                     </div>
                   )}
                   <div className="flex items-center gap-3">
                     <Calendar className="h-4 w-4 text-muted-foreground" />
-                    <span>Added {new Date(client.created_at).toLocaleDateString()}</span>
+                    <span>
+                      Added {new Date(client.created_at).toLocaleDateString()}
+                    </span>
                   </div>
                 </div>
 
                 <Separator className="my-2" />
 
                 <div className="w-full">
-                  <ClientTagSelector clientId={id as string} initialTags={client.tags || []} />
+                  <ClientTagSelector
+                    clientId={id as string}
+                    initialTags={client.tags || []}
+                  />
                 </div>
               </div>
             </CardContent>
@@ -210,7 +246,7 @@ export default function ClientDetailPage() {
               <TabsTrigger value="contacts">Contacts</TabsTrigger>
               <TabsTrigger value="history">Activity</TabsTrigger>
             </TabsList>
-            
+
             <TabsContent value="details" className="space-y-4 pt-4">
               <Card>
                 <CardHeader>
@@ -229,7 +265,14 @@ export default function ClientDetailPage() {
                     <div className="col-span-2">
                       <p className="text-muted-foreground">Address</p>
                       <p className="font-medium">
-                        {[client.address, client.zip_code, client.city, client.country].filter(Boolean).join(', ') || "No address provided"}
+                        {[
+                          client.address,
+                          client.zip_code,
+                          client.city,
+                          client.country,
+                        ]
+                          .filter(Boolean)
+                          .join(", ") || "No address provided"}
                       </p>
                     </div>
                   </div>

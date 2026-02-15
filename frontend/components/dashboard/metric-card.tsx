@@ -11,7 +11,14 @@ interface MetricCardProps {
   isLoading?: boolean;
 }
 
-export function MetricCard({ title, value, icon, description, className, isLoading }: MetricCardProps) {
+export function MetricCard({
+  title,
+  value,
+  icon,
+  description,
+  className,
+  isLoading,
+}: MetricCardProps) {
   return (
     <Card className={cn("", className)}>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -28,7 +35,9 @@ export function MetricCard({ title, value, icon, description, className, isLoadi
           <>
             <div className="text-2xl font-bold">{value}</div>
             {description && (
-              <p className="text-xs text-muted-foreground pt-1">{description}</p>
+              <p className="text-xs text-muted-foreground pt-1">
+                {description}
+              </p>
             )}
           </>
         )}

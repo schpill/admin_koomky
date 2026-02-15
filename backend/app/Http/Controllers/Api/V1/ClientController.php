@@ -24,14 +24,41 @@ class ClientController extends Controller
         /** @var User $user */
         $user = $request->user();
 
-        $clients = Client::where('user_id', $user->id)
-            ->with(['contacts', 'tags'])
-            ->when($request->search, function ($query, $search) {
-                return $query->where('name', 'like', "%{$search}%")
-                             ->orWhere('reference', 'like', "%{$search}%");
-            })
-            ->latest()
-            ->paginate((int)($request->per_page ?? 15));
+        $query = Client::where('user_id', $user->id)
+            ->with(['contacts', 'tags']);
+
+        // Search
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('reference', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        // Filtering
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Include trashed
+        if ($request->boolean('trashed')) {
+            $query->onlyTrashed();
+        }
+
+        // Sorting
+        $sortField = $request->input('sort_by', 'created_at');
+        $sortOrder = $request->input('sort_order', 'desc');
+        
+        $allowedSortFields = ['name', 'reference', 'email', 'status', 'created_at'];
+        if (in_array($sortField, $allowedSortFields)) {
+            $query->orderBy($sortField, $sortOrder === 'asc' ? 'asc' : 'desc');
+        } else {
+            $query->latest();
+        }
+
+        $clients = $query->paginate((int)($request->per_page ?? 15));
 
         return $this->success(ClientResource::collection($clients)->response()->getData(true), 'Clients retrieved successfully');
     }
@@ -46,6 +73,7 @@ class ClientController extends Controller
             ...$request->validated(),
             'user_id' => $user->id,
             'reference' => $reference,
+            'status' => $request->input('status', 'active'),
         ]);
 
         return $this->success(new ClientResource($client), 'Client created successfully', 201);
@@ -77,7 +105,24 @@ class ClientController extends Controller
 
         $client->delete();
 
-        return $this->success(null, 'Client deleted successfully');
+        return $this->success(null, 'Client archived successfully');
+    }
+
+    public function restore(string $id, Request $request): JsonResponse
+    {
+        /** @var User $user */
+        $user = $request->user();
+        
+        $client = Client::onlyTrashed()
+            ->where('user_id', $user->id)
+            ->where('id', $id)
+            ->firstOrFail();
+
+        Gate::authorize('restore', $client);
+
+        $client->restore();
+
+        return $this->success(new ClientResource($client), 'Client restored successfully');
     }
 
     public function exportCsv(Request $request): StreamedResponse
@@ -96,7 +141,7 @@ class ClientController extends Controller
             if ($handle === false) {
                 return;
             }
-            fputcsv($handle, ['Reference', 'Name', 'Email', 'Phone', 'City', 'Country']);
+            fputcsv($handle, ['Reference', 'Name', 'Email', 'Phone', 'City', 'Country', 'Status']);
 
             foreach ($clients as $client) {
                 fputcsv($handle, [
@@ -106,6 +151,7 @@ class ClientController extends Controller
                     $client->phone,
                     $client->city,
                     $client->country,
+                    $client->status,
                 ]);
             }
 
@@ -144,6 +190,9 @@ class ClientController extends Controller
         foreach ($data as $row) {
             /** @var array<string, string|null> $values */
             $filteredHeader = array_filter($header, fn($h) => !is_null($h));
+            if (count($row) < count($filteredHeader)) {
+                continue;
+            }
             $values = array_combine($filteredHeader, $row);
             
             Client::create([
@@ -152,6 +201,7 @@ class ClientController extends Controller
                 'name' => $values['name'] ?? 'Unknown',
                 'email' => $values['email'] ?? null,
                 'phone' => $values['phone'] ?? null,
+                'status' => 'active',
             ]);
             $count++;
         }
