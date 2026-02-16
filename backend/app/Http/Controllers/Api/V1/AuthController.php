@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Auth\ForgotPasswordRequest;
 use App\Http\Requests\Api\V1\Auth\LoginRequest;
-use App\Http\Requests\Api\V1\Auth\RegisterRequest;
 use App\Http\Requests\Api\V1\Auth\ResetPasswordRequest;
 use App\Models\User;
 use App\Traits\ApiResponse;
@@ -22,18 +21,6 @@ use PragmaRX\Google2FALaravel\Facade as Google2FA;
 class AuthController extends Controller
 {
     use ApiResponse;
-
-    public function register(RegisterRequest $request): JsonResponse
-    {
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'business_name' => $request->business_name,
-        ]);
-
-        return $this->issueTokens($user, 'User registered successfully', 201);
-    }
 
     public function login(LoginRequest $request): JsonResponse
     {
