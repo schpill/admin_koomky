@@ -48,7 +48,7 @@ test('audit log uses uuid as primary key', function () {
 });
 
 test('audit log fillable attributes are set correctly', function () {
-    $fillable = (new AuditLog())->getFillable();
+    $fillable = (new AuditLog)->getFillable();
 
     expect($fillable)->toContain('user_id');
     expect($fillable)->toContain('event');

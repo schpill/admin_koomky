@@ -105,7 +105,7 @@ test('user can disable 2fa', function () {
     // Use real token with access ability (not 2fa-pending) to pass middleware
     $token = $user->createToken('test', ['access']);
 
-    $response = $this->withHeader('Authorization', 'Bearer ' . $token->plainTextToken)
+    $response = $this->withHeader('Authorization', 'Bearer '.$token->plainTextToken)
         ->postJson('/api/v1/settings/2fa/disable');
 
     $response->assertStatus(200)

@@ -71,7 +71,7 @@ test('activity uses uuid as primary key', function () {
 });
 
 test('activity fillable attributes are set correctly', function () {
-    $fillable = (new Activity())->getFillable();
+    $fillable = (new Activity)->getFillable();
 
     expect($fillable)->toContain('user_id');
     expect($fillable)->toContain('subject_id');

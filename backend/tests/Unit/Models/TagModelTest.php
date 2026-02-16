@@ -37,7 +37,7 @@ test('tag uses uuid as primary key', function () {
 });
 
 test('tag fillable attributes are set correctly', function () {
-    $fillable = (new Tag())->getFillable();
+    $fillable = (new Tag)->getFillable();
 
     expect($fillable)->toContain('user_id');
     expect($fillable)->toContain('name');

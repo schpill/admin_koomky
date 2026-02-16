@@ -25,7 +25,7 @@ test('user with 2fa enabled and full-access token can access protected routes', 
     // Create token with access ability (not 2fa-pending)
     $token = $user->createToken('test', ['access']);
 
-    $response = $this->withHeader('Authorization', 'Bearer ' . $token->plainTextToken)
+    $response = $this->withHeader('Authorization', 'Bearer '.$token->plainTextToken)
         ->getJson('/api/v1/dashboard');
 
     $response->assertStatus(200);
@@ -39,7 +39,7 @@ test('user with 2fa enabled and pending token is blocked from protected routes',
     // Create token with 2fa-pending ability
     $token = $user->createToken('test', ['2fa-pending']);
 
-    $response = $this->withHeader('Authorization', 'Bearer ' . $token->plainTextToken)
+    $response = $this->withHeader('Authorization', 'Bearer '.$token->plainTextToken)
         ->getJson('/api/v1/dashboard');
 
     $response->assertStatus(403)
@@ -53,7 +53,7 @@ test('user with 2fa pending token can still access 2fa verify endpoint', functio
 
     $token = $user->createToken('test', ['2fa-pending']);
 
-    $response = $this->withHeader('Authorization', 'Bearer ' . $token->plainTextToken)
+    $response = $this->withHeader('Authorization', 'Bearer '.$token->plainTextToken)
         ->postJson('/api/v1/auth/2fa/verify', ['code' => '000000']);
 
     // Should not return 403 (2FA_REQUIRED), may return 422 for invalid code
@@ -67,7 +67,7 @@ test('user with 2fa pending token can still access logout endpoint', function ()
 
     $token = $user->createToken('test', ['2fa-pending']);
 
-    $response = $this->withHeader('Authorization', 'Bearer ' . $token->plainTextToken)
+    $response = $this->withHeader('Authorization', 'Bearer '.$token->plainTextToken)
         ->postJson('/api/v1/auth/logout');
 
     // Should not return 403 (2FA_REQUIRED)
@@ -81,7 +81,7 @@ test('2fa middleware passes error response with correct structure', function () 
 
     $token = $user->createToken('test', ['2fa-pending']);
 
-    $response = $this->withHeader('Authorization', 'Bearer ' . $token->plainTextToken)
+    $response = $this->withHeader('Authorization', 'Bearer '.$token->plainTextToken)
         ->getJson('/api/v1/clients');
 
     $response->assertStatus(403)
