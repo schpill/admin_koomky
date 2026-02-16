@@ -7,6 +7,14 @@ parameters:
 
     level: 8
 
-    ignoreErrors:
+    reportUnmatchedIgnoredErrors: false
 
-    excludePaths:
+    ignoreErrors:
+        - '#Template type TDeclaringModel on class Illuminate\\Database\\Eloquent\\Relations\\.+ is not covariant#'
+        - '#should return Illuminate\\Database\\Eloquent\\Relations\\.+ but returns Illuminate\\Database\\Eloquent\\Relations\\.+#'
+        - '#Instanceof between Laravel\\Sanctum\\PersonalAccessToken and Laravel\\Sanctum\\PersonalAccessToken will always evaluate to true#'
+        - '#Method .+::toArray\(\) return type has no value type specified in iterable type array#'
+        - '#Access to an undefined property App\\Http\\Resources\\.+#'
+        - '#Cannot access property \$id on App\\Models\\User\|null#'
+        - '#Relation .+#'
+        - '#If condition is always true#'

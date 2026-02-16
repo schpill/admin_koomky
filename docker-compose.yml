@@ -7,6 +7,7 @@ services:
       - "443:443"
     volumes:
       - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./backend:/var/www/html:ro
     depends_on:
       - api
       - frontend
@@ -20,13 +21,16 @@ services:
       dockerfile: docker/php/Dockerfile
     volumes:
       - ./backend:/var/www/html
-    environment:
+    environment: &php-env
       - DB_CONNECTION=pgsql
       - DB_HOST=postgres
       - DB_PORT=5432
       - DB_DATABASE=koomky
       - DB_USERNAME=koomky
       - DB_PASSWORD=secret
+      - REDIS_HOST=redis
+      - MAIL_HOST=mailpit
+      - MEILISEARCH_HOST=http://meilisearch:7700
     depends_on:
       - postgres
       - redis
@@ -38,8 +42,12 @@ services:
     build:
       context: .
       dockerfile: docker/node/Dockerfile
+    user: "${UID:-1000}:${GID:-1000}"
+    command: sh /app/scripts/start-dev.sh
     volumes:
       - ./frontend:/app
+      - frontend-node-modules:/app/node_modules
+      - frontend-next:/app/.next
     networks:
       - koomky-network
 
@@ -65,6 +73,8 @@ services:
   # Search
   meilisearch:
     image: getmeili/meilisearch:latest
+    ports:
+      - "7700:7700"
     environment:
       - MEILI_MASTER_KEY=masterKey
     volumes:
@@ -79,6 +89,7 @@ services:
       dockerfile: docker/php/Dockerfile
     volumes:
       - ./backend:/var/www/html
+    environment: *php-env
     command: php artisan queue:work
     depends_on:
       - redis
@@ -93,6 +104,7 @@ services:
       dockerfile: docker/php/Dockerfile
     volumes:
       - ./backend:/var/www/html
+    environment: *php-env
     command: php artisan schedule:work
     depends_on:
       - postgres
@@ -114,3 +126,5 @@ networks:
 volumes:
   postgres-data:
   meilisearch-data:
+  frontend-node-modules:
+  frontend-next:

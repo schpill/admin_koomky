@@ -28,7 +28,7 @@ test-fe:
 
 lint:
 	docker compose run --rm api ./vendor/bin/pint --test
-	docker compose run --rm api ./vendor/bin/phpstan analyse
+	docker compose run --rm api ./vendor/bin/phpstan analyse -c phpstan.neon --memory-limit=512M
 	docker compose run --rm frontend pnpm lint
 
 fresh:

@@ -1,0 +1,7 @@
+.next
+node_modules
+.pnpm-store
+dist
+coverage
+.nuxt
+.gemini

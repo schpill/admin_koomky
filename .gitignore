@@ -2,6 +2,7 @@
 node_modules/
 .npm/
 .pnpm-store/
+/pnpm-lock.yaml
 .next/
 out/
 build/
@@ -38,3 +39,4 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 .husky/_/
+frontend/next-env.d.ts
