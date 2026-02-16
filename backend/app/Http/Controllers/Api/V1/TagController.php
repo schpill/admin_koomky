@@ -50,12 +50,15 @@ class TagController extends Controller
     public function attachToClient(Request $request, Client $client): JsonResponse
     {
         Gate::authorize('update', $client);
+        /** @var User $user */
+        $user = $request->user();
 
         // Support both single name (for quick add) and array of IDs
         if ($request->has('name')) {
-            $tagName = $request->input('name');
-            /** @var User $user */
-            $user = $request->user();
+            $tagName = trim((string) $request->input('name'));
+            if ($tagName === '') {
+                return $this->error('Tag name is required', 422);
+            }
 
             $tag = Tag::firstOrCreate(
                 ['name' => $tagName, 'user_id' => $user->id],
@@ -67,11 +70,26 @@ class TagController extends Controller
             return $this->success($tag, 'Tag attached to client');
         }
 
-        $request->validate(['tag_ids' => 'required|array']);
-        /** @var array<int, string> $tagIds */
-        $tagIds = $request->input('tag_ids');
+        $validated = $request->validate([
+            'tag_ids' => ['required', 'array', 'min:1'],
+            'tag_ids.*' => ['required', 'string', 'uuid'],
+        ]);
 
-        $client->tags()->sync($tagIds);
+        /** @var array<int, string> $tagIds */
+        $tagIds = array_values(array_unique($validated['tag_ids']));
+
+        /** @var array<int, string> $ownedTagIds */
+        $ownedTagIds = Tag::query()
+            ->where('user_id', $user->id)
+            ->whereIn('id', $tagIds)
+            ->pluck('id')
+            ->all();
+
+        if (count($ownedTagIds) !== count($tagIds)) {
+            return $this->error('One or more tags are invalid for this user', 422);
+        }
+
+        $client->tags()->sync($ownedTagIds);
 
         return $this->success(null, 'Tags updated for client');
     }
@@ -79,6 +97,7 @@ class TagController extends Controller
     public function detachFromClient(Client $client, Tag $tag): JsonResponse
     {
         Gate::authorize('update', $client);
+        Gate::authorize('delete', $tag);
 
         $client->tags()->detach($tag->id);
 

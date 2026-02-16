@@ -186,26 +186,78 @@ class ClientController extends Controller
             return $this->error('Invalid CSV format', 422);
         }
 
+        /** @var array<int, string> $normalizedHeader */
+        $normalizedHeader = array_map(
+            fn ($column): string => $this->normalizeCsvHeader($column),
+            $header
+        );
+
         $count = 0;
         foreach ($data as $row) {
-            /** @var array<string, string|null> $values */
-            $filteredHeader = array_filter($header, fn ($h) => ! is_null($h));
-            if (count($row) < count($filteredHeader)) {
+            if (count(array_filter($row, fn ($value) => trim((string) $value) !== '')) === 0) {
                 continue;
             }
-            $values = array_combine($filteredHeader, $row);
+
+            $row = array_pad($row, count($normalizedHeader), null);
+            $paired = array_combine($normalizedHeader, array_slice($row, 0, count($normalizedHeader)));
+
+            if ($paired === false) {
+                continue;
+            }
+
+            /** @var array<string, string|null> $values */
+            $values = $paired;
+
+            $status = $this->csvValue($values, 'status');
+            if (! in_array($status, ['active', 'inactive', 'archived'], true)) {
+                $status = 'active';
+            }
 
             Client::create([
                 'user_id' => $user->id,
                 'reference' => ReferenceGenerator::generate('clients', 'CLI'),
-                'name' => $values['name'] ?? 'Unknown',
-                'email' => $values['email'] ?? null,
-                'phone' => $values['phone'] ?? null,
-                'status' => 'active',
+                'name' => $this->csvValue($values, 'name') ?? 'Unknown',
+                'email' => $this->csvValue($values, 'email'),
+                'phone' => $this->csvValue($values, 'phone'),
+                'city' => $this->csvValue($values, 'city'),
+                'country' => $this->csvValue($values, 'country'),
+                'zip_code' => $this->csvValue($values, 'zip_code'),
+                'status' => $status,
             ]);
             $count++;
         }
 
         return $this->success(['imported' => $count], "Imported {$count} clients successfully");
+    }
+
+    private function normalizeCsvHeader(mixed $header): string
+    {
+        $normalized = strtolower(trim((string) $header));
+        $normalized = str_replace([' ', '-'], '_', $normalized);
+
+        return match ($normalized) {
+            'postal_code', 'postal', 'zip' => 'zip_code',
+            'company_name', 'company' => 'name',
+            default => $normalized,
+        };
+    }
+
+    /**
+     * @param  array<string, string|null>  $values
+     */
+    private function csvValue(array $values, string $key): ?string
+    {
+        if (! array_key_exists($key, $values)) {
+            return null;
+        }
+
+        $value = $values[$key];
+        if ($value === null) {
+            return null;
+        }
+
+        $trimmed = trim($value);
+
+        return $trimmed === '' ? null : $trimmed;
     }
 }

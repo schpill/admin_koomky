@@ -39,3 +39,23 @@ test('user can attach tag to a client', function () {
         'tag_id' => $tag->id,
     ]);
 });
+
+test('user cannot attach a tag owned by another user', function () {
+    $user = User::factory()->create();
+    $otherUser = User::factory()->create();
+    $client = Client::factory()->create(['user_id' => $user->id]);
+    $foreignTag = Tag::factory()->create(['user_id' => $otherUser->id]);
+
+    $response = $this->actingAs($user, 'sanctum')
+        ->postJson("/api/v1/clients/{$client->id}/tags", [
+            'tag_ids' => [$foreignTag->id],
+        ]);
+
+    $response->assertStatus(422)
+        ->assertJsonPath('message', 'One or more tags are invalid for this user');
+
+    $this->assertDatabaseMissing('client_tag', [
+        'client_id' => $client->id,
+        'tag_id' => $foreignTag->id,
+    ]);
+});

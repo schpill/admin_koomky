@@ -18,12 +18,12 @@ test('user can export clients to csv', function () {
         ->assertHeader('Content-Type', 'text/csv; charset=UTF-8');
 });
 
-test('user can import clients from csv', function () {
+test('user can import clients from csv using exported header format', function () {
     $user = User::factory()->create();
 
-    $content = 'name,email,phone
+    $content = 'Reference,Name,Email,Phone,City,Country,Status
 ';
-    $content .= 'CSV Client,csv@example.com,+33600000000';
+    $content .= 'CLI-2026-0001,CSV Client,csv@example.com,+33600000000,Paris,France,inactive';
 
     $file = UploadedFile::fake()->createWithContent('clients.csv', $content);
 
@@ -36,6 +36,9 @@ test('user can import clients from csv', function () {
     $this->assertDatabaseHas('clients', [
         'name' => 'CSV Client',
         'email' => 'csv@example.com',
+        'city' => 'Paris',
+        'country' => 'France',
+        'status' => 'inactive',
         'user_id' => $user->id,
     ]);
 });
