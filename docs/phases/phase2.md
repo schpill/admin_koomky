@@ -8,7 +8,7 @@
 | **Milestone**       | M2 — Full Project & Financial Management       |
 | **PRD Sections**    | §4.4, §4.5, §9.3                               |
 | **Prerequisite**    | Phase 1 fully completed and validated           |
-| **Status**          | In Progress (Sprints 5 to 8 backend + frontend completed; local validation complete, pending PR merge) |
+| **Status**          | Completed (Sprints 5 to 8 backend + frontend delivered and merged into `main`) |
 
 ---
 
