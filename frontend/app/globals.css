@@ -87,3 +87,13 @@ body {
   color: var(--foreground);
   font-family: var(--font-sans);
 }
+
+button[type="submit"],
+input[type="submit"] {
+  cursor: pointer;
+}
+
+button[type="submit"]:disabled,
+input[type="submit"]:disabled {
+  cursor: not-allowed;
+}

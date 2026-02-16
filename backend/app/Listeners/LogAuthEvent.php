@@ -10,9 +10,7 @@ use Illuminate\Http\Request;
 
 class LogAuthEvent
 {
-    public function __construct(protected Request $request)
-    {
-    }
+    public function __construct(protected Request $request) {}
 
     public function handle(object $event): void
     {

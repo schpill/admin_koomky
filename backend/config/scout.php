@@ -115,10 +115,25 @@ return [
         'host' => env('MEILISEARCH_HOST', 'http://meilisearch:7700'),
         'key' => env('MEILISEARCH_KEY'),
         'index-settings' => [
-            // 'users' => [
-            //     'filterableAttributes' => ['id', 'email', 'name'],
-            //     'sortableAttributes' => ['created_at', 'name'],
-            // ],
+            'clients' => [
+                'searchableAttributes' => [
+                    'name',
+                    'email',
+                    'reference',
+                    'notes',
+                    'tags',
+                ],
+                'filterableAttributes' => [
+                    'user_id',
+                    'tags',
+                    'deleted_at',
+                    'status',
+                ],
+                'sortableAttributes' => [
+                    'name',
+                    'created_at',
+                ],
+            ],
         ],
     ],
 

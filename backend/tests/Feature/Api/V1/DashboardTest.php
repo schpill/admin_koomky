@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\User;
 use App\Models\Client;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -20,8 +20,8 @@ test('authenticated user can get dashboard stats', function () {
                 'total_clients',
                 'active_projects',
                 'pending_invoices_amount',
-                'recent_activities'
-            ]
+                'recent_activities',
+            ],
         ])
         ->assertJsonPath('data.total_clients', 3);
 });

@@ -35,7 +35,7 @@ use Laravel\Scout\Searchable;
 class Client extends Model
 {
     /** @use HasFactory<\Database\Factories\ClientFactory> */
-    use HasFactory, HasUuids, SoftDeletes, Searchable;
+    use HasFactory, HasUuids, Searchable, SoftDeletes;
 
     /** @var list<string> */
     protected $fillable = [
@@ -94,7 +94,12 @@ class Client extends Model
             'name' => $this->name,
             'email' => $this->email,
             'reference' => $this->reference,
+            'notes' => $this->notes,
+            'status' => $this->status,
+            'tags' => $this->tags()->pluck('name')->values()->all(),
             'user_id' => $this->user_id,
+            'created_at' => $this->created_at?->toDateTimeString(),
+            'deleted_at' => $this->deleted_at?->toDateTimeString(),
         ];
     }
 }

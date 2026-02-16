@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class ActivityService
 {
     /**
-     * @param array<string, mixed>|null $metadata
+     * @param  array<string, mixed>|null  $metadata
      */
     public static function log(Model $subject, string $description, ?array $metadata = null): Activity
     {

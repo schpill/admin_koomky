@@ -26,7 +26,7 @@ const navigation = [
 ];
 
 const secondaryNavigation = [
-  { name: "Settings", href: "/settings", icon: Settings },
+  { name: "Settings", href: "/settings/profile", icon: Settings },
   { name: "Help", href: "/help", icon: HelpCircle },
 ];
 

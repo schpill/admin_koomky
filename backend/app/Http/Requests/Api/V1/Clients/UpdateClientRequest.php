@@ -12,7 +12,7 @@ class UpdateClientRequest extends FormRequest
         return true;
     }
 
-        /**
+    /**
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array
@@ -20,9 +20,9 @@ class UpdateClientRequest extends FormRequest
         return [
             'name' => ['sometimes', 'required', 'string', 'max:255'],
             'email' => [
-                'nullable', 
-                'email', 
-                'max:255', 
+                'nullable',
+                'email',
+                'max:255',
                 Rule::unique('clients', 'email')->ignore($this->route('client')),
             ],
             'phone' => ['nullable', 'string', 'max:20'],

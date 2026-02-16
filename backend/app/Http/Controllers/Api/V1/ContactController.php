@@ -36,7 +36,7 @@ class ContactController extends Controller
         ]);
 
         $contact = DB::transaction(function () use ($client, $validated) {
-            if (!empty($validated['is_primary'])) {
+            if (! empty($validated['is_primary'])) {
                 Contact::where('client_id', $client->id)
                     ->where('is_primary', true)
                     ->update(['is_primary' => false]);
@@ -51,6 +51,7 @@ class ContactController extends Controller
     public function update(Request $request, Client $client, Contact $contact): JsonResponse
     {
         Gate::authorize('update', $client);
+        $this->ensureContactBelongsToClient($client, $contact);
 
         $validated = $request->validate([
             'first_name' => ['required', 'string', 'max:255'],
@@ -62,7 +63,7 @@ class ContactController extends Controller
         ]);
 
         DB::transaction(function () use ($client, $contact, $validated) {
-            if (!empty($validated['is_primary'])) {
+            if (! empty($validated['is_primary'])) {
                 Contact::where('client_id', $client->id)
                     ->where('is_primary', true)
                     ->update(['is_primary' => false]);
@@ -77,9 +78,17 @@ class ContactController extends Controller
     public function destroy(Client $client, Contact $contact): JsonResponse
     {
         Gate::authorize('update', $client);
+        $this->ensureContactBelongsToClient($client, $contact);
 
         $contact->delete();
 
         return $this->success(null, 'Contact deleted successfully');
+    }
+
+    protected function ensureContactBelongsToClient(Client $client, Contact $contact): void
+    {
+        if ($contact->client_id !== $client->id) {
+            abort(404, 'Contact not found for this client');
+        }
     }
 }

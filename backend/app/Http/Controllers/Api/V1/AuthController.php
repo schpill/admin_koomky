@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\V1\Auth\ForgotPasswordRequest;
 use App\Http\Requests\Api\V1\Auth\LoginRequest;
 use App\Http\Requests\Api\V1\Auth\RegisterRequest;
-use App\Http\Requests\Api\V1\Auth\ForgotPasswordRequest;
 use App\Http\Requests\Api\V1\Auth\ResetPasswordRequest;
 use App\Models\User;
 use App\Traits\ApiResponse;
@@ -39,19 +39,20 @@ class AuthController extends Controller
     {
         $this->ensureIsNotRateLimited($request);
 
-        if (!Auth::attempt($request->only('email', 'password'))) {
+        if (! Auth::attempt($request->only('email', 'password'))) {
             RateLimiter::hit($this->throttleKey($request), 900);
+
             return $this->error('Invalid login credentials', 401);
         }
 
         RateLimiter::clear($this->throttleKey($request));
 
         $user = User::where('email', $request->email)->firstOrFail();
-        
+
         if ($user->two_factor_confirmed_at) {
             // Issue a temporary token with only 2fa-pending ability
             $accessToken = $user->createToken('2fa_token', ['2fa-pending'], now()->addMinutes(15))->plainTextToken;
-            
+
             return $this->success([
                 'requires_2fa' => true,
                 'access_token' => $accessToken,
@@ -66,17 +67,17 @@ class AuthController extends Controller
     public function verify2fa(Request $request): JsonResponse
     {
         $request->validate(['code' => 'required|string|size:6']);
-        
+
         /** @var User $user */
         $user = $request->user();
-        
-        if (!$user->two_factor_secret) {
+
+        if (! $user->two_factor_secret) {
             return $this->error('2FA not enabled', 400);
         }
 
-        $valid = Google2FA::verifyKey((string)$user->two_factor_secret, (string)$request->input('code'));
+        $valid = Google2FA::verifyKey((string) $user->two_factor_secret, (string) $request->input('code'));
 
-        if (!$valid) {
+        if (! $valid) {
             return $this->error('Invalid verification code', 422);
         }
 
@@ -92,7 +93,7 @@ class AuthController extends Controller
         $user = $request->user();
         $token = $user->currentAccessToken();
 
-        if (!$token instanceof \Laravel\Sanctum\PersonalAccessToken || !$token->can('refresh')) {
+        if (! $token instanceof \Laravel\Sanctum\PersonalAccessToken || ! $token->can('refresh')) {
             return $this->error('Invalid refresh token', 401);
         }
 
@@ -121,7 +122,7 @@ class AuthController extends Controller
     {
         /** @var User $user */
         $user = $request->user();
-        
+
         $token = $user->currentAccessToken();
         if ($token) {
             $token->delete();
@@ -137,11 +138,10 @@ class AuthController extends Controller
 
     public function forgotPassword(ForgotPasswordRequest $request): JsonResponse
     {
-        $status = Password::sendResetLink($request->only('email'));
+        Password::sendResetLink($request->only('email'));
 
-        return $status === Password::RESET_LINK_SENT
-            ? $this->success(null, __($status))
-            : $this->error(__($status), 422);
+        // Do not reveal whether the email exists.
+        return $this->success(null, 'If your email address exists in our system, a reset link has been sent.');
     }
 
     public function resetPassword(ResetPasswordRequest $request): JsonResponse
@@ -150,7 +150,7 @@ class AuthController extends Controller
             $request->only('email', 'password', 'password_confirmation', 'token'),
             function ($user, $password) {
                 $user->forceFill([
-                    'password' => Hash::make($password)
+                    'password' => Hash::make($password),
                 ])->setRememberToken(Str::random(60));
 
                 $user->save();
@@ -164,7 +164,7 @@ class AuthController extends Controller
 
     protected function ensureIsNotRateLimited(LoginRequest $request): void
     {
-        if (!RateLimiter::tooManyAttempts($this->throttleKey($request), 5)) {
+        if (! RateLimiter::tooManyAttempts($this->throttleKey($request), 5)) {
             return;
         }
 
@@ -172,11 +172,11 @@ class AuthController extends Controller
 
         $seconds = RateLimiter::availableIn($this->throttleKey($request));
 
-        abort(429, 'Too many login attempts. Please try again in ' . $seconds . ' seconds.');
+        abort(429, 'Too many login attempts. Please try again in '.$seconds.' seconds.');
     }
 
     protected function throttleKey(LoginRequest $request): string
     {
-        return Str::lower($request->input('email')) . '|' . $request->ip();
+        return Str::lower($request->input('email')).'|'.$request->ip();
     }
 }

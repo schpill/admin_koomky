@@ -15,7 +15,7 @@ test('user can generate 2FA secret', function () {
         ->assertJsonStructure([
             'status',
             'data' => ['qr_code_url', 'secret'],
-            'message'
+            'message',
         ]);
 
     expect($user->refresh()->two_factor_secret)->not->toBeNull();

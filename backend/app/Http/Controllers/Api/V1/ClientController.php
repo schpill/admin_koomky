@@ -30,10 +30,10 @@ class ClientController extends Controller
         // Search
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('reference', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%");
+                    ->orWhere('reference', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%");
             });
         }
 
@@ -50,7 +50,7 @@ class ClientController extends Controller
         // Sorting
         $sortField = $request->input('sort_by', 'created_at');
         $sortOrder = $request->input('sort_order', 'desc');
-        
+
         $allowedSortFields = ['name', 'reference', 'email', 'status', 'created_at'];
         if (in_array($sortField, $allowedSortFields)) {
             $query->orderBy($sortField, $sortOrder === 'asc' ? 'asc' : 'desc');
@@ -58,7 +58,7 @@ class ClientController extends Controller
             $query->latest();
         }
 
-        $clients = $query->paginate((int)($request->per_page ?? 15));
+        $clients = $query->paginate((int) ($request->per_page ?? 15));
 
         return $this->success(ClientResource::collection($clients)->response()->getData(true), 'Clients retrieved successfully');
     }
@@ -83,7 +83,7 @@ class ClientController extends Controller
     {
         Gate::authorize('view', $client);
 
-        $client->load(['contacts', 'tags', 'activities' => function($query) {
+        $client->load(['contacts', 'tags', 'activities' => function ($query) {
             $query->latest()->take(20);
         }]);
 
@@ -112,7 +112,7 @@ class ClientController extends Controller
     {
         /** @var User $user */
         $user = $request->user();
-        
+
         $client = Client::onlyTrashed()
             ->where('user_id', $user->id)
             ->where('id', $id)
@@ -169,7 +169,7 @@ class ClientController extends Controller
         ]);
 
         $file = $request->file('file');
-        if (!$file instanceof \Illuminate\Http\UploadedFile) {
+        if (! $file instanceof \Illuminate\Http\UploadedFile) {
             return $this->error('Invalid file', 422);
         }
 
@@ -182,19 +182,19 @@ class ClientController extends Controller
         $data = array_map('str_getcsv', $fileContent);
         $header = array_shift($data);
 
-        if (!$header) {
+        if (! $header) {
             return $this->error('Invalid CSV format', 422);
         }
 
         $count = 0;
         foreach ($data as $row) {
             /** @var array<string, string|null> $values */
-            $filteredHeader = array_filter($header, fn($h) => !is_null($h));
+            $filteredHeader = array_filter($header, fn ($h) => ! is_null($h));
             if (count($row) < count($filteredHeader)) {
                 continue;
             }
             $values = array_combine($filteredHeader, $row);
-            
+
             Client::create([
                 'user_id' => $user->id,
                 'reference' => ReferenceGenerator::generate('clients', 'CLI'),

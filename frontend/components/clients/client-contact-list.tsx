@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { apiClient } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import {
@@ -78,7 +78,7 @@ export function ClientContactList({ clientId }: ClientContactListProps) {
     },
   });
 
-  const fetchContacts = async () => {
+  const fetchContacts = useCallback(async () => {
     try {
       const response = await apiClient.get<Contact[]>(
         `/clients/${clientId}/contacts`,
@@ -89,11 +89,11 @@ export function ClientContactList({ clientId }: ClientContactListProps) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [clientId]);
 
   useEffect(() => {
     fetchContacts();
-  }, [clientId]);
+  }, [fetchContacts]);
 
   const onSubmit = async (data: ContactFormData) => {
     try {

@@ -1,7 +1,9 @@
-export default function DashboardLayout({
+import { DashboardLayout as AppDashboardLayout } from "@/components/layout/dashboard-layout";
+
+export default function DashboardRouteLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return <>{children}</>;
+  return <AppDashboardLayout>{children}</AppDashboardLayout>;
 }

@@ -20,7 +20,7 @@ class SearchController extends Controller
         $user = $request->user();
         $query = $request->get('q');
 
-        if (empty($query) || !is_string($query)) {
+        if (empty($query) || ! is_string($query)) {
             return $this->success([], 'No query provided');
         }
 

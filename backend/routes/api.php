@@ -45,7 +45,7 @@ Route::prefix('v1')->group(function () {
             Route::get('/profile', [UserSettingsController::class, 'profile']);
             Route::put('/profile', [UserSettingsController::class, 'updateProfile']);
             Route::put('/business', [UserSettingsController::class, 'updateBusiness']);
-            
+
             // 2FA Management
             Route::post('/2fa/enable', [UserSettingsController::class, 'enable2fa']);
             Route::post('/2fa/confirm', [UserSettingsController::class, 'confirm2fa']);
@@ -59,7 +59,8 @@ Route::prefix('v1')->group(function () {
         Route::apiResource('clients', ClientController::class);
 
         // Client Contacts
-        Route::apiResource('clients.contacts', ContactController::class);
+        Route::apiResource('clients.contacts', ContactController::class)
+            ->only(['index', 'store', 'update', 'destroy']);
 
         // Tags
         Route::post('clients/{client}/tags', [TagController::class, 'attachToClient']);

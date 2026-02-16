@@ -11,7 +11,7 @@ class ClientFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
-            'reference' => 'CLI-' . date('Y') . '-' . $this->faker->unique()->numberBetween(1000, 9999),
+            'reference' => 'CLI-'.date('Y').'-'.$this->faker->unique()->numberBetween(1000, 9999),
             'name' => $this->faker->company(),
             'email' => $this->faker->unique()->safeEmail(),
             'phone' => $this->faker->phoneNumber(),

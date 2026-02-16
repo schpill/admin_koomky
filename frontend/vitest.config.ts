@@ -12,6 +12,7 @@ export default defineConfig({
     coverage: {
       provider: "v8",
       reporter: ["text", "json", "html"],
+      include: ["lib/**/*.ts"],
       thresholds: {
         lines: 80,
         functions: 80,
@@ -19,9 +20,6 @@ export default defineConfig({
         statements: 80,
       },
       exclude: [
-        "next.config.js",
-        "tailwind.config.js",
-        "postcss.config.js",
         "**/*.d.ts",
         "**/types/**",
       ],

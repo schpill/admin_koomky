@@ -1,9 +1,9 @@
 <?php
 
 use App\Models\User;
+use Illuminate\Auth\Events\Lockout;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
-use Illuminate\Auth\Events\Lockout;
 
 uses(RefreshDatabase::class);
 

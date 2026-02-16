@@ -1,7 +1,6 @@
 <?php
 
 use App\Models\User;
-use App\Models\Client;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -18,7 +17,7 @@ test('search returns empty results when no query provided', function () {
 
 test('search returns success with query', function () {
     $user = User::factory()->create();
-    
+
     // We can't easily test real Meilisearch results here as Scout is disabled in phpunit.xml
     // but we can check if the controller responds correctly.
     $response = $this->actingAs($user, 'sanctum')

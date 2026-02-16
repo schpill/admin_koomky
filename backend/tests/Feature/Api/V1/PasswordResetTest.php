@@ -1,11 +1,11 @@
 <?php
 
 use App\Models\User;
+use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
-use Illuminate\Auth\Notifications\ResetPassword;
+use Illuminate\Support\Facades\Password;
 
 uses(RefreshDatabase::class);
 
@@ -21,6 +21,20 @@ test('user can request a password reset link', function () {
         ->assertJsonPath('status', 'Success');
 
     Notification::assertSentTo($user, ResetPassword::class);
+});
+
+test('forgot password does not reveal whether an email exists', function () {
+    Notification::fake();
+
+    $response = $this->postJson('/api/v1/auth/forgot-password', [
+        'email' => 'unknown@example.com',
+    ]);
+
+    $response->assertStatus(200)
+        ->assertJsonPath('status', 'Success')
+        ->assertJsonPath('message', 'If your email address exists in our system, a reset link has been sent.');
+
+    Notification::assertNothingSent();
 });
 
 test('user can reset password with valid token', function () {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import {
   ChevronLeft,
@@ -42,7 +42,7 @@ export default function ClientDetailPage() {
   const [deleteDialogOpen, setDeleteOpen] = useState(false);
   const [restoreDialogOpen, setRestoreOpen] = useState(false);
 
-  const fetchClient = async () => {
+  const fetchClient = useCallback(async () => {
     try {
       const response = await apiClient.get<any>(`/clients/${id}`);
       setClient(response.data);
@@ -52,11 +52,11 @@ export default function ClientDetailPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [id, router]);
 
   useEffect(() => {
     fetchClient();
-  }, [id, router]);
+  }, [fetchClient]);
 
   const handleDelete = async () => {
     try {

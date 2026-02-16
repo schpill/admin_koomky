@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\User;
 use App\Models\Client;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -29,7 +29,7 @@ test('authenticated user can create a client', function () {
                 'name',
                 'email',
             ],
-            'message'
+            'message',
         ]);
 
     $this->assertDatabaseHas('clients', [
@@ -94,6 +94,24 @@ test('user can delete a client (soft delete)', function () {
 
     $response->assertStatus(200);
     $this->assertSoftDeleted('clients', ['id' => $client->id]);
+});
+
+test('user can restore a soft deleted client', function () {
+    $user = User::factory()->create();
+    $client = Client::factory()->create([
+        'user_id' => $user->id,
+        'reference' => 'CLI-2026-0001',
+    ]);
+    $client->delete();
+
+    $response = $this->actingAs($user, 'sanctum')
+        ->postJson("/api/v1/clients/{$client->id}/restore");
+
+    $response->assertStatus(200);
+    $this->assertDatabaseHas('clients', [
+        'id' => $client->id,
+        'deleted_at' => null,
+    ]);
 });
 
 test('unauthenticated user cannot create a client', function () {

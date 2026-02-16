@@ -42,14 +42,14 @@ class UserSettingsController extends Controller
     {
         /** @var User $user */
         $user = $request->user();
-        
+
         $secret = Google2FA::generateSecretKey();
         $user->update(['two_factor_secret' => $secret]);
 
         $qrCodeUrl = Google2FA::getQRCodeInline(
-            (string)config('app.name'),
-            (string)$user->email,
-            (string)$secret
+            (string) config('app.name'),
+            (string) $user->email,
+            (string) $secret
         );
 
         return $this->success([
@@ -61,12 +61,12 @@ class UserSettingsController extends Controller
     public function confirm2fa(Request $request): JsonResponse
     {
         $request->validate(['code' => 'required|string|size:6']);
-        
+
         /** @var User $user */
         $user = $request->user();
-        $valid = Google2FA::verifyKey((string)$user->two_factor_secret, (string)$request->input('code'));
+        $valid = Google2FA::verifyKey((string) $user->two_factor_secret, (string) $request->input('code'));
 
-        if (!$valid) {
+        if (! $valid) {
             return $this->error('Invalid verification code', 422);
         }
 

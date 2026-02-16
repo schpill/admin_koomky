@@ -18,9 +18,10 @@ class ActivityController extends Controller
         $user = $request->user();
 
         $activities = $user->activities()
-            ->when($request->subject_id, fn($q) => $q->where('subject_id', $request->subject_id))
+            ->when($request->subject_id, fn ($q) => $q->where('subject_id', $request->subject_id))
             ->when($request->subject_type, function ($query, $type) {
-                $modelClass = "App\Models\\" . ucfirst($type);
+                $modelClass = "App\Models\\".ucfirst($type);
+
                 return $query->where('subject_type', $modelClass);
             })
             ->latest()

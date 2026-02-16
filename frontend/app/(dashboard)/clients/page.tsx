@@ -52,7 +52,7 @@ export default function ClientsPage() {
       sort_by: sortBy,
       sort_order: sortOrder,
     });
-  }, [fetchClients, status, sortBy, sortOrder]);
+  }, [fetchClients, search, status, sortBy, sortOrder]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();

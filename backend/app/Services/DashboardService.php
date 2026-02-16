@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use App\Models\Client;
 use App\Models\Activity;
+use App\Models\Client;
 use App\Models\User;
 use Illuminate\Support\Facades\Cache;
 
@@ -25,7 +25,7 @@ class DashboardService
                 'recent_activities' => Activity::where('user_id', $userId)
                     ->latest()
                     ->take(5)
-                    ->get()
+                    ->get(),
             ];
         });
     }

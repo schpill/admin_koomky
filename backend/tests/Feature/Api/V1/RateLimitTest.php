@@ -8,9 +8,9 @@ uses(RefreshDatabase::class);
 
 test('auth routes have rate limiting', function () {
     $user = User::factory()->create();
-    
+
     // Clear limiter before test
-    RateLimiter::clear('api_auth:' . request()->ip());
+    RateLimiter::clear('api_auth:'.request()->ip());
 
     // We try until we get a 429
     $throttled = false;
@@ -19,7 +19,7 @@ test('auth routes have rate limiting', function () {
             'email' => $user->email,
             'password' => 'wrong-password',
         ]);
-        
+
         if ($response->status() === 429) {
             $throttled = true;
             break;

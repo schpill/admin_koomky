@@ -41,8 +41,11 @@ services:
     build:
       context: .
       dockerfile: docker/node/Dockerfile
+    command: sh /app/scripts/start-dev.sh
     volumes:
       - ./frontend:/app
+      - frontend-node-modules:/app/node_modules
+      - frontend-next:/app/.next
     networks:
       - koomky-network
 
@@ -119,3 +122,5 @@ networks:
 volumes:
   postgres-data:
   meilisearch-data:
+  frontend-node-modules:
+  frontend-next:

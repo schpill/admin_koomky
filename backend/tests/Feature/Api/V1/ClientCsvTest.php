@@ -1,10 +1,9 @@
 <?php
 
-use App\Models\User;
 use App\Models\Client;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Storage;
 
 uses(RefreshDatabase::class);
 
@@ -21,11 +20,11 @@ test('user can export clients to csv', function () {
 
 test('user can import clients from csv', function () {
     $user = User::factory()->create();
-    
-    $content = "name,email,phone
-";
-    $content .= "CSV Client,csv@example.com,+33600000000";
-    
+
+    $content = 'name,email,phone
+';
+    $content .= 'CSV Client,csv@example.com,+33600000000';
+
     $file = UploadedFile::fake()->createWithContent('clients.csv', $content);
 
     $response = $this->actingAs($user, 'sanctum')

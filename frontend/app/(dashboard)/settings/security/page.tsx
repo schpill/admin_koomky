@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -124,7 +125,14 @@ export default function SecuritySettingsPage() {
                   <div className="space-y-6 animate-in fade-in slide-in-from-top-4">
                     <div className="flex flex-col items-center space-y-4">
                       <div className="bg-white p-2 rounded-lg border">
-                        <img src={qrCode} alt="QR Code" className="w-48 h-48" />
+                        <Image
+                          src={qrCode}
+                          alt="QR Code"
+                          width={192}
+                          height={192}
+                          className="h-48 w-48"
+                          unoptimized
+                        />
                       </div>
                       <p className="text-sm text-center text-muted-foreground max-w-sm">
                         Scan this QR code with your authenticator app (e.g.

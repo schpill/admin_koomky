@@ -20,6 +20,7 @@ class TagController extends Controller
         /** @var User $user */
         $user = $request->user();
         $tags = Tag::where('user_id', $user->id)->get();
+
         return $this->success($tags, 'Tags retrieved successfully');
     }
 
@@ -28,7 +29,7 @@ class TagController extends Controller
         /** @var User $user */
         $user = $request->user();
         $validated = $request->validate([
-            'name' => ['required', 'string', 'max:50', 'unique:tags,name,NULL,id,user_id,' . $user->id],
+            'name' => ['required', 'string', 'max:50', 'unique:tags,name,NULL,id,user_id,'.$user->id],
             'color' => ['nullable', 'string', 'max:20'],
         ]);
 
@@ -55,20 +56,21 @@ class TagController extends Controller
             $tagName = $request->input('name');
             /** @var User $user */
             $user = $request->user();
-            
+
             $tag = Tag::firstOrCreate(
                 ['name' => $tagName, 'user_id' => $user->id],
                 ['color' => '#6366f1']
             );
-            
+
             $client->tags()->syncWithoutDetaching([$tag->id]);
+
             return $this->success($tag, 'Tag attached to client');
         }
 
         $request->validate(['tag_ids' => 'required|array']);
         /** @var array<int, string> $tagIds */
         $tagIds = $request->input('tag_ids');
-        
+
         $client->tags()->sync($tagIds);
 
         return $this->success(null, 'Tags updated for client');

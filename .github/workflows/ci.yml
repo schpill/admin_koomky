@@ -33,7 +33,7 @@ jobs:
       - name: Run Lint
         run: backend/vendor/bin/pint --test --path=backend
       - name: Run PHPStan
-        run: backend/vendor/bin/phpstan analyse -c backend/phpstan.neon
+        run: backend/vendor/bin/phpstan analyse -c backend/phpstan.neon --memory-limit=512M
       - name: Run Tests
         run: cd backend && ./vendor/bin/pest --coverage --min=80
         env:

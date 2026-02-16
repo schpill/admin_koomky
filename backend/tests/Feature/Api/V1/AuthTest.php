@@ -22,7 +22,7 @@ test('user can register with valid data', function () {
                 'access_token',
                 'refresh_token',
             ],
-            'message'
+            'message',
         ]);
 
     $this->assertDatabaseHas('users', [
@@ -54,7 +54,7 @@ test('user can login with correct credentials', function () {
 
     $response->assertStatus(200)
         ->assertJsonStructure([
-            'data' => ['access_token', 'user']
+            'data' => ['access_token', 'user'],
         ]);
 });
 
