@@ -15,7 +15,7 @@ class InvoicePdfService
         ])->render();
 
         if (class_exists(\Dompdf\Dompdf::class)) {
-            $dompdf = new \Dompdf\Dompdf();
+            $dompdf = new \Dompdf\Dompdf;
             $dompdf->loadHtml($html);
             $dompdf->setPaper('A4');
             $dompdf->render();
@@ -39,7 +39,7 @@ class InvoicePdfService
         $objects[] = '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 5 0 R >> >> /Contents 4 0 R >>';
 
         $stream = "BT /F1 12 Tf 40 800 Td ({$safeText}) Tj ET";
-        $objects[] = "<< /Length ".strlen($stream)." >>\nstream\n{$stream}\nendstream";
+        $objects[] = '<< /Length '.strlen($stream)." >>\nstream\n{$stream}\nendstream";
         $objects[] = '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>';
 
         $pdf = "%PDF-1.4\n";

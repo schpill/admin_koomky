@@ -14,9 +14,7 @@ class SendInvoiceJob implements ShouldQueue
 {
     use Queueable;
 
-    public function __construct(public string $invoiceId)
-    {
-    }
+    public function __construct(public string $invoiceId) {}
 
     public function handle(InvoicePdfService $pdfService): void
     {
@@ -42,6 +40,8 @@ class SendInvoiceJob implements ShouldQueue
             // In constrained environments (tests/containers), storage may be unavailable.
         }
 
-        Mail::to($invoice->client->email)->send(new InvoiceSentMail($invoice->fresh(), $pdfBinary));
+        $freshInvoice = $invoice->fresh();
+
+        Mail::to($invoice->client->email)->send(new InvoiceSentMail($freshInvoice ?? $invoice, $pdfBinary));
     }
 }

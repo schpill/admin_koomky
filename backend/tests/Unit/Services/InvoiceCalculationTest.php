@@ -58,4 +58,3 @@ test('invoice calculation supports fixed discount and rounding', function () {
     expect($result['taxable_subtotal'])->toBe(90.01);
     expect($result['total'])->toBe(108.01);
 });
-

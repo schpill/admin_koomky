@@ -28,7 +28,9 @@ class InvoicingSettingsController extends Controller
 
         $user->update($request->validated());
 
-        return $this->success($this->payload($user->fresh()), 'Invoicing settings updated successfully');
+        $freshUser = $user->fresh();
+
+        return $this->success($this->payload($freshUser instanceof User ? $freshUser : $user), 'Invoicing settings updated successfully');
     }
 
     /**

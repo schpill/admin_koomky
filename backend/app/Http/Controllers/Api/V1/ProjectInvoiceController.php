@@ -45,7 +45,7 @@ class ProjectInvoiceController extends Controller
             ->groupBy('task_id')
             ->map(function ($entries) use ($hourlyRate): array {
                 $first = $entries->first();
-                $taskTitle = $first?->task?->title ?? 'Task';
+                $taskTitle = $first?->task->title ?? 'Task';
                 $minutes = (int) $entries->sum('duration_minutes');
                 $hours = round($minutes / 60, 2);
 

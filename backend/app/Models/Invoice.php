@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Laravel\Scout\Searchable;
 
 /**
@@ -204,7 +204,7 @@ class Invoice extends Model
             'number' => $this->number,
             'status' => $this->status,
             'notes' => $this->notes,
-            'issue_date' => $this->issue_date?->toDateString(),
+            'issue_date' => $this->issue_date->toDateString(),
             'total' => (float) $this->total,
             'client_name' => $this->client?->name,
         ];
