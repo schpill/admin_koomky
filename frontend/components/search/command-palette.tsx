@@ -2,12 +2,7 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import {
-  Calculator,
-  Settings,
-  User,
-  Search,
-} from "lucide-react";
+import { Calculator, Settings, User, Search } from "lucide-react";
 import { Command } from "cmdk";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { apiClient } from "@/lib/api";
@@ -45,7 +40,7 @@ export function CommandPalette() {
       setIsLoading(true);
       try {
         const response = await apiClient.get<any>(
-          `/search?q=${debouncedQuery}`,
+          `/search?q=${debouncedQuery}`
         );
         setResults(response.data.clients || []);
       } catch (error) {

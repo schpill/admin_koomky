@@ -37,7 +37,7 @@ export default function ProfileSettingsPage() {
         name: z.string().min(2, t("auth.validation.fullNameMin")),
         email: z.string().email(t("auth.validation.invalidEmail")),
       }),
-    [t],
+    [t]
   );
 
   const {
@@ -71,7 +71,9 @@ export default function ProfileSettingsPage() {
       reset(data); // Mark as pristine
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : t("settings.common.updateFailed"),
+        error instanceof Error
+          ? error.message
+          : t("settings.common.updateFailed")
       );
     }
   };

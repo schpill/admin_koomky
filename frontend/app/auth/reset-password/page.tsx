@@ -46,7 +46,7 @@ function ResetPasswordForm() {
           message: t("auth.validation.passwordsMismatch"),
           path: ["password_confirmation"],
         }),
-    [t],
+    [t]
   );
 
   const {
@@ -72,7 +72,7 @@ function ResetPasswordForm() {
       toast.error(
         error instanceof Error
           ? error.message
-          : t("auth.resetPassword.toasts.failed"),
+          : t("auth.resetPassword.toasts.failed")
       );
     }
   };
@@ -93,7 +93,9 @@ function ResetPasswordForm() {
           <Input type="hidden" {...register("email")} />
 
           <div className="space-y-2">
-            <Label htmlFor="password">{t("auth.resetPassword.newPassword")}</Label>
+            <Label htmlFor="password">
+              {t("auth.resetPassword.newPassword")}
+            </Label>
             <Input
               id="password"
               type="password"

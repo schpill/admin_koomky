@@ -21,7 +21,7 @@ export function CsvActions() {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("koomky-auth") ? JSON.parse(localStorage.getItem("koomky-auth")!).state.accessToken : ""}`,
           },
-        },
+        }
       );
 
       const blob = await response.blob();
@@ -56,7 +56,7 @@ export function CsvActions() {
             Authorization: `Bearer ${localStorage.getItem("koomky-auth") ? JSON.parse(localStorage.getItem("koomky-auth")!).state.accessToken : ""}`,
           },
           body: formData,
-        },
+        }
       );
 
       if (!response.ok) throw new Error(t("clients.csv.toasts.importFailed"));

@@ -99,7 +99,9 @@ export default function ClientsPage() {
                 <Filter className="h-4 w-4 text-muted-foreground" />
                 <Select value={status} onValueChange={setStatus}>
                   <SelectTrigger className="w-[130px] h-9">
-                    <SelectValue placeholder={t("clients.list.statusPlaceholder")} />
+                    <SelectValue
+                      placeholder={t("clients.list.statusPlaceholder")}
+                    />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">
@@ -128,7 +130,9 @@ export default function ClientsPage() {
                   }}
                 >
                   <SelectTrigger className="w-[180px] h-9">
-                    <SelectValue placeholder={t("clients.list.sortPlaceholder")} />
+                    <SelectValue
+                      placeholder={t("clients.list.sortPlaceholder")}
+                    />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="created_at-desc">
@@ -252,9 +256,7 @@ export default function ClientsPage() {
                               className="text-destructive"
                               onClick={() => {
                                 if (
-                                  confirm(
-                                    t("clients.list.archiveConfirmation"),
-                                  )
+                                  confirm(t("clients.list.archiveConfirmation"))
                                 ) {
                                   deleteClient(client.id);
                                 }

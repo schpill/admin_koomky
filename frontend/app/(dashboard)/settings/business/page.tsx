@@ -33,11 +33,9 @@ export default function BusinessSettingsPage() {
   const businessSchema = useMemo(
     () =>
       z.object({
-        business_name: z
-          .string()
-          .min(2, t("auth.validation.businessNameMin")),
+        business_name: z.string().min(2, t("auth.validation.businessNameMin")),
       }),
-    [t],
+    [t]
   );
 
   const {
@@ -68,7 +66,9 @@ export default function BusinessSettingsPage() {
       reset(data);
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : t("settings.common.updateFailed"),
+        error instanceof Error
+          ? error.message
+          : t("settings.common.updateFailed")
       );
     }
   };

@@ -68,7 +68,9 @@ export function ClientContactList({ clientId }: ClientContactListProps) {
   const contactSchema = useMemo(
     () =>
       z.object({
-        first_name: z.string().min(2, t("clients.contacts.validation.firstNameMin")),
+        first_name: z
+          .string()
+          .min(2, t("clients.contacts.validation.firstNameMin")),
         last_name: z.string().optional().or(z.literal("")),
         email: z
           .string()
@@ -79,7 +81,7 @@ export function ClientContactList({ clientId }: ClientContactListProps) {
         position: z.string().optional().or(z.literal("")),
         is_primary: z.boolean().default(false),
       }),
-    [t],
+    [t]
   );
 
   const {
@@ -98,7 +100,7 @@ export function ClientContactList({ clientId }: ClientContactListProps) {
   const fetchContacts = useCallback(async () => {
     try {
       const response = await apiClient.get<Contact[]>(
-        `/clients/${clientId}/contacts`,
+        `/clients/${clientId}/contacts`
       );
       setContacts(response.data);
     } catch (error) {
@@ -117,7 +119,7 @@ export function ClientContactList({ clientId }: ClientContactListProps) {
       if (editingContact) {
         await apiClient.put(
           `/clients/${clientId}/contacts/${editingContact.id}`,
-          data,
+          data
         );
         toast.success(t("clients.contacts.toasts.updated"));
       } else {
@@ -182,7 +184,8 @@ export function ClientContactList({ clientId }: ClientContactListProps) {
         >
           <DialogTrigger asChild>
             <Button size="sm">
-              <Plus className="mr-2 h-4 w-4" /> {t("clients.contacts.addContact")}
+              <Plus className="mr-2 h-4 w-4" />{" "}
+              {t("clients.contacts.addContact")}
             </Button>
           </DialogTrigger>
           <DialogContent>
@@ -207,7 +210,9 @@ export function ClientContactList({ clientId }: ClientContactListProps) {
                   )}
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="last_name">{t("clients.contacts.lastName")}</Label>
+                  <Label htmlFor="last_name">
+                    {t("clients.contacts.lastName")}
+                  </Label>
                   <Input id="last_name" {...register("last_name")} />
                 </div>
               </div>
@@ -218,7 +223,9 @@ export function ClientContactList({ clientId }: ClientContactListProps) {
                 <Input id="contact-position" {...register("position")} />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="contact-email">{t("clients.table.email")}</Label>
+                <Label htmlFor="contact-email">
+                  {t("clients.table.email")}
+                </Label>
                 <Input id="contact-email" type="email" {...register("email")} />
                 {errors.email && (
                   <p className="text-sm text-destructive">

@@ -16,7 +16,7 @@ export function BrandFooter({ className, compact = false }: BrandFooterProps) {
     <footer
       className={cn(
         "flex flex-wrap items-center justify-center gap-2 text-xs text-muted-foreground",
-        className,
+        className
       )}
     >
       <span>{t("brand.footer", { heart: "❤️" })}</span>

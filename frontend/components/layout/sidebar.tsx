@@ -52,14 +52,14 @@ export function Sidebar({ collapsed = false, onToggle }: SidebarProps) {
     <aside
       className={cn(
         "brand-sidebar flex flex-col border-r border-border/80 transition-all duration-300",
-        collapsed ? "w-16" : "w-64",
+        collapsed ? "w-16" : "w-64"
       )}
     >
       {/* Logo */}
       <div
         className={cn(
           "flex h-16 items-center border-b",
-          collapsed ? "justify-between px-2" : "justify-between px-4",
+          collapsed ? "justify-between px-2" : "justify-between px-4"
         )}
       >
         {!collapsed && (
@@ -95,7 +95,7 @@ export function Sidebar({ collapsed = false, onToggle }: SidebarProps) {
           <ChevronLeft
             className={cn(
               "h-4 w-4 transition-transform",
-              collapsed && "rotate-180",
+              collapsed && "rotate-180"
             )}
           />
           <span className="sr-only">
@@ -121,7 +121,7 @@ export function Sidebar({ collapsed = false, onToggle }: SidebarProps) {
                 isActive
                   ? "bg-primary text-primary-foreground shadow-md shadow-primary/35"
                   : "text-muted-foreground hover:bg-accent/80 hover:text-accent-foreground",
-                collapsed && "justify-center px-2",
+                collapsed && "justify-center px-2"
               )}
             >
               <item.icon className="h-5 w-5 shrink-0" />
@@ -147,7 +147,7 @@ export function Sidebar({ collapsed = false, onToggle }: SidebarProps) {
                 isActive
                   ? "bg-primary text-primary-foreground shadow-md shadow-primary/35"
                   : "text-muted-foreground hover:bg-accent/80 hover:text-accent-foreground",
-                collapsed && "justify-center px-2",
+                collapsed && "justify-center px-2"
               )}
             >
               <item.icon className="h-5 w-5 shrink-0" />
@@ -163,7 +163,7 @@ export function Sidebar({ collapsed = false, onToggle }: SidebarProps) {
           onClick={handleLogout}
           className={cn(
             "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-all duration-200 hover:bg-accent/80 hover:text-accent-foreground",
-            collapsed && "justify-center px-2",
+            collapsed && "justify-center px-2"
           )}
         >
           <LogOut className="h-5 w-5 shrink-0" />

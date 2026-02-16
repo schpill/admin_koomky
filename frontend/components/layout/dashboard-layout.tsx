@@ -20,7 +20,9 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       />
       <div className="flex flex-1 flex-col overflow-hidden">
         <Header />
-        <main className="flex-1 overflow-auto bg-transparent p-6">{children}</main>
+        <main className="flex-1 overflow-auto bg-transparent p-6">
+          {children}
+        </main>
         <BrandFooter className="border-t border-border/70 px-6 py-3" />
       </div>
     </div>

@@ -15,7 +15,11 @@ import {
   localeStorageKey,
   type Locale,
 } from "@/lib/i18n/config";
-import { messages, type MessageKey, type MessageValues } from "@/lib/i18n/messages";
+import {
+  messages,
+  type MessageKey,
+  type MessageValues,
+} from "@/lib/i18n/messages";
 
 interface I18nContextValue {
   locale: Locale;
@@ -83,7 +87,7 @@ export function I18nProvider({ initialLocale, children }: I18nProviderProps) {
         key;
       return interpolate(message, values);
     },
-    [locale],
+    [locale]
   );
 
   const contextValue = useMemo<I18nContextValue>(
@@ -92,7 +96,7 @@ export function I18nProvider({ initialLocale, children }: I18nProviderProps) {
       setLocale,
       t,
     }),
-    [locale, t],
+    [locale, t]
   );
 
   return (

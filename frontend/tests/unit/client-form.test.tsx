@@ -18,11 +18,11 @@ describe("ClientForm", () => {
         initialData={initialData}
         onSubmit={async () => {}}
         onCancel={() => {}}
-      />,
+      />
     );
 
     expect(screen.getByLabelText(/Nom entreprise\/client/i)).toHaveValue(
-      "Acme Corp",
+      "Acme Corp"
     );
     expect(screen.getByLabelText(/Email/i)).toHaveValue("contact@acme.com");
   });
@@ -45,13 +45,15 @@ describe("ClientForm", () => {
         expect.objectContaining({
           name: "New Client",
         }),
-        expect.anything(),
+        expect.anything()
       );
     });
   });
 
   test("shows error message when name is too short", async () => {
-    renderWithI18n(<ClientForm onSubmit={async () => {}} onCancel={() => {}} />);
+    renderWithI18n(
+      <ClientForm onSubmit={async () => {}} onCancel={() => {}} />
+    );
 
     fireEvent.change(screen.getByLabelText(/Nom entreprise\/client/i), {
       target: { value: "A" },
@@ -60,7 +62,7 @@ describe("ClientForm", () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText(/Le nom doit contenir au moins 2 caracteres/i),
+        screen.getByText(/Le nom doit contenir au moins 2 caracteres/i)
       ).toBeInTheDocument();
     });
   });

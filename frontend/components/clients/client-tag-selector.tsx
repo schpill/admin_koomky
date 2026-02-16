@@ -114,7 +114,9 @@ export function ClientTagSelector({
         </PopoverTrigger>
         <PopoverContent className="w-60 p-3" align="start">
           <div className="space-y-3">
-            <div className="text-xs font-medium">{t("clients.tags.availableTags")}</div>
+            <div className="text-xs font-medium">
+              {t("clients.tags.availableTags")}
+            </div>
             <div className="flex flex-wrap gap-1">
               {availableTags
                 .filter((at) => !tags.find((t) => t.id === at.id))

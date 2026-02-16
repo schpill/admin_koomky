@@ -42,7 +42,7 @@ async function refreshAccessToken(): Promise<boolean> {
           Accept: "application/json",
           Authorization: `Bearer ${refreshToken}`,
         },
-      },
+      }
     );
 
     if (!response.ok) {
@@ -60,7 +60,7 @@ async function refreshAccessToken(): Promise<boolean> {
 
 export async function api<T>(
   endpoint: string,
-  options: ApiOptions = {},
+  options: ApiOptions = {}
 ): Promise<ApiResponse<T>> {
   const { skipAuth = false, params, ...fetchOptions } = options;
   const accessToken = useAuthStore.getState().accessToken;
@@ -132,7 +132,7 @@ export async function api<T>(
     throw new ApiError(
       errorData.message || `HTTP error! status: ${response.status}`,
       response.status,
-      errorData,
+      errorData
     );
   }
 

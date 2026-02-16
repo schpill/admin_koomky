@@ -20,7 +20,7 @@ export function LocaleSwitcher({
     <div
       className={cn(
         "inline-flex items-center gap-1 rounded-md border border-border/70 bg-background/80 p-1 shadow-sm backdrop-blur",
-        className,
+        className
       )}
       aria-label={t("common.language")}
     >
@@ -34,7 +34,7 @@ export function LocaleSwitcher({
             "rounded px-2 py-1 text-xs font-semibold transition-colors",
             locale === candidateLocale
               ? "bg-primary text-primary-foreground"
-              : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
+              : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
           )}
           aria-pressed={locale === candidateLocale}
         >

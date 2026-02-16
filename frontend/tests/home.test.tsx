@@ -14,7 +14,7 @@ test("Dashboard page renders heading", () => {
   render(
     <I18nProvider initialLocale="fr">
       <Page />
-    </I18nProvider>,
+    </I18nProvider>
   );
   expect(screen.getByText("Tableau de bord")).toBeInTheDocument();
 });

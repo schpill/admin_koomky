@@ -47,7 +47,7 @@ export default function LoginPage() {
         email: z.string().email(t("auth.validation.invalidEmail")),
         password: z.string().min(1, t("auth.validation.requiredPassword")),
       }),
-    [t],
+    [t]
   );
 
   const twoFactorSchema = useMemo(
@@ -55,7 +55,7 @@ export default function LoginPage() {
       z.object({
         code: z.string().length(6, t("auth.validation.codeLength")),
       }),
-    [t],
+    [t]
   );
 
   const loginForm = useForm<LoginFormData>({
@@ -82,7 +82,7 @@ export default function LoginPage() {
         setAuth(
           response.data.user,
           response.data.access_token,
-          response.data.refresh_token,
+          response.data.refresh_token
         );
         toast.success(t("auth.login.toasts.welcome"));
         router.push("/");
@@ -101,7 +101,7 @@ export default function LoginPage() {
       setAuth(
         response.data.user,
         response.data.access_token,
-        response.data.refresh_token,
+        response.data.refresh_token
       );
       toast.success(t("auth.twoFactor.verified"));
       router.push("/");

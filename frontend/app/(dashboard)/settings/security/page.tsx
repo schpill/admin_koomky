@@ -40,7 +40,7 @@ export default function SecuritySettingsPage() {
       z.object({
         code: z.string().length(6, t("auth.validation.codeLength")),
       }),
-    [t],
+    [t]
   );
 
   const {

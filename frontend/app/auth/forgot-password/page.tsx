@@ -33,7 +33,7 @@ export default function ForgotPasswordPage() {
       z.object({
         email: z.string().email(t("auth.validation.invalidEmail")),
       }),
-    [t],
+    [t]
   );
 
   const {
@@ -54,7 +54,7 @@ export default function ForgotPasswordPage() {
       toast.error(
         error instanceof Error
           ? error.message
-          : t("auth.forgotPassword.toasts.failed"),
+          : t("auth.forgotPassword.toasts.failed")
       );
     }
   };

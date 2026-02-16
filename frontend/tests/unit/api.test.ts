@@ -37,7 +37,7 @@ describe("api", () => {
   it("serializes params and attaches authorization header", async () => {
     useAuthStore.setState({ accessToken: "access-token" });
     fetchMock.mockResolvedValue(
-      makeResponse(200, { status: "Success", message: "ok", data: [] }),
+      makeResponse(200, { status: "Success", message: "ok", data: [] })
     );
 
     await api("/clients?existing=1", {
@@ -59,7 +59,7 @@ describe("api", () => {
   it("does not attach auth header when skipAuth is true", async () => {
     useAuthStore.setState({ accessToken: "access-token" });
     fetchMock.mockResolvedValue(
-      makeResponse(200, { status: "Success", message: "ok", data: {} }),
+      makeResponse(200, { status: "Success", message: "ok", data: {} })
     );
 
     await api("/health", { method: "GET", skipAuth: true });
@@ -83,14 +83,14 @@ describe("api", () => {
             access_token: "new-access",
             refresh_token: "new-refresh",
           },
-        }),
+        })
       )
       .mockResolvedValueOnce(
         makeResponse(200, {
           status: "Success",
           message: "ok",
           data: { id: "1" },
-        }),
+        })
       );
 
     const response = await api<{ id: string }>("/clients", { method: "GET" });
@@ -130,7 +130,9 @@ describe("api", () => {
   });
 
   it("throws ApiError with API message on non-OK response", async () => {
-    fetchMock.mockResolvedValue(makeResponse(422, { message: "Invalid payload" }));
+    fetchMock.mockResolvedValue(
+      makeResponse(422, { message: "Invalid payload" })
+    );
 
     await expect(api("/clients", { method: "POST" })).rejects.toMatchObject({
       name: "ApiError",
@@ -157,7 +159,7 @@ describe("api", () => {
 
   it("supports convenience methods", async () => {
     fetchMock.mockResolvedValue(
-      makeResponse(200, { status: "Success", message: "ok", data: {} }),
+      makeResponse(200, { status: "Success", message: "ok", data: {} })
     );
 
     await apiClient.post("/clients", { name: "A" });

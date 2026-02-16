@@ -2,6 +2,7 @@
 node_modules/
 .npm/
 .pnpm-store/
+/pnpm-lock.yaml
 .next/
 out/
 build/

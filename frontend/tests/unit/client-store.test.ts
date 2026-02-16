@@ -117,7 +117,7 @@ describe("useClientStore", () => {
     (apiClient.put as any).mockRejectedValue(error);
 
     await expect(
-      useClientStore.getState().updateClient("1", { name: "X" }),
+      useClientStore.getState().updateClient("1", { name: "X" })
     ).rejects.toThrow("Request failed");
 
     expect(useClientStore.getState().error).toBe("Request failed");

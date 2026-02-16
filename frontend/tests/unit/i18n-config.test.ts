@@ -12,7 +12,7 @@ describe("resolveLocaleFromAcceptLanguage", () => {
 
   test("detects french locale from regioned tag", () => {
     expect(resolveLocaleFromAcceptLanguage("fr-CA,fr;q=0.9,en;q=0.8")).toBe(
-      "fr",
+      "fr"
     );
   });
 

@@ -19,10 +19,7 @@ export default defineConfig({
         branches: 80,
         statements: 80,
       },
-      exclude: [
-        "**/*.d.ts",
-        "**/types/**",
-      ],
+      exclude: ["**/*.d.ts", "**/types/**"],
     },
   },
   resolve: {

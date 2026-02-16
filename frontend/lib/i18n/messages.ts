@@ -236,7 +236,7 @@ export const messages: Record<Locale, MessageTree> = {
         noExistingTags: "Aucun tag existant.",
         newTagPlaceholder: "Nouveau tag...",
         toasts: {
-          added: "Tag \"{name}\" ajoute",
+          added: 'Tag "{name}" ajoute',
           addFailed: "Impossible d'ajouter le tag",
           removed: "Tag retire",
           removeFailed: "Impossible de retirer le tag",
@@ -610,7 +610,7 @@ export const messages: Record<Locale, MessageTree> = {
         noExistingTags: "No existing tags.",
         newTagPlaceholder: "New tag...",
         toasts: {
-          added: "Tag \"{name}\" added",
+          added: 'Tag "{name}" added',
           addFailed: "Failed to add tag",
           removed: "Tag removed",
           removeFailed: "Failed to remove tag",
@@ -662,7 +662,8 @@ export const messages: Record<Locale, MessageTree> = {
         toasts: {
           generateQrFailed: "Failed to generate 2FA QR code",
           enabled: "Two-factor authentication enabled!",
-          verifyFailed: "Verification failed. Please check the code and try again.",
+          verifyFailed:
+            "Verification failed. Please check the code and try again.",
           disabled: "Two-factor authentication disabled",
           disableFailed: "Failed to disable 2FA",
         },

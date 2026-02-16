@@ -44,7 +44,7 @@ export default async function RootLayout({
   if (!isLocale(localeFromCookie)) {
     const headerStore = await headers();
     initialLocale = resolveLocaleFromAcceptLanguage(
-      headerStore.get("accept-language"),
+      headerStore.get("accept-language")
     );
   }
 

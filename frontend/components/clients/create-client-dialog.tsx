@@ -35,7 +35,8 @@ export function CreateClientDialog() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button>
-          <Plus className="mr-2 h-4 w-4" /> {t("clients.createDialog.addClient")}
+          <Plus className="mr-2 h-4 w-4" />{" "}
+          {t("clients.createDialog.addClient")}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">

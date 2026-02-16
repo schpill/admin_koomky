@@ -73,7 +73,7 @@ export default function ClientDetailPage() {
       toast.success(
         client.deleted_at
           ? t("clients.detail.toasts.deletedPermanently")
-          : t("clients.detail.toasts.archived"),
+          : t("clients.detail.toasts.archived")
       );
       router.push("/clients");
     } catch (error) {
@@ -238,7 +238,7 @@ export default function ClientDetailPage() {
                     <span>
                       {t("clients.detail.addedOn", {
                         date: new Date(client.created_at).toLocaleDateString(
-                          dateLocale,
+                          dateLocale
                         ),
                       })}
                     </span>

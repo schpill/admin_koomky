@@ -15,9 +15,7 @@ const publicRoutes = [
 ];
 
 // Public static assets served from /public
-const publicAssetPrefixes = [
-  "/brand/",
-];
+const publicAssetPrefixes = ["/brand/"];
 
 // Routes that should redirect to dashboard if already authenticated
 const guestOnlyRoutes = [
@@ -29,7 +27,7 @@ const guestOnlyRoutes = [
 
 function withLocaleCookie(
   request: NextRequest,
-  response: NextResponse,
+  response: NextResponse
 ): NextResponse {
   const localeFromCookie = request.cookies.get(localeCookieName)?.value;
   if (isLocale(localeFromCookie)) {
@@ -37,7 +35,7 @@ function withLocaleCookie(
   }
 
   const locale = resolveLocaleFromAcceptLanguage(
-    request.headers.get("accept-language"),
+    request.headers.get("accept-language")
   );
   response.cookies.set(localeCookieName, locale, {
     path: "/",

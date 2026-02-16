@@ -15,7 +15,7 @@ export function resolveLocale(value: string | null | undefined): Locale {
 }
 
 export function resolveLocaleFromAcceptLanguage(
-  acceptLanguage: string | null | undefined,
+  acceptLanguage: string | null | undefined
 ): Locale {
   if (!acceptLanguage) {
     return defaultLocale;
@@ -31,7 +31,7 @@ export function resolveLocaleFromAcceptLanguage(
       }
 
       const qualityParam = params.find((param) =>
-        param.trim().startsWith("q="),
+        param.trim().startsWith("q=")
       );
       const parsedQuality = qualityParam
         ? Number.parseFloat(qualityParam.trim().slice(2))
@@ -42,12 +42,12 @@ export function resolveLocaleFromAcceptLanguage(
     })
     .filter(
       (
-        candidate,
+        candidate
       ): candidate is {
         tag: string;
         quality: number;
         index: number;
-      } => candidate !== null,
+      } => candidate !== null
     )
     .sort((a, b) => {
       if (b.quality !== a.quality) {

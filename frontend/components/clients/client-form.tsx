@@ -52,7 +52,7 @@ export function ClientForm({
         zip_code: z.string().optional().nullable(),
         country: z.string().optional().nullable(),
       }),
-    [t],
+    [t]
   );
 
   const {

@@ -68,9 +68,7 @@ export function ClientTimeline({ clientId }: ClientTimelineProps) {
           <History className="h-5 w-5" />
           {t("clients.timeline.title")}
         </CardTitle>
-        <CardDescription>
-          {t("clients.timeline.description")}
-        </CardDescription>
+        <CardDescription>{t("clients.timeline.description")}</CardDescription>
       </CardHeader>
       <CardContent>
         {activities.length === 0 ? (

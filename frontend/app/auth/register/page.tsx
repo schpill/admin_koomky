@@ -51,7 +51,7 @@ export default function RegisterPage() {
           message: t("auth.validation.passwordsMismatch"),
           path: ["password_confirmation"],
         }),
-    [t],
+    [t]
   );
 
   const {
@@ -73,13 +73,15 @@ export default function RegisterPage() {
       setAuth(
         result.data.user,
         result.data.access_token,
-        result.data.refresh_token,
+        result.data.refresh_token
       );
       toast.success(t("auth.register.toasts.success"));
       router.push("/");
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : t("auth.register.toasts.failed"),
+        error instanceof Error
+          ? error.message
+          : t("auth.register.toasts.failed")
       );
     }
   };
@@ -122,7 +124,9 @@ export default function RegisterPage() {
             )}
           </div>
           <div className="space-y-2">
-            <Label htmlFor="business_name">{t("auth.register.businessName")}</Label>
+            <Label htmlFor="business_name">
+              {t("auth.register.businessName")}
+            </Label>
             <Input
               id="business_name"
               placeholder={t("auth.register.businessNamePlaceholder")}
@@ -168,7 +172,9 @@ export default function RegisterPage() {
         </CardContent>
         <CardFooter className="flex flex-col gap-4">
           <Button type="submit" className="w-full" disabled={isSubmitting}>
-            {isSubmitting ? t("auth.register.creating") : t("auth.register.submit")}
+            {isSubmitting
+              ? t("auth.register.creating")
+              : t("auth.register.submit")}
           </Button>
           <p className="text-sm text-center text-muted-foreground">
             {t("auth.register.hasAccount")}{" "}
