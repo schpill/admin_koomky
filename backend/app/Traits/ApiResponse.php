@@ -12,7 +12,7 @@ trait ApiResponse
             'status' => 'Success',
             'message' => $message,
             'data' => $data,
-        ], $code);
+        ], $code, [], JSON_PRESERVE_ZERO_FRACTION);
     }
 
     protected function error(string $message, int $code, mixed $data = null): JsonResponse
@@ -21,6 +21,6 @@ trait ApiResponse
             'status' => 'Error',
             'message' => $message,
             'data' => $data,
-        ], $code);
+        ], $code, [], JSON_PRESERVE_ZERO_FRACTION);
     }
 }

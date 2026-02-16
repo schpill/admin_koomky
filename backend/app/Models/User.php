@@ -17,6 +17,10 @@ use Laravel\Sanctum\HasApiTokens;
  * @property string $password
  * @property string|null $business_name
  * @property string|null $avatar_path
+ * @property int $payment_terms_days
+ * @property string|null $bank_details
+ * @property string|null $invoice_footer
+ * @property string $invoice_numbering_pattern
  * @property string|null $two_factor_secret
  * @property string|null $two_factor_recovery_codes
  * @property \Illuminate\Support\Carbon|null $two_factor_confirmed_at
@@ -37,6 +41,10 @@ class User extends Authenticatable
         'password',
         'business_name',
         'avatar_path',
+        'payment_terms_days',
+        'bank_details',
+        'invoice_footer',
+        'invoice_numbering_pattern',
         'two_factor_secret',
         'two_factor_recovery_codes',
         'two_factor_confirmed_at',
@@ -60,6 +68,8 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'payment_terms_days' => 'integer',
+            'bank_details' => 'encrypted',
             'two_factor_confirmed_at' => 'datetime',
             'two_factor_secret' => 'encrypted',
             'two_factor_recovery_codes' => 'encrypted',
@@ -88,5 +98,29 @@ class User extends Authenticatable
     public function activities(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Activity::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\Project, \App\Models\User>
+     */
+    public function projects(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Project::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\TimeEntry, \App\Models\User>
+     */
+    public function timeEntries(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(TimeEntry::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\Invoice, \App\Models\User>
+     */
+    public function invoices(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Invoice::class);
     }
 }

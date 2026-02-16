@@ -5,8 +5,12 @@ namespace App\Providers;
 use App\Listeners\LogAuthEvent;
 use App\Models\Client;
 use App\Models\Contact;
+use App\Models\Invoice;
+use App\Models\Project;
 use App\Observers\ClientObserver;
 use App\Observers\ContactObserver;
+use App\Observers\InvoiceObserver;
+use App\Observers\ProjectObserver;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
 use Illuminate\Auth\Events\Registered;
@@ -43,5 +47,7 @@ class AppServiceProvider extends ServiceProvider
 
         Client::observe(ClientObserver::class);
         Contact::observe(ContactObserver::class);
+        Project::observe(ProjectObserver::class);
+        Invoice::observe(InvoiceObserver::class);
     }
 }
