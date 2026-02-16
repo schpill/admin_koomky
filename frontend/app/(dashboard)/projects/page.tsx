@@ -12,7 +12,9 @@ import { ProjectFilterBar } from "@/components/projects/project-filter-bar";
 import { useProjectStore } from "@/lib/stores/projects";
 import { useClientStore } from "@/lib/stores/clients";
 
-function statusVariant(status: string): "default" | "secondary" | "destructive" {
+function statusVariant(
+  status: string
+): "default" | "secondary" | "destructive" {
   if (status === "completed") {
     return "default";
   }
@@ -64,7 +66,10 @@ export default function ProjectsPage() {
       </div>
 
       <ProjectFilterBar
-        clients={clients.map((client) => ({ id: client.id, name: client.name }))}
+        clients={clients.map((client) => ({
+          id: client.id,
+          name: client.name,
+        }))}
         onApply={(nextFilters) =>
           setFilters({
             ...filters,
@@ -100,38 +105,72 @@ export default function ProjectsPage() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b text-left">
-                    <th className="pb-3 font-medium text-muted-foreground">Reference</th>
-                    <th className="pb-3 font-medium text-muted-foreground">Project</th>
-                    <th className="pb-3 font-medium text-muted-foreground">Client</th>
-                    <th className="pb-3 font-medium text-muted-foreground">Status</th>
-                    <th className="pb-3 font-medium text-muted-foreground">Deadline</th>
-                    <th className="pb-3 font-medium text-muted-foreground">Progress</th>
+                    <th className="pb-3 font-medium text-muted-foreground">
+                      Reference
+                    </th>
+                    <th className="pb-3 font-medium text-muted-foreground">
+                      Project
+                    </th>
+                    <th className="pb-3 font-medium text-muted-foreground">
+                      Client
+                    </th>
+                    <th className="pb-3 font-medium text-muted-foreground">
+                      Status
+                    </th>
+                    <th className="pb-3 font-medium text-muted-foreground">
+                      Deadline
+                    </th>
+                    <th className="pb-3 font-medium text-muted-foreground">
+                      Progress
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   {projects.map((project) => {
-                    const progress = Math.round(project.progress_percentage ?? 0);
+                    const progress = Math.round(
+                      project.progress_percentage ?? 0
+                    );
                     return (
-                      <tr key={project.id} className="border-b last:border-0 hover:bg-muted/30">
-                        <td className="py-4 font-mono text-xs">{project.reference || "-"}</td>
+                      <tr
+                        key={project.id}
+                        className="border-b last:border-0 hover:bg-muted/30"
+                      >
+                        <td className="py-4 font-mono text-xs">
+                          {project.reference || "-"}
+                        </td>
                         <td className="py-4">
-                          <Link href={`/projects/${project.id}`} className="font-medium text-primary hover:underline">
+                          <Link
+                            href={`/projects/${project.id}`}
+                            className="font-medium text-primary hover:underline"
+                          >
                             {project.name}
                           </Link>
                         </td>
-                        <td className="py-4 text-muted-foreground">{project.client?.name || "-"}</td>
+                        <td className="py-4 text-muted-foreground">
+                          {project.client?.name || "-"}
+                        </td>
                         <td className="py-4">
-                          <Badge variant={statusVariant(project.status)} className="capitalize">
+                          <Badge
+                            variant={statusVariant(project.status)}
+                            className="capitalize"
+                          >
                             {project.status.replace("_", " ")}
                           </Badge>
                         </td>
-                        <td className="py-4 text-muted-foreground">{project.deadline || "-"}</td>
+                        <td className="py-4 text-muted-foreground">
+                          {project.deadline || "-"}
+                        </td>
                         <td className="py-4">
                           <div className="w-36 space-y-1">
                             <div className="h-2 rounded-full bg-muted">
-                              <div className="h-2 rounded-full bg-primary" style={{ width: `${progress}%` }} />
+                              <div
+                                className="h-2 rounded-full bg-primary"
+                                style={{ width: `${progress}%` }}
+                              />
                             </div>
-                            <p className="text-xs text-muted-foreground">{progress}%</p>
+                            <p className="text-xs text-muted-foreground">
+                              {progress}%
+                            </p>
                           </div>
                         </td>
                       </tr>

@@ -49,7 +49,9 @@ describe("RecordPaymentModal", () => {
       />
     );
 
-    expect(screen.getByText("Remaining after payment: 800.00 EUR")).toBeInTheDocument();
+    expect(
+      screen.getByText("Remaining after payment: 800.00 EUR")
+    ).toBeInTheDocument();
 
     fireEvent.change(screen.getByLabelText("Amount"), {
       target: { value: "300" },

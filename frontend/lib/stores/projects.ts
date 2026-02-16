@@ -154,7 +154,9 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
           ...task,
           blocked_by_dependencies:
             Array.isArray((task as any).dependencies) &&
-            (task as any).dependencies.some((dep: any) => dep.status !== "done"),
+            (task as any).dependencies.some(
+              (dep: any) => dep.status !== "done"
+            ),
         })),
         isLoading: false,
       });
@@ -208,7 +210,8 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
       await apiClient.delete(`/projects/${id}`);
       set({
         projects: get().projects.filter((project) => project.id !== id),
-        currentProject: get().currentProject?.id === id ? null : get().currentProject,
+        currentProject:
+          get().currentProject?.id === id ? null : get().currentProject,
         tasks: get().currentProject?.id === id ? [] : get().tasks,
         isLoading: false,
       });
@@ -221,16 +224,21 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
   fetchTasks: async (projectId, params = {}) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await apiClient.get<any>(`/projects/${projectId}/tasks`, {
-        params,
-      });
+      const response = await apiClient.get<any>(
+        `/projects/${projectId}/tasks`,
+        {
+          params,
+        }
+      );
       const tasks = (response.data || []) as ProjectTask[];
       set({
         tasks: tasks.map((task) => ({
           ...task,
           blocked_by_dependencies:
             Array.isArray((task as any).dependencies) &&
-            (task as any).dependencies.some((dep: any) => dep.status !== "done"),
+            (task as any).dependencies.some(
+              (dep: any) => dep.status !== "done"
+            ),
         })),
         isLoading: false,
       });
@@ -243,7 +251,10 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
   createTask: async (projectId, data) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await apiClient.post<any>(`/projects/${projectId}/tasks`, data);
+      const response = await apiClient.post<any>(
+        `/projects/${projectId}/tasks`,
+        data
+      );
       const createdTask = response.data as ProjectTask;
       set({
         tasks: [...get().tasks, createdTask],
@@ -314,9 +325,12 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
   addTaskDependency: async (projectId, taskId, dependsOnTaskId) => {
     set({ isLoading: true, error: null });
     try {
-      await apiClient.post(`/projects/${projectId}/tasks/${taskId}/dependencies`, {
-        depends_on_task_id: dependsOnTaskId,
-      });
+      await apiClient.post(
+        `/projects/${projectId}/tasks/${taskId}/dependencies`,
+        {
+          depends_on_task_id: dependsOnTaskId,
+        }
+      );
       await get().fetchTasks(projectId);
       set({ isLoading: false });
     } catch (error) {
@@ -328,7 +342,10 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
   createTimeEntry: async (projectId, taskId, data) => {
     set({ isLoading: true, error: null });
     try {
-      await apiClient.post(`/projects/${projectId}/tasks/${taskId}/time-entries`, data);
+      await apiClient.post(
+        `/projects/${projectId}/tasks/${taskId}/time-entries`,
+        data
+      );
       set({ isLoading: false });
     } catch (error) {
       set({ error: (error as Error).message, isLoading: false });

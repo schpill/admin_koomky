@@ -38,9 +38,16 @@ export function ProjectInvoices({ projectId }: ProjectInvoicesProps) {
   return (
     <div className="space-y-3">
       <div className="flex justify-end">
-        <Button type="button" variant="outline" onClick={generateInvoice} disabled={isGenerating}>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={generateInvoice}
+          disabled={isGenerating}
+        >
           <FilePlus2 className="mr-2 h-4 w-4" />
-          {isGenerating ? "Generating..." : "Generate invoice from unbilled time"}
+          {isGenerating
+            ? "Generating..."
+            : "Generate invoice from unbilled time"}
         </Button>
       </div>
 
@@ -57,24 +64,43 @@ export function ProjectInvoices({ projectId }: ProjectInvoicesProps) {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b text-left">
-                <th className="pb-3 font-medium text-muted-foreground">Number</th>
-                <th className="pb-3 font-medium text-muted-foreground">Issue date</th>
-                <th className="pb-3 font-medium text-muted-foreground">Due date</th>
-                <th className="pb-3 font-medium text-muted-foreground">Total</th>
-                <th className="pb-3 font-medium text-muted-foreground">Status</th>
+                <th className="pb-3 font-medium text-muted-foreground">
+                  Number
+                </th>
+                <th className="pb-3 font-medium text-muted-foreground">
+                  Issue date
+                </th>
+                <th className="pb-3 font-medium text-muted-foreground">
+                  Due date
+                </th>
+                <th className="pb-3 font-medium text-muted-foreground">
+                  Total
+                </th>
+                <th className="pb-3 font-medium text-muted-foreground">
+                  Status
+                </th>
               </tr>
             </thead>
             <tbody>
               {invoices.map((invoice) => (
                 <tr key={invoice.id} className="border-b last:border-0">
                   <td className="py-3">
-                    <Link href={`/invoices/${invoice.id}`} className="font-medium text-primary hover:underline">
+                    <Link
+                      href={`/invoices/${invoice.id}`}
+                      className="font-medium text-primary hover:underline"
+                    >
                       {invoice.number}
                     </Link>
                   </td>
-                  <td className="py-3 text-muted-foreground">{invoice.issue_date}</td>
-                  <td className="py-3 text-muted-foreground">{invoice.due_date}</td>
-                  <td className="py-3">{Number(invoice.total || 0).toFixed(2)} EUR</td>
+                  <td className="py-3 text-muted-foreground">
+                    {invoice.issue_date}
+                  </td>
+                  <td className="py-3 text-muted-foreground">
+                    {invoice.due_date}
+                  </td>
+                  <td className="py-3">
+                    {Number(invoice.total || 0).toFixed(2)} EUR
+                  </td>
                   <td className="py-3">
                     <InvoiceStatusBadge status={invoice.status} />
                   </td>

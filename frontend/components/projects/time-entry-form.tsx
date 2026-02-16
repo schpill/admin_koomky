@@ -62,14 +62,18 @@ export function TimeEntryForm({ onSubmit }: TimeEntryFormProps) {
           {...register("duration_minutes")}
         />
         {errors.duration_minutes && (
-          <p className="text-sm text-destructive">{errors.duration_minutes.message}</p>
+          <p className="text-sm text-destructive">
+            {errors.duration_minutes.message}
+          </p>
         )}
       </div>
 
       <div className="space-y-2">
         <Label htmlFor="date">Date</Label>
         <Input id="date" type="date" {...register("date")} />
-        {errors.date && <p className="text-sm text-destructive">{errors.date.message}</p>}
+        {errors.date && (
+          <p className="text-sm text-destructive">{errors.date.message}</p>
+        )}
       </div>
 
       <div className="space-y-2">

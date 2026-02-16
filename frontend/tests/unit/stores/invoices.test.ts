@@ -145,7 +145,9 @@ describe("useInvoiceStore", () => {
 
     await useInvoiceStore.getState().fetchInvoicingSettings();
 
-    expect(useInvoiceStore.getState().invoicingSettings?.payment_terms_days).toBe(30);
+    expect(
+      useInvoiceStore.getState().invoicingSettings?.payment_terms_days
+    ).toBe(30);
 
     (apiClient.put as any).mockResolvedValue({
       data: {
@@ -163,7 +165,9 @@ describe("useInvoiceStore", () => {
       invoice_numbering_pattern: "FAC-YYYY-NNNN",
     });
 
-    expect(useInvoiceStore.getState().invoicingSettings?.payment_terms_days).toBe(45);
+    expect(
+      useInvoiceStore.getState().invoicingSettings?.payment_terms_days
+    ).toBe(45);
     expect(useInvoiceStore.getState().invoicingSettings?.invoice_footer).toBe(
       "Updated footer"
     );

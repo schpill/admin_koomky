@@ -16,7 +16,11 @@ interface TaskListViewProps {
   onOpenTask: (task: ProjectTask) => void;
 }
 
-export function TaskListView({ tasks, onStatusChange, onOpenTask }: TaskListViewProps) {
+export function TaskListView({
+  tasks,
+  onStatusChange,
+  onOpenTask,
+}: TaskListViewProps) {
   return (
     <div className="overflow-hidden rounded-lg border">
       <table className="w-full text-sm">
@@ -38,15 +42,23 @@ export function TaskListView({ tasks, onStatusChange, onOpenTask }: TaskListView
               <td className="px-4 py-3">
                 <div className="font-medium">{task.title}</div>
                 {task.description && (
-                  <div className="line-clamp-1 text-xs text-muted-foreground">{task.description}</div>
+                  <div className="line-clamp-1 text-xs text-muted-foreground">
+                    {task.description}
+                  </div>
                 )}
               </td>
               <td className="px-4 py-3">
-                <Badge variant={task.priority === "urgent" ? "destructive" : "secondary"}>
+                <Badge
+                  variant={
+                    task.priority === "urgent" ? "destructive" : "secondary"
+                  }
+                >
                   {task.priority}
                 </Badge>
               </td>
-              <td className="px-4 py-3 text-muted-foreground">{task.due_date || "-"}</td>
+              <td className="px-4 py-3 text-muted-foreground">
+                {task.due_date || "-"}
+              </td>
               <td
                 className="px-4 py-3"
                 onClick={(event) => {
@@ -55,7 +67,9 @@ export function TaskListView({ tasks, onStatusChange, onOpenTask }: TaskListView
               >
                 <Select
                   value={task.status}
-                  onValueChange={(value) => onStatusChange(task.id, value as TaskStatus)}
+                  onValueChange={(value) =>
+                    onStatusChange(task.id, value as TaskStatus)
+                  }
                 >
                   <SelectTrigger className="h-8 w-[150px]">
                     <SelectValue />
@@ -73,7 +87,10 @@ export function TaskListView({ tasks, onStatusChange, onOpenTask }: TaskListView
           ))}
           {tasks.length === 0 && (
             <tr>
-              <td colSpan={4} className="px-4 py-6 text-center text-muted-foreground">
+              <td
+                colSpan={4}
+                className="px-4 py-6 text-center text-muted-foreground"
+              >
                 No tasks yet
               </td>
             </tr>

@@ -57,7 +57,9 @@ export default function InvoicesPage() {
     sort_by: "issue_date",
     sort_order: "desc",
   });
-  const [selectedInvoiceId, setSelectedInvoiceId] = useState<string | null>(null);
+  const [selectedInvoiceId, setSelectedInvoiceId] = useState<string | null>(
+    null
+  );
 
   useEffect(() => {
     fetchClients();
@@ -68,7 +70,11 @@ export default function InvoicesPage() {
   }, [fetchInvoices, filters]);
 
   const selectedInvoice = useMemo(() => {
-    return invoices.find((invoice) => invoice.id === selectedInvoiceId) || invoices[0] || null;
+    return (
+      invoices.find((invoice) => invoice.id === selectedInvoiceId) ||
+      invoices[0] ||
+      null
+    );
   }, [invoices, selectedInvoiceId]);
 
   return (
@@ -89,7 +95,10 @@ export default function InvoicesPage() {
       </div>
 
       <InvoiceFilterBar
-        clients={clients.map((client) => ({ id: client.id, name: client.name }))}
+        clients={clients.map((client) => ({
+          id: client.id,
+          name: client.name,
+        }))}
         onApply={(nextFilters) => setFilters({ ...filters, ...nextFilters })}
       />
 
@@ -114,12 +123,24 @@ export default function InvoicesPage() {
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b text-left">
-                      <th className="pb-3 font-medium text-muted-foreground">Number</th>
-                      <th className="pb-3 font-medium text-muted-foreground">Client</th>
-                      <th className="pb-3 font-medium text-muted-foreground">Issue date</th>
-                      <th className="pb-3 font-medium text-muted-foreground">Due date</th>
-                      <th className="pb-3 font-medium text-muted-foreground">Total</th>
-                      <th className="pb-3 font-medium text-muted-foreground">Status</th>
+                      <th className="pb-3 font-medium text-muted-foreground">
+                        Number
+                      </th>
+                      <th className="pb-3 font-medium text-muted-foreground">
+                        Client
+                      </th>
+                      <th className="pb-3 font-medium text-muted-foreground">
+                        Issue date
+                      </th>
+                      <th className="pb-3 font-medium text-muted-foreground">
+                        Due date
+                      </th>
+                      <th className="pb-3 font-medium text-muted-foreground">
+                        Total
+                      </th>
+                      <th className="pb-3 font-medium text-muted-foreground">
+                        Status
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -130,16 +151,25 @@ export default function InvoicesPage() {
                         onClick={() => setSelectedInvoiceId(invoice.id)}
                       >
                         <td className="py-4">
-                          <Link href={`/invoices/${invoice.id}`} className="font-medium text-primary hover:underline">
+                          <Link
+                            href={`/invoices/${invoice.id}`}
+                            className="font-medium text-primary hover:underline"
+                          >
                             {invoice.number}
                           </Link>
                         </td>
                         <td className="py-4 text-muted-foreground">
                           {invoice.client?.name || invoice.client_id}
                         </td>
-                        <td className="py-4 text-muted-foreground">{invoice.issue_date}</td>
-                        <td className="py-4 text-muted-foreground">{invoice.due_date}</td>
-                        <td className="py-4">{Number(invoice.total || 0).toFixed(2)} EUR</td>
+                        <td className="py-4 text-muted-foreground">
+                          {invoice.issue_date}
+                        </td>
+                        <td className="py-4 text-muted-foreground">
+                          {invoice.due_date}
+                        </td>
+                        <td className="py-4">
+                          {Number(invoice.total || 0).toFixed(2)} EUR
+                        </td>
                         <td className="py-4">
                           <InvoiceStatusBadge status={invoice.status} />
                         </td>

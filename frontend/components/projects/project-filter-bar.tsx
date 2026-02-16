@@ -84,7 +84,11 @@ export function ProjectFilterBar({ clients, onApply }: ProjectFilterBarProps) {
         value={dateFrom}
         onChange={(event) => setDateFrom(event.target.value)}
       />
-      <Input type="date" value={dateTo} onChange={(event) => setDateTo(event.target.value)} />
+      <Input
+        type="date"
+        value={dateTo}
+        onChange={(event) => setDateTo(event.target.value)}
+      />
 
       <div className="lg:col-span-6 flex justify-end">
         <Button onClick={applyFilters}>Apply filters</Button>

@@ -77,7 +77,10 @@ export default function InvoiceDetailPage() {
     });
   }, [fetchInvoice, invoiceId, router]);
 
-  const payments = useMemo(() => currentInvoice?.payments || [], [currentInvoice]);
+  const payments = useMemo(
+    () => currentInvoice?.payments || [],
+    [currentInvoice]
+  );
 
   if (isLoading && !currentInvoice) {
     return (
@@ -143,11 +146,19 @@ export default function InvoiceDetailPage() {
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <InvoiceStatusBadge status={currentInvoice.status} />
-            <Button type="button" variant="outline" onClick={() => setSendModalOpen(true)}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setSendModalOpen(true)}
+            >
               <Mail className="mr-2 h-4 w-4" />
               Send
             </Button>
-            <Button type="button" variant="outline" onClick={() => setPaymentModalOpen(true)}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setPaymentModalOpen(true)}
+            >
               <Wallet className="mr-2 h-4 w-4" />
               Record payment
             </Button>
@@ -168,15 +179,21 @@ export default function InvoiceDetailPage() {
             <div className="grid gap-3 md:grid-cols-3">
               <div>
                 <p className="text-xs text-muted-foreground">Client</p>
-                <p className="font-medium">{currentInvoice.client?.name || currentInvoice.client_id}</p>
+                <p className="font-medium">
+                  {currentInvoice.client?.name || currentInvoice.client_id}
+                </p>
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">Total</p>
-                <p className="font-medium">{Number(currentInvoice.total).toFixed(2)} EUR</p>
+                <p className="font-medium">
+                  {Number(currentInvoice.total).toFixed(2)} EUR
+                </p>
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">Amount paid</p>
-                <p className="font-medium">{Number(currentInvoice.amount_paid || 0).toFixed(2)} EUR</p>
+                <p className="font-medium">
+                  {Number(currentInvoice.amount_paid || 0).toFixed(2)} EUR
+                </p>
               </div>
             </div>
 
@@ -195,13 +212,24 @@ export default function InvoiceDetailPage() {
                   </thead>
                   <tbody>
                     {(currentInvoice.line_items || []).map((line, index) => (
-                      <tr key={`${line.description}-${index}`} className="border-b last:border-0">
+                      <tr
+                        key={`${line.description}-${index}`}
+                        className="border-b last:border-0"
+                      >
                         <td className="py-2">{line.description}</td>
-                        <td className="py-2">{Number(line.quantity).toFixed(2)}</td>
-                        <td className="py-2">{Number(line.unit_price).toFixed(2)}</td>
-                        <td className="py-2">{Number(line.vat_rate).toFixed(2)}%</td>
                         <td className="py-2">
-                          {Number(line.total || line.quantity * line.unit_price).toFixed(2)}
+                          {Number(line.quantity).toFixed(2)}
+                        </td>
+                        <td className="py-2">
+                          {Number(line.unit_price).toFixed(2)}
+                        </td>
+                        <td className="py-2">
+                          {Number(line.vat_rate).toFixed(2)}%
+                        </td>
+                        <td className="py-2">
+                          {Number(
+                            line.total || line.quantity * line.unit_price
+                          ).toFixed(2)}
                         </td>
                       </tr>
                     ))}
@@ -213,12 +241,18 @@ export default function InvoiceDetailPage() {
             <div>
               <h2 className="mb-2 text-sm font-semibold">Payment history</h2>
               {payments.length === 0 ? (
-                <p className="text-sm text-muted-foreground">No payment recorded yet.</p>
+                <p className="text-sm text-muted-foreground">
+                  No payment recorded yet.
+                </p>
               ) : (
                 <ul className="space-y-2">
                   {payments.map((payment) => (
-                    <li key={payment.id} className="rounded-md border p-2 text-sm">
-                      {payment.payment_date} - {Number(payment.amount).toFixed(2)} EUR
+                    <li
+                      key={payment.id}
+                      className="rounded-md border p-2 text-sm"
+                    >
+                      {payment.payment_date} -{" "}
+                      {Number(payment.amount).toFixed(2)} EUR
                     </li>
                   ))}
                 </ul>

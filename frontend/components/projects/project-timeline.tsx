@@ -34,14 +34,18 @@ export function ProjectTimeline({ tasks }: ProjectTimelineProps) {
       </CardHeader>
       <CardContent>
         {sortedTasks.length === 0 ? (
-          <p className="text-sm text-muted-foreground">No dated tasks to display.</p>
+          <p className="text-sm text-muted-foreground">
+            No dated tasks to display.
+          </p>
         ) : (
           <div className="space-y-3">
             {sortedTasks.map((task) => (
               <div key={task.id} className="space-y-1">
                 <div className="flex items-center justify-between text-sm">
                   <span className="font-medium">{task.title}</span>
-                  <span className="text-muted-foreground">{task.due_date || "No due date"}</span>
+                  <span className="text-muted-foreground">
+                    {task.due_date || "No due date"}
+                  </span>
                 </div>
                 <div className="h-2 rounded-full bg-muted">
                   <div

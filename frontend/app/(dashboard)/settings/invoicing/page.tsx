@@ -24,7 +24,9 @@ export default function InvoicingSettingsPage() {
 
   useEffect(() => {
     fetchInvoicingSettings().catch((error) => {
-      toast.error((error as Error).message || "Unable to load invoicing settings");
+      toast.error(
+        (error as Error).message || "Unable to load invoicing settings"
+      );
     });
   }, [fetchInvoicingSettings]);
 
@@ -36,7 +38,9 @@ export default function InvoicingSettingsPage() {
     setPaymentTermsDays(invoicingSettings.payment_terms_days || 30);
     setBankDetails(invoicingSettings.bank_details || "");
     setInvoiceFooter(invoicingSettings.invoice_footer || "");
-    setNumberingPattern(invoicingSettings.invoice_numbering_pattern || "FAC-YYYY-NNNN");
+    setNumberingPattern(
+      invoicingSettings.invoice_numbering_pattern || "FAC-YYYY-NNNN"
+    );
   }, [invoicingSettings]);
 
   const preview = numberingPattern
@@ -53,7 +57,9 @@ export default function InvoicingSettingsPage() {
       });
       toast.success("Invoicing settings updated");
     } catch (error) {
-      toast.error((error as Error).message || "Unable to update invoicing settings");
+      toast.error(
+        (error as Error).message || "Unable to update invoicing settings"
+      );
     }
   };
 
@@ -72,18 +78,24 @@ export default function InvoicingSettingsPage() {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="payment-terms-days">Default payment terms (days)</Label>
+            <Label htmlFor="payment-terms-days">
+              Default payment terms (days)
+            </Label>
             <Input
               id="payment-terms-days"
               type="number"
               min="1"
               value={paymentTermsDays}
-              onChange={(event) => setPaymentTermsDays(Number(event.target.value || 30))}
+              onChange={(event) =>
+                setPaymentTermsDays(Number(event.target.value || 30))
+              }
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="invoice-numbering-pattern">Invoice numbering pattern</Label>
+            <Label htmlFor="invoice-numbering-pattern">
+              Invoice numbering pattern
+            </Label>
             <Input
               id="invoice-numbering-pattern"
               value={numberingPattern}

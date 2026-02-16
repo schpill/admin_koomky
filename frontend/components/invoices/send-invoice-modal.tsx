@@ -18,7 +18,10 @@ interface SendInvoiceModalProps {
   onOpenChange: (open: boolean) => void;
   invoiceNumber: string;
   clientEmail?: string | null;
-  onSubmit: (payload: { subject: string; body: string }) => void | Promise<void>;
+  onSubmit: (payload: {
+    subject: string;
+    body: string;
+  }) => void | Promise<void>;
 }
 
 export function SendInvoiceModal({
@@ -33,7 +36,9 @@ export function SendInvoiceModal({
 
   useEffect(() => {
     setSubject(`Invoice ${invoiceNumber}`);
-    setBody(`Hello,\n\nPlease find attached invoice ${invoiceNumber}.\n\nThank you.`);
+    setBody(
+      `Hello,\n\nPlease find attached invoice ${invoiceNumber}.\n\nThank you.`
+    );
   }, [invoiceNumber]);
 
   const handleSubmit = async () => {

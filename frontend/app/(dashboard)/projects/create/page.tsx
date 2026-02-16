@@ -35,7 +35,10 @@ const schema = z
     deadline: z.string().optional(),
   })
   .superRefine((values, context) => {
-    if (values.billing_type === "hourly" && (!values.hourly_rate || values.hourly_rate <= 0)) {
+    if (
+      values.billing_type === "hourly" &&
+      (!values.hourly_rate || values.hourly_rate <= 0)
+    ) {
       context.addIssue({
         code: z.ZodIssueCode.custom,
         message: "Hourly rate is required",
@@ -43,7 +46,10 @@ const schema = z
       });
     }
 
-    if (values.billing_type === "fixed" && (!values.fixed_price || values.fixed_price <= 0)) {
+    if (
+      values.billing_type === "fixed" &&
+      (!values.fixed_price || values.fixed_price <= 0)
+    ) {
       context.addIssue({
         code: z.ZodIssueCode.custom,
         message: "Fixed price is required",
@@ -83,8 +89,10 @@ export default function CreateProjectPage() {
       const project = await createProject({
         ...values,
         description: values.description || undefined,
-        hourly_rate: values.billing_type === "hourly" ? values.hourly_rate : undefined,
-        fixed_price: values.billing_type === "fixed" ? values.fixed_price : undefined,
+        hourly_rate:
+          values.billing_type === "hourly" ? values.hourly_rate : undefined,
+        fixed_price:
+          values.billing_type === "fixed" ? values.fixed_price : undefined,
       });
 
       toast.success("Project created successfully");
@@ -116,7 +124,11 @@ export default function CreateProjectPage() {
             <div className="space-y-2">
               <Label htmlFor="name">Project name</Label>
               <Input id="name" {...register("name")} />
-              {errors.name && <p className="text-sm text-destructive">{errors.name.message}</p>}
+              {errors.name && (
+                <p className="text-sm text-destructive">
+                  {errors.name.message}
+                </p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -134,13 +146,19 @@ export default function CreateProjectPage() {
                 </SelectContent>
               </Select>
               {errors.client_id && (
-                <p className="text-sm text-destructive">{errors.client_id.message}</p>
+                <p className="text-sm text-destructive">
+                  {errors.client_id.message}
+                </p>
               )}
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="description">Description</Label>
-              <Textarea id="description" rows={4} {...register("description")} />
+              <Textarea
+                id="description"
+                rows={4}
+                {...register("description")}
+              />
             </div>
 
             <div className="grid gap-4 md:grid-cols-2">
@@ -148,7 +166,9 @@ export default function CreateProjectPage() {
                 <Label>Billing type</Label>
                 <Select
                   defaultValue="hourly"
-                  onValueChange={(value) => setValue("billing_type", value as "hourly" | "fixed")}
+                  onValueChange={(value) =>
+                    setValue("billing_type", value as "hourly" | "fixed")
+                  }
                 >
                   <SelectTrigger>
                     <SelectValue />
@@ -163,17 +183,31 @@ export default function CreateProjectPage() {
               {billingType === "hourly" ? (
                 <div className="space-y-2">
                   <Label htmlFor="hourly_rate">Hourly rate (EUR)</Label>
-                  <Input id="hourly_rate" type="number" step="0.01" {...register("hourly_rate")} />
+                  <Input
+                    id="hourly_rate"
+                    type="number"
+                    step="0.01"
+                    {...register("hourly_rate")}
+                  />
                   {errors.hourly_rate && (
-                    <p className="text-sm text-destructive">{errors.hourly_rate.message}</p>
+                    <p className="text-sm text-destructive">
+                      {errors.hourly_rate.message}
+                    </p>
                   )}
                 </div>
               ) : (
                 <div className="space-y-2">
                   <Label htmlFor="fixed_price">Fixed price (EUR)</Label>
-                  <Input id="fixed_price" type="number" step="0.01" {...register("fixed_price")} />
+                  <Input
+                    id="fixed_price"
+                    type="number"
+                    step="0.01"
+                    {...register("fixed_price")}
+                  />
                   {errors.fixed_price && (
-                    <p className="text-sm text-destructive">{errors.fixed_price.message}</p>
+                    <p className="text-sm text-destructive">
+                      {errors.fixed_price.message}
+                    </p>
                   )}
                 </div>
               )}
@@ -182,11 +216,20 @@ export default function CreateProjectPage() {
             <div className="grid gap-4 md:grid-cols-3">
               <div className="space-y-2">
                 <Label htmlFor="estimated_hours">Estimated hours</Label>
-                <Input id="estimated_hours" type="number" step="0.25" {...register("estimated_hours")} />
+                <Input
+                  id="estimated_hours"
+                  type="number"
+                  step="0.25"
+                  {...register("estimated_hours")}
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="start_date">Start date</Label>
-                <Input id="start_date" type="date" {...register("start_date")} />
+                <Input
+                  id="start_date"
+                  type="date"
+                  {...register("start_date")}
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="deadline">Deadline</Label>

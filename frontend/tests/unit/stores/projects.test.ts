@@ -74,7 +74,9 @@ describe("useProjectStore", () => {
     });
 
     expect(useProjectStore.getState().projects[0].name).toBe("New Name");
-    expect(useProjectStore.getState().currentProject?.status).toBe("proposal_sent");
+    expect(useProjectStore.getState().currentProject?.status).toBe(
+      "proposal_sent"
+    );
 
     (apiClient.delete as any).mockResolvedValue({});
 
@@ -93,9 +95,7 @@ describe("useProjectStore", () => {
     });
 
     (apiClient.get as any).mockResolvedValueOnce({
-      data: [
-        { id: "t1", title: "Task 1", status: "todo", priority: "medium" },
-      ],
+      data: [{ id: "t1", title: "Task 1", status: "todo", priority: "medium" }],
     });
 
     await useProjectStore.getState().fetchProject("p1");
@@ -114,7 +114,12 @@ describe("useProjectStore", () => {
     expect(useProjectStore.getState().tasks).toHaveLength(2);
 
     (apiClient.put as any).mockResolvedValueOnce({
-      data: { id: "t1", title: "Task 1 updated", status: "in_progress", priority: "medium" },
+      data: {
+        id: "t1",
+        title: "Task 1 updated",
+        status: "in_progress",
+        priority: "medium",
+      },
     });
 
     await useProjectStore.getState().updateTask("p1", "t1", {

@@ -31,7 +31,9 @@ interface LineItemsEditorProps {
 }
 
 function toVatKey(rate: number): string {
-  return Number.isInteger(rate) ? `${rate}` : rate.toFixed(2).replace(/0+$/, "").replace(/\.$/, "");
+  return Number.isInteger(rate)
+    ? `${rate}`
+    : rate.toFixed(2).replace(/0+$/, "").replace(/\.$/, "");
 }
 
 export function calculateInvoiceTotals(
@@ -41,7 +43,9 @@ export function calculateInvoiceTotals(
 ): InvoiceComputedTotals {
   const normalized = items.map((item) => {
     const quantity = Number.isFinite(item.quantity) ? Number(item.quantity) : 0;
-    const unitPrice = Number.isFinite(item.unit_price) ? Number(item.unit_price) : 0;
+    const unitPrice = Number.isFinite(item.unit_price)
+      ? Number(item.unit_price)
+      : 0;
     const lineTotal = Number((quantity * unitPrice).toFixed(2));
 
     return {
@@ -59,14 +63,21 @@ export function calculateInvoiceTotals(
   let discountAmount = 0;
   if (discountType === "percentage") {
     discountAmount = Number(
-      Math.min(subtotal, (subtotal * Math.min(100, Math.max(0, discountValue))) / 100).toFixed(2)
+      Math.min(
+        subtotal,
+        (subtotal * Math.min(100, Math.max(0, discountValue))) / 100
+      ).toFixed(2)
     );
   }
   if (discountType === "fixed") {
-    discountAmount = Number(Math.min(subtotal, Math.max(0, discountValue)).toFixed(2));
+    discountAmount = Number(
+      Math.min(subtotal, Math.max(0, discountValue)).toFixed(2)
+    );
   }
 
-  const taxableSubtotal = Number(Math.max(0, subtotal - discountAmount).toFixed(2));
+  const taxableSubtotal = Number(
+    Math.max(0, subtotal - discountAmount).toFixed(2)
+  );
 
   const vatBreakdown: Record<string, number> = {};
   let allocatedDiscount = 0;
@@ -82,15 +93,21 @@ export function calculateInvoiceTotals(
       allocatedDiscount = Number((allocatedDiscount + lineDiscount).toFixed(2));
     }
 
-    const taxableLine = Number(Math.max(0, item.lineTotal - lineDiscount).toFixed(2));
+    const taxableLine = Number(
+      Math.max(0, item.lineTotal - lineDiscount).toFixed(2)
+    );
     const vatAmount = Number((taxableLine * (item.vat_rate / 100)).toFixed(2));
     const key = toVatKey(item.vat_rate);
 
-    vatBreakdown[key] = Number(((vatBreakdown[key] || 0) + vatAmount).toFixed(2));
+    vatBreakdown[key] = Number(
+      ((vatBreakdown[key] || 0) + vatAmount).toFixed(2)
+    );
   });
 
   const taxAmount = Number(
-    Object.values(vatBreakdown).reduce((sum, amount) => sum + amount, 0).toFixed(2)
+    Object.values(vatBreakdown)
+      .reduce((sum, amount) => sum + amount, 0)
+      .toFixed(2)
   );
   const grandTotal = Number((taxableSubtotal + taxAmount).toFixed(2));
 
@@ -167,10 +184,15 @@ export function LineItemsEditor({
     <div className="space-y-4">
       <div className="space-y-3">
         {items.map((item, index) => {
-          const lineTotal = Number((item.quantity * item.unit_price).toFixed(2));
+          const lineTotal = Number(
+            (item.quantity * item.unit_price).toFixed(2)
+          );
 
           return (
-            <div key={`line-${index + 1}`} className="grid gap-2 rounded-lg border p-3 md:grid-cols-12">
+            <div
+              key={`line-${index + 1}`}
+              className="grid gap-2 rounded-lg border p-3 md:grid-cols-12"
+            >
               <div className="space-y-1 md:col-span-5">
                 <Label htmlFor={`line-description-${index}`}>Description</Label>
                 <Input
@@ -229,7 +251,9 @@ export function LineItemsEditor({
               </div>
 
               <div className="flex items-end justify-between gap-2 md:col-span-1 md:flex-col md:items-end">
-                <p className="text-xs text-muted-foreground">{formatCurrency(lineTotal)}</p>
+                <p className="text-xs text-muted-foreground">
+                  {formatCurrency(lineTotal)}
+                </p>
                 <Button
                   type="button"
                   variant="ghost"
@@ -282,21 +306,27 @@ export function LineItemsEditor({
             min="0"
             step="0.01"
             value={discountValue}
-            onChange={(event) => onDiscountValueChange(Number(event.target.value || 0))}
+            onChange={(event) =>
+              onDiscountValueChange(Number(event.target.value || 0))
+            }
           />
         </div>
 
         <div className="space-y-1 text-sm">
           <p>Subtotal</p>
           <p className="font-medium">{formatCurrency(totals.subtotal)}</p>
-          <p className="text-muted-foreground">Discount: {formatCurrency(totals.discountAmount)}</p>
+          <p className="text-muted-foreground">
+            Discount: {formatCurrency(totals.discountAmount)}
+          </p>
         </div>
 
         <div className="space-y-1 text-sm">
           <p>VAT</p>
           <p className="font-medium">{formatCurrency(totals.taxAmount)}</p>
           <p>Grand total</p>
-          <p className="text-base font-semibold">{formatCurrency(totals.grandTotal)}</p>
+          <p className="text-base font-semibold">
+            {formatCurrency(totals.grandTotal)}
+          </p>
         </div>
       </div>
     </div>

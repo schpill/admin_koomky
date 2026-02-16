@@ -60,7 +60,9 @@ export function RecordPaymentModal({
     }
 
     if (amount > remainingBalance) {
-      setError(`Amount cannot exceed remaining balance (${remainingBalance.toFixed(2)})`);
+      setError(
+        `Amount cannot exceed remaining balance (${remainingBalance.toFixed(2)})`
+      );
       return;
     }
 

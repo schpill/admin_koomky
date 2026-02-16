@@ -15,7 +15,9 @@ function LineItemsEditorHarness() {
       vat_rate: 20,
     },
   ]);
-  const [discountType, setDiscountType] = useState<"percentage" | "fixed" | null>("percentage");
+  const [discountType, setDiscountType] = useState<
+    "percentage" | "fixed" | null
+  >("percentage");
   const [discountValue, setDiscountValue] = useState(10);
 
   return (

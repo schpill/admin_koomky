@@ -103,6 +103,9 @@ describe("TaskKanbanBoard", () => {
     });
 
     expect(onMoveTask).not.toHaveBeenCalled();
-    expect(onBlockedMove).toHaveBeenCalledWith("t2", "in_progress" as TaskStatus);
+    expect(onBlockedMove).toHaveBeenCalledWith(
+      "t2",
+      "in_progress" as TaskStatus
+    );
   });
 });

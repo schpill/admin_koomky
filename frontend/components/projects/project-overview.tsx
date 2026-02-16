@@ -32,7 +32,9 @@ function formatCurrency(value: number): string {
   })} EUR used`;
 }
 
-function statusVariant(status: string): "default" | "secondary" | "destructive" {
+function statusVariant(
+  status: string
+): "default" | "secondary" | "destructive" {
   if (status === "completed") {
     return "default";
   }
@@ -45,7 +47,10 @@ function statusVariant(status: string): "default" | "secondary" | "destructive" 
 }
 
 export function ProjectOverview({ project }: ProjectOverviewProps) {
-  const progress = Math.max(0, Math.min(100, Math.round(project.progress_percentage ?? 0)));
+  const progress = Math.max(
+    0,
+    Math.min(100, Math.round(project.progress_percentage ?? 0))
+  );
   const totalTime = Math.round(project.total_time_spent ?? 0);
   const budget = Number(project.budget_consumed ?? 0);
   const completedTasks = project.completed_tasks ?? 0;
@@ -60,7 +65,10 @@ export function ProjectOverview({ project }: ProjectOverviewProps) {
         <CardContent className="space-y-3">
           <div className="flex items-center justify-between">
             <span className="text-2xl font-semibold">{progress}%</span>
-            <Badge variant={statusVariant(project.status)} className="capitalize">
+            <Badge
+              variant={statusVariant(project.status)}
+              className="capitalize"
+            >
               {project.status.replace("_", " ")}
             </Badge>
           </div>
@@ -80,18 +88,28 @@ export function ProjectOverview({ project }: ProjectOverviewProps) {
           <CardTitle className="text-sm font-medium">Time tracked</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2">
-          <span className="text-2xl font-semibold">{Math.floor(totalTime / 60)}h</span>
-          <p className="text-xs text-muted-foreground">{formatDuration(totalTime)}</p>
+          <span className="text-2xl font-semibold">
+            {Math.floor(totalTime / 60)}h
+          </span>
+          <p className="text-xs text-muted-foreground">
+            {formatDuration(totalTime)}
+          </p>
         </CardContent>
       </Card>
 
       <Card>
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium">Budget consumption</CardTitle>
+          <CardTitle className="text-sm font-medium">
+            Budget consumption
+          </CardTitle>
         </CardHeader>
         <CardContent className="space-y-2">
-          <span className="text-2xl font-semibold">{budget.toLocaleString()}</span>
-          <p className="text-xs text-muted-foreground">{formatCurrency(budget)}</p>
+          <span className="text-2xl font-semibold">
+            {budget.toLocaleString()}
+          </span>
+          <p className="text-xs text-muted-foreground">
+            {formatCurrency(budget)}
+          </p>
         </CardContent>
       </Card>
 

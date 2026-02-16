@@ -10,14 +10,20 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import type { ProjectTask, TaskStatus } from "@/lib/stores/projects";
-import { TimeEntryForm, type TimeEntryFormValues } from "@/components/projects/time-entry-form";
+import {
+  TimeEntryForm,
+  type TimeEntryFormValues,
+} from "@/components/projects/time-entry-form";
 
 interface TaskDetailDrawerProps {
   open: boolean;
   task: ProjectTask | null;
   onOpenChange: (open: boolean) => void;
   onStatusChange: (taskId: string, status: TaskStatus) => Promise<void> | void;
-  onCreateTimeEntry: (taskId: string, data: TimeEntryFormValues) => Promise<void> | void;
+  onCreateTimeEntry: (
+    taskId: string,
+    data: TimeEntryFormValues
+  ) => Promise<void> | void;
 }
 
 export function TaskDetailDrawer({
@@ -44,7 +50,9 @@ export function TaskDetailDrawer({
         <div className="space-y-4 text-sm">
           <div className="flex items-center gap-2">
             <Badge variant="secondary">{task.status.replace("_", " ")}</Badge>
-            <Badge variant={task.priority === "urgent" ? "destructive" : "outline"}>
+            <Badge
+              variant={task.priority === "urgent" ? "destructive" : "outline"}
+            >
               {task.priority}
             </Badge>
           </div>
@@ -76,7 +84,9 @@ export function TaskDetailDrawer({
 
           <section className="space-y-3">
             <h3 className="font-semibold">Log time</h3>
-            <TimeEntryForm onSubmit={(values) => onCreateTimeEntry(task.id, values)} />
+            <TimeEntryForm
+              onSubmit={(values) => onCreateTimeEntry(task.id, values)}
+            />
           </section>
         </div>
       </DialogContent>

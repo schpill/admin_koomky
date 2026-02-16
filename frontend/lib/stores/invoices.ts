@@ -96,11 +96,17 @@ interface InvoiceState {
   fetchInvoices: (params?: Record<string, unknown>) => Promise<void>;
   fetchInvoice: (id: string) => Promise<Invoice | null>;
   createInvoice: (data: Record<string, unknown>) => Promise<Invoice | null>;
-  updateInvoice: (id: string, data: Record<string, unknown>) => Promise<Invoice | null>;
+  updateInvoice: (
+    id: string,
+    data: Record<string, unknown>
+  ) => Promise<Invoice | null>;
   deleteInvoice: (id: string) => Promise<void>;
   sendInvoice: (id: string) => Promise<Invoice | null>;
   duplicateInvoice: (id: string) => Promise<Invoice | null>;
-  recordPayment: (id: string, data: InvoicePaymentPayload) => Promise<Invoice | null>;
+  recordPayment: (
+    id: string,
+    data: InvoicePaymentPayload
+  ) => Promise<Invoice | null>;
 
   fetchInvoicingSettings: () => Promise<void>;
   updateInvoicingSettings: (data: InvoicingSettings) => Promise<void>;
@@ -263,7 +269,10 @@ export const useInvoiceStore = create<InvoiceState>((set, get) => ({
   recordPayment: async (id, data) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await apiClient.post<any>(`/invoices/${id}/payments`, data);
+      const response = await apiClient.post<any>(
+        `/invoices/${id}/payments`,
+        data
+      );
       const invoice = response.data as Invoice;
 
       set({

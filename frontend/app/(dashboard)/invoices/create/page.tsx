@@ -31,7 +31,9 @@ export default function CreateInvoicePage() {
   const [issueDate, setIssueDate] = useState(today);
   const [dueDate, setDueDate] = useState(inThirtyDays);
   const [notes, setNotes] = useState("");
-  const [discountType, setDiscountType] = useState<"percentage" | "fixed" | null>(null);
+  const [discountType, setDiscountType] = useState<
+    "percentage" | "fixed" | null
+  >(null);
   const [discountValue, setDiscountValue] = useState(0);
   const [lineItems, setLineItems] = useState<InvoiceLineItemInput[]>([
     {

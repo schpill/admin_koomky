@@ -8,7 +8,13 @@ import { ChevronLeft, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -26,7 +32,10 @@ import { TaskKanbanBoard } from "@/components/projects/task-kanban-board";
 import { TaskListView } from "@/components/projects/task-list-view";
 import { TaskDetailDrawer } from "@/components/projects/task-detail-drawer";
 import { ProjectTimeline } from "@/components/projects/project-timeline";
-import { TimeEntryForm, type TimeEntryFormValues } from "@/components/projects/time-entry-form";
+import {
+  TimeEntryForm,
+  type TimeEntryFormValues,
+} from "@/components/projects/time-entry-form";
 import { ProjectInvoices } from "@/components/projects/project-invoices";
 import {
   useProjectStore,
@@ -122,7 +131,10 @@ export default function ProjectDetailPage() {
     }
   };
 
-  const handleCreateTimeEntry = async (taskId: string, values: TimeEntryFormValues) => {
+  const handleCreateTimeEntry = async (
+    taskId: string,
+    values: TimeEntryFormValues
+  ) => {
     try {
       await createTimeEntry(projectId, taskId, values);
       await fetchProject(projectId);
@@ -166,7 +178,9 @@ export default function ProjectDetailPage() {
             </Link>
           </Button>
           <h1 className="text-3xl font-bold">{currentProject.name}</h1>
-          <p className="font-mono text-xs text-muted-foreground">{currentProject.reference}</p>
+          <p className="font-mono text-xs text-muted-foreground">
+            {currentProject.reference}
+          </p>
         </div>
 
         <Dialog open={isTaskDialogOpen} onOpenChange={setTaskDialogOpen}>
@@ -203,7 +217,9 @@ export default function ProjectDetailPage() {
                   <Label>Priority</Label>
                   <Select
                     value={taskPriority}
-                    onValueChange={(value) => setTaskPriority(value as TaskPriority)}
+                    onValueChange={(value) =>
+                      setTaskPriority(value as TaskPriority)
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -254,7 +270,8 @@ export default function ProjectDetailPage() {
             <CardHeader>
               <CardTitle className="text-base">Task board</CardTitle>
               <p className="text-xs text-muted-foreground">
-                {tasksByStatus.todo} todo, {tasksByStatus.in_progress} in progress, {tasksByStatus.done} done
+                {tasksByStatus.todo} todo, {tasksByStatus.in_progress} in
+                progress, {tasksByStatus.done} done
               </p>
               <div className="flex gap-2 pt-2">
                 <Button
@@ -280,7 +297,9 @@ export default function ProjectDetailPage() {
                   onMoveTask={handleMoveTask}
                   onOpenTask={(task) => setSelectedTask(task)}
                   onBlockedMove={() =>
-                    toast.warning("Dependencies must be completed before starting this task")
+                    toast.warning(
+                      "Dependencies must be completed before starting this task"
+                    )
                   }
                 />
               ) : (
@@ -301,7 +320,9 @@ export default function ProjectDetailPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               {tasks.length === 0 ? (
-                <p className="text-sm text-muted-foreground">Create a task before logging time.</p>
+                <p className="text-sm text-muted-foreground">
+                  Create a task before logging time.
+                </p>
               ) : (
                 <div className="grid gap-4 md:grid-cols-2">
                   {tasks.slice(0, 4).map((task) => (
@@ -310,7 +331,11 @@ export default function ProjectDetailPage() {
                         <CardTitle className="text-sm">{task.title}</CardTitle>
                       </CardHeader>
                       <CardContent>
-                        <TimeEntryForm onSubmit={(values) => handleCreateTimeEntry(task.id, values)} />
+                        <TimeEntryForm
+                          onSubmit={(values) =>
+                            handleCreateTimeEntry(task.id, values)
+                          }
+                        />
                       </CardContent>
                     </Card>
                   ))}

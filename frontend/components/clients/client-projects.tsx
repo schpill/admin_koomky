@@ -54,14 +54,23 @@ export function ClientProjects({ clientId }: ClientProjectsProps) {
             const progress = Math.round(project.progress_percentage ?? 0);
             return (
               <tr key={project.id} className="border-t">
-                <td className="px-4 py-3 font-mono text-xs">{project.reference || "-"}</td>
+                <td className="px-4 py-3 font-mono text-xs">
+                  {project.reference || "-"}
+                </td>
                 <td className="px-4 py-3">
-                  <Link href={`/projects/${project.id}`} className="font-medium text-primary hover:underline">
+                  <Link
+                    href={`/projects/${project.id}`}
+                    className="font-medium text-primary hover:underline"
+                  >
                     {project.name}
                   </Link>
                 </td>
                 <td className="px-4 py-3">
-                  <Badge variant={project.status === "completed" ? "default" : "secondary"}>
+                  <Badge
+                    variant={
+                      project.status === "completed" ? "default" : "secondary"
+                    }
+                  >
                     {project.status.replace("_", " ")}
                   </Badge>
                 </td>

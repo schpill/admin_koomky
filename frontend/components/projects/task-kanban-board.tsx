@@ -8,7 +8,10 @@ import type { ProjectTask, TaskStatus } from "@/lib/stores/projects";
 
 interface TaskKanbanBoardProps {
   tasks: ProjectTask[];
-  onMoveTask: (taskId: string, targetStatus: TaskStatus) => void | Promise<void>;
+  onMoveTask: (
+    taskId: string,
+    targetStatus: TaskStatus
+  ) => void | Promise<void>;
   onOpenTask: (task: ProjectTask) => void;
   onBlockedMove?: (taskId: string, targetStatus: TaskStatus) => void;
 }
@@ -21,12 +24,13 @@ const columns: Array<{ status: TaskStatus; title: string }> = [
   { status: "blocked", title: "Blocked" },
 ];
 
-const priorityVariant: Record<string, "default" | "secondary" | "destructive"> = {
-  urgent: "destructive",
-  high: "default",
-  medium: "secondary",
-  low: "secondary",
-};
+const priorityVariant: Record<string, "default" | "secondary" | "destructive"> =
+  {
+    urgent: "destructive",
+    high: "default",
+    medium: "secondary",
+    low: "secondary",
+  };
 
 export function TaskKanbanBoard({
   tasks,
@@ -37,18 +41,21 @@ export function TaskKanbanBoard({
   const [draggedTaskId, setDraggedTaskId] = useState<string | null>(null);
 
   const grouped = useMemo(() => {
-    return columns.reduce<Record<TaskStatus, ProjectTask[]>>((acc, column) => {
-      acc[column.status] = tasks
-        .filter((task) => task.status === column.status)
-        .sort((a, b) => a.sort_order - b.sort_order);
-      return acc;
-    }, {
-      todo: [],
-      in_progress: [],
-      in_review: [],
-      done: [],
-      blocked: [],
-    });
+    return columns.reduce<Record<TaskStatus, ProjectTask[]>>(
+      (acc, column) => {
+        acc[column.status] = tasks
+          .filter((task) => task.status === column.status)
+          .sort((a, b) => a.sort_order - b.sort_order);
+        return acc;
+      },
+      {
+        todo: [],
+        in_progress: [],
+        in_review: [],
+        done: [],
+        blocked: [],
+      }
+    );
   }, [tasks]);
 
   const resolveTaskId = (event: DragEvent<HTMLDivElement>): string | null => {
@@ -57,7 +64,10 @@ export function TaskKanbanBoard({
     return dataTransferId || draggedTaskId;
   };
 
-  const handleDrop = (event: DragEvent<HTMLDivElement>, targetStatus: TaskStatus) => {
+  const handleDrop = (
+    event: DragEvent<HTMLDivElement>,
+    targetStatus: TaskStatus
+  ) => {
     event.preventDefault();
 
     const taskId = resolveTaskId(event);
@@ -114,13 +124,19 @@ export function TaskKanbanBoard({
                 )}
               >
                 <div className="flex items-center justify-between gap-2">
-                  <h4 className="line-clamp-2 text-sm font-medium">{task.title}</h4>
-                  <Badge variant={priorityVariant[task.priority] ?? "secondary"}>
+                  <h4 className="line-clamp-2 text-sm font-medium">
+                    {task.title}
+                  </h4>
+                  <Badge
+                    variant={priorityVariant[task.priority] ?? "secondary"}
+                  >
                     {task.priority}
                   </Badge>
                 </div>
                 {task.due_date && (
-                  <p className="mt-2 text-xs text-muted-foreground">Due {task.due_date}</p>
+                  <p className="mt-2 text-xs text-muted-foreground">
+                    Due {task.due_date}
+                  </p>
                 )}
                 {task.blocked_by_dependencies && (
                   <p className="mt-2 text-xs text-amber-700 dark:text-amber-400">
