@@ -258,6 +258,34 @@ export default function InvoiceDetailPage() {
                 </ul>
               )}
             </div>
+
+            <div>
+              <h2 className="mb-2 text-sm font-semibold">
+                Linked credit notes
+              </h2>
+              {(currentInvoice.credit_notes || []).length === 0 ? (
+                <p className="text-sm text-muted-foreground">
+                  No credit note linked yet.
+                </p>
+              ) : (
+                <ul className="space-y-2">
+                  {(currentInvoice.credit_notes || []).map((creditNote) => (
+                    <li
+                      key={creditNote.id}
+                      className="rounded-md border p-2 text-sm"
+                    >
+                      <Link
+                        href={`/credit-notes/${creditNote.id}`}
+                        className="font-medium text-primary hover:underline"
+                      >
+                        {creditNote.number}
+                      </Link>{" "}
+                      - {Number(creditNote.total).toFixed(2)} EUR
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
           </CardContent>
         </Card>
 

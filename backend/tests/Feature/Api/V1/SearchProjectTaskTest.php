@@ -26,6 +26,6 @@ test('search response includes projects and tasks keys', function () {
         ->assertJsonStructure([
             'status',
             'message',
-            'data' => ['clients', 'projects', 'tasks', 'invoices'],
+            'data' => ['clients', 'projects', 'tasks', 'invoices', 'quotes'],
         ]);
 });

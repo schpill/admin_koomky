@@ -1,8 +1,10 @@
 <?php
 
 use App\Models\Client;
+use App\Models\CreditNote;
 use App\Models\Invoice;
 use App\Models\Project;
+use App\Models\Quote;
 use App\Models\User;
 use App\Services\ReferenceGenerator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -47,4 +49,24 @@ test('reference generator does not reuse deleted latest invoice number', functio
 
     expect($reference)->toBe('FAC-'.date('Y').'-0003');
     expect($invoiceA->id)->not()->toBeNull();
+});
+
+test('reference generator increments existing quote numbers', function () {
+    Quote::factory()->create([
+        'number' => 'DEV-'.date('Y').'-0007',
+    ]);
+
+    $reference = ReferenceGenerator::generate('quotes', 'DEV');
+
+    expect($reference)->toBe('DEV-'.date('Y').'-0008');
+});
+
+test('reference generator increments existing credit note numbers', function () {
+    CreditNote::factory()->create([
+        'number' => 'AVO-'.date('Y').'-0011',
+    ]);
+
+    $reference = ReferenceGenerator::generate('credit_notes', 'AVO');
+
+    expect($reference)->toBe('AVO-'.date('Y').'-0012');
 });

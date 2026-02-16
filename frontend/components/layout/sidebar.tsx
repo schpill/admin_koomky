@@ -9,6 +9,7 @@ import {
   Users,
   FileText,
   FolderKanban,
+  BarChart3,
   Settings,
   HelpCircle,
   LogOut,
@@ -23,8 +24,11 @@ import { useI18n } from "@/components/providers/i18n-provider";
 const navigation = [
   { key: "dashboard", href: "/", icon: LayoutDashboard },
   { key: "clients", href: "/clients", icon: Users },
-  { key: "invoices", href: "/invoices", icon: FileText },
   { key: "projects", href: "/projects", icon: FolderKanban },
+  { key: "invoices", href: "/invoices", icon: FileText },
+  { key: "quotes", href: "/quotes", icon: FileText },
+  { key: "creditNotes", href: "/credit-notes", icon: FileText },
+  { key: "reports", href: "/reports", icon: BarChart3 },
 ];
 
 const secondaryNavigation = [

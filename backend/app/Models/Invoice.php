@@ -129,6 +129,14 @@ class Invoice extends Model
     }
 
     /**
+     * @return HasMany<CreditNote, Invoice>
+     */
+    public function creditNotes(): HasMany
+    {
+        return $this->hasMany(CreditNote::class);
+    }
+
+    /**
      * @param  Builder<Invoice>  $query
      * @return Builder<Invoice>
      */

@@ -9,3 +9,4 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Schedule::command('invoices:mark-overdue')->dailyAt('01:00');
+Schedule::command('quotes:mark-expired')->dailyAt('01:10');

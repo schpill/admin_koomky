@@ -124,7 +124,7 @@ class InvoiceController extends Controller
             return $invoice;
         });
 
-        $invoice->load(['client', 'project', 'lineItems', 'payments']);
+        $invoice->load(['client', 'project', 'lineItems', 'payments', 'creditNotes']);
 
         return $this->success(new InvoiceResource($invoice), 'Invoice created successfully', 201);
     }
@@ -133,7 +133,7 @@ class InvoiceController extends Controller
     {
         Gate::authorize('view', $invoice);
 
-        $invoice->load(['client', 'project', 'lineItems', 'payments']);
+        $invoice->load(['client', 'project', 'lineItems', 'payments', 'creditNotes']);
 
         return $this->success(new InvoiceResource($invoice), 'Invoice retrieved successfully');
     }
@@ -186,7 +186,7 @@ class InvoiceController extends Controller
             }
         });
 
-        $invoice->refresh()->load(['client', 'project', 'lineItems', 'payments']);
+        $invoice->refresh()->load(['client', 'project', 'lineItems', 'payments', 'creditNotes']);
 
         return $this->success(new InvoiceResource($invoice), 'Invoice updated successfully');
     }
@@ -219,7 +219,7 @@ class InvoiceController extends Controller
 
         SendInvoiceJob::dispatch($invoice->id);
 
-        return $this->success(new InvoiceResource($invoice->fresh(['client', 'project', 'lineItems', 'payments'])), 'Invoice sent successfully');
+        return $this->success(new InvoiceResource($invoice->fresh(['client', 'project', 'lineItems', 'payments', 'creditNotes'])), 'Invoice sent successfully');
     }
 
     public function duplicate(Request $request, Invoice $invoice, InvoiceCalculationService $calculationService): JsonResponse
@@ -284,6 +284,6 @@ class InvoiceController extends Controller
             return $clone;
         });
 
-        return $this->success(new InvoiceResource($clone->load(['client', 'project', 'lineItems', 'payments'])), 'Invoice duplicated successfully', 201);
+        return $this->success(new InvoiceResource($clone->load(['client', 'project', 'lineItems', 'payments', 'creditNotes'])), 'Invoice duplicated successfully', 201);
     }
 }
