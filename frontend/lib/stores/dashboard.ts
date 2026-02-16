@@ -1,11 +1,34 @@
 import { create } from "zustand";
 import { apiClient } from "@/lib/api";
 
+interface RevenueTrendItem {
+  month: string;
+  total: number;
+}
+
+interface UpcomingDeadline {
+  id: string;
+  reference?: string;
+  name: string;
+  status: string;
+  deadline?: string | null;
+  client_id?: string;
+  client_name?: string | null;
+}
+
 interface DashboardStats {
   total_clients: number;
   active_projects: number;
   pending_invoices_amount: number;
   recent_activities: any[];
+
+  revenue_month: number;
+  revenue_quarter: number;
+  revenue_year: number;
+  pending_invoices_count: number;
+  overdue_invoices_count: number;
+  revenue_trend: RevenueTrendItem[];
+  upcoming_deadlines: UpcomingDeadline[];
 }
 
 interface DashboardState {
@@ -13,7 +36,6 @@ interface DashboardState {
   isLoading: boolean;
   error: string | null;
 
-  // Actions
   fetchStats: () => Promise<void>;
 }
 

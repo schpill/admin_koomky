@@ -185,6 +185,43 @@ return [
                     'created_at',
                 ],
             ],
+            'quotes' => [
+                'searchableAttributes' => [
+                    'number',
+                    'client_name',
+                    'notes',
+                ],
+                'filterableAttributes' => [
+                    'user_id',
+                    'client_id',
+                    'status',
+                ],
+                'sortableAttributes' => [
+                    'issue_date',
+                    'valid_until',
+                    'total',
+                    'created_at',
+                ],
+            ],
+            'credit_notes' => [
+                'searchableAttributes' => [
+                    'number',
+                    'client_name',
+                    'invoice_number',
+                    'reason',
+                ],
+                'filterableAttributes' => [
+                    'user_id',
+                    'client_id',
+                    'invoice_id',
+                    'status',
+                ],
+                'sortableAttributes' => [
+                    'issue_date',
+                    'total',
+                    'created_at',
+                ],
+            ],
         ],
     ],
 

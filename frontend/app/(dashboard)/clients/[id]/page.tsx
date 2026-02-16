@@ -35,6 +35,7 @@ import { ClientTimeline } from "@/components/clients/client-timeline";
 import { ClientTagSelector } from "@/components/clients/client-tag-selector";
 import { ClientProjects } from "@/components/clients/client-projects";
 import { ClientInvoices } from "@/components/clients/client-invoices";
+import { ClientQuotes } from "@/components/clients/client-quotes";
 import { useI18n } from "@/components/providers/i18n-provider";
 
 export default function ClientDetailPage() {
@@ -338,7 +339,25 @@ export default function ClientDetailPage() {
             </TabsContent>
 
             <TabsContent value="finances" className="pt-4">
-              <ClientInvoices clientId={id as string} />
+              <div className="space-y-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Invoices</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ClientInvoices clientId={id as string} />
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Quotes</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ClientQuotes clientId={id as string} />
+                  </CardContent>
+                </Card>
+              </div>
             </TabsContent>
 
             <TabsContent value="history" className="pt-4">

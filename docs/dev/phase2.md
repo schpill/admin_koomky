@@ -104,32 +104,32 @@
 
 | ID | Task | Status | Owner |
 |----|------|--------|-------|
-| P2-BE-060 | Create Quote model (UUID, relationships, scopes, Searchable) | todo | |
-| P2-BE-061 | Create QuoteFactory | todo | |
-| P2-BE-062 | Create QuotePolicy | todo | |
-| P2-BE-063 | Create QuoteController (CRUD, send, convert) | todo | |
-| P2-BE-064 | Create StoreQuoteRequest | todo | |
-| P2-BE-065 | Implement reference auto-generation DEV-YYYY-NNNN | todo | |
-| P2-BE-066 | Implement quote status transitions | todo | |
-| P2-BE-067 | Implement validity period (default 30 days) | todo | |
-| P2-BE-068 | Create ConvertQuoteToInvoiceService | todo | |
-| P2-BE-069 | Create QuotePdfService | todo | |
-| P2-BE-070 | Create SendQuoteJob (queued) | todo | |
-| P2-BE-071 | Create MarkExpiredQuotesCommand (daily scheduler) | todo | |
-| P2-BE-072 | Log quote events to client activity timeline | todo | |
-| P2-BE-073 | Configure Meilisearch index for Quote | todo | |
+| P2-BE-060 | Create Quote model (UUID, relationships, scopes, Searchable) | done | codex |
+| P2-BE-061 | Create QuoteFactory | done | codex |
+| P2-BE-062 | Create QuotePolicy | done | codex |
+| P2-BE-063 | Create QuoteController (CRUD, send, convert) | done | codex |
+| P2-BE-064 | Create StoreQuoteRequest | done | codex |
+| P2-BE-065 | Implement reference auto-generation DEV-YYYY-NNNN | done | codex |
+| P2-BE-066 | Implement quote status transitions | done | codex |
+| P2-BE-067 | Implement validity period (default 30 days) | done | codex |
+| P2-BE-068 | Create ConvertQuoteToInvoiceService | done | codex |
+| P2-BE-069 | Create QuotePdfService | done | codex |
+| P2-BE-070 | Create SendQuoteJob (queued) | done | codex |
+| P2-BE-071 | Create MarkExpiredQuotesCommand (daily scheduler) | done | codex |
+| P2-BE-072 | Log quote events to client activity timeline | done | codex |
+| P2-BE-073 | Configure Meilisearch index for Quote | done | codex |
 
 ### Frontend
 
 | ID | Task | Status | Owner |
 |----|------|--------|-------|
-| P2-FE-040 | Create stores/quotes.ts Zustand store | todo | |
-| P2-FE-041 | Create app/finances/quotes/page.tsx (data table) | todo | |
-| P2-FE-042 | Create app/finances/quotes/create/page.tsx | todo | |
-| P2-FE-043 | Create app/finances/quotes/[id]/page.tsx (detail + actions) | todo | |
-| P2-FE-044 | Implement "Convert to Invoice" button + confirmation | todo | |
-| P2-FE-045 | Create components/quotes/quote-pdf-preview.tsx | todo | |
-| P2-FE-046 | Wire quotes to client profile (Finances tab) | todo | |
+| P2-FE-040 | Create stores/quotes.ts Zustand store | done | codex |
+| P2-FE-041 | Create app/finances/quotes/page.tsx (data table) | done | codex |
+| P2-FE-042 | Create app/finances/quotes/create/page.tsx | done | codex |
+| P2-FE-043 | Create app/finances/quotes/[id]/page.tsx (detail + actions) | done | codex |
+| P2-FE-044 | Implement "Convert to Invoice" button + confirmation | done | codex |
+| P2-FE-045 | Create components/quotes/quote-pdf-preview.tsx | done | codex |
+| P2-FE-046 | Wire quotes to client profile (Finances tab) | done | codex |
 
 ---
 
@@ -139,37 +139,37 @@
 
 | ID | Task | Status | Owner |
 |----|------|--------|-------|
-| P2-BE-080 | Create CreditNote model (UUID, relationships, scopes, Searchable) | todo | |
-| P2-BE-081 | Create CreditNoteFactory | todo | |
-| P2-BE-082 | Create CreditNotePolicy | todo | |
-| P2-BE-083 | Create CreditNoteController (CRUD, send, apply) | todo | |
-| P2-BE-084 | Create StoreCreditNoteRequest | todo | |
-| P2-BE-085 | Implement reference auto-generation AVO-YYYY-NNNN | todo | |
-| P2-BE-086 | Implement ApplyCreditNoteService | todo | |
-| P2-BE-087 | Create CreditNotePdfService | todo | |
-| P2-BE-088 | Create SendCreditNoteJob (queued) | todo | |
-| P2-BE-089 | Create ReportController (revenue, outstanding, VAT) | todo | |
-| P2-BE-090 | Create RevenueReportService | todo | |
-| P2-BE-091 | Create OutstandingReportService | todo | |
-| P2-BE-092 | Create VatSummaryReportService | todo | |
-| P2-BE-093 | Implement report export (CSV + PDF) | todo | |
-| P2-BE-094 | Create FinancialSummaryService (yearly summary) | todo | |
-| P2-BE-095 | Enhance DashboardController (financial metrics, revenue trend) | todo | |
-| P2-BE-096 | Enhance DashboardController (upcoming deadlines) | todo | |
-| P2-BE-097 | Log credit note events to client timeline | todo | |
+| P2-BE-080 | Create CreditNote model (UUID, relationships, scopes, Searchable) | done | codex |
+| P2-BE-081 | Create CreditNoteFactory | done | codex |
+| P2-BE-082 | Create CreditNotePolicy | done | codex |
+| P2-BE-083 | Create CreditNoteController (CRUD, send, apply) | done | codex |
+| P2-BE-084 | Create StoreCreditNoteRequest | done | codex |
+| P2-BE-085 | Implement reference auto-generation AVO-YYYY-NNNN | done | codex |
+| P2-BE-086 | Implement ApplyCreditNoteService | done | codex |
+| P2-BE-087 | Create CreditNotePdfService | done | codex |
+| P2-BE-088 | Create SendCreditNoteJob (queued) | done | codex |
+| P2-BE-089 | Create ReportController (revenue, outstanding, VAT) | done | codex |
+| P2-BE-090 | Create RevenueReportService | done | codex |
+| P2-BE-091 | Create OutstandingReportService | done | codex |
+| P2-BE-092 | Create VatSummaryReportService | done | codex |
+| P2-BE-093 | Implement report export (CSV + PDF) | done | codex |
+| P2-BE-094 | Create FinancialSummaryService (yearly summary) | done | codex |
+| P2-BE-095 | Enhance DashboardController (financial metrics, revenue trend) | done | codex |
+| P2-BE-096 | Enhance DashboardController (upcoming deadlines) | done | codex |
+| P2-BE-097 | Log credit note events to client timeline | done | codex |
 
 ### Frontend
 
 | ID | Task | Status | Owner |
 |----|------|--------|-------|
-| P2-FE-050 | Create stores/creditNotes.ts Zustand store | todo | |
-| P2-FE-051 | Create app/finances/credit-notes/page.tsx | todo | |
-| P2-FE-052 | Create app/finances/credit-notes/create/page.tsx | todo | |
-| P2-FE-053 | Create app/finances/credit-notes/[id]/page.tsx | todo | |
-| P2-FE-054 | Create app/finances/reports/page.tsx (tabs: Revenue, Outstanding, VAT) | todo | |
-| P2-FE-055 | Create components/reports/revenue-chart.tsx (Recharts) | todo | |
-| P2-FE-056 | Create components/reports/outstanding-table.tsx | todo | |
-| P2-FE-057 | Create components/reports/vat-summary-table.tsx | todo | |
-| P2-FE-058 | Enhance dashboard (financial widgets + revenue chart + deadlines) | todo | |
-| P2-FE-059 | Create finances sidebar navigation | todo | |
-| P2-FE-060 | Wire credit notes to invoice detail page | todo | |
+| P2-FE-050 | Create stores/creditNotes.ts Zustand store | done | codex |
+| P2-FE-051 | Create app/finances/credit-notes/page.tsx | done | codex |
+| P2-FE-052 | Create app/finances/credit-notes/create/page.tsx | done | codex |
+| P2-FE-053 | Create app/finances/credit-notes/[id]/page.tsx | done | codex |
+| P2-FE-054 | Create app/finances/reports/page.tsx (tabs: Revenue, Outstanding, VAT) | done | codex |
+| P2-FE-055 | Create components/reports/revenue-chart.tsx (Recharts) | done | codex |
+| P2-FE-056 | Create components/reports/outstanding-table.tsx | done | codex |
+| P2-FE-057 | Create components/reports/vat-summary-table.tsx | done | codex |
+| P2-FE-058 | Enhance dashboard (financial widgets + revenue chart + deadlines) | done | codex |
+| P2-FE-059 | Create finances sidebar navigation | done | codex |
+| P2-FE-060 | Wire credit notes to invoice detail page | done | codex |

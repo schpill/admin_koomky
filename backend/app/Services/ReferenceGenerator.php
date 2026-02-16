@@ -71,6 +71,8 @@ class ReferenceGenerator
     {
         return match ($table) {
             'invoices' => 'number',
+            'quotes' => 'number',
+            'credit_notes' => 'number',
             default => 'reference',
         };
     }

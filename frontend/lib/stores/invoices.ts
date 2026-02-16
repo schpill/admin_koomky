@@ -61,6 +61,13 @@ export interface Invoice {
     total?: number;
   }>;
   payments?: InvoicePayment[];
+  credit_notes?: Array<{
+    id: string;
+    number: string;
+    status: string;
+    total: number;
+    issue_date: string;
+  }>;
 }
 
 export interface InvoicingSettings {

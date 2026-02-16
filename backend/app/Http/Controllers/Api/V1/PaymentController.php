@@ -49,7 +49,7 @@ class PaymentController extends Controller
             ]);
         }
 
-        $invoice->refresh()->load(['client', 'project', 'lineItems', 'payments']);
+        $invoice->refresh()->load(['client', 'project', 'lineItems', 'payments', 'creditNotes']);
 
         return $this->success(new InvoiceResource($invoice), 'Payment recorded successfully', 201);
     }

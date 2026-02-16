@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\V1\ActivityController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\ClientController;
 use App\Http\Controllers\Api\V1\ContactController;
+use App\Http\Controllers\Api\V1\CreditNoteController;
 use App\Http\Controllers\Api\V1\DashboardController;
 use App\Http\Controllers\Api\V1\HealthController;
 use App\Http\Controllers\Api\V1\InvoiceController;
@@ -11,6 +12,8 @@ use App\Http\Controllers\Api\V1\InvoicingSettingsController;
 use App\Http\Controllers\Api\V1\PaymentController;
 use App\Http\Controllers\Api\V1\ProjectController;
 use App\Http\Controllers\Api\V1\ProjectInvoiceController;
+use App\Http\Controllers\Api\V1\QuoteController;
+use App\Http\Controllers\Api\V1\ReportController;
 use App\Http\Controllers\Api\V1\SearchController;
 use App\Http\Controllers\Api\V1\TagController;
 use App\Http\Controllers\Api\V1\TaskController;
@@ -100,6 +103,28 @@ Route::prefix('v1')->group(function () {
         Route::post('invoices/{invoice}/send', [InvoiceController::class, 'send']);
         Route::post('invoices/{invoice}/duplicate', [InvoiceController::class, 'duplicate']);
         Route::post('invoices/{invoice}/payments', [PaymentController::class, 'store']);
+
+        // Quotes
+        Route::apiResource('quotes', QuoteController::class);
+        Route::post('quotes/{quote}/send', [QuoteController::class, 'send']);
+        Route::post('quotes/{quote}/accept', [QuoteController::class, 'accept']);
+        Route::post('quotes/{quote}/reject', [QuoteController::class, 'reject']);
+        Route::post('quotes/{quote}/convert', [QuoteController::class, 'convert']);
+        Route::get('quotes/{quote}/pdf', [QuoteController::class, 'pdf']);
+
+        // Credit Notes
+        Route::apiResource('credit-notes', CreditNoteController::class);
+        Route::post('credit-notes/{credit_note}/send', [CreditNoteController::class, 'send']);
+        Route::post('credit-notes/{credit_note}/apply', [CreditNoteController::class, 'apply']);
+        Route::get('credit-notes/{credit_note}/pdf', [CreditNoteController::class, 'pdf']);
+
+        // Reports
+        Route::prefix('reports')->group(function () {
+            Route::get('revenue', [ReportController::class, 'revenue']);
+            Route::get('outstanding', [ReportController::class, 'outstanding']);
+            Route::get('vat-summary', [ReportController::class, 'vatSummary']);
+            Route::get('export', [ReportController::class, 'export']);
+        });
 
         // Tags
         Route::post('clients/{client}/tags', [TagController::class, 'attachToClient']);

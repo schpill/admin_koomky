@@ -45,6 +45,7 @@ class InvoiceResource extends JsonResource
             'project' => $this->whenLoaded('project'),
             'line_items' => $this->whenLoaded('lineItems'),
             'payments' => $this->whenLoaded('payments'),
+            'credit_notes' => $this->whenLoaded('creditNotes'),
             'created_at' => $this->resource->created_at,
             'updated_at' => $this->resource->updated_at,
         ];

@@ -108,6 +108,14 @@ class Project extends Model
     }
 
     /**
+     * @return HasMany<Quote, Project>
+     */
+    public function quotes(): HasMany
+    {
+        return $this->hasMany(Quote::class);
+    }
+
+    /**
      * @return HasManyThrough<TimeEntry, Task, Project>
      */
     public function timeEntries(): HasManyThrough
