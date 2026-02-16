@@ -10,7 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Loader2, History, Circle } from "lucide-react";
-import { format } from "date-fns";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 interface Activity {
   id: string;
@@ -26,8 +26,10 @@ interface ClientTimelineProps {
 }
 
 export function ClientTimeline({ clientId }: ClientTimelineProps) {
+  const { t, locale } = useI18n();
   const [activities, setActivities] = useState<Activity[]>([]);
   const [loading, setLoading] = useState(true);
+  const dateLocale = locale === "fr" ? "fr-FR" : "en-US";
 
   useEffect(() => {
     const fetchActivities = async () => {
@@ -64,16 +66,16 @@ export function ClientTimeline({ clientId }: ClientTimelineProps) {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <History className="h-5 w-5" />
-          Activity Timeline
+          {t("clients.timeline.title")}
         </CardTitle>
         <CardDescription>
-          Recent actions related to this client.
+          {t("clients.timeline.description")}
         </CardDescription>
       </CardHeader>
       <CardContent>
         {activities.length === 0 ? (
           <div className="py-6 text-center text-muted-foreground">
-            No recent activity recorded.
+            {t("clients.timeline.empty")}
           </div>
         ) : (
           <div className="relative space-y-6 before:absolute before:inset-y-0 before:left-2 before:w-[2px] before:bg-muted ml-1">
@@ -85,7 +87,7 @@ export function ClientTimeline({ clientId }: ClientTimelineProps) {
                     {activity.description}
                   </span>
                   <span className="text-xs text-muted-foreground">
-                    {format(new Date(activity.created_at), "PPP 'at' p")}
+                    {new Date(activity.created_at).toLocaleString(dateLocale)}
                   </span>
                   {activity.metadata &&
                     Object.keys(activity.metadata).length > 0 && (

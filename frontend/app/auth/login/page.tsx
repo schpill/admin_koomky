@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -21,26 +21,42 @@ import { useAuthStore } from "@/lib/stores/auth";
 import { apiClient } from "@/lib/api";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { useI18n } from "@/components/providers/i18n-provider";
 
-const loginSchema = z.object({
-  email: z.string().email("Invalid email address"),
-  password: z.string().min(1, "Password is required"),
-});
+type LoginFormData = {
+  email: string;
+  password: string;
+};
 
-const twoFactorSchema = z.object({
-  code: z.string().length(6, "Code must be 6 digits"),
-});
-
-type LoginFormData = z.infer<typeof loginSchema>;
-type TwoFactorFormData = z.infer<typeof twoFactorSchema>;
+type TwoFactorFormData = {
+  code: string;
+};
 
 export default function LoginPage() {
   const router = useRouter();
   const setAuth = useAuthStore((state) => state.setAuth);
   const setTokens = useAuthStore((state) => state.setTokens);
+  const { t } = useI18n();
 
   const [requires2fa, setRequires2fa] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const loginSchema = useMemo(
+    () =>
+      z.object({
+        email: z.string().email(t("auth.validation.invalidEmail")),
+        password: z.string().min(1, t("auth.validation.requiredPassword")),
+      }),
+    [t],
+  );
+
+  const twoFactorSchema = useMemo(
+    () =>
+      z.object({
+        code: z.string().length(6, t("auth.validation.codeLength")),
+      }),
+    [t],
+  );
 
   const loginForm = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
@@ -61,18 +77,18 @@ export default function LoginPage() {
         setRequires2fa(true);
         // Set the temporary token so subsequent verify call works
         setTokens(response.data.access_token, "");
-        toast.info("Please enter your 2FA code");
+        toast.info(t("auth.login.toasts.enter2fa"));
       } else {
         setAuth(
           response.data.user,
           response.data.access_token,
           response.data.refresh_token,
         );
-        toast.success("Welcome back!");
+        toast.success(t("auth.login.toasts.welcome"));
         router.push("/");
       }
     } catch (error: any) {
-      toast.error(error.message || "Login failed");
+      toast.error(error.message || t("auth.login.toasts.failed"));
     } finally {
       setLoading(false);
     }
@@ -87,10 +103,10 @@ export default function LoginPage() {
         response.data.access_token,
         response.data.refresh_token,
       );
-      toast.success("2FA verified! Welcome back.");
+      toast.success(t("auth.twoFactor.verified"));
       router.push("/");
     } catch (error: any) {
-      toast.error(error.message || "2FA verification failed");
+      toast.error(error.message || t("auth.twoFactor.failed"));
     } finally {
       setLoading(false);
     }
@@ -101,19 +117,19 @@ export default function LoginPage() {
       <Card className="w-full max-w-md mx-auto">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold text-center">
-            Two-Factor Authentication
+            {t("auth.twoFactor.title")}
           </CardTitle>
           <CardDescription className="text-center">
-            Enter the 6-digit code from your authenticator app.
+            {t("auth.twoFactor.description")}
           </CardDescription>
         </CardHeader>
         <form onSubmit={twoFactorForm.handleSubmit(on2faSubmit)}>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="code">Verification Code</Label>
+              <Label htmlFor="code">{t("auth.twoFactor.codeLabel")}</Label>
               <Input
                 id="code"
-                placeholder="123456"
+                placeholder={t("auth.twoFactor.codePlaceholder")}
                 {...twoFactorForm.register("code")}
                 disabled={loading}
                 autoFocus
@@ -128,7 +144,7 @@ export default function LoginPage() {
           <CardFooter>
             <Button type="submit" className="w-full" disabled={loading}>
               {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Verify Code
+              {t("auth.twoFactor.verify")}
             </Button>
           </CardFooter>
         </form>
@@ -140,20 +156,20 @@ export default function LoginPage() {
     <Card className="w-full max-w-md mx-auto">
       <CardHeader className="space-y-1">
         <CardTitle className="text-2xl font-bold text-center">
-          Welcome back
+          {t("auth.login.title")}
         </CardTitle>
         <CardDescription className="text-center">
-          Enter your credentials to access your account
+          {t("auth.login.description")}
         </CardDescription>
       </CardHeader>
       <form onSubmit={loginForm.handleSubmit(onLoginSubmit)}>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">{t("auth.login.email")}</Label>
             <Input
               id="email"
               type="email"
-              placeholder="name@example.com"
+              placeholder={t("auth.login.emailPlaceholder")}
               {...loginForm.register("email")}
               disabled={loading}
             />
@@ -165,12 +181,12 @@ export default function LoginPage() {
           </div>
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">{t("auth.login.password")}</Label>
               <Link
                 href="/auth/forgot-password"
                 className="text-sm text-muted-foreground hover:text-primary"
               >
-                Forgot password?
+                {t("auth.login.forgotPassword")}
               </Link>
             </div>
             <Input
@@ -189,15 +205,15 @@ export default function LoginPage() {
         <CardFooter className="flex flex-col gap-4">
           <Button type="submit" className="w-full" disabled={loading}>
             {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Sign in
+            {t("auth.login.submit")}
           </Button>
           <p className="text-sm text-center text-muted-foreground">
-            Don&apos;t have an account?{" "}
+            {t("auth.login.noAccount")}{" "}
             <Link
               href="/auth/register"
               className="text-primary hover:underline"
             >
-              Sign up
+              {t("auth.login.signUp")}
             </Link>
           </p>
         </CardFooter>

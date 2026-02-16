@@ -42,6 +42,7 @@ services:
     build:
       context: .
       dockerfile: docker/node/Dockerfile
+    user: "${UID:-1000}:${GID:-1000}"
     command: sh /app/scripts/start-dev.sh
     volumes:
       - ./frontend:/app

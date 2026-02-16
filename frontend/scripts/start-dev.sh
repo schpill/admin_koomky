@@ -8,6 +8,12 @@ if [ ! -f pnpm-lock.yaml ]; then
   exit 1
 fi
 
+# Avoid stale/partial Next artifacts when sharing the .next volume.
+# This prevents "Cannot find module './<chunk>.js'" errors after interrupted builds.
+if [ -d .next ]; then
+  rm -rf .next/*
+fi
+
 mkdir -p node_modules
 
 LOCK_HASH_FILE="node_modules/.pnpm-lock.sha256"

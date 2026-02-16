@@ -1,6 +1,9 @@
+"use client";
+
 import { History } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 interface Activity {
   id: string;
@@ -17,12 +20,15 @@ export function RecentActivityWidget({
   activities = [],
   isLoading,
 }: RecentActivityWidgetProps) {
+  const { t, locale } = useI18n();
+  const dateLocale = locale === "fr" ? "fr-FR" : "en-US";
+
   return (
     <Card className="col-span-full">
       <CardHeader>
         <CardTitle className="text-lg flex items-center gap-2">
           <History className="h-5 w-5 text-muted-foreground" />
-          Recent Activity
+          {t("dashboard.recentActivity.title")}
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -48,7 +54,7 @@ export function RecentActivityWidget({
                 <div className="flex-1">
                   <p className="font-medium">{activity.description}</p>
                   <p className="text-xs text-muted-foreground">
-                    {new Date(activity.created_at).toLocaleString()}
+                    {new Date(activity.created_at).toLocaleString(dateLocale)}
                   </p>
                 </div>
               </div>
@@ -56,7 +62,7 @@ export function RecentActivityWidget({
           </div>
         ) : (
           <p className="text-sm text-muted-foreground py-4 text-center">
-            No recent activity recorded.
+            {t("dashboard.recentActivity.empty")}
           </p>
         )}
       </CardContent>

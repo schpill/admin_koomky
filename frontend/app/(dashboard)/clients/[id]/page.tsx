@@ -33,26 +33,35 @@ import { ConfirmationDialog } from "@/components/common/confirmation-dialog";
 import { ClientContactList } from "@/components/clients/client-contact-list";
 import { ClientTimeline } from "@/components/clients/client-timeline";
 import { ClientTagSelector } from "@/components/clients/client-tag-selector";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 export default function ClientDetailPage() {
   const { id } = useParams();
   const router = useRouter();
+  const { t, locale } = useI18n();
   const [client, setClient] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [deleteDialogOpen, setDeleteOpen] = useState(false);
   const [restoreDialogOpen, setRestoreOpen] = useState(false);
+  const dateLocale = locale === "fr" ? "fr-FR" : "en-US";
+
+  const getStatusLabel = (value: string) => {
+    const translationKey = `clients.status.${value}`;
+    const translated = t(translationKey);
+    return translated === translationKey ? value : translated;
+  };
 
   const fetchClient = useCallback(async () => {
     try {
       const response = await apiClient.get<any>(`/clients/${id}`);
       setClient(response.data);
     } catch (error) {
-      toast.error("Failed to load client details");
+      toast.error(t("clients.detail.toasts.loadFailed"));
       router.push("/clients");
     } finally {
       setIsLoading(false);
     }
-  }, [id, router]);
+  }, [id, router, t]);
 
   useEffect(() => {
     fetchClient();
@@ -63,22 +72,22 @@ export default function ClientDetailPage() {
       await apiClient.delete(`/clients/${id}`);
       toast.success(
         client.deleted_at
-          ? "Client deleted permanently"
-          : "Client archived successfully",
+          ? t("clients.detail.toasts.deletedPermanently")
+          : t("clients.detail.toasts.archived"),
       );
       router.push("/clients");
     } catch (error) {
-      toast.error("Failed to archive client");
+      toast.error(t("clients.detail.toasts.archiveFailed"));
     }
   };
 
   const handleRestore = async () => {
     try {
       await apiClient.post(`/clients/${id}/restore`);
-      toast.success("Client restored successfully");
+      toast.success(t("clients.detail.toasts.restored"));
       fetchClient();
     } catch (error) {
-      toast.error("Failed to restore client");
+      toast.error(t("clients.detail.toasts.restoreFailed"));
     }
   };
 
@@ -102,7 +111,8 @@ export default function ClientDetailPage() {
           onClick={() => router.push("/clients")}
           className="-ml-2"
         >
-          <ChevronLeft className="mr-2 h-4 w-4" /> Back to Clients
+          <ChevronLeft className="mr-2 h-4 w-4" />{" "}
+          {t("clients.detail.backToClients")}
         </Button>
         <div className="flex gap-2">
           <Button
@@ -110,14 +120,14 @@ export default function ClientDetailPage() {
             size="sm"
             onClick={() => router.push(`/clients/${id}/edit`)}
           >
-            <Edit className="mr-2 h-4 w-4" /> Edit
+            <Edit className="mr-2 h-4 w-4" /> {t("clients.detail.edit")}
           </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
                 variant="ghost"
                 size="icon"
-                aria-label="Open client options"
+                aria-label={t("clients.detail.openOptions")}
               >
                 <MoreVertical className="h-4 w-4" />
               </Button>
@@ -125,14 +135,16 @@ export default function ClientDetailPage() {
             <DropdownMenuContent align="end">
               {client.deleted_at ? (
                 <DropdownMenuItem onClick={() => setRestoreOpen(true)}>
-                  <RefreshCw className="mr-2 h-4 w-4" /> Restore Client
+                  <RefreshCw className="mr-2 h-4 w-4" />{" "}
+                  {t("clients.detail.restoreClient")}
                 </DropdownMenuItem>
               ) : (
                 <DropdownMenuItem
                   className="text-destructive"
                   onClick={() => setDeleteOpen(true)}
                 >
-                  <Archive className="mr-2 h-4 w-4" /> Archive Client
+                  <Archive className="mr-2 h-4 w-4" />{" "}
+                  {t("clients.detail.archiveClient")}
                 </DropdownMenuItem>
               )}
             </DropdownMenuContent>
@@ -144,9 +156,11 @@ export default function ClientDetailPage() {
         open={deleteDialogOpen}
         onOpenChange={setDeleteOpen}
         onConfirm={handleDelete}
-        title="Archive Client"
-        description={`Are you sure you want to archive ${client.name}? The client will be hidden from the main list but can be restored later.`}
-        confirmText="Archive"
+        title={t("clients.detail.archiveDialogTitle")}
+        description={t("clients.detail.archiveDialogDescription", {
+          name: client.name,
+        })}
+        confirmText={t("clients.detail.archiveClient")}
         variant="destructive"
       />
 
@@ -154,9 +168,11 @@ export default function ClientDetailPage() {
         open={restoreDialogOpen}
         onOpenChange={setRestoreOpen}
         onConfirm={handleRestore}
-        title="Restore Client"
-        description={`Do you want to restore ${client.name} to the active client list?`}
-        confirmText="Restore"
+        title={t("clients.detail.restoreDialogTitle")}
+        description={t("clients.detail.restoreDialogDescription", {
+          name: client.name,
+        })}
+        confirmText={t("clients.detail.restoreClient")}
       />
 
       <div className="grid gap-6 md:grid-cols-3">
@@ -174,7 +190,7 @@ export default function ClientDetailPage() {
                       variant="destructive"
                       className="absolute -top-2 -right-2"
                     >
-                      Archived
+                      {t("clients.status.archived")}
                     </Badge>
                   )}
                 </div>
@@ -190,7 +206,7 @@ export default function ClientDetailPage() {
                       client.status === "active" ? "default" : "secondary"
                     }
                   >
-                    {client.status}
+                    {getStatusLabel(client.status)}
                   </Badge>
                 </div>
 
@@ -220,7 +236,11 @@ export default function ClientDetailPage() {
                   <div className="flex items-center gap-3">
                     <Calendar className="h-4 w-4 text-muted-foreground" />
                     <span>
-                      Added {new Date(client.created_at).toLocaleDateString()}
+                      {t("clients.detail.addedOn", {
+                        date: new Date(client.created_at).toLocaleDateString(
+                          dateLocale,
+                        ),
+                      })}
                     </span>
                   </div>
                 </div>
@@ -242,28 +262,44 @@ export default function ClientDetailPage() {
         <div className="md:col-span-2">
           <Tabs defaultValue="details">
             <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="details">Details</TabsTrigger>
-              <TabsTrigger value="contacts">Contacts</TabsTrigger>
-              <TabsTrigger value="history">Activity</TabsTrigger>
+              <TabsTrigger value="details">
+                {t("clients.detail.tabs.details")}
+              </TabsTrigger>
+              <TabsTrigger value="contacts">
+                {t("clients.detail.tabs.contacts")}
+              </TabsTrigger>
+              <TabsTrigger value="history">
+                {t("clients.detail.tabs.activity")}
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="details" className="space-y-4 pt-4">
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-lg">Client Information</CardTitle>
+                  <CardTitle className="text-lg">
+                    {t("clients.detail.clientInformation")}
+                  </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div>
-                      <p className="text-muted-foreground">Reference</p>
+                      <p className="text-muted-foreground">
+                        {t("clients.table.reference")}
+                      </p>
                       <p className="font-medium">{client.reference}</p>
                     </div>
                     <div>
-                      <p className="text-muted-foreground">Status</p>
-                      <p className="font-medium capitalize">{client.status}</p>
+                      <p className="text-muted-foreground">
+                        {t("clients.table.status")}
+                      </p>
+                      <p className="font-medium capitalize">
+                        {getStatusLabel(client.status)}
+                      </p>
                     </div>
                     <div className="col-span-2">
-                      <p className="text-muted-foreground">Address</p>
+                      <p className="text-muted-foreground">
+                        {t("clients.detail.address")}
+                      </p>
                       <p className="font-medium">
                         {[
                           client.address,
@@ -272,15 +308,17 @@ export default function ClientDetailPage() {
                           client.country,
                         ]
                           .filter(Boolean)
-                          .join(", ") || "No address provided"}
+                          .join(", ") || t("clients.detail.noAddress")}
                       </p>
                     </div>
                   </div>
                   <Separator />
                   <div>
-                    <p className="text-sm text-muted-foreground mb-2">Notes</p>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      {t("clients.detail.notes")}
+                    </p>
                     <div className="text-sm bg-muted/30 p-3 rounded-md italic whitespace-pre-wrap">
-                      {client.notes || "No notes available for this client."}
+                      {client.notes || t("clients.detail.noNotes")}
                     </div>
                   </div>
                 </CardContent>

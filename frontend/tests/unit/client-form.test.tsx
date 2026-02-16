@@ -1,6 +1,11 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { ClientForm } from "@/components/clients/client-form";
 import { vi, expect, test, describe } from "vitest";
+import { I18nProvider } from "@/components/providers/i18n-provider";
+
+function renderWithI18n(ui: JSX.Element) {
+  return render(<I18nProvider initialLocale="fr">{ui}</I18nProvider>);
+}
 
 describe("ClientForm", () => {
   test("renders correctly with initial data", () => {
@@ -8,7 +13,7 @@ describe("ClientForm", () => {
       name: "Acme Corp",
       email: "contact@acme.com",
     };
-    render(
+    renderWithI18n(
       <ClientForm
         initialData={initialData}
         onSubmit={async () => {}}
@@ -16,7 +21,7 @@ describe("ClientForm", () => {
       />,
     );
 
-    expect(screen.getByLabelText(/Company\/Client Name/i)).toHaveValue(
+    expect(screen.getByLabelText(/Nom entreprise\/client/i)).toHaveValue(
       "Acme Corp",
     );
     expect(screen.getByLabelText(/Email/i)).toHaveValue("contact@acme.com");
@@ -24,13 +29,15 @@ describe("ClientForm", () => {
 
   test("calls onSubmit when form is valid", async () => {
     const onSubmit = vi.fn();
-    render(<ClientForm onSubmit={onSubmit} onCancel={() => {}} />);
+    renderWithI18n(<ClientForm onSubmit={onSubmit} onCancel={() => {}} />);
 
-    fireEvent.change(screen.getByLabelText(/Company\/Client Name/i), {
+    fireEvent.change(screen.getByLabelText(/Nom entreprise\/client/i), {
       target: { value: "New Client" },
     });
 
-    const submitButton = screen.getByRole("button", { name: /Save Client/i });
+    const submitButton = screen.getByRole("button", {
+      name: /Enregistrer le client/i,
+    });
     fireEvent.click(submitButton);
 
     await waitFor(() => {
@@ -44,16 +51,16 @@ describe("ClientForm", () => {
   });
 
   test("shows error message when name is too short", async () => {
-    render(<ClientForm onSubmit={async () => {}} onCancel={() => {}} />);
+    renderWithI18n(<ClientForm onSubmit={async () => {}} onCancel={() => {}} />);
 
-    fireEvent.change(screen.getByLabelText(/Company\/Client Name/i), {
+    fireEvent.change(screen.getByLabelText(/Nom entreprise\/client/i), {
       target: { value: "A" },
     });
-    fireEvent.click(screen.getByText(/Save Client/i));
+    fireEvent.click(screen.getByText(/Enregistrer le client/i));
 
     await waitFor(() => {
       expect(
-        screen.getByText(/Name must be at least 2 characters/i),
+        screen.getByText(/Le nom doit contenir au moins 2 caracteres/i),
       ).toBeInTheDocument();
     });
   });

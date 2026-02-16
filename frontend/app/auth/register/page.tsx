@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -19,27 +20,39 @@ import {
 import { useAuthStore } from "@/lib/stores/auth";
 import { apiClient } from "@/lib/api";
 import { toast } from "sonner";
+import { useI18n } from "@/components/providers/i18n-provider";
 
-const registerSchema = z
-  .object({
-    name: z.string().min(2, "Name must be at least 2 characters"),
-    email: z.string().email("Invalid email address"),
-    business_name: z
-      .string()
-      .min(2, "Business name must be at least 2 characters"),
-    password: z.string().min(8, "Password must be at least 8 characters"),
-    password_confirmation: z.string(),
-  })
-  .refine((data) => data.password === data.password_confirmation, {
-    message: "Passwords don't match",
-    path: ["password_confirmation"],
-  });
-
-type RegisterFormData = z.infer<typeof registerSchema>;
+type RegisterFormData = {
+  name: string;
+  email: string;
+  business_name: string;
+  password: string;
+  password_confirmation: string;
+};
 
 export default function RegisterPage() {
   const router = useRouter();
   const setAuth = useAuthStore((state) => state.setAuth);
+  const { t } = useI18n();
+
+  const registerSchema = useMemo(
+    () =>
+      z
+        .object({
+          name: z.string().min(2, t("auth.validation.fullNameMin")),
+          email: z.string().email(t("auth.validation.invalidEmail")),
+          business_name: z
+            .string()
+            .min(2, t("auth.validation.businessNameMin")),
+          password: z.string().min(8, t("auth.validation.minPassword")),
+          password_confirmation: z.string(),
+        })
+        .refine((data) => data.password === data.password_confirmation, {
+          message: t("auth.validation.passwordsMismatch"),
+          path: ["password_confirmation"],
+        }),
+    [t],
+  );
 
   const {
     register,
@@ -62,11 +75,11 @@ export default function RegisterPage() {
         result.data.access_token,
         result.data.refresh_token,
       );
-      toast.success("Account created successfully!");
+      toast.success(t("auth.register.toasts.success"));
       router.push("/");
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "Registration failed",
+        error instanceof Error ? error.message : t("auth.register.toasts.failed"),
       );
     }
   };
@@ -75,19 +88,19 @@ export default function RegisterPage() {
     <Card>
       <CardHeader className="space-y-1">
         <CardTitle className="text-2xl font-bold text-center">
-          Create an account
+          {t("auth.register.title")}
         </CardTitle>
         <CardDescription className="text-center">
-          Enter your information to get started with Koomky
+          {t("auth.register.description")}
         </CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit(onSubmit)}>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="name">Full Name</Label>
+            <Label htmlFor="name">{t("auth.register.fullName")}</Label>
             <Input
               id="name"
-              placeholder="John Doe"
+              placeholder={t("auth.register.fullNamePlaceholder")}
               {...register("name")}
               disabled={isSubmitting}
             />
@@ -96,11 +109,11 @@ export default function RegisterPage() {
             )}
           </div>
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">{t("auth.register.email")}</Label>
             <Input
               id="email"
               type="email"
-              placeholder="name@example.com"
+              placeholder={t("auth.register.emailPlaceholder")}
               {...register("email")}
               disabled={isSubmitting}
             />
@@ -109,10 +122,10 @@ export default function RegisterPage() {
             )}
           </div>
           <div className="space-y-2">
-            <Label htmlFor="business_name">Business Name</Label>
+            <Label htmlFor="business_name">{t("auth.register.businessName")}</Label>
             <Input
               id="business_name"
-              placeholder="Acme Inc."
+              placeholder={t("auth.register.businessNamePlaceholder")}
               {...register("business_name")}
               disabled={isSubmitting}
             />
@@ -123,7 +136,7 @@ export default function RegisterPage() {
             )}
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">{t("auth.register.password")}</Label>
             <Input
               id="password"
               type="password"
@@ -137,7 +150,9 @@ export default function RegisterPage() {
             )}
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password_confirmation">Confirm Password</Label>
+            <Label htmlFor="password_confirmation">
+              {t("auth.register.confirmPassword")}
+            </Label>
             <Input
               id="password_confirmation"
               type="password"
@@ -153,12 +168,12 @@ export default function RegisterPage() {
         </CardContent>
         <CardFooter className="flex flex-col gap-4">
           <Button type="submit" className="w-full" disabled={isSubmitting}>
-            {isSubmitting ? "Creating account..." : "Create account"}
+            {isSubmitting ? t("auth.register.creating") : t("auth.register.submit")}
           </Button>
           <p className="text-sm text-center text-muted-foreground">
-            Already have an account?{" "}
+            {t("auth.register.hasAccount")}{" "}
             <Link href="/auth/login" className="text-primary hover:underline">
-              Sign in
+              {t("auth.register.signIn")}
             </Link>
           </p>
         </CardFooter>

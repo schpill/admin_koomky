@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 interface Tag {
   id: string;
@@ -27,6 +28,7 @@ export function ClientTagSelector({
   clientId,
   initialTags = [],
 }: ClientTagSelectorProps) {
+  const { t } = useI18n();
   const [tags, setTags] = useState<Tag[]>(initialTags);
   const [availableTags, setAvailableTags] = useState<Tag[]>([]);
   const [newTagName, setNewTagName] = useState("");
@@ -57,7 +59,7 @@ export function ClientTagSelector({
     setLoading(true);
     try {
       await apiClient.post(`/clients/${clientId}/tags`, { name: tagName });
-      toast.success(`Tag "${tagName}" added`);
+      toast.success(t("clients.tags.toasts.added", { name: tagName }));
 
       // Refresh tags by fetching the client
       const response = await apiClient.get<any>(`/clients/${clientId}`);
@@ -66,7 +68,7 @@ export function ClientTagSelector({
       setNewTagName("");
       setOpen(false);
     } catch (error) {
-      toast.error("Failed to add tag");
+      toast.error(t("clients.tags.toasts.addFailed"));
     } finally {
       setLoading(false);
     }
@@ -76,9 +78,9 @@ export function ClientTagSelector({
     try {
       await apiClient.delete(`/clients/${clientId}/tags/${tagId}`);
       setTags(tags.filter((t) => t.id !== tagId));
-      toast.success("Tag removed");
+      toast.success(t("clients.tags.toasts.removed"));
     } catch (error) {
-      toast.error("Failed to remove tag");
+      toast.error(t("clients.tags.toasts.removeFailed"));
     }
   };
 
@@ -107,12 +109,12 @@ export function ClientTagSelector({
             size="sm"
             className="h-7 border-dashed px-2"
           >
-            <Plus className="mr-1 h-3 w-3" /> Add Tag
+            <Plus className="mr-1 h-3 w-3" /> {t("clients.tags.addTag")}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-60 p-3" align="start">
           <div className="space-y-3">
-            <div className="text-xs font-medium">Available Tags</div>
+            <div className="text-xs font-medium">{t("clients.tags.availableTags")}</div>
             <div className="flex flex-wrap gap-1">
               {availableTags
                 .filter((at) => !tags.find((t) => t.id === at.id))
@@ -133,14 +135,14 @@ export function ClientTagSelector({
                 ))}
               {availableTags.length === 0 && (
                 <span className="text-[10px] text-muted-foreground">
-                  No existing tags.
+                  {t("clients.tags.noExistingTags")}
                 </span>
               )}
             </div>
             <div className="pt-2">
               <div className="flex gap-2">
                 <Input
-                  placeholder="New tag..."
+                  placeholder={t("clients.tags.newTagPlaceholder")}
                   value={newTagName}
                   onChange={(e) => setNewTagName(e.target.value)}
                   className="h-8 text-xs"
@@ -160,7 +162,7 @@ export function ClientTagSelector({
                   {loading ? (
                     <Loader2 className="h-3 w-3 animate-spin" />
                   ) : (
-                    "Add"
+                    t("common.add")
                   )}
                 </Button>
               </div>

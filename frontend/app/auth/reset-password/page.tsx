@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -18,24 +19,35 @@ import {
 import { apiClient } from "@/lib/api";
 import { toast } from "sonner";
 import { Suspense } from "react";
+import { useI18n } from "@/components/providers/i18n-provider";
 
-const resetPasswordSchema = z
-  .object({
-    token: z.string().min(1, "Token is missing"),
-    email: z.string().email("Invalid email address"),
-    password: z.string().min(8, "Password must be at least 8 characters"),
-    password_confirmation: z.string(),
-  })
-  .refine((data) => data.password === data.password_confirmation, {
-    message: "Passwords don't match",
-    path: ["password_confirmation"],
-  });
-
-type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>;
+type ResetPasswordFormData = {
+  token: string;
+  email: string;
+  password: string;
+  password_confirmation: string;
+};
 
 function ResetPasswordForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { t } = useI18n();
+
+  const resetPasswordSchema = useMemo(
+    () =>
+      z
+        .object({
+          token: z.string().min(1, t("auth.validation.tokenMissing")),
+          email: z.string().email(t("auth.validation.invalidEmail")),
+          password: z.string().min(8, t("auth.validation.minPassword")),
+          password_confirmation: z.string(),
+        })
+        .refine((data) => data.password === data.password_confirmation, {
+          message: t("auth.validation.passwordsMismatch"),
+          path: ["password_confirmation"],
+        }),
+    [t],
+  );
 
   const {
     register,
@@ -54,10 +66,14 @@ function ResetPasswordForm() {
       const result = await apiClient.post("/auth/reset-password", data, {
         skipAuth: true,
       });
-      toast.success(result.message || "Password reset successfully!");
+      toast.success(result.message || t("auth.resetPassword.toasts.success"));
       router.push("/auth/login");
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Reset failed");
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : t("auth.resetPassword.toasts.failed"),
+      );
     }
   };
 
@@ -65,10 +81,10 @@ function ResetPasswordForm() {
     <Card>
       <CardHeader className="space-y-1">
         <CardTitle className="text-2xl font-bold text-center">
-          Reset password
+          {t("auth.resetPassword.title")}
         </CardTitle>
         <CardDescription className="text-center">
-          Enter your new password below
+          {t("auth.resetPassword.description")}
         </CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -77,7 +93,7 @@ function ResetPasswordForm() {
           <Input type="hidden" {...register("email")} />
 
           <div className="space-y-2">
-            <Label htmlFor="password">New Password</Label>
+            <Label htmlFor="password">{t("auth.resetPassword.newPassword")}</Label>
             <Input
               id="password"
               type="password"
@@ -92,7 +108,9 @@ function ResetPasswordForm() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="password_confirmation">Confirm New Password</Label>
+            <Label htmlFor="password_confirmation">
+              {t("auth.resetPassword.confirmNewPassword")}
+            </Label>
             <Input
               id="password_confirmation"
               type="password"
@@ -108,7 +126,9 @@ function ResetPasswordForm() {
         </CardContent>
         <CardFooter>
           <Button type="submit" className="w-full" disabled={isSubmitting}>
-            {isSubmitting ? "Resetting..." : "Reset password"}
+            {isSubmitting
+              ? t("auth.resetPassword.resetting")
+              : t("auth.resetPassword.submit")}
           </Button>
         </CardFooter>
       </form>
@@ -117,8 +137,10 @@ function ResetPasswordForm() {
 }
 
 export default function ResetPasswordPage() {
+  const { t } = useI18n();
+
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<div>{t("common.loading")}</div>}>
       <ResetPasswordForm />
     </Suspense>
   );

@@ -6,9 +6,11 @@ import { MetricCard } from "@/components/dashboard/metric-card";
 import { RecentActivityWidget } from "@/components/dashboard/recent-activity-widget";
 import { UpcomingDeadlinesWidget } from "@/components/dashboard/upcoming-deadlines-widget";
 import { useDashboardStore } from "@/lib/stores/dashboard";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 export default function DashboardPage() {
   const { stats, isLoading, fetchStats } = useDashboardStore();
+  const { t } = useI18n();
 
   useEffect(() => {
     fetchStats();
@@ -16,37 +18,37 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-3xl font-bold">Dashboard</h1>
+      <h1 className="text-3xl font-bold">{t("dashboard.title")}</h1>
 
       {/* Responsive Grid: 1 col on mobile, 2 on tablet, 4 on desktop */}
       <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
         <MetricCard
-          title="Total Clients"
+          title={t("dashboard.metrics.totalClients.title")}
           value={stats?.total_clients}
           isLoading={isLoading}
           icon={<Users className="h-4 w-4" />}
-          description="Directly managed"
+          description={t("dashboard.metrics.totalClients.description")}
         />
         <MetricCard
-          title="Active Projects"
+          title={t("dashboard.metrics.activeProjects.title")}
           value={stats?.active_projects}
           isLoading={isLoading}
           icon={<FolderKanban className="h-4 w-4" />}
-          description="In progress"
+          description={t("dashboard.metrics.activeProjects.description")}
         />
         <MetricCard
-          title="Pending Invoices"
+          title={t("dashboard.metrics.pendingInvoices.title")}
           value={stats?.pending_invoices_amount}
           isLoading={isLoading}
           icon={<FileText className="h-4 w-4" />}
-          description="Amount to collect"
+          description={t("dashboard.metrics.pendingInvoices.description")}
         />
         <MetricCard
-          title="Monthly Revenue"
+          title={t("dashboard.metrics.monthlyRevenue.title")}
           value="€0.00"
           isLoading={isLoading}
           icon={<CreditCard className="h-4 w-4" />}
-          description="Last 30 days"
+          description={t("dashboard.metrics.monthlyRevenue.description")}
         />
       </div>
 

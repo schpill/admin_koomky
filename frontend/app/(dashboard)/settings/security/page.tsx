@@ -18,21 +18,30 @@ import { Label } from "@/components/ui/label";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useMemo } from "react";
 import { apiClient } from "@/lib/api";
 import { useAuthStore } from "@/lib/stores/auth";
+import { useI18n } from "@/components/providers/i18n-provider";
 
-const twoFaSchema = z.object({
-  code: z.string().length(6, "Code must be 6 digits"),
-});
-
-type TwoFaFormData = z.infer<typeof twoFaSchema>;
+type TwoFaFormData = {
+  code: string;
+};
 
 export default function SecuritySettingsPage() {
   const { user, setUser } = useAuthStore();
+  const { t } = useI18n();
   const [qrCode, setQrCode] = useState<string | null>(null);
   const [setupStep, setSetupStep] = useState<"initial" | "verify">("initial");
 
   const isEnabled = !!user?.two_factor_confirmed_at;
+
+  const twoFaSchema = useMemo(
+    () =>
+      z.object({
+        code: z.string().length(6, t("auth.validation.codeLength")),
+      }),
+    [t],
+  );
 
   const {
     register,
@@ -49,7 +58,7 @@ export default function SecuritySettingsPage() {
       setQrCode(response.data.qr_code_url);
       setSetupStep("verify");
     } catch (error) {
-      toast.error("Failed to generate 2FA QR code");
+      toast.error(t("settings.security.toasts.generateQrFailed"));
     }
   };
 
@@ -64,9 +73,9 @@ export default function SecuritySettingsPage() {
       setSetupStep("initial");
       setQrCode(null);
       reset();
-      toast.success("Two-factor authentication enabled!");
+      toast.success(t("settings.security.toasts.enabled"));
     } catch (error) {
-      toast.error("Verification failed. Please check the code and try again.");
+      toast.error(t("settings.security.toasts.verifyFailed"));
     }
   };
 
@@ -78,36 +87,37 @@ export default function SecuritySettingsPage() {
       const userRes = await apiClient.get<any>("/settings/profile");
       setUser(userRes.data);
 
-      toast.success("Two-factor authentication disabled");
+      toast.success(t("settings.security.toasts.disabled"));
     } catch (error) {
-      toast.error("Failed to disable 2FA");
+      toast.error(t("settings.security.toasts.disableFailed"));
     }
   };
 
   return (
     <DashboardLayout>
       <div className="max-w-2xl mx-auto space-y-6">
-        <h1 className="text-3xl font-bold">Security</h1>
+        <h1 className="text-3xl font-bold">{t("settings.security.title")}</h1>
 
         <Card>
           <CardHeader>
-            <CardTitle>Two-Factor Authentication</CardTitle>
+            <CardTitle>{t("settings.security.cardTitle")}</CardTitle>
             <CardDescription>
-              Add an extra layer of security to your account by requiring a
-              verification code when signing in.
+              {t("settings.security.cardDescription")}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             {isEnabled ? (
               <div className="flex items-center justify-between rounded-lg border p-4 bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-900">
                 <div className="space-y-0.5">
-                  <h3 className="font-medium text-base">2FA is enabled</h3>
+                  <h3 className="font-medium text-base">
+                    {t("settings.security.enabledTitle")}
+                  </h3>
                   <p className="text-sm text-muted-foreground">
-                    Your account is secure.
+                    {t("settings.security.enabledDescription")}
                   </p>
                 </div>
                 <Button variant="destructive" onClick={onDisable}>
-                  Disable
+                  {t("settings.security.disable")}
                 </Button>
               </div>
             ) : (
@@ -115,9 +125,11 @@ export default function SecuritySettingsPage() {
                 {setupStep === "initial" && (
                   <div className="flex items-center justify-between">
                     <p className="text-sm text-muted-foreground">
-                      2FA is currently disabled.
+                      {t("settings.security.disabledDescription")}
                     </p>
-                    <Button onClick={onEnable}>Enable 2FA</Button>
+                    <Button onClick={onEnable}>
+                      {t("settings.security.enable")}
+                    </Button>
                   </div>
                 )}
 
@@ -127,7 +139,7 @@ export default function SecuritySettingsPage() {
                       <div className="bg-white p-2 rounded-lg border">
                         <Image
                           src={qrCode}
-                          alt="QR Code"
+                          alt={t("settings.security.qrAlt")}
                           width={192}
                           height={192}
                           className="h-48 w-48"
@@ -135,8 +147,7 @@ export default function SecuritySettingsPage() {
                         />
                       </div>
                       <p className="text-sm text-center text-muted-foreground max-w-sm">
-                        Scan this QR code with your authenticator app (e.g.
-                        Google Authenticator) and enter the 6-digit code below.
+                        {t("settings.security.qrHelp")}
                       </p>
                     </div>
 
@@ -145,10 +156,12 @@ export default function SecuritySettingsPage() {
                       className="space-y-4 max-w-xs mx-auto"
                     >
                       <div className="space-y-2">
-                        <Label htmlFor="code">Verification Code</Label>
+                        <Label htmlFor="code">
+                          {t("auth.twoFactor.codeLabel")}
+                        </Label>
                         <Input
                           id="code"
-                          placeholder="000000"
+                          placeholder={t("auth.twoFactor.codePlaceholder")}
                           className="text-center text-lg tracking-widest"
                           maxLength={6}
                           {...register("code")}
@@ -170,14 +183,16 @@ export default function SecuritySettingsPage() {
                             setQrCode(null);
                           }}
                         >
-                          Cancel
+                          {t("common.cancel")}
                         </Button>
                         <Button
                           type="submit"
                           className="flex-1"
                           disabled={isSubmitting}
                         >
-                          {isSubmitting ? "Verifying..." : "Verify"}
+                          {isSubmitting
+                            ? t("settings.security.verifying")
+                            : t("auth.twoFactor.verify")}
                         </Button>
                       </div>
                     </form>

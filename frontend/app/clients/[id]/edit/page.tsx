@@ -7,11 +7,13 @@ import { useClientStore } from "@/lib/stores/clients";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 export default function EditClientPage() {
   const router = useRouter();
   const params = useParams();
   const id = params.id as string;
+  const { t } = useI18n();
 
   const { fetchClient, updateClient, currentClient } = useClientStore();
   const [loading, setLoading] = useState(true);
@@ -21,22 +23,22 @@ export default function EditClientPage() {
       try {
         await fetchClient(id);
       } catch (error) {
-        toast.error("Failed to load client");
+        toast.error(t("clients.detail.toasts.loadFailed"));
         router.push("/clients");
       } finally {
         setLoading(false);
       }
     };
     loadClient();
-  }, [id, fetchClient, router]);
+  }, [id, fetchClient, router, t]);
 
   const onSubmit = async (data: ClientFormData) => {
     try {
       await updateClient(id, data);
-      toast.success("Client updated successfully");
+      toast.success(t("clients.edit.toasts.updated"));
       router.push(`/clients/${id}`);
     } catch (error) {
-      toast.error("Failed to update client");
+      toast.error(t("clients.edit.toasts.updateFailed"));
     }
   };
 
@@ -51,7 +53,7 @@ export default function EditClientPage() {
   if (!currentClient) {
     return (
       <div className="container py-8">
-        <p>Client not found</p>
+        <p>{t("clients.edit.notFound")}</p>
       </div>
     );
   }
@@ -60,14 +62,16 @@ export default function EditClientPage() {
     <div className="container max-w-2xl py-8">
       <Card>
         <CardHeader>
-          <CardTitle className="text-2xl font-bold">Edit Client</CardTitle>
+          <CardTitle className="text-2xl font-bold">
+            {t("clients.edit.title")}
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <ClientForm
             initialData={currentClient}
             onSubmit={onSubmit}
             onCancel={() => router.back()}
-            submitLabel="Update Client"
+            submitLabel={t("clients.edit.updateClient")}
           />
         </CardContent>
       </Card>

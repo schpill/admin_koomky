@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { apiClient } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import {
@@ -33,17 +33,16 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Badge } from "@/components/ui/badge";
+import { useI18n } from "@/components/providers/i18n-provider";
 
-const contactSchema = z.object({
-  first_name: z.string().min(2, "First name must be at least 2 characters"),
-  last_name: z.string().optional().or(z.literal("")),
-  email: z.string().email("Invalid email address").optional().or(z.literal("")),
-  phone: z.string().optional().or(z.literal("")),
-  position: z.string().optional().or(z.literal("")),
-  is_primary: z.boolean().default(false),
-});
-
-type ContactFormData = z.infer<typeof contactSchema>;
+type ContactFormData = {
+  first_name: string;
+  last_name?: string;
+  email?: string;
+  phone?: string;
+  position?: string;
+  is_primary: boolean;
+};
 
 interface Contact {
   id: string;
@@ -60,10 +59,28 @@ interface ClientContactListProps {
 }
 
 export function ClientContactList({ clientId }: ClientContactListProps) {
+  const { t } = useI18n();
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingContact, setEditingContact] = useState<Contact | null>(null);
+
+  const contactSchema = useMemo(
+    () =>
+      z.object({
+        first_name: z.string().min(2, t("clients.contacts.validation.firstNameMin")),
+        last_name: z.string().optional().or(z.literal("")),
+        email: z
+          .string()
+          .email(t("auth.validation.invalidEmail"))
+          .optional()
+          .or(z.literal("")),
+        phone: z.string().optional().or(z.literal("")),
+        position: z.string().optional().or(z.literal("")),
+        is_primary: z.boolean().default(false),
+      }),
+    [t],
+  );
 
   const {
     register,
@@ -85,11 +102,11 @@ export function ClientContactList({ clientId }: ClientContactListProps) {
       );
       setContacts(response.data);
     } catch (error) {
-      toast.error("Failed to load contacts");
+      toast.error(t("clients.contacts.toasts.loadFailed"));
     } finally {
       setLoading(false);
     }
-  }, [clientId]);
+  }, [clientId, t]);
 
   useEffect(() => {
     fetchContacts();
@@ -102,17 +119,17 @@ export function ClientContactList({ clientId }: ClientContactListProps) {
           `/clients/${clientId}/contacts/${editingContact.id}`,
           data,
         );
-        toast.success("Contact updated");
+        toast.success(t("clients.contacts.toasts.updated"));
       } else {
         await apiClient.post(`/clients/${clientId}/contacts`, data);
-        toast.success("Contact added");
+        toast.success(t("clients.contacts.toasts.added"));
       }
       setDialogOpen(false);
       reset();
       setEditingContact(null);
       fetchContacts();
     } catch (error) {
-      toast.error("Failed to save contact");
+      toast.error(t("clients.contacts.toasts.saveFailed"));
     }
   };
 
@@ -128,13 +145,13 @@ export function ClientContactList({ clientId }: ClientContactListProps) {
   };
 
   const handleDelete = async (contactId: string) => {
-    if (!confirm("Are you sure you want to delete this contact?")) return;
+    if (!confirm(t("clients.contacts.deleteConfirmation"))) return;
     try {
       await apiClient.delete(`/clients/${clientId}/contacts/${contactId}`);
-      toast.success("Contact deleted");
+      toast.success(t("clients.contacts.toasts.deleted"));
       fetchContacts();
     } catch (error) {
-      toast.error("Failed to delete contact");
+      toast.error(t("clients.contacts.toasts.deleteFailed"));
     }
   };
 
@@ -150,8 +167,8 @@ export function ClientContactList({ clientId }: ClientContactListProps) {
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
         <div>
-          <CardTitle>Contacts</CardTitle>
-          <CardDescription>Manage contacts for this client.</CardDescription>
+          <CardTitle>{t("clients.contacts.title")}</CardTitle>
+          <CardDescription>{t("clients.contacts.description")}</CardDescription>
         </div>
         <Dialog
           open={dialogOpen}
@@ -165,19 +182,23 @@ export function ClientContactList({ clientId }: ClientContactListProps) {
         >
           <DialogTrigger asChild>
             <Button size="sm">
-              <Plus className="mr-2 h-4 w-4" /> Add Contact
+              <Plus className="mr-2 h-4 w-4" /> {t("clients.contacts.addContact")}
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
               <DialogTitle>
-                {editingContact ? "Edit Contact" : "Add New Contact"}
+                {editingContact
+                  ? t("clients.contacts.editContact")
+                  : t("clients.contacts.addNewContact")}
               </DialogTitle>
             </DialogHeader>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 py-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="first_name">First Name</Label>
+                  <Label htmlFor="first_name">
+                    {t("clients.contacts.firstName")}
+                  </Label>
                   <Input id="first_name" {...register("first_name")} />
                   {errors.first_name && (
                     <p className="text-sm text-destructive">
@@ -186,16 +207,18 @@ export function ClientContactList({ clientId }: ClientContactListProps) {
                   )}
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="last_name">Last Name</Label>
+                  <Label htmlFor="last_name">{t("clients.contacts.lastName")}</Label>
                   <Input id="last_name" {...register("last_name")} />
                 </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="contact-position">Position</Label>
+                <Label htmlFor="contact-position">
+                  {t("clients.contacts.position")}
+                </Label>
                 <Input id="contact-position" {...register("position")} />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="contact-email">Email</Label>
+                <Label htmlFor="contact-email">{t("clients.table.email")}</Label>
                 <Input id="contact-email" type="email" {...register("email")} />
                 {errors.email && (
                   <p className="text-sm text-destructive">
@@ -204,7 +227,7 @@ export function ClientContactList({ clientId }: ClientContactListProps) {
                 )}
               </div>
               <div className="space-y-2">
-                <Label htmlFor="contact-phone">Phone</Label>
+                <Label htmlFor="contact-phone">{t("clients.form.phone")}</Label>
                 <Input id="contact-phone" {...register("phone")} />
               </div>
               <div className="flex items-center space-x-2">
@@ -214,7 +237,9 @@ export function ClientContactList({ clientId }: ClientContactListProps) {
                   {...register("is_primary")}
                   className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
                 />
-                <Label htmlFor="is_primary">Primary Contact</Label>
+                <Label htmlFor="is_primary">
+                  {t("clients.contacts.primaryContact")}
+                </Label>
               </div>
               <div className="flex justify-end gap-2 pt-4">
                 <Button
@@ -222,13 +247,13 @@ export function ClientContactList({ clientId }: ClientContactListProps) {
                   variant="outline"
                   onClick={() => setDialogOpen(false)}
                 >
-                  Cancel
+                  {t("common.cancel")}
                 </Button>
                 <Button type="submit" disabled={isSubmitting}>
                   {isSubmitting && (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   )}
-                  {editingContact ? "Update" : "Save"}
+                  {editingContact ? t("common.update") : t("common.save")}
                 </Button>
               </div>
             </form>
@@ -240,7 +265,7 @@ export function ClientContactList({ clientId }: ClientContactListProps) {
           <div className="flex flex-col items-center justify-center py-8 text-center">
             <User className="h-12 w-12 text-muted-foreground/50 mb-4" />
             <p className="text-muted-foreground">
-              No contacts found for this client.
+              {t("clients.contacts.empty")}
             </p>
           </div>
         ) : (
@@ -248,10 +273,12 @@ export function ClientContactList({ clientId }: ClientContactListProps) {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Position</TableHead>
-                  <TableHead>Contact Info</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
+                  <TableHead>{t("clients.table.name")}</TableHead>
+                  <TableHead>{t("clients.contacts.position")}</TableHead>
+                  <TableHead>{t("clients.contacts.contactInfo")}</TableHead>
+                  <TableHead className="text-right">
+                    {t("clients.table.actions")}
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -262,7 +289,7 @@ export function ClientContactList({ clientId }: ClientContactListProps) {
                         {contact.first_name} {contact.last_name}
                         {contact.is_primary && (
                           <Badge variant="secondary" className="text-[10px]">
-                            Primary
+                            {t("clients.contacts.primary")}
                           </Badge>
                         )}
                       </div>

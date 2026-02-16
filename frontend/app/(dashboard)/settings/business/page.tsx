@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -19,17 +20,25 @@ import { DashboardLayout } from "@/components/layout/dashboard-layout";
 import { apiClient } from "@/lib/api";
 import { useAuthStore } from "@/lib/stores/auth";
 import { toast } from "sonner";
+import { useI18n } from "@/components/providers/i18n-provider";
 
-const businessSchema = z.object({
-  business_name: z
-    .string()
-    .min(2, "Business name must be at least 2 characters"),
-});
-
-type BusinessFormData = z.infer<typeof businessSchema>;
+type BusinessFormData = {
+  business_name: string;
+};
 
 export default function BusinessSettingsPage() {
   const { user, setUser } = useAuthStore();
+  const { t } = useI18n();
+
+  const businessSchema = useMemo(
+    () =>
+      z.object({
+        business_name: z
+          .string()
+          .min(2, t("auth.validation.businessNameMin")),
+      }),
+    [t],
+  );
 
   const {
     register,
@@ -55,30 +64,33 @@ export default function BusinessSettingsPage() {
     try {
       const result = await apiClient.put<any>("/settings/business", data);
       setUser(result.data);
-      toast.success("Business settings updated successfully");
+      toast.success(t("settings.business.toasts.updated"));
       reset(data);
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Update failed");
+      toast.error(
+        error instanceof Error ? error.message : t("settings.common.updateFailed"),
+      );
     }
   };
 
   return (
     <DashboardLayout>
       <div className="max-w-2xl mx-auto space-y-6">
-        <h1 className="text-3xl font-bold">Settings</h1>
+        <h1 className="text-3xl font-bold">{t("settings.common.title")}</h1>
 
         <Card>
           <CardHeader>
-            <CardTitle>Business Settings</CardTitle>
+            <CardTitle>{t("settings.business.cardTitle")}</CardTitle>
             <CardDescription>
-              Manage your business profile and information used for invoices and
-              clients.
+              {t("settings.business.cardDescription")}
             </CardDescription>
           </CardHeader>
           <form onSubmit={handleSubmit(onSubmit)}>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="business_name">Business Name</Label>
+                <Label htmlFor="business_name">
+                  {t("auth.register.businessName")}
+                </Label>
                 <Input
                   id="business_name"
                   {...register("business_name")}
@@ -93,7 +105,9 @@ export default function BusinessSettingsPage() {
             </CardContent>
             <CardFooter className="border-t px-6 py-4 flex justify-end bg-muted/50">
               <Button type="submit" disabled={isSubmitting || !isDirty}>
-                {isSubmitting ? "Saving..." : "Save changes"}
+                {isSubmitting
+                  ? t("settings.common.saving")
+                  : t("settings.common.saveChanges")}
               </Button>
             </CardFooter>
           </form>

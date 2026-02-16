@@ -37,13 +37,21 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { CreateClientDialog } from "@/components/clients/create-client-dialog";
 import { CsvActions } from "@/components/clients/csv-actions";
 import Link from "next/link";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 export default function ClientsPage() {
   const { clients, isLoading, fetchClients, deleteClient } = useClientStore();
+  const { t } = useI18n();
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState<string>("all");
   const [sortBy, setBy] = useState<string>("created_at");
   const [sortOrder, setOrder] = useState<string>("desc");
+
+  const getStatusLabel = (value: string) => {
+    const translationKey = `clients.status.${value}`;
+    const translated = t(translationKey);
+    return translated === translationKey ? value : translated;
+  };
 
   useEffect(() => {
     fetchClients({
@@ -67,7 +75,7 @@ export default function ClientsPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Clients</h1>
+        <h1 className="text-3xl font-bold">{t("clients.list.title")}</h1>
         <div className="flex gap-2">
           <CsvActions />
           <CreateClientDialog />
@@ -80,7 +88,7 @@ export default function ClientsPage() {
             <form onSubmit={handleSearch} className="relative w-full max-w-sm">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
-                placeholder="Search clients..."
+                placeholder={t("clients.list.searchPlaceholder")}
                 className="pl-9"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
@@ -91,13 +99,21 @@ export default function ClientsPage() {
                 <Filter className="h-4 w-4 text-muted-foreground" />
                 <Select value={status} onValueChange={setStatus}>
                   <SelectTrigger className="w-[130px] h-9">
-                    <SelectValue placeholder="Status" />
+                    <SelectValue placeholder={t("clients.list.statusPlaceholder")} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">All Status</SelectItem>
-                    <SelectItem value="active">Active</SelectItem>
-                    <SelectItem value="inactive">Inactive</SelectItem>
-                    <SelectItem value="lead">Lead</SelectItem>
+                    <SelectItem value="all">
+                      {t("clients.status.all")}
+                    </SelectItem>
+                    <SelectItem value="active">
+                      {t("clients.status.active")}
+                    </SelectItem>
+                    <SelectItem value="inactive">
+                      {t("clients.status.inactive")}
+                    </SelectItem>
+                    <SelectItem value="lead">
+                      {t("clients.status.lead")}
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -112,15 +128,21 @@ export default function ClientsPage() {
                   }}
                 >
                   <SelectTrigger className="w-[180px] h-9">
-                    <SelectValue placeholder="Sort by" />
+                    <SelectValue placeholder={t("clients.list.sortPlaceholder")} />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="created_at-desc">
-                      Newest First
+                      {t("clients.list.sortNewest")}
                     </SelectItem>
-                    <SelectItem value="created_at-asc">Oldest First</SelectItem>
-                    <SelectItem value="name-asc">Name (A-Z)</SelectItem>
-                    <SelectItem value="name-desc">Name (Z-A)</SelectItem>
+                    <SelectItem value="created_at-asc">
+                      {t("clients.list.sortOldest")}
+                    </SelectItem>
+                    <SelectItem value="name-asc">
+                      {t("clients.list.sortNameAsc")}
+                    </SelectItem>
+                    <SelectItem value="name-desc">
+                      {t("clients.list.sortNameDesc")}
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -137,8 +159,8 @@ export default function ClientsPage() {
           ) : clients.length === 0 ? (
             <EmptyState
               icon={<UserPlus className="h-12 w-12" />}
-              title="No clients found"
-              description="Start by adding your first client to manage their projects and invoices."
+              title={t("clients.list.emptyTitle")}
+              description={t("clients.list.emptyDescription")}
               action={<CreateClientDialog />}
             />
           ) : (
@@ -147,19 +169,19 @@ export default function ClientsPage() {
                 <thead>
                   <tr className="border-b">
                     <th className="pb-3 font-medium text-muted-foreground">
-                      Reference
+                      {t("clients.table.reference")}
                     </th>
                     <th className="pb-3 font-medium text-muted-foreground">
-                      Name
+                      {t("clients.table.name")}
                     </th>
                     <th className="pb-3 font-medium text-muted-foreground">
-                      Email
+                      {t("clients.table.email")}
                     </th>
                     <th className="pb-3 font-medium text-muted-foreground">
-                      Status
+                      {t("clients.table.status")}
                     </th>
                     <th className="pb-3 font-medium text-muted-foreground text-right">
-                      Actions
+                      {t("clients.table.actions")}
                     </th>
                   </tr>
                 </thead>
@@ -189,7 +211,7 @@ export default function ClientsPage() {
                             client.status === "active" ? "default" : "secondary"
                           }
                         >
-                          {client.status}
+                          {getStatusLabel(client.status)}
                         </Badge>
                       </td>
                       <td className="py-4 text-right">
@@ -198,19 +220,22 @@ export default function ClientsPage() {
                             <Button
                               variant="ghost"
                               size="icon"
-                              aria-label="Open actions menu"
+                              aria-label={t("clients.list.openActionsMenu")}
                             >
                               <MoreHorizontal className="h-4 w-4" />
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                            <DropdownMenuLabel>
+                              {t("clients.table.actions")}
+                            </DropdownMenuLabel>
                             <DropdownMenuItem asChild>
                               <Link
                                 href={`/clients/${client.id}`}
                                 className="flex items-center"
                               >
-                                <Eye className="mr-2 h-4 w-4" /> View details
+                                <Eye className="mr-2 h-4 w-4" />{" "}
+                                {t("clients.list.viewDetails")}
                               </Link>
                             </DropdownMenuItem>
                             <DropdownMenuItem asChild>
@@ -218,7 +243,8 @@ export default function ClientsPage() {
                                 href={`/clients/${client.id}/edit`}
                                 className="flex items-center"
                               >
-                                <Edit className="mr-2 h-4 w-4" /> Edit client
+                                <Edit className="mr-2 h-4 w-4" />{" "}
+                                {t("clients.list.editClient")}
                               </Link>
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
@@ -227,14 +253,15 @@ export default function ClientsPage() {
                               onClick={() => {
                                 if (
                                   confirm(
-                                    "Are you sure you want to archive this client?",
+                                    t("clients.list.archiveConfirmation"),
                                   )
                                 ) {
                                   deleteClient(client.id);
                                 }
                               }}
                             >
-                              <Trash2 className="mr-2 h-4 w-4" /> Archive client
+                              <Trash2 className="mr-2 h-4 w-4" />{" "}
+                              {t("clients.list.archiveClient")}
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>

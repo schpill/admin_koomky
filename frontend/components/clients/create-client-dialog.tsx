@@ -1,8 +1,5 @@
 "use client";
 
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import {
   Dialog,
   DialogContent,
@@ -17,18 +14,20 @@ import { toast } from "sonner";
 import { useState } from "react";
 import { Plus } from "lucide-react";
 import { ClientForm, ClientFormData } from "./client-form";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 export function CreateClientDialog() {
   const [open, setOpen] = useState(false);
   const createClient = useClientStore((state) => state.createClient);
+  const { t } = useI18n();
 
   const onSubmit = async (data: ClientFormData) => {
     try {
       await createClient(data);
-      toast.success("Client created successfully");
+      toast.success(t("clients.createDialog.toasts.success"));
       setOpen(false);
     } catch (error) {
-      toast.error("Failed to create client");
+      toast.error(t("clients.createDialog.toasts.failed"));
     }
   };
 
@@ -36,22 +35,21 @@ export function CreateClientDialog() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button>
-          <Plus className="mr-2 h-4 w-4" /> Add Client
+          <Plus className="mr-2 h-4 w-4" /> {t("clients.createDialog.addClient")}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>Add New Client</DialogTitle>
+          <DialogTitle>{t("clients.createDialog.addNewClient")}</DialogTitle>
           <DialogDescription>
-            Enter the details of the new client. Click save when you&apos;re
-            done.
+            {t("clients.createDialog.description")}
           </DialogDescription>
         </DialogHeader>
         <div className="py-4">
           <ClientForm
             onSubmit={onSubmit}
             onCancel={() => setOpen(false)}
-            submitLabel="Save Client"
+            submitLabel={t("clients.createDialog.saveClient")}
           />
         </div>
       </DialogContent>

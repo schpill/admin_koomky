@@ -1,16 +1,17 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { Download, Upload, FileDown, FileUp } from "lucide-react";
+import { Download, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { apiClient } from "@/lib/api";
 import { toast } from "sonner";
 import { useClientStore } from "@/lib/stores/clients";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 export function CsvActions() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isImporting, setIsImporting] = useState(false);
   const fetchClients = useClientStore((state) => state.fetchClients);
+  const { t } = useI18n();
 
   const handleExport = async () => {
     try {
@@ -31,9 +32,9 @@ export function CsvActions() {
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
-      toast.success("Clients exported successfully");
+      toast.success(t("clients.csv.toasts.exportSuccess"));
     } catch (error) {
-      toast.error("Failed to export clients");
+      toast.error(t("clients.csv.toasts.exportFailed"));
     }
   };
 
@@ -58,12 +59,12 @@ export function CsvActions() {
         },
       );
 
-      if (!response.ok) throw new Error("Import failed");
+      if (!response.ok) throw new Error(t("clients.csv.toasts.importFailed"));
 
-      toast.success("Clients imported successfully");
+      toast.success(t("clients.csv.toasts.importSuccess"));
       fetchClients(); // Refresh list
     } catch (error) {
-      toast.error("Failed to import clients. Check CSV format.");
+      toast.error(t("clients.csv.toasts.importFailedWithHint"));
     } finally {
       setIsImporting(false);
       if (fileInputRef.current) fileInputRef.current.value = "";
@@ -86,10 +87,10 @@ export function CsvActions() {
         disabled={isImporting}
       >
         <Upload className="mr-2 h-4 w-4" />
-        {isImporting ? "Importing..." : "Import CSV"}
+        {isImporting ? t("clients.csv.importing") : t("clients.csv.import")}
       </Button>
       <Button variant="outline" size="sm" onClick={handleExport}>
-        <Download className="mr-2 h-4 w-4" /> Export CSV
+        <Download className="mr-2 h-4 w-4" /> {t("clients.csv.export")}
       </Button>
     </div>
   );
