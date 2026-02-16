@@ -199,14 +199,8 @@ class ClientController extends Controller
             }
 
             $row = array_pad($row, count($normalizedHeader), null);
-            $paired = array_combine($normalizedHeader, array_slice($row, 0, count($normalizedHeader)));
-
-            if ($paired === false) {
-                continue;
-            }
-
             /** @var array<string, string|null> $values */
-            $values = $paired;
+            $values = array_combine($normalizedHeader, array_slice($row, 0, count($normalizedHeader)));
 
             $status = $this->csvValue($values, 'status');
             if (! in_array($status, ['active', 'inactive', 'archived'], true)) {
