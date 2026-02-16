@@ -54,7 +54,6 @@ jobs:
         run: cd backend && ./vendor/bin/pest --coverage --min=80
         env:
           APP_ENV: testing
-          APP_KEY: base64:dGVzdGluZ2tleWZvcmNpMTIzNDU2Nzg5MDEyMzQ1Ng==
           DB_CONNECTION: pgsql
           DB_HOST: 127.0.0.1
           DB_PORT: 5432
