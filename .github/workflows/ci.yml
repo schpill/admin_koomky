@@ -11,7 +11,7 @@ jobs:
       postgres:
         image: postgres:16-alpine
         env:
-          POSTGRES_DB: koomky_test
+          POSTGRES_DB: koomky
           POSTGRES_USER: koomky
           POSTGRES_PASSWORD: secret
         ports:
@@ -57,7 +57,7 @@ jobs:
           DB_CONNECTION: pgsql
           DB_HOST: 127.0.0.1
           DB_PORT: 5432
-          DB_DATABASE: koomky_test
+          DB_DATABASE: koomky
           DB_USERNAME: koomky
           DB_PASSWORD: secret
           CACHE_STORE: array

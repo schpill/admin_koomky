@@ -1,4 +1,4 @@
-.PHONY: up down restart build install test lint fresh seed shell-api shell-frontend
+.PHONY: up down restart build install test lint fresh seed shell-api shell-frontend deploy
 
 up:
 	docker compose up -d
@@ -15,6 +15,21 @@ build:
 install:
 	docker compose run --rm api composer install
 	docker compose run --rm frontend pnpm install
+
+deploy:
+	git pull origin main
+	docker compose build
+	docker compose up -d
+	docker compose run --rm api composer install --no-dev --optimize-autoloader
+	docker compose run --rm api php artisan migrate --force
+	docker compose run --rm api php artisan storage:link
+	docker compose run --rm api php artisan config:cache
+	docker compose run --rm api php artisan route:cache
+	docker compose run --rm api php artisan view:cache
+	docker compose run --rm api php artisan event:cache
+	docker compose run --rm frontend pnpm install
+	docker compose run --rm frontend pnpm build
+	docker compose restart api frontend queue-worker scheduler
 
 test:
 	docker compose run --rm api ./vendor/bin/pest

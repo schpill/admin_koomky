@@ -69,6 +69,22 @@ class Client extends Model
     }
 
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\Project, \App\Models\Client>
+     */
+    public function projects(): HasMany
+    {
+        return $this->hasMany(Project::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\Invoice, \App\Models\Client>
+     */
+    public function invoices(): HasMany
+    {
+        return $this->hasMany(Invoice::class);
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<\App\Models\Tag, \App\Models\Client>
      */
     public function tags(): BelongsToMany

@@ -5,7 +5,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-test('user can register with valid data', function () {
+test('public registration endpoint is disabled', function () {
     $response = $this->postJson('/api/v1/auth/register', [
         'name' => 'John Doe',
         'email' => 'john@example.com',
@@ -14,32 +14,11 @@ test('user can register with valid data', function () {
         'business_name' => 'John Inc.',
     ]);
 
-    $response->assertStatus(201)
-        ->assertJsonStructure([
-            'status',
-            'data' => [
-                'user' => ['id', 'name', 'email', 'business_name'],
-                'access_token',
-                'refresh_token',
-            ],
-            'message',
-        ]);
+    $response->assertStatus(404);
 
-    $this->assertDatabaseHas('users', [
+    $this->assertDatabaseMissing('users', [
         'email' => 'john@example.com',
-        'business_name' => 'John Inc.',
     ]);
-});
-
-test('user cannot register with invalid password', function () {
-    $response = $this->postJson('/api/v1/auth/register', [
-        'name' => 'John Doe',
-        'email' => 'john@example.com',
-        'password' => 'weak',
-        'password_confirmation' => 'weak',
-    ]);
-
-    $response->assertStatus(422);
 });
 
 test('user can login with correct credentials', function () {

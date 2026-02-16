@@ -9,7 +9,6 @@ import {
 // Routes that don't require authentication
 const publicRoutes = [
   "/auth/login",
-  "/auth/register",
   "/auth/forgot-password",
   "/auth/reset-password",
 ];
@@ -20,7 +19,6 @@ const publicAssetPrefixes = ["/brand/"];
 // Routes that should redirect to dashboard if already authenticated
 const guestOnlyRoutes = [
   "/auth/login",
-  "/auth/register",
   "/auth/forgot-password",
   "/auth/reset-password",
 ];

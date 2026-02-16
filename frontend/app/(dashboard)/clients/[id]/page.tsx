@@ -33,6 +33,8 @@ import { ConfirmationDialog } from "@/components/common/confirmation-dialog";
 import { ClientContactList } from "@/components/clients/client-contact-list";
 import { ClientTimeline } from "@/components/clients/client-timeline";
 import { ClientTagSelector } from "@/components/clients/client-tag-selector";
+import { ClientProjects } from "@/components/clients/client-projects";
+import { ClientInvoices } from "@/components/clients/client-invoices";
 import { useI18n } from "@/components/providers/i18n-provider";
 
 export default function ClientDetailPage() {
@@ -261,13 +263,15 @@ export default function ClientDetailPage() {
         {/* Content Tabs */}
         <div className="md:col-span-2">
           <Tabs defaultValue="details">
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className="grid w-full grid-cols-5">
               <TabsTrigger value="details">
                 {t("clients.detail.tabs.details")}
               </TabsTrigger>
               <TabsTrigger value="contacts">
                 {t("clients.detail.tabs.contacts")}
               </TabsTrigger>
+              <TabsTrigger value="projects">Projects</TabsTrigger>
+              <TabsTrigger value="finances">Finances</TabsTrigger>
               <TabsTrigger value="history">
                 {t("clients.detail.tabs.activity")}
               </TabsTrigger>
@@ -327,6 +331,14 @@ export default function ClientDetailPage() {
 
             <TabsContent value="contacts" className="pt-4">
               <ClientContactList clientId={id as string} />
+            </TabsContent>
+
+            <TabsContent value="projects" className="pt-4">
+              <ClientProjects clientId={id as string} />
+            </TabsContent>
+
+            <TabsContent value="finances" className="pt-4">
+              <ClientInvoices clientId={id as string} />
             </TabsContent>
 
             <TabsContent value="history" className="pt-4">

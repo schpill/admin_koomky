@@ -134,6 +134,57 @@ return [
                     'created_at',
                 ],
             ],
+            'projects' => [
+                'searchableAttributes' => [
+                    'reference',
+                    'name',
+                    'description',
+                ],
+                'filterableAttributes' => [
+                    'user_id',
+                    'client_id',
+                    'status',
+                    'billing_type',
+                ],
+                'sortableAttributes' => [
+                    'name',
+                    'deadline',
+                    'created_at',
+                ],
+            ],
+            'tasks' => [
+                'searchableAttributes' => [
+                    'title',
+                    'description',
+                ],
+                'filterableAttributes' => [
+                    'project_id',
+                    'user_id',
+                    'status',
+                    'priority',
+                ],
+                'sortableAttributes' => [
+                    'due_date',
+                    'created_at',
+                ],
+            ],
+            'invoices' => [
+                'searchableAttributes' => [
+                    'number',
+                    'client_name',
+                    'notes',
+                ],
+                'filterableAttributes' => [
+                    'user_id',
+                    'client_id',
+                    'status',
+                ],
+                'sortableAttributes' => [
+                    'issue_date',
+                    'total',
+                    'created_at',
+                ],
+            ],
         ],
     ],
 

@@ -202,20 +202,11 @@ export default function LoginPage() {
             )}
           </div>
         </CardContent>
-        <CardFooter className="flex flex-col gap-4">
+        <CardFooter>
           <Button type="submit" className="w-full" disabled={loading}>
             {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {t("auth.login.submit")}
           </Button>
-          <p className="text-sm text-center text-muted-foreground">
-            {t("auth.login.noAccount")}{" "}
-            <Link
-              href="/auth/register"
-              className="text-primary hover:underline"
-            >
-              {t("auth.login.signUp")}
-            </Link>
-          </p>
         </CardFooter>
       </form>
     </Card>

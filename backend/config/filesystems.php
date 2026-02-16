@@ -47,6 +47,13 @@ return [
             'report' => false,
         ],
 
+        'attachments' => [
+            'driver' => 'local',
+            'root' => env('ATTACHMENTS_ROOT', '/tmp/koomky-attachments'),
+            'throw' => false,
+            'report' => false,
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),
