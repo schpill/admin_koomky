@@ -12,6 +12,8 @@ use Throwable;
 
 class OutstandingReportService
 {
+    public function __construct(protected CurrencyConversionService $currencyConversionService) {}
+
     /**
      * @param  array<string, mixed>  $filters
      * @return array<string, mixed>
@@ -44,19 +46,29 @@ class OutstandingReportService
 
             /** @var Collection<int, Invoice> $invoices */
             $invoices = $query->orderBy('due_date')->get();
+            $baseCurrency = strtoupper((string) ($user->base_currency ?? 'EUR'));
 
-            $items = $invoices->map(function (Invoice $invoice): array {
+            $items = $invoices->map(function (Invoice $invoice) use ($baseCurrency): array {
                 $agingDays = (int) max(0, now()->diffInDays($invoice->due_date, false) * -1);
+                $balanceDue = (float) $invoice->balance_due;
+                $balanceDueBase = $this->currencyConversionService->convert(
+                    $balanceDue,
+                    (string) $invoice->currency,
+                    $baseCurrency,
+                    $invoice->issue_date
+                );
 
                 return [
                     'id' => $invoice->id,
                     'number' => $invoice->number,
                     'client_name' => $invoice->client?->name,
                     'status' => $invoice->status,
+                    'currency' => $invoice->currency,
                     'due_date' => $invoice->due_date->toDateString(),
                     'aging_days' => $agingDays,
                     'aging_bucket' => $this->resolveAgingBucket($agingDays),
-                    'balance_due' => (float) $invoice->balance_due,
+                    'balance_due' => $balanceDue,
+                    'balance_due_base' => $balanceDueBase,
                     'total' => (float) $invoice->total,
                 ];
             })->filter(fn (array $item): bool => (float) $item['balance_due'] > 0)->values();
@@ -79,13 +91,14 @@ class OutstandingReportService
 
                 $agingBuckets[$bucket] = [
                     'count' => $currentCount + 1,
-                    'amount' => round($currentAmount + (float) $item['balance_due'], 2),
+                    'amount' => round($currentAmount + (float) $item['balance_due_base'], 2),
                 ];
             }
 
             return [
                 'filters' => $filters,
-                'total_outstanding' => round((float) $items->sum(fn (array $item): float => (float) $item['balance_due']), 2),
+                'base_currency' => $baseCurrency,
+                'total_outstanding' => round((float) $items->sum(fn (array $item): float => (float) $item['balance_due_base']), 2),
                 'total_invoices' => $items->count(),
                 'aging' => $agingBuckets,
                 'items' => $items->all(),

@@ -38,6 +38,24 @@ class UserSettingsController extends Controller
         return $this->success($user, 'Business settings updated successfully');
     }
 
+    public function updateCurrencySettings(Request $request): JsonResponse
+    {
+        /** @var User $user */
+        $user = $request->user();
+
+        $validated = $request->validate([
+            'base_currency' => ['required', 'string', 'size:3'],
+            'exchange_rate_provider' => ['nullable', 'in:open_exchange_rates,ecb'],
+        ]);
+
+        $user->update([
+            'base_currency' => strtoupper((string) $validated['base_currency']),
+            'exchange_rate_provider' => $validated['exchange_rate_provider'] ?? $user->exchange_rate_provider,
+        ]);
+
+        return $this->success($user->fresh(), 'Currency settings updated successfully');
+    }
+
     public function updateEmailSettings(Request $request): JsonResponse
     {
         /** @var User $user */

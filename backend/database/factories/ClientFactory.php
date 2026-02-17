@@ -19,6 +19,7 @@ class ClientFactory extends Factory
             'city' => $this->faker->city(),
             'zip_code' => $this->faker->postcode(),
             'country' => $this->faker->country(),
+            'preferred_currency' => null,
             'status' => 'active',
         ];
     }

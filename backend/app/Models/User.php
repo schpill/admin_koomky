@@ -21,6 +21,8 @@ use Laravel\Sanctum\HasApiTokens;
  * @property string|null $bank_details
  * @property string|null $invoice_footer
  * @property string $invoice_numbering_pattern
+ * @property string $base_currency
+ * @property string $exchange_rate_provider
  * @property array<string, mixed>|null $email_settings
  * @property array<string, mixed>|null $sms_settings
  * @property array<string, mixed>|null $notification_preferences
@@ -49,6 +51,8 @@ class User extends Authenticatable
         'bank_details',
         'invoice_footer',
         'invoice_numbering_pattern',
+        'base_currency',
+        'exchange_rate_provider',
         'email_settings',
         'sms_settings',
         'notification_preferences',
@@ -78,6 +82,8 @@ class User extends Authenticatable
             'password' => 'hashed',
             'payment_terms_days' => 'integer',
             'bank_details' => 'encrypted',
+            'base_currency' => 'string',
+            'exchange_rate_provider' => 'string',
             'email_settings' => 'array',
             'sms_settings' => 'array',
             'notification_preferences' => 'array',
@@ -174,5 +180,29 @@ class User extends Authenticatable
     public function creditNotes(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(CreditNote::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\RecurringInvoiceProfile, \App\Models\User>
+     */
+    public function recurringInvoiceProfiles(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(RecurringInvoiceProfile::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\CalendarConnection, \App\Models\User>
+     */
+    public function calendarConnections(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(CalendarConnection::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\CalendarEvent, \App\Models\User>
+     */
+    public function calendarEvents(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(CalendarEvent::class);
     }
 }

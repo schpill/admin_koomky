@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { CurrencyAmount } from "@/components/shared/currency-amount";
 
 interface OutstandingItem {
   id: string;
@@ -13,11 +14,15 @@ interface OutstandingItem {
   due_date: string;
   aging_days: number;
   aging_bucket: string;
+  currency?: string;
   balance_due: number;
+  balance_due_base?: number;
 }
 
 interface OutstandingTableProps {
   items: OutstandingItem[];
+  baseCurrency?: string;
+  showOriginalCurrency?: boolean;
 }
 
 const VIRTUALIZATION_THRESHOLD = 100;
@@ -55,7 +60,11 @@ function bucketClass(bucket: string): string {
   }
 }
 
-export function OutstandingTable({ items }: OutstandingTableProps) {
+export function OutstandingTable({
+  items,
+  baseCurrency = "EUR",
+  showOriginalCurrency = false,
+}: OutstandingTableProps) {
   const [scrollTop, setScrollTop] = useState(0);
   const isVirtualized = items.length > VIRTUALIZATION_THRESHOLD;
 
@@ -156,7 +165,21 @@ export function OutstandingTable({ items }: OutstandingTableProps) {
                       </Badge>
                     </td>
                     <td className="py-3">
-                      {Number(item.balance_due).toFixed(2)} EUR
+                      <CurrencyAmount
+                        amount={Number(item.balance_due_base ?? item.balance_due)}
+                        currency={baseCurrency}
+                      />
+                      {showOriginalCurrency &&
+                        item.currency &&
+                        item.currency !== baseCurrency && (
+                          <p className="text-xs text-muted-foreground">
+                            Original:{" "}
+                            <CurrencyAmount
+                              amount={Number(item.balance_due)}
+                              currency={item.currency}
+                            />
+                          </p>
+                        )}
                     </td>
                   </tr>
                 ))}

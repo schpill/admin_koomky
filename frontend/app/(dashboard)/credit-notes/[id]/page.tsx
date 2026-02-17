@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CreditNoteStatusBadge } from "@/components/credit-notes/credit-note-status-badge";
+import { CurrencyAmount } from "@/components/shared/currency-amount";
 import { useCreditNoteStore } from "@/lib/stores/creditNotes";
 
 export default function CreditNoteDetailPage() {
@@ -130,7 +131,10 @@ export default function CreditNoteDetailPage() {
             <div>
               <p className="text-xs text-muted-foreground">Total</p>
               <p className="font-medium">
-                {Number(currentCreditNote.total).toFixed(2)} EUR
+                <CurrencyAmount
+                  amount={Number(currentCreditNote.total)}
+                  currency={currentCreditNote.currency || "EUR"}
+                />
               </p>
             </div>
             <div>
@@ -169,9 +173,12 @@ export default function CreditNoteDetailPage() {
                         {Number(line.vat_rate).toFixed(2)}%
                       </td>
                       <td className="py-2">
-                        {Number(
-                          line.total || line.quantity * line.unit_price
-                        ).toFixed(2)}
+                        <CurrencyAmount
+                          amount={Number(
+                            line.total || line.quantity * line.unit_price
+                          )}
+                          currency={currentCreditNote.currency || "EUR"}
+                        />
                       </td>
                     </tr>
                   ))}

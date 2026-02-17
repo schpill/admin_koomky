@@ -111,6 +111,68 @@ services:
     networks:
       - koomky-network
 
+  # Monitoring: Prometheus
+  prometheus:
+    image: prom/prometheus:v2.54.1
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./docker/prometheus:/etc/prometheus:ro
+    depends_on:
+      - nginx
+      - postgres-exporter
+      - redis-exporter
+      - node-exporter
+    networks:
+      - koomky-network
+
+  # Monitoring: Grafana
+  grafana:
+    image: grafana/grafana:11.1.0
+    ports:
+      - "3001:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./docker/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./docker/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    depends_on:
+      - prometheus
+    networks:
+      - koomky-network
+
+  postgres-exporter:
+    image: quay.io/prometheuscommunity/postgres-exporter:v0.15.0
+    environment:
+      - DATA_SOURCE_NAME=postgresql://koomky:secret@postgres:5432/koomky?sslmode=disable
+    ports:
+      - "9187:9187"
+    depends_on:
+      - postgres
+    networks:
+      - koomky-network
+
+  redis-exporter:
+    image: oliver006/redis_exporter:v1.61.0
+    environment:
+      - REDIS_ADDR=redis://redis:6379
+    ports:
+      - "9121:9121"
+    depends_on:
+      - redis
+    networks:
+      - koomky-network
+
+  node-exporter:
+    image: prom/node-exporter:v1.8.2
+    command:
+      - "--path.rootfs=/host"
+    volumes:
+      - /:/host:ro,rslave
+    ports:
+      - "9100:9100"
+    networks:
+      - koomky-network
+
   # Mail Testing
   mailpit:
     image: axllent/mailpit
@@ -126,5 +188,6 @@ networks:
 volumes:
   postgres-data:
   meilisearch-data:
+  grafana-data:
   frontend-node-modules:
   frontend-next:

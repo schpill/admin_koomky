@@ -7,6 +7,7 @@ use App\Models\Campaign;
 use App\Models\Client;
 use App\Models\Invoice;
 use App\Models\Project;
+use App\Models\RecurringInvoiceProfile;
 use App\Models\User;
 use Closure;
 use Illuminate\Support\Facades\Cache;
@@ -17,7 +18,8 @@ class DashboardService
 {
     public function __construct(
         protected FinancialSummaryService $financialSummaryService,
-        protected CampaignAnalyticsService $campaignAnalyticsService
+        protected CampaignAnalyticsService $campaignAnalyticsService,
+        protected CurrencyConversionService $currencyConversionService,
     ) {}
 
     /**
@@ -36,8 +38,15 @@ class DashboardService
                 ->whereIn('status', $pendingStatuses)
                 ->get();
 
+            $baseCurrency = strtoupper((string) ($user->base_currency ?? 'EUR'));
+
             $pendingAmount = round(
-                (float) $pendingInvoices->sum(fn (Invoice $invoice): float => (float) $invoice->balance_due),
+                (float) $pendingInvoices->sum(fn (Invoice $invoice): float => $this->currencyConversionService->convert(
+                    (float) $invoice->balance_due,
+                    (string) $invoice->currency,
+                    $baseCurrency,
+                    $invoice->issue_date
+                )),
                 2
             );
 
@@ -54,8 +63,8 @@ class DashboardService
             $yearlySummary = $this->financialSummaryService->yearlySummary($user);
             $monthlyBreakdown = $yearlySummary['monthly_breakdown'] ?? [];
 
-            $revenueMonth = $this->revenueForRange($userId, now()->startOfMonth()->toDateString(), now()->endOfMonth()->toDateString());
-            $revenueQuarter = $this->revenueForRange($userId, now()->startOfQuarter()->toDateString(), now()->endOfQuarter()->toDateString());
+            $revenueMonth = $this->revenueForRange($user, now()->startOfMonth()->toDateString(), now()->endOfMonth()->toDateString());
+            $revenueQuarter = $this->revenueForRange($user, now()->startOfQuarter()->toDateString(), now()->endOfQuarter()->toDateString());
             $revenueYear = round((float) ($yearlySummary['total_revenue'] ?? 0), 2);
 
             $upcomingDeadlines = Project::query()
@@ -79,6 +88,35 @@ class DashboardService
                 })
                 ->values()
                 ->all();
+
+            $activeRecurringProfiles = RecurringInvoiceProfile::query()
+                ->where('user_id', $userId)
+                ->where('status', 'active')
+                ->with('client')
+                ->orderBy('next_due_date')
+                ->get();
+
+            $recurringUpcomingProfiles = $activeRecurringProfiles
+                ->take(5)
+                ->map(function (RecurringInvoiceProfile $profile): array {
+                    return [
+                        'id' => $profile->id,
+                        'name' => $profile->name,
+                        'frequency' => $profile->frequency,
+                        'next_due_date' => $profile->next_due_date->toDateString(),
+                        'client_id' => $profile->client_id,
+                        'client_name' => $profile->client?->name,
+                    ];
+                })
+                ->values()
+                ->all();
+
+            $recurringEstimatedRevenue = round(
+                (float) $activeRecurringProfiles->sum(
+                    fn (RecurringInvoiceProfile $profile): float => $this->estimateMonthlyRecurringRevenue($profile)
+                ),
+                2
+            );
 
             $campaignsLast30Days = Campaign::query()
                 ->where('user_id', $userId)
@@ -122,8 +160,12 @@ class DashboardService
                 'revenue_year' => $revenueYear,
                 'pending_invoices_count' => $pendingCount,
                 'overdue_invoices_count' => $overdueCount,
+                'base_currency' => $baseCurrency,
                 'revenue_trend' => $monthlyBreakdown,
                 'upcoming_deadlines' => $upcomingDeadlines,
+                'recurring_profiles_active_count' => $activeRecurringProfiles->count(),
+                'recurring_upcoming_due_profiles' => $recurringUpcomingProfiles,
+                'recurring_estimated_revenue_month' => $recurringEstimatedRevenue,
                 'active_campaigns_count' => $activeCampaignsCount,
                 'average_campaign_open_rate' => $averageOpenRate,
                 'average_campaign_click_rate' => $averageClickRate,
@@ -151,12 +193,49 @@ class DashboardService
         }
     }
 
-    private function revenueForRange(string $userId, string $dateFrom, string $dateTo): float
+    private function revenueForRange(User $user, string $dateFrom, string $dateTo): float
     {
-        return round((float) Invoice::query()
-            ->where('user_id', $userId)
+        $baseCurrency = strtoupper((string) ($user->base_currency ?? 'EUR'));
+
+        $invoices = Invoice::query()
+            ->where('user_id', $user->id)
             ->whereIn('status', ['paid', 'partially_paid'])
             ->whereBetween('issue_date', [$dateFrom, $dateTo])
-            ->sum('total'), 2);
+            ->get();
+
+        $sum = $invoices->sum(function (Invoice $invoice) use ($baseCurrency): float {
+            return $this->currencyConversionService->convert(
+                (float) $invoice->total,
+                (string) $invoice->currency,
+                $baseCurrency,
+                $invoice->issue_date
+            );
+        });
+
+        return round((float) $sum, 2);
+    }
+
+    private function estimateMonthlyRecurringRevenue(RecurringInvoiceProfile $profile): float
+    {
+        $lineItems = collect($profile->line_items);
+
+        $subtotal = (float) $lineItems->sum(function (array $line): float {
+            return ((float) ($line['quantity'] ?? 0)) * ((float) ($line['unit_price'] ?? 0));
+        });
+
+        $discountPercent = (float) ($profile->discount_percent ?? 0);
+        $afterDiscount = $subtotal - ($subtotal * ($discountPercent / 100));
+
+        $multiplier = match ($profile->frequency) {
+            'weekly' => 52 / 12,
+            'biweekly' => 26 / 12,
+            'monthly' => 1.0,
+            'quarterly' => 1 / 3,
+            'semiannual' => 1 / 6,
+            'annual' => 1 / 12,
+            default => 1.0,
+        };
+
+        return round($afterDiscount * $multiplier, 2);
     }
 }

@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useQuoteStore, type Quote } from "@/lib/stores/quotes";
 import { useClientStore } from "@/lib/stores/clients";
+import { CurrencyAmount } from "@/components/shared/currency-amount";
 import { QuoteStatusBadge } from "@/components/quotes/quote-status-badge";
 import { QuotePdfPreview } from "@/components/quotes/quote-pdf-preview";
 
@@ -45,7 +46,7 @@ function buildPreviewHtml(quote?: Quote | null): string {
           </thead>
           <tbody>${lineRows}</tbody>
         </table>
-        <p style="margin-top: 12px;"><strong>Total:</strong> ${Number(quote.total).toFixed(2)} EUR</p>
+        <p style="margin-top: 12px;"><strong>Total:</strong> ${Number(quote.total).toFixed(2)} ${quote.currency || "EUR"}</p>
       </body>
     </html>
   `;
@@ -223,7 +224,10 @@ export default function QuotesPage() {
                           {quote.valid_until}
                         </td>
                         <td className="py-4">
-                          {Number(quote.total || 0).toFixed(2)} EUR
+                          <CurrencyAmount
+                            amount={Number(quote.total || 0)}
+                            currency={quote.currency || "EUR"}
+                          />
                         </td>
                         <td className="py-4">
                           <QuoteStatusBadge status={quote.status} />

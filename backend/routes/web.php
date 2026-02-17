@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\V1\CampaignWebhookController;
 use App\Http\Controllers\Api\V1\EmailTrackingController;
+use App\Http\Controllers\PrometheusController;
 use App\Http\Controllers\SmsWebhookController;
 use App\Http\Controllers\UnsubscribeController;
 use Illuminate\Support\Facades\Route;
@@ -9,6 +10,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/metrics', PrometheusController::class);
 
 Route::get('/unsubscribe/{contact}', UnsubscribeController::class)
     ->name('unsubscribe');

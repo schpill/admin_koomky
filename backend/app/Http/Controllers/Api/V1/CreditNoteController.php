@@ -12,6 +12,7 @@ use App\Models\Invoice;
 use App\Models\User;
 use App\Services\ApplyCreditNoteService;
 use App\Services\CreditNotePdfService;
+use App\Services\CurrencyConversionService;
 use App\Services\InvoiceCalculationService;
 use App\Services\ReferenceGenerator;
 use App\Traits\ApiResponse;
@@ -80,7 +81,11 @@ class CreditNoteController extends Controller
         ], 'Credit notes retrieved successfully');
     }
 
-    public function store(StoreCreditNoteRequest $request, InvoiceCalculationService $calculationService): JsonResponse
+    public function store(
+        StoreCreditNoteRequest $request,
+        InvoiceCalculationService $calculationService,
+        CurrencyConversionService $currencyConversionService
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $request->user();
@@ -91,14 +96,29 @@ class CreditNoteController extends Controller
 
         try {
             /** @var CreditNote $creditNote */
-            $creditNote = DB::transaction(function () use ($validated, $user, $invoice, $calculationService): CreditNote {
+            $creditNote = DB::transaction(function () use ($validated, $user, $invoice, $calculationService, $currencyConversionService): CreditNote {
                 /** @var array<int, array<string, mixed>> $lineItems */
                 $lineItems = $validated['line_items'];
                 $calculation = $calculationService->calculate($lineItems);
+                $currency = strtoupper((string) ($validated['currency'] ?? $invoice->currency));
+                $baseCurrency = strtoupper((string) ($user->base_currency ?? 'EUR'));
+                $issueDate = Carbon::parse((string) $validated['issue_date']);
 
                 if ((float) $calculation['total'] > (float) $invoice->balance_due) {
                     throw new RuntimeException('Credit note total exceeds invoice remaining balance');
                 }
+
+                $exchangeRate = $currencyConversionService->rateFor(
+                    $currency,
+                    $baseCurrency,
+                    $issueDate
+                );
+                $baseCurrencyTotal = $currencyConversionService->convert(
+                    (float) $calculation['total'],
+                    $currency,
+                    $baseCurrency,
+                    $issueDate
+                );
 
                 $creditNote = CreditNote::query()->create([
                     'user_id' => $user->id,
@@ -106,11 +126,14 @@ class CreditNoteController extends Controller
                     'invoice_id' => $invoice->id,
                     'number' => ReferenceGenerator::generate('credit_notes', 'AVO'),
                     'status' => 'draft',
-                    'issue_date' => Carbon::parse((string) $validated['issue_date'])->toDateString(),
+                    'issue_date' => $issueDate->toDateString(),
                     'subtotal' => $calculation['subtotal'],
                     'tax_amount' => $calculation['tax_amount'],
                     'total' => $calculation['total'],
-                    'currency' => $validated['currency'] ?? $invoice->currency,
+                    'currency' => $currency,
+                    'base_currency' => $baseCurrency,
+                    'exchange_rate' => $exchangeRate,
+                    'base_currency_total' => $baseCurrencyTotal,
                     'reason' => $validated['reason'] ?? null,
                 ]);
 
@@ -144,7 +167,12 @@ class CreditNoteController extends Controller
         return $this->success(new CreditNoteResource($creditNote), 'Credit note retrieved successfully');
     }
 
-    public function update(UpdateCreditNoteRequest $request, CreditNote $creditNote, InvoiceCalculationService $calculationService): JsonResponse
+    public function update(
+        UpdateCreditNoteRequest $request,
+        CreditNote $creditNote,
+        InvoiceCalculationService $calculationService,
+        CurrencyConversionService $currencyConversionService
+    ): JsonResponse
     {
         Gate::authorize('update', $creditNote);
 
@@ -155,7 +183,7 @@ class CreditNoteController extends Controller
         $validated = $request->validated();
 
         try {
-            DB::transaction(function () use ($creditNote, $validated, $calculationService): void {
+            DB::transaction(function () use ($creditNote, $validated, $calculationService, $currencyConversionService): void {
                 /** @var array<int, array<string, mixed>> $lineItems */
                 $lineItems = $validated['line_items'];
                 $calculation = $calculationService->calculate($lineItems);
@@ -169,12 +197,30 @@ class CreditNoteController extends Controller
                     throw new RuntimeException('Credit note total exceeds invoice remaining balance');
                 }
 
+                $currency = strtoupper((string) ($validated['currency'] ?? $creditNote->currency));
+                $baseCurrency = strtoupper((string) ($creditNote->user?->base_currency ?? 'EUR'));
+                $issueDate = Carbon::parse((string) $validated['issue_date']);
+                $exchangeRate = $currencyConversionService->rateFor(
+                    $currency,
+                    $baseCurrency,
+                    $issueDate
+                );
+                $baseCurrencyTotal = $currencyConversionService->convert(
+                    (float) $calculation['total'],
+                    $currency,
+                    $baseCurrency,
+                    $issueDate
+                );
+
                 $creditNote->update([
-                    'issue_date' => Carbon::parse((string) $validated['issue_date'])->toDateString(),
+                    'issue_date' => $issueDate->toDateString(),
                     'subtotal' => $calculation['subtotal'],
                     'tax_amount' => $calculation['tax_amount'],
                     'total' => $calculation['total'],
-                    'currency' => $validated['currency'] ?? $creditNote->currency,
+                    'currency' => $currency,
+                    'base_currency' => $baseCurrency,
+                    'exchange_rate' => $exchangeRate,
+                    'base_currency_total' => $baseCurrencyTotal,
                     'reason' => $validated['reason'] ?? null,
                 ]);
 

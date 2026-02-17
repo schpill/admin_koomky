@@ -9,13 +9,16 @@ use App\Http\Resources\Api\V1\Invoices\InvoiceResource;
 use App\Jobs\SendInvoiceJob;
 use App\Models\Invoice;
 use App\Models\User;
+use App\Services\CurrencyConversionService;
 use App\Services\InvoiceCalculationService;
 use App\Services\ReferenceGenerator;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use RuntimeException;
 
 class InvoiceController extends Controller
 {
@@ -74,55 +77,81 @@ class InvoiceController extends Controller
         ], 'Invoices retrieved successfully');
     }
 
-    public function store(StoreInvoiceRequest $request, InvoiceCalculationService $calculationService): JsonResponse
+    public function store(
+        StoreInvoiceRequest $request,
+        InvoiceCalculationService $calculationService,
+        CurrencyConversionService $currencyConversionService
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $request->user();
 
         $validated = $request->validated();
 
-        /** @var Invoice $invoice */
-        $invoice = DB::transaction(function () use ($validated, $user, $calculationService): Invoice {
-            /** @var array<int, array<string, mixed>> $lineItems */
-            $lineItems = $validated['line_items'];
+        try {
+            /** @var Invoice $invoice */
+            $invoice = DB::transaction(function () use ($validated, $user, $calculationService, $currencyConversionService): Invoice {
+                /** @var array<int, array<string, mixed>> $lineItems */
+                $lineItems = $validated['line_items'];
+                $currency = strtoupper((string) ($validated['currency'] ?? 'EUR'));
+                $baseCurrency = strtoupper((string) ($user->base_currency ?? 'EUR'));
+                $issueDate = Carbon::parse((string) $validated['issue_date']);
 
-            $calculation = $calculationService->calculate(
-                $lineItems,
-                $validated['discount_type'] ?? null,
-                $validated['discount_value'] ?? null,
-            );
+                $calculation = $calculationService->calculate(
+                    $lineItems,
+                    $validated['discount_type'] ?? null,
+                    $validated['discount_value'] ?? null,
+                );
 
-            $invoice = Invoice::query()->create([
-                'user_id' => $user->id,
-                'client_id' => $validated['client_id'],
-                'project_id' => $validated['project_id'] ?? null,
-                'number' => ReferenceGenerator::generate('invoices', 'FAC'),
-                'status' => 'draft',
-                'issue_date' => $validated['issue_date'],
-                'due_date' => $validated['due_date'],
-                'subtotal' => $calculation['subtotal'],
-                'tax_amount' => $calculation['tax_amount'],
-                'discount_type' => $validated['discount_type'] ?? null,
-                'discount_value' => $validated['discount_value'] ?? null,
-                'discount_amount' => $calculation['discount_amount'],
-                'total' => $calculation['total'],
-                'currency' => $validated['currency'] ?? 'EUR',
-                'notes' => $validated['notes'] ?? null,
-                'payment_terms' => ($user->payment_terms_days ?? 30).' days',
-            ]);
+                $exchangeRate = $currencyConversionService->rateFor(
+                    $currency,
+                    $baseCurrency,
+                    $issueDate
+                );
+                $baseCurrencyTotal = $currencyConversionService->convert(
+                    (float) $calculation['total'],
+                    $currency,
+                    $baseCurrency,
+                    $issueDate
+                );
 
-            foreach ($lineItems as $index => $lineItem) {
-                $invoice->lineItems()->create([
-                    'description' => $lineItem['description'],
-                    'quantity' => $lineItem['quantity'],
-                    'unit_price' => $lineItem['unit_price'],
-                    'vat_rate' => $lineItem['vat_rate'],
-                    'sort_order' => $index,
+                $invoice = Invoice::query()->create([
+                    'user_id' => $user->id,
+                    'client_id' => $validated['client_id'],
+                    'project_id' => $validated['project_id'] ?? null,
+                    'number' => ReferenceGenerator::generate('invoices', 'FAC'),
+                    'status' => 'draft',
+                    'issue_date' => $issueDate->toDateString(),
+                    'due_date' => $validated['due_date'],
+                    'subtotal' => $calculation['subtotal'],
+                    'tax_amount' => $calculation['tax_amount'],
+                    'discount_type' => $validated['discount_type'] ?? null,
+                    'discount_value' => $validated['discount_value'] ?? null,
+                    'discount_amount' => $calculation['discount_amount'],
+                    'total' => $calculation['total'],
+                    'currency' => $currency,
+                    'base_currency' => $baseCurrency,
+                    'exchange_rate' => $exchangeRate,
+                    'base_currency_total' => $baseCurrencyTotal,
+                    'notes' => $validated['notes'] ?? null,
+                    'payment_terms' => ($user->payment_terms_days ?? 30).' days',
                 ]);
-            }
 
-            return $invoice;
-        });
+                foreach ($lineItems as $index => $lineItem) {
+                    $invoice->lineItems()->create([
+                        'description' => $lineItem['description'],
+                        'quantity' => $lineItem['quantity'],
+                        'unit_price' => $lineItem['unit_price'],
+                        'vat_rate' => $lineItem['vat_rate'],
+                        'sort_order' => $index,
+                    ]);
+                }
+
+                return $invoice;
+            });
+        } catch (RuntimeException $exception) {
+            return $this->error($exception->getMessage(), 422);
+        }
 
         $invoice->load(['client', 'project', 'lineItems', 'payments', 'creditNotes']);
 
@@ -138,7 +167,12 @@ class InvoiceController extends Controller
         return $this->success(new InvoiceResource($invoice), 'Invoice retrieved successfully');
     }
 
-    public function update(UpdateInvoiceRequest $request, Invoice $invoice, InvoiceCalculationService $calculationService): JsonResponse
+    public function update(
+        UpdateInvoiceRequest $request,
+        Invoice $invoice,
+        InvoiceCalculationService $calculationService,
+        CurrencyConversionService $currencyConversionService
+    ): JsonResponse
     {
         Gate::authorize('update', $invoice);
 
@@ -148,43 +182,65 @@ class InvoiceController extends Controller
 
         $validated = $request->validated();
 
-        DB::transaction(function () use ($invoice, $validated, $calculationService): void {
-            /** @var array<int, array<string, mixed>> $lineItems */
-            $lineItems = $validated['line_items'];
+        try {
+            DB::transaction(function () use ($invoice, $validated, $calculationService, $currencyConversionService): void {
+                /** @var array<int, array<string, mixed>> $lineItems */
+                $lineItems = $validated['line_items'];
+                $currency = strtoupper((string) ($validated['currency'] ?? $invoice->currency));
+                $baseCurrency = strtoupper((string) ($invoice->user?->base_currency ?? 'EUR'));
+                $issueDate = Carbon::parse((string) $validated['issue_date']);
 
-            $calculation = $calculationService->calculate(
-                $lineItems,
-                $validated['discount_type'] ?? null,
-                $validated['discount_value'] ?? null,
-            );
+                $calculation = $calculationService->calculate(
+                    $lineItems,
+                    $validated['discount_type'] ?? null,
+                    $validated['discount_value'] ?? null,
+                );
 
-            $invoice->update([
-                'client_id' => $validated['client_id'],
-                'project_id' => $validated['project_id'] ?? null,
-                'issue_date' => $validated['issue_date'],
-                'due_date' => $validated['due_date'],
-                'subtotal' => $calculation['subtotal'],
-                'tax_amount' => $calculation['tax_amount'],
-                'discount_type' => $validated['discount_type'] ?? null,
-                'discount_value' => $validated['discount_value'] ?? null,
-                'discount_amount' => $calculation['discount_amount'],
-                'total' => $calculation['total'],
-                'currency' => $validated['currency'] ?? $invoice->currency,
-                'notes' => $validated['notes'] ?? null,
-            ]);
+                $exchangeRate = $currencyConversionService->rateFor(
+                    $currency,
+                    $baseCurrency,
+                    $issueDate
+                );
+                $baseCurrencyTotal = $currencyConversionService->convert(
+                    (float) $calculation['total'],
+                    $currency,
+                    $baseCurrency,
+                    $issueDate
+                );
 
-            $invoice->lineItems()->delete();
-
-            foreach ($lineItems as $index => $lineItem) {
-                $invoice->lineItems()->create([
-                    'description' => $lineItem['description'],
-                    'quantity' => $lineItem['quantity'],
-                    'unit_price' => $lineItem['unit_price'],
-                    'vat_rate' => $lineItem['vat_rate'],
-                    'sort_order' => $index,
+                $invoice->update([
+                    'client_id' => $validated['client_id'],
+                    'project_id' => $validated['project_id'] ?? null,
+                    'issue_date' => $issueDate->toDateString(),
+                    'due_date' => $validated['due_date'],
+                    'subtotal' => $calculation['subtotal'],
+                    'tax_amount' => $calculation['tax_amount'],
+                    'discount_type' => $validated['discount_type'] ?? null,
+                    'discount_value' => $validated['discount_value'] ?? null,
+                    'discount_amount' => $calculation['discount_amount'],
+                    'total' => $calculation['total'],
+                    'currency' => $currency,
+                    'base_currency' => $baseCurrency,
+                    'exchange_rate' => $exchangeRate,
+                    'base_currency_total' => $baseCurrencyTotal,
+                    'notes' => $validated['notes'] ?? null,
                 ]);
-            }
-        });
+
+                $invoice->lineItems()->delete();
+
+                foreach ($lineItems as $index => $lineItem) {
+                    $invoice->lineItems()->create([
+                        'description' => $lineItem['description'],
+                        'quantity' => $lineItem['quantity'],
+                        'unit_price' => $lineItem['unit_price'],
+                        'vat_rate' => $lineItem['vat_rate'],
+                        'sort_order' => $index,
+                    ]);
+                }
+            });
+        } catch (RuntimeException $exception) {
+            return $this->error($exception->getMessage(), 422);
+        }
 
         $invoice->refresh()->load(['client', 'project', 'lineItems', 'payments', 'creditNotes']);
 
@@ -222,7 +278,12 @@ class InvoiceController extends Controller
         return $this->success(new InvoiceResource($invoice->fresh(['client', 'project', 'lineItems', 'payments', 'creditNotes'])), 'Invoice sent successfully');
     }
 
-    public function duplicate(Request $request, Invoice $invoice, InvoiceCalculationService $calculationService): JsonResponse
+    public function duplicate(
+        Request $request,
+        Invoice $invoice,
+        InvoiceCalculationService $calculationService,
+        CurrencyConversionService $currencyConversionService
+    ): JsonResponse
     {
         Gate::authorize('view', $invoice);
 
@@ -244,45 +305,67 @@ class InvoiceController extends Controller
             ->values()
             ->all();
 
-        /** @var Invoice $clone */
-        $clone = DB::transaction(function () use ($invoice, $lineItems, $user, $calculationService): Invoice {
-            $calculation = $calculationService->calculate(
-                $lineItems,
-                $invoice->discount_type,
-                $invoice->discount_value,
-            );
+        try {
+            /** @var Invoice $clone */
+            $clone = DB::transaction(function () use ($invoice, $lineItems, $user, $calculationService, $currencyConversionService): Invoice {
+                $calculation = $calculationService->calculate(
+                    $lineItems,
+                    $invoice->discount_type,
+                    $invoice->discount_value,
+                );
 
-            $clone = Invoice::query()->create([
-                'user_id' => $invoice->user_id,
-                'client_id' => $invoice->client_id,
-                'project_id' => $invoice->project_id,
-                'number' => ReferenceGenerator::generate('invoices', 'FAC'),
-                'status' => 'draft',
-                'issue_date' => now()->toDateString(),
-                'due_date' => now()->addDays((int) ($user->payment_terms_days ?? 30))->toDateString(),
-                'subtotal' => $calculation['subtotal'],
-                'tax_amount' => $calculation['tax_amount'],
-                'discount_type' => $invoice->discount_type,
-                'discount_value' => $invoice->discount_value,
-                'discount_amount' => $calculation['discount_amount'],
-                'total' => $calculation['total'],
-                'currency' => $invoice->currency,
-                'notes' => $invoice->notes,
-                'payment_terms' => ($user->payment_terms_days ?? 30).' days',
-            ]);
+                $issueDate = now();
+                $currency = strtoupper((string) $invoice->currency);
+                $baseCurrency = strtoupper((string) ($user->base_currency ?? 'EUR'));
+                $exchangeRate = $currencyConversionService->rateFor(
+                    $currency,
+                    $baseCurrency,
+                    $issueDate
+                );
+                $baseCurrencyTotal = $currencyConversionService->convert(
+                    (float) $calculation['total'],
+                    $currency,
+                    $baseCurrency,
+                    $issueDate
+                );
 
-            foreach ($lineItems as $index => $lineItem) {
-                $clone->lineItems()->create([
-                    'description' => $lineItem['description'],
-                    'quantity' => $lineItem['quantity'],
-                    'unit_price' => $lineItem['unit_price'],
-                    'vat_rate' => $lineItem['vat_rate'],
-                    'sort_order' => $index,
+                $clone = Invoice::query()->create([
+                    'user_id' => $invoice->user_id,
+                    'client_id' => $invoice->client_id,
+                    'project_id' => $invoice->project_id,
+                    'number' => ReferenceGenerator::generate('invoices', 'FAC'),
+                    'status' => 'draft',
+                    'issue_date' => $issueDate->toDateString(),
+                    'due_date' => now()->addDays((int) ($user->payment_terms_days ?? 30))->toDateString(),
+                    'subtotal' => $calculation['subtotal'],
+                    'tax_amount' => $calculation['tax_amount'],
+                    'discount_type' => $invoice->discount_type,
+                    'discount_value' => $invoice->discount_value,
+                    'discount_amount' => $calculation['discount_amount'],
+                    'total' => $calculation['total'],
+                    'currency' => $currency,
+                    'base_currency' => $baseCurrency,
+                    'exchange_rate' => $exchangeRate,
+                    'base_currency_total' => $baseCurrencyTotal,
+                    'notes' => $invoice->notes,
+                    'payment_terms' => ($user->payment_terms_days ?? 30).' days',
                 ]);
-            }
 
-            return $clone;
-        });
+                foreach ($lineItems as $index => $lineItem) {
+                    $clone->lineItems()->create([
+                        'description' => $lineItem['description'],
+                        'quantity' => $lineItem['quantity'],
+                        'unit_price' => $lineItem['unit_price'],
+                        'vat_rate' => $lineItem['vat_rate'],
+                        'sort_order' => $index,
+                    ]);
+                }
+
+                return $clone;
+            });
+        } catch (RuntimeException $exception) {
+            return $this->error($exception->getMessage(), 422);
+        }
 
         return $this->success(new InvoiceResource($clone->load(['client', 'project', 'lineItems', 'payments', 'creditNotes'])), 'Invoice duplicated successfully', 201);
     }

@@ -4,12 +4,15 @@ namespace App\Observers;
 
 use App\Models\Invoice;
 use App\Services\ActivityService;
+use App\Services\Calendar\CalendarAutoEventService;
 use Illuminate\Support\Facades\DB;
 
 class InvoiceObserver
 {
     public function created(Invoice $invoice): void
     {
+        app(CalendarAutoEventService::class)->syncInvoiceReminder($invoice);
+
         $client = $invoice->client;
         if ($client) {
             ActivityService::log($client, "Invoice created: {$invoice->number}", [
@@ -24,6 +27,10 @@ class InvoiceObserver
 
     public function updated(Invoice $invoice): void
     {
+        if ($invoice->wasChanged(['due_date', 'number'])) {
+            app(CalendarAutoEventService::class)->syncInvoiceReminder($invoice);
+        }
+
         if (! $invoice->wasChanged('status')) {
             return;
         }

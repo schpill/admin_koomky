@@ -9,7 +9,10 @@ use RuntimeException;
 
 class ConvertQuoteToInvoiceService
 {
-    public function __construct(protected InvoiceCalculationService $calculationService) {}
+    public function __construct(
+        protected InvoiceCalculationService $calculationService,
+        protected CurrencyConversionService $currencyConversionService
+    ) {}
 
     public function convert(Quote $quote): Invoice
     {
@@ -43,13 +46,28 @@ class ConvertQuoteToInvoiceService
                 $quote->discount_value,
             );
 
+            $issueDate = now();
+            $currency = strtoupper((string) $quote->currency);
+            $baseCurrency = strtoupper((string) ($user->base_currency ?? 'EUR'));
+            $exchangeRate = $this->currencyConversionService->rateFor(
+                $currency,
+                $baseCurrency,
+                $issueDate
+            );
+            $baseCurrencyTotal = $this->currencyConversionService->convert(
+                (float) $calculation['total'],
+                $currency,
+                $baseCurrency,
+                $issueDate
+            );
+
             $invoice = Invoice::query()->create([
                 'user_id' => $quote->user_id,
                 'client_id' => $quote->client_id,
                 'project_id' => $quote->project_id,
                 'number' => ReferenceGenerator::generate('invoices', 'FAC'),
                 'status' => 'draft',
-                'issue_date' => now()->toDateString(),
+                'issue_date' => $issueDate->toDateString(),
                 'due_date' => now()->addDays($paymentTermsDays)->toDateString(),
                 'subtotal' => $calculation['subtotal'],
                 'tax_amount' => $calculation['tax_amount'],
@@ -57,7 +75,10 @@ class ConvertQuoteToInvoiceService
                 'discount_value' => $quote->discount_value,
                 'discount_amount' => $calculation['discount_amount'],
                 'total' => $calculation['total'],
-                'currency' => $quote->currency,
+                'currency' => $currency,
+                'base_currency' => $baseCurrency,
+                'exchange_rate' => $exchangeRate,
+                'base_currency_total' => $baseCurrencyTotal,
                 'notes' => $quote->notes,
                 'payment_terms' => $paymentTermsDays.' days',
             ]);

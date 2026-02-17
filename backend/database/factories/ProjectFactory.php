@@ -24,6 +24,7 @@ class ProjectFactory extends Factory
             'description' => $this->faker->optional()->paragraph(),
             'status' => $this->faker->randomElement(['draft', 'proposal_sent', 'in_progress', 'on_hold']),
             'billing_type' => $this->faker->randomElement(['hourly', 'fixed']),
+            'currency' => 'EUR',
             'hourly_rate' => $this->faker->randomFloat(2, 30, 300),
             'fixed_price' => $this->faker->randomFloat(2, 1000, 30000),
             'estimated_hours' => $this->faker->optional()->randomFloat(2, 1, 120),

@@ -4,7 +4,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 interface MetricCardProps {
   title: string;
-  value?: string | number;
+  value?: React.ReactNode;
   icon: React.ReactNode;
   description?: string;
   className?: string;

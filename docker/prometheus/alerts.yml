@@ -1,0 +1,60 @@
+groups:
+  - name: koomky-monitoring-alerts
+    rules:
+      - alert: HighApiErrorRate
+        expr: |
+          (
+            sum(rate(http_requests_total{status=~"5.."}[5m]))
+            /
+            clamp_min(sum(rate(http_requests_total[5m])), 0.0001)
+          ) > 0.05
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "API error rate is above 5%"
+          description: "More than 5% of HTTP requests are returning 5xx over 5 minutes."
+
+      - alert: HighApiP95Latency
+        expr: |
+          histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le)) > 0.5
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "API p95 latency is above 500ms"
+          description: "95th percentile API latency exceeded 0.5s over the last 5 minutes."
+
+      - alert: QueueDepthTooHigh
+        expr: sum(koomky_queue_jobs_waiting) > 1000
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Queue depth is above 1000 jobs"
+          description: "Background queue backlog exceeded the defined threshold."
+
+      - alert: HighDiskUsage
+        expr: |
+          (
+            100 - (
+              node_filesystem_avail_bytes{fstype!~"tmpfs|overlay"}
+              /
+              clamp_min(node_filesystem_size_bytes{fstype!~"tmpfs|overlay"}, 1)
+            ) * 100
+          ) > 80
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Disk usage above 80%"
+          description: "Node exporter reports a filesystem usage over 80%."
+
+      - alert: HighDatabaseConnections
+        expr: sum(pg_stat_database_numbackends) > 80
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Database connections are high"
+          description: "PostgreSQL active backend connections are above 80."

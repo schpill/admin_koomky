@@ -22,6 +22,9 @@ use Laravel\Scout\Searchable;
  * @property float $tax_amount
  * @property float $total
  * @property string $currency
+ * @property string $base_currency
+ * @property float|null $exchange_rate
+ * @property float|null $base_currency_total
  * @property string|null $reason
  * @property string|null $pdf_path
  * @property \Illuminate\Support\Carbon|null $sent_at
@@ -44,6 +47,9 @@ class CreditNote extends Model
         'tax_amount',
         'total',
         'currency',
+        'base_currency',
+        'exchange_rate',
+        'base_currency_total',
         'reason',
         'pdf_path',
         'sent_at',
@@ -60,6 +66,8 @@ class CreditNote extends Model
             'subtotal' => 'decimal:2',
             'tax_amount' => 'decimal:2',
             'total' => 'decimal:2',
+            'exchange_rate' => 'decimal:6',
+            'base_currency_total' => 'decimal:2',
             'sent_at' => 'datetime',
             'applied_at' => 'datetime',
         ];
@@ -159,6 +167,8 @@ class CreditNote extends Model
             'reason' => $this->reason,
             'issue_date' => $this->issue_date->toDateString(),
             'total' => (float) $this->total,
+            'base_currency' => $this->base_currency,
+            'base_currency_total' => $this->base_currency_total !== null ? (float) $this->base_currency_total : null,
             'client_name' => $this->client?->name,
             'invoice_number' => $this->invoice?->number,
         ];

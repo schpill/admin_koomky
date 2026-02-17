@@ -17,6 +17,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { Skeleton } from "@/components/ui/skeleton";
 import { QuoteStatusBadge } from "@/components/quotes/quote-status-badge";
 import { QuotePdfPreview } from "@/components/quotes/quote-pdf-preview";
+import { CurrencyAmount } from "@/components/shared/currency-amount";
 import { ConfirmationDialog } from "@/components/common/confirmation-dialog";
 import { useQuoteStore } from "@/lib/stores/quotes";
 
@@ -49,7 +50,7 @@ function buildPreviewHtml(quote: any): string {
           <thead><tr><th>Description</th><th>Qty</th><th>Unit</th><th>Total</th></tr></thead>
           <tbody>${rows}</tbody>
         </table>
-        <p style="margin-top: 12px;"><strong>Total:</strong> ${Number(quote.total).toFixed(2)} EUR</p>
+        <p style="margin-top: 12px;"><strong>Total:</strong> ${Number(quote.total).toFixed(2)} ${quote.currency || "EUR"}</p>
       </body>
     </html>
   `;
@@ -210,7 +211,10 @@ export default function QuoteDetailPage() {
               <div>
                 <p className="text-xs text-muted-foreground">Total</p>
                 <p className="font-medium">
-                  {Number(currentQuote.total).toFixed(2)} EUR
+                  <CurrencyAmount
+                    amount={Number(currentQuote.total)}
+                    currency={currentQuote.currency || "EUR"}
+                  />
                 </p>
               </div>
               <div>
@@ -262,9 +266,12 @@ export default function QuoteDetailPage() {
                           {Number(line.vat_rate).toFixed(2)}%
                         </td>
                         <td className="py-2">
-                          {Number(
-                            line.total || line.quantity * line.unit_price
-                          ).toFixed(2)}
+                          <CurrencyAmount
+                            amount={Number(
+                              line.total || line.quantity * line.unit_price
+                            )}
+                            currency={currentQuote.currency || "EUR"}
+                          />
                         </td>
                       </tr>
                     ))}

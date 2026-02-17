@@ -31,6 +31,7 @@ export interface Invoice {
   user_id?: string;
   client_id: string;
   project_id?: string | null;
+  recurring_invoice_profile_id?: string | null;
   number: string;
   status: InvoiceStatus;
   issue_date: string;
@@ -44,6 +45,9 @@ export interface Invoice {
   amount_paid: number;
   balance_due?: number;
   currency?: string;
+  base_currency?: string;
+  exchange_rate?: number | null;
+  base_currency_total?: number | null;
   notes?: string | null;
   payment_terms?: string | null;
   pdf_path?: string | null;

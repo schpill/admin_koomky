@@ -27,6 +27,9 @@ use Laravel\Scout\Searchable;
  * @property float $discount_amount
  * @property float $total
  * @property string $currency
+ * @property string $base_currency
+ * @property float|null $exchange_rate
+ * @property float|null $base_currency_total
  * @property string|null $notes
  * @property string|null $pdf_path
  * @property \Illuminate\Support\Carbon|null $sent_at
@@ -54,6 +57,9 @@ class Quote extends Model
         'discount_amount',
         'total',
         'currency',
+        'base_currency',
+        'exchange_rate',
+        'base_currency_total',
         'notes',
         'pdf_path',
         'sent_at',
@@ -73,6 +79,8 @@ class Quote extends Model
             'discount_value' => 'decimal:2',
             'discount_amount' => 'decimal:2',
             'total' => 'decimal:2',
+            'exchange_rate' => 'decimal:6',
+            'base_currency_total' => 'decimal:2',
             'sent_at' => 'datetime',
             'accepted_at' => 'datetime',
         ];
@@ -185,6 +193,8 @@ class Quote extends Model
             'issue_date' => $this->issue_date->toDateString(),
             'valid_until' => $this->valid_until->toDateString(),
             'total' => (float) $this->total,
+            'base_currency' => $this->base_currency,
+            'base_currency_total' => $this->base_currency_total !== null ? (float) $this->base_currency_total : null,
             'client_name' => $this->client?->name,
         ];
     }

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { ChevronLeft } from "lucide-react";
@@ -14,7 +14,10 @@ import {
   LineItemsEditor,
   type InvoiceLineItemInput,
 } from "@/components/invoices/line-items-editor";
+import { CurrencyAmount } from "@/components/shared/currency-amount";
+import { CurrencySelector } from "@/components/shared/currency-selector";
 import { useClientStore } from "@/lib/stores/clients";
+import { useCurrencyStore } from "@/lib/stores/currencies";
 import { useInvoiceStore } from "@/lib/stores/invoices";
 
 const today = new Date().toISOString().slice(0, 10);
@@ -25,11 +28,14 @@ const inThirtyDays = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
 export default function CreateInvoicePage() {
   const router = useRouter();
   const { clients, fetchClients } = useClientStore();
+  const { currencies, rates, baseCurrency, fetchCurrencies, fetchRates } =
+    useCurrencyStore();
   const { createInvoice, isLoading } = useInvoiceStore();
 
   const [clientId, setClientId] = useState("");
   const [issueDate, setIssueDate] = useState(today);
   const [dueDate, setDueDate] = useState(inThirtyDays);
+  const [currency, setCurrency] = useState("EUR");
   const [notes, setNotes] = useState("");
   const [discountType, setDiscountType] = useState<
     "percentage" | "fixed" | null
@@ -47,6 +53,59 @@ export default function CreateInvoicePage() {
   useEffect(() => {
     fetchClients();
   }, [fetchClients]);
+
+  useEffect(() => {
+    fetchCurrencies();
+    fetchRates();
+  }, [fetchCurrencies, fetchRates]);
+
+  useEffect(() => {
+    if (!clientId) {
+      return;
+    }
+
+    const selectedClient = clients.find((client) => client.id === clientId);
+    if (selectedClient?.preferred_currency) {
+      setCurrency(selectedClient.preferred_currency.toUpperCase());
+    }
+  }, [clientId, clients]);
+
+  const estimatedDocumentTotal = useMemo(() => {
+    const subtotal = lineItems.reduce(
+      (sum, item) => sum + Number(item.quantity || 0) * Number(item.unit_price || 0),
+      0
+    );
+    const taxAmount = lineItems.reduce((sum, item) => {
+      const rowSubtotal =
+        Number(item.quantity || 0) * Number(item.unit_price || 0);
+      return sum + rowSubtotal * (Number(item.vat_rate || 0) / 100);
+    }, 0);
+
+    const discountAmount =
+      discountType === "percentage"
+        ? subtotal * (Number(discountValue || 0) / 100)
+        : discountType === "fixed"
+          ? Number(discountValue || 0)
+          : 0;
+
+    return Math.max(0, subtotal - discountAmount + taxAmount);
+  }, [discountType, discountValue, lineItems]);
+
+  const estimatedBaseTotal = useMemo(() => {
+    const normalizedCurrency = currency.toUpperCase();
+    const normalizedBase = String(baseCurrency || "EUR").toUpperCase();
+
+    if (normalizedCurrency === normalizedBase) {
+      return estimatedDocumentTotal;
+    }
+
+    const baseToDocumentRate = rates[normalizedCurrency];
+    if (typeof baseToDocumentRate === "number" && baseToDocumentRate > 0) {
+      return estimatedDocumentTotal / baseToDocumentRate;
+    }
+
+    return estimatedDocumentTotal;
+  }, [baseCurrency, currency, estimatedDocumentTotal, rates]);
 
   const handleSubmit = async () => {
     if (!clientId) {
@@ -71,6 +130,7 @@ export default function CreateInvoicePage() {
         client_id: clientId,
         issue_date: issueDate,
         due_date: dueDate,
+        currency: currency.toUpperCase(),
         notes,
         discount_type: discountType,
         discount_value: discountType ? discountValue : null,
@@ -141,6 +201,33 @@ export default function CreateInvoicePage() {
                 onChange={(event) => setDueDate(event.target.value)}
               />
             </div>
+          </div>
+
+          <div className="space-y-2 rounded-md border bg-muted/20 p-3">
+            <CurrencySelector
+              id="invoice-currency"
+              label="Currency"
+              value={currency}
+              currencies={currencies}
+              onValueChange={setCurrency}
+            />
+            <p className="text-xs text-muted-foreground">
+              Estimated in{" "}
+              <span className="font-medium">{baseCurrency || "EUR"}:</span>{" "}
+              <CurrencyAmount
+                amount={estimatedBaseTotal}
+                currency={baseCurrency || "EUR"}
+                currencies={currencies}
+              />
+            </p>
+            <p className="text-xs text-muted-foreground">
+              Document total:{" "}
+              <CurrencyAmount
+                amount={estimatedDocumentTotal}
+                currency={currency}
+                currencies={currencies}
+              />
+            </p>
           </div>
 
           <LineItemsEditor
