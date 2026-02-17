@@ -8,13 +8,17 @@ Koomky is a self-hosted Freelance CRM built as a monorepo:
 - **Database**: PostgreSQL 16
 - **Cache/Queue**: Redis 7
 - **Search**: Meilisearch
-- **Infra**: Docker Compose (9 services)
+- **Infra**: Docker Compose (core + monitoring services)
 
 ## Current Implementation Snapshot
 
-- **Phase 3 is fully implemented and merged to `main`** (Segments, Campaigns Email/SMS, Templates, Scheduling, Tracking, Webhooks, Notifications, and Settings).
-- **Backend Coverage**: 85.48% (PCOV enabled).
-- **Frontend Coverage**: 89.10% (Vitest coverage run).
+- **Phase 5 is fully implemented and merged to `main`**.
+- **Phase 5 scope delivered**:
+  - Recurring invoices (profiles, generator jobs, scheduling, notifications, UI, tests)
+  - Multi-currency support (currencies/rates services, conversion in documents/reports/dashboard, UI, tests)
+  - Calendar integration (connections/events, sync drivers/jobs, auto-events, UI, tests)
+  - Prometheus + Grafana monitoring stack (metrics endpoint/middleware/service, exporters, dashboards, docs)
+- **Coverage gate policy**: backend and frontend thresholds remain **>= 80%**.
 - **Public signup is disabled**:
   - Backend route `POST /api/v1/auth/register` is removed.
   - Frontend `/auth/register` page and middleware exposure are removed.
@@ -26,10 +30,13 @@ Koomky is a self-hosted Freelance CRM built as a monorepo:
   - Asks for email (if not provided as argument), creates user, prints generated password in clear text.
   - Password policy enforced by generator: at least 8 chars, with lowercase, uppercase, number, and special char.
 - **CI gates are green on current merged work** with backend and frontend checks.
+- **Local pre-push checks are enforced via Husky**:
+  - Frontend: `pnpm --dir frontend format:check` (Prettier)
+  - Backend: `./vendor/bin/pint --test` and `./vendor/bin/phpstan analyse --memory-limit=1G` (executed in the `api` container)
 
 ## Task Tracking
 
-Task tracking files live in `docs/dev/phase{1,2,3,4}.md`. These are the **source of truth** for task progress across all contributors (humans and AI agents).
+Task tracking files live in `docs/dev/phase{1,2,3,4,5}.md`. These are the **source of truth** for task progress across all contributors (humans and AI agents).
 
 ### Status values
 
@@ -116,5 +123,5 @@ cd backend && php artisan users:create   # Create a private CRM user account
 ## Reference Documents
 
 - `PRD.md` — Full product requirements (v1.1.0)
-- `docs/phases/phase{1,2,3,4}.md` — Detailed specs per phase
-- `docs/dev/phase{1,2,3,4}.md` — Task tracking per phase
+- `docs/phases/phase{1,2,3,4,5}.md` — Detailed specs per phase
+- `docs/dev/phase{1,2,3,4,5}.md` — Task tracking per phase
