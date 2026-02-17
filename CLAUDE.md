@@ -12,7 +12,9 @@ Koomky is a self-hosted Freelance CRM built as a monorepo:
 
 ## Current Implementation Snapshot
 
-- **Phase 2 Sprints 5 and 6 are implemented and merged** (projects/tasks/time tracking + invoices/payments/settings).
+- **Phase 2 Sprints 5, 6, 7, and 8 are fully implemented and verified** (Projects, Tasks, Time Tracking, Invoices, Payments, Quotes, Credit Notes, and Reports).
+- **Backend Coverage**: 85.48% (PCOV enabled).
+- **Frontend Coverage**: 94.73%.
 - **Public signup is disabled**:
   - Backend route `POST /api/v1/auth/register` is removed.
   - Frontend `/auth/register` page and middleware exposure are removed.
