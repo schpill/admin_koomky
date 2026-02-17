@@ -5,17 +5,42 @@ import { Users, FolderKanban, FileText, CreditCard } from "lucide-react";
 import { MetricCard } from "@/components/dashboard/metric-card";
 import { RecentActivityWidget } from "@/components/dashboard/recent-activity-widget";
 import { UpcomingDeadlinesWidget } from "@/components/dashboard/upcoming-deadlines-widget";
+import { CampaignSummaryWidget } from "@/components/dashboard/campaign-summary-widget";
 import { useDashboardStore } from "@/lib/stores/dashboard";
 import { useI18n } from "@/components/providers/i18n-provider";
 import { RevenueChart } from "@/components/reports/revenue-chart";
+import { useNotificationStore } from "@/lib/stores/notifications";
 
 export default function DashboardPage() {
   const { stats, isLoading, fetchStats } = useDashboardStore();
   const { t } = useI18n();
+  const setNotifications = useNotificationStore((state) => state.setNotifications);
 
   useEffect(() => {
     fetchStats();
   }, [fetchStats]);
+
+  useEffect(() => {
+    if (!stats?.recent_activities) {
+      return;
+    }
+
+    const notifications = stats.recent_activities
+      .filter((activity: any) =>
+        String(activity?.description || "")
+          .toLowerCase()
+          .includes("campaign")
+      )
+      .map((activity: any) => ({
+        id: String(activity.id),
+        title: "Campaign event",
+        body: String(activity.description || "Campaign updated"),
+        created_at: String(activity.created_at || new Date().toISOString()),
+        read_at: null,
+      }));
+
+    setNotifications(notifications);
+  }, [setNotifications, stats?.recent_activities]);
 
   return (
     <div className="space-y-6">
@@ -87,6 +112,12 @@ export default function DashboardPage() {
       <RevenueChart
         title="Revenue trend (12 months)"
         data={stats?.revenue_trend || []}
+      />
+
+      <CampaignSummaryWidget
+        activeCampaigns={stats?.active_campaigns_count || 0}
+        averageOpenRate={Number(stats?.average_campaign_open_rate || 0)}
+        averageClickRate={Number(stats?.average_campaign_click_rate || 0)}
       />
 
       {/* Responsive Layout: 1 col on mobile/tablet, 3 cols on desktop */}

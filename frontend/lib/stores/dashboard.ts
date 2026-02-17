@@ -29,6 +29,9 @@ interface DashboardStats {
   overdue_invoices_count: number;
   revenue_trend: RevenueTrendItem[];
   upcoming_deadlines: UpcomingDeadline[];
+  active_campaigns_count: number;
+  average_campaign_open_rate: number;
+  average_campaign_click_rate: number;
 }
 
 interface DashboardState {

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Activity;
+use App\Models\Campaign;
 use App\Models\Client;
 use App\Models\Invoice;
 use App\Models\Project;
@@ -11,7 +12,10 @@ use Illuminate\Support\Facades\Cache;
 
 class DashboardService
 {
-    public function __construct(protected FinancialSummaryService $financialSummaryService) {}
+    public function __construct(
+        protected FinancialSummaryService $financialSummaryService,
+        protected CampaignAnalyticsService $campaignAnalyticsService
+    ) {}
 
     /**
      * @return array<string, mixed>
@@ -73,6 +77,31 @@ class DashboardService
                 ->values()
                 ->all();
 
+            $campaignsLast30Days = Campaign::query()
+                ->where('user_id', $userId)
+                ->where('created_at', '>=', now()->subDays(30))
+                ->get();
+
+            $activeCampaignsCount = $campaignsLast30Days
+                ->whereIn('status', ['scheduled', 'sending', 'paused'])
+                ->count();
+
+            $campaignRates = $campaignsLast30Days->map(function (Campaign $campaign): array {
+                $metrics = $this->campaignAnalyticsService->forCampaign($campaign);
+
+                return [
+                    'open_rate' => (float) $metrics['open_rate'],
+                    'click_rate' => (float) $metrics['click_rate'],
+                ];
+            });
+
+            $averageOpenRate = $campaignRates->count() > 0
+                ? round($campaignRates->avg('open_rate') ?? 0, 2)
+                : 0.0;
+            $averageClickRate = $campaignRates->count() > 0
+                ? round($campaignRates->avg('click_rate') ?? 0, 2)
+                : 0.0;
+
             return [
                 'total_clients' => Client::where('user_id', $userId)->count(),
                 'active_projects' => Project::query()
@@ -92,6 +121,9 @@ class DashboardService
                 'overdue_invoices_count' => $overdueCount,
                 'revenue_trend' => $monthlyBreakdown,
                 'upcoming_deadlines' => $upcomingDeadlines,
+                'active_campaigns_count' => $activeCampaignsCount,
+                'average_campaign_open_rate' => $averageOpenRate,
+                'average_campaign_click_rate' => $averageClickRate,
             ];
         });
     }
