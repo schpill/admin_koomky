@@ -12,9 +12,17 @@
         th { background: #f3f4f6; }
         .totals td { font-weight: bold; }
         .meta { margin-top: 6px; }
+        .logo { margin-bottom: 10px; }
+        .logo img { height: 36px; width: auto; }
     </style>
 </head>
 <body>
+    @if (!empty($logoDataUri))
+        <div class="logo">
+            <img src="{{ $logoDataUri }}" alt="Company logo">
+        </div>
+    @endif
+
     <h1>Invoice {{ $invoice->number }}</h1>
 
     <div class="meta">

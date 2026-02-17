@@ -1,20 +1,44 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { EmailEditor } from "@/components/campaigns/email-editor";
 import { TemplateSelector } from "@/components/campaigns/template-selector";
 import { CampaignPreview } from "@/components/campaigns/campaign-preview";
-import { SmsComposer } from "@/components/campaigns/sms-composer";
-import { SmsPreview } from "@/components/campaigns/sms-preview";
 import { TestSendModal } from "@/components/campaigns/test-send-modal";
 import { useCampaignStore } from "@/lib/stores/campaigns";
 import { useSegmentStore } from "@/lib/stores/segments";
+
+const EmailEditor = dynamic(
+  () =>
+    import("@/components/campaigns/email-editor").then(
+      (mod) => mod.EmailEditor
+    ),
+  {
+    loading: () => (
+      <div className="h-72 animate-pulse rounded-lg border border-border bg-muted/40" />
+    ),
+  }
+);
+const SmsComposer = dynamic(
+  () =>
+    import("@/components/campaigns/sms-composer").then(
+      (mod) => mod.SmsComposer
+    ),
+  {
+    loading: () => (
+      <div className="h-40 animate-pulse rounded-lg border border-border bg-muted/40" />
+    ),
+  }
+);
+const SmsPreview = dynamic(() =>
+  import("@/components/campaigns/sms-preview").then((mod) => mod.SmsPreview)
+);
 
 const sampleRecipients = [
   {
@@ -149,13 +173,14 @@ export default function CreateCampaignPage() {
         </p>
       </div>
 
-      <div className="flex gap-2">
+      <div className="grid gap-2 sm:grid-cols-4">
         {[1, 2, 3, 4].map((number) => (
           <Button
             key={number}
             variant={step === number ? "default" : "outline"}
             size="sm"
             onClick={() => setStep(number)}
+            className="justify-start sm:justify-center"
           >
             Step {number}
           </Button>

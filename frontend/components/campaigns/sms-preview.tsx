@@ -20,8 +20,8 @@ function personalize(
 
 export function SmsPreview({ content, recipient }: SmsPreviewProps) {
   return (
-    <div className="mx-auto w-full max-w-xs rounded-[2rem] border-8 border-neutral-900 bg-neutral-900 p-3 shadow-xl">
-      <div className="rounded-[1.4rem] bg-neutral-100 p-3">
+    <div className="mx-auto w-full max-w-xs rounded-[2rem] border-8 border-border bg-card p-3 shadow-xl">
+      <div className="rounded-[1.4rem] bg-muted p-3">
         <div className="rounded-2xl bg-primary px-4 py-3 text-sm text-primary-foreground">
           {personalize(content, recipient)}
         </div>

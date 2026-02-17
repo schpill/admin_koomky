@@ -9,11 +9,11 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { SegmentBuilder } from "@/components/segments/segment-builder";
 import { SegmentPreviewPanel } from "@/components/segments/segment-preview-panel";
-import { useSegmentStore } from "@/lib/stores/segments";
+import { useSegmentStore, type SegmentFilters } from "@/lib/stores/segments";
 
-const defaultFilters = {
-  group_boolean: "and" as const,
-  criteria_boolean: "or" as const,
+const defaultFilters: SegmentFilters = {
+  group_boolean: "and",
+  criteria_boolean: "or",
   groups: [
     {
       criteria: [{ type: "tag", operator: "equals", value: "" }],
@@ -27,7 +27,7 @@ export default function CreateSegmentPage() {
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [filters, setFilters] = useState(defaultFilters);
+  const [filters, setFilters] = useState<SegmentFilters>(defaultFilters);
 
   const preview = { contacts: [], total: 0 };
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import dynamic from "next/dynamic";
 import { Users, FolderKanban, FileText, CreditCard } from "lucide-react";
 import { MetricCard } from "@/components/dashboard/metric-card";
 import { RecentActivityWidget } from "@/components/dashboard/recent-activity-widget";
@@ -8,8 +9,19 @@ import { UpcomingDeadlinesWidget } from "@/components/dashboard/upcoming-deadlin
 import { CampaignSummaryWidget } from "@/components/dashboard/campaign-summary-widget";
 import { useDashboardStore } from "@/lib/stores/dashboard";
 import { useI18n } from "@/components/providers/i18n-provider";
-import { RevenueChart } from "@/components/reports/revenue-chart";
 import { useNotificationStore } from "@/lib/stores/notifications";
+
+const RevenueChart = dynamic(
+  () =>
+    import("@/components/reports/revenue-chart").then(
+      (mod) => mod.RevenueChart
+    ),
+  {
+    loading: () => (
+      <div className="h-64 animate-pulse rounded-lg border border-border bg-muted/40" />
+    ),
+  }
+);
 
 export default function DashboardPage() {
   const { stats, isLoading, fetchStats } = useDashboardStore();
@@ -48,8 +60,8 @@ export default function DashboardPage() {
     <div className="space-y-6">
       <h1 className="text-3xl font-bold">{t("dashboard.title")}</h1>
 
-      {/* Responsive Grid: 1 col on mobile, 2 on tablet, 4 on desktop */}
-      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+      {/* Responsive Grid: 1 col on mobile, 2 on tablet, 3 on desktop */}
+      <div className="grid gap-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
         <MetricCard
           title={t("dashboard.metrics.totalClients.title")}
           value={stats?.total_clients}
@@ -80,7 +92,7 @@ export default function DashboardPage() {
         />
       </div>
 
-      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
         <MetricCard
           title="Quarter revenue"
           value={`${Number(stats?.revenue_quarter || 0).toFixed(2)} EUR`}

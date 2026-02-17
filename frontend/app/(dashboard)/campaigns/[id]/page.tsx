@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -11,15 +12,9 @@ import { RecipientStatusTable } from "@/components/campaigns/recipient-status-ta
 import { TestSendModal } from "@/components/campaigns/test-send-modal";
 import { useCampaignStore } from "@/lib/stores/campaigns";
 
-interface CampaignDetailPageProps {
-  params: {
-    id: string;
-  };
-}
-
-export default function CampaignDetailPage({
-  params,
-}: CampaignDetailPageProps) {
+export default function CampaignDetailPage() {
+  const params = useParams<{ id: string }>();
+  const campaignId = params.id;
   const {
     currentCampaign,
     isLoading,
@@ -31,12 +26,16 @@ export default function CampaignDetailPage({
   } = useCampaignStore();
 
   useEffect(() => {
-    fetchCampaign(params.id).catch((error) => {
+    if (!campaignId) {
+      return;
+    }
+
+    fetchCampaign(campaignId).catch((error) => {
       toast.error((error as Error).message || "Unable to load campaign");
     });
-  }, [fetchCampaign, params.id]);
+  }, [campaignId, fetchCampaign]);
 
-  if (!currentCampaign || currentCampaign.id !== params.id) {
+  if (!currentCampaign || currentCampaign.id !== campaignId) {
     return <p className="text-sm text-muted-foreground">Loading campaign...</p>;
   }
 

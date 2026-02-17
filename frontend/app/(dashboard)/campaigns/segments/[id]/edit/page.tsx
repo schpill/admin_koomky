@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,13 +12,9 @@ import { SegmentBuilder } from "@/components/segments/segment-builder";
 import { SegmentPreviewPanel } from "@/components/segments/segment-preview-panel";
 import { useSegmentStore } from "@/lib/stores/segments";
 
-interface EditSegmentPageProps {
-  params: {
-    id: string;
-  };
-}
-
-export default function EditSegmentPage({ params }: EditSegmentPageProps) {
+export default function EditSegmentPage() {
+  const params = useParams<{ id: string }>();
+  const segmentId = params.id;
   const router = useRouter();
   const {
     currentSegment,
@@ -39,7 +35,11 @@ export default function EditSegmentPage({ params }: EditSegmentPageProps) {
   });
 
   useEffect(() => {
-    fetchSegment(params.id)
+    if (!segmentId) {
+      return;
+    }
+
+    fetchSegment(segmentId)
       .then((segment) => {
         if (!segment) {
           return;
@@ -49,24 +49,29 @@ export default function EditSegmentPage({ params }: EditSegmentPageProps) {
         setDescription(segment.description || "");
         setFilters(segment.filters);
 
-        return previewSegment(params.id);
+        return previewSegment(segmentId);
       })
       .catch((error) => {
         toast.error((error as Error).message || "Unable to load segment");
       });
-  }, [fetchSegment, previewSegment, params.id]);
+  }, [fetchSegment, previewSegment, segmentId]);
 
   const contacts = useMemo(() => preview?.contacts.data || [], [preview]);
 
   const save = async () => {
+    if (!segmentId) {
+      toast.error("Missing segment id");
+      return;
+    }
+
     try {
-      await updateSegment(params.id, {
+      await updateSegment(segmentId, {
         name,
         description: description || null,
         filters,
       });
 
-      await previewSegment(params.id);
+      await previewSegment(segmentId);
       toast.success("Segment updated");
     } catch (error) {
       toast.error((error as Error).message || "Unable to update segment");
@@ -74,8 +79,13 @@ export default function EditSegmentPage({ params }: EditSegmentPageProps) {
   };
 
   const remove = async () => {
+    if (!segmentId) {
+      toast.error("Missing segment id");
+      return;
+    }
+
     try {
-      await deleteSegment(params.id);
+      await deleteSegment(segmentId);
       toast.success("Segment deleted");
       router.push("/campaigns/segments");
     } catch (error) {
@@ -123,7 +133,11 @@ export default function EditSegmentPage({ params }: EditSegmentPageProps) {
         previewCount={
           preview?.total_matching || currentSegment?.contact_count || 0
         }
-        onPreview={() => previewSegment(params.id).catch(() => undefined)}
+        onPreview={() =>
+          segmentId
+            ? previewSegment(segmentId).catch(() => undefined)
+            : Promise.resolve()
+        }
       />
 
       <SegmentPreviewPanel

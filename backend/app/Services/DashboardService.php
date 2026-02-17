@@ -8,7 +8,10 @@ use App\Models\Client;
 use App\Models\Invoice;
 use App\Models\Project;
 use App\Models\User;
+use Closure;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class DashboardService
 {
@@ -25,7 +28,7 @@ class DashboardService
         $userId = $user->id;
         $cacheKey = "dashboard_stats_{$userId}";
 
-        return Cache::remember($cacheKey, now()->addMinutes(10), function () use ($user, $userId) {
+        return $this->rememberWithFallback($cacheKey, now()->addMinutes(5), function () use ($user, $userId) {
             $pendingStatuses = ['draft', 'sent', 'viewed', 'partially_paid', 'overdue'];
 
             $pendingInvoices = Invoice::query()
@@ -126,6 +129,26 @@ class DashboardService
                 'average_campaign_click_rate' => $averageClickRate,
             ];
         });
+    }
+
+    /**
+     * @template TReturn
+     *
+     * @param  Closure(): TReturn  $callback
+     * @return TReturn
+     */
+    private function rememberWithFallback(string $key, \DateTimeInterface|\DateInterval|int|null $ttl, Closure $callback): mixed
+    {
+        try {
+            return Cache::remember($key, $ttl, $callback);
+        } catch (Throwable $exception) {
+            Log::warning('cache_fallback_activated', [
+                'key' => $key,
+                'reason' => $exception->getMessage(),
+            ]);
+
+            return $callback();
+        }
     }
 
     private function revenueForRange(string $userId, string $dateFrom, string $dateTo): float

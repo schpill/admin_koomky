@@ -1,6 +1,6 @@
 "use client";
 
-import { Moon, Sun, User } from "lucide-react";
+import { Keyboard, Menu, Moon, Sun, User } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { CommandPalette } from "@/components/search/command-palette";
@@ -8,7 +8,12 @@ import { LocaleSwitcher } from "@/components/layout/locale-switcher";
 import { useI18n } from "@/components/providers/i18n-provider";
 import { NotificationBell } from "@/components/layout/notification-bell";
 
-export function Header() {
+interface HeaderProps {
+  onOpenNavigation?: () => void;
+  onOpenShortcuts?: () => void;
+}
+
+export function Header({ onOpenNavigation, onOpenShortcuts }: HeaderProps) {
   const { theme, setTheme } = useTheme();
   const { t } = useI18n();
 
@@ -16,11 +21,31 @@ export function Header() {
     <header className="brand-header flex h-16 items-center justify-between border-b border-border/70 px-6">
       {/* Search */}
       <div className="flex items-center gap-4">
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          className="brand-control md:hidden"
+          onClick={onOpenNavigation}
+        >
+          <Menu className="h-5 w-5" />
+          <span className="sr-only">{t("header.openNavigation")}</span>
+        </Button>
         <CommandPalette />
       </div>
 
       {/* Right Actions */}
       <div className="flex items-center gap-2">
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          className="brand-control"
+          onClick={onOpenShortcuts}
+        >
+          <Keyboard className="h-5 w-5" />
+          <span className="sr-only">{t("header.openShortcuts")}</span>
+        </Button>
         <LocaleSwitcher compact />
 
         <Button

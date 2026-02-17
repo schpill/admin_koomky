@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
@@ -28,9 +29,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ProjectOverview } from "@/components/projects/project-overview";
-import { TaskKanbanBoard } from "@/components/projects/task-kanban-board";
 import { TaskListView } from "@/components/projects/task-list-view";
-import { TaskDetailDrawer } from "@/components/projects/task-detail-drawer";
 import { ProjectTimeline } from "@/components/projects/project-timeline";
 import {
   TimeEntryForm,
@@ -43,6 +42,23 @@ import {
   type TaskPriority,
   type TaskStatus,
 } from "@/lib/stores/projects";
+
+const TaskKanbanBoard = dynamic(
+  () =>
+    import("@/components/projects/task-kanban-board").then(
+      (mod) => mod.TaskKanbanBoard
+    ),
+  {
+    loading: () => (
+      <div className="h-72 animate-pulse rounded-lg border border-border bg-muted/40" />
+    ),
+  }
+);
+const TaskDetailDrawer = dynamic(() =>
+  import("@/components/projects/task-detail-drawer").then(
+    (mod) => mod.TaskDetailDrawer
+  )
+);
 
 export default function ProjectDetailPage() {
   const params = useParams<{ id: string }>();

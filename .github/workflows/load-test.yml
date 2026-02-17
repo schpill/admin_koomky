@@ -1,0 +1,37 @@
+name: Load Test
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 3 * * *"
+
+jobs:
+  k6:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run k6 load test (100 VUs)
+        env:
+          BASE_URL: ${{ secrets.LOADTEST_BASE_URL }}
+          BEARER_TOKEN: ${{ secrets.LOADTEST_BEARER_TOKEN }}
+          VUS: "100"
+          DURATION: "2m"
+        run: |
+          if [ -z "${BASE_URL}" ]; then
+            echo "LOADTEST_BASE_URL secret is required"
+            exit 1
+          fi
+          if [ -z "${BEARER_TOKEN}" ]; then
+            echo "LOADTEST_BEARER_TOKEN secret is required"
+            exit 1
+          fi
+
+          docker run --rm \
+            -e BASE_URL="${BASE_URL}" \
+            -e BEARER_TOKEN="${BEARER_TOKEN}" \
+            -e VUS="${VUS}" \
+            -e DURATION="${DURATION}" \
+            -v "${PWD}:/work" \
+            -w /work \
+            grafana/k6:0.57.0 run scripts/loadtest/k6-api.js

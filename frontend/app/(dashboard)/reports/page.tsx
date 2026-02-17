@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import dynamic from "next/dynamic";
 import { Download } from "lucide-react";
 import { toast } from "sonner";
 import { apiClient } from "@/lib/api";
@@ -9,10 +10,21 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { RevenueChart } from "@/components/reports/revenue-chart";
 import { OutstandingTable } from "@/components/reports/outstanding-table";
 import { VatSummaryTable } from "@/components/reports/vat-summary-table";
 import { useAuthStore } from "@/lib/stores/auth";
+
+const RevenueChart = dynamic(
+  () =>
+    import("@/components/reports/revenue-chart").then(
+      (mod) => mod.RevenueChart
+    ),
+  {
+    loading: () => (
+      <div className="h-64 animate-pulse rounded-lg border border-border bg-muted/40" />
+    ),
+  }
+);
 
 interface RevenueResponse {
   total_revenue: number;

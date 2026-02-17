@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Api\V1\Clients;
 
+use App\Support\InputSanitizer;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -33,5 +34,20 @@ class UpdateClientRequest extends FormRequest
             'notes' => ['nullable', 'string'],
             'status' => ['sometimes', 'string', Rule::in(['active', 'archived', 'inactive'])],
         ];
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $sanitized = InputSanitizer::sanitizeFields($this->all(), [
+            'name',
+            'phone',
+            'address',
+            'city',
+            'zip_code',
+            'country',
+            'notes',
+        ]);
+
+        $this->merge($sanitized);
     }
 }

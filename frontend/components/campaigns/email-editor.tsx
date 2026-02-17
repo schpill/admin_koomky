@@ -39,7 +39,7 @@ export function EmailEditor({ value, onChange }: EmailEditorProps) {
   };
 
   return (
-    <div className="space-y-3 rounded-lg border p-4">
+    <div className="space-y-3 rounded-lg border border-border bg-card/80 p-4">
       <div className="flex flex-wrap gap-2">
         <Button
           type="button"
@@ -94,13 +94,18 @@ export function EmailEditor({ value, onChange }: EmailEditorProps) {
         <Textarea
           id="email-content"
           aria-label="Email content"
+          aria-describedby="email-content-stats"
           rows={12}
           value={value}
           onChange={(event) => onChange(event.target.value)}
         />
       </div>
 
-      <p className="text-xs text-muted-foreground">
+      <p
+        id="email-content-stats"
+        className="text-xs text-muted-foreground"
+        aria-live="polite"
+      >
         {stats.characters} characters - {stats.words} words
       </p>
     </div>

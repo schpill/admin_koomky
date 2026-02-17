@@ -1,0 +1,19 @@
+name: Uptime Monitor
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+jobs:
+  uptime:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run uptime health check
+        env:
+          UPTIME_TARGET_URL: ${{ secrets.UPTIME_TARGET_URL }}
+          HEALTHCHECKS_PING_URL: ${{ secrets.HEALTHCHECKS_PING_URL }}
+          UPTIME_TIMEOUT_SECONDS: 10
+        run: ./scripts/uptime-check.sh

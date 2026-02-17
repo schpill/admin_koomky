@@ -11,8 +11,12 @@ use App\Models\Quote;
 use App\Models\Task;
 use App\Models\User;
 use App\Traits\ApiResponse;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use RuntimeException;
+use Throwable;
 
 class SearchController extends Controller
 {
@@ -30,17 +34,7 @@ class SearchController extends Controller
 
         $searchTerm = trim($query);
 
-        // Search Clients
-        $clients = Client::query()
-            ->where('user_id', $user->id)
-            ->where(function ($builder) use ($searchTerm): void {
-                $builder
-                    ->where('name', 'like', '%'.$searchTerm.'%')
-                    ->orWhere('email', 'like', '%'.$searchTerm.'%')
-                    ->orWhere('reference', 'like', '%'.$searchTerm.'%');
-            })
-            ->take(5)
-            ->get();
+        $clients = $this->searchClients($user, $searchTerm);
 
         // Search Projects
         $projects = Project::query()
@@ -102,5 +96,51 @@ class SearchController extends Controller
             'invoices' => $invoices,
             'quotes' => $quotes,
         ], 'Search results');
+    }
+
+    private function shouldUseScout(): bool
+    {
+        return config('scout.driver') === 'meilisearch';
+    }
+
+    private function scoutForcedFailureEnabled(): bool
+    {
+        return (bool) config('scout.force_failure', false);
+    }
+
+    /**
+     * @return EloquentCollection<int, Client>
+     */
+    private function searchClients(User $user, string $searchTerm): EloquentCollection
+    {
+        if ($this->shouldUseScout()) {
+            try {
+                if ($this->scoutForcedFailureEnabled()) {
+                    throw new RuntimeException('Forced Meilisearch outage for fallback validation');
+                }
+
+                return Client::search($searchTerm)
+                    ->query(fn ($query) => $query->where('user_id', $user->id))
+                    ->take(5)
+                    ->get();
+            } catch (Throwable $exception) {
+                Log::warning('search_fallback_database', [
+                    'engine' => 'meilisearch',
+                    'model' => Client::class,
+                    'reason' => $exception->getMessage(),
+                ]);
+            }
+        }
+
+        return Client::query()
+            ->where('user_id', $user->id)
+            ->where(function ($builder) use ($searchTerm): void {
+                $builder
+                    ->where('name', 'like', '%'.$searchTerm.'%')
+                    ->orWhere('email', 'like', '%'.$searchTerm.'%')
+                    ->orWhere('reference', 'like', '%'.$searchTerm.'%');
+            })
+            ->take(5)
+            ->get();
     }
 }

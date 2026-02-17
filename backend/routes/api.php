@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\AccountDeletionController;
 use App\Http\Controllers\Api\V1\ActivityController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\CampaignAnalyticsController;
@@ -9,6 +10,8 @@ use App\Http\Controllers\Api\V1\ClientController;
 use App\Http\Controllers\Api\V1\ContactController;
 use App\Http\Controllers\Api\V1\CreditNoteController;
 use App\Http\Controllers\Api\V1\DashboardController;
+use App\Http\Controllers\Api\V1\DataExportController;
+use App\Http\Controllers\Api\V1\DataImportController;
 use App\Http\Controllers\Api\V1\HealthController;
 use App\Http\Controllers\Api\V1\InvoiceController;
 use App\Http\Controllers\Api\V1\InvoicingSettingsController;
@@ -30,6 +33,10 @@ use Illuminate\Support\Facades\Route;
 
 RateLimiter::for('api_auth', function (Request $request) {
     return Limit::perMinute(10)->by($request->ip());
+});
+
+RateLimiter::for('webhooks', function (Request $request) {
+    return Limit::perMinute(60)->by($request->ip());
 });
 
 Route::prefix('v1')->group(function () {
@@ -69,6 +76,10 @@ Route::prefix('v1')->group(function () {
             Route::post('/2fa/confirm', [UserSettingsController::class, 'confirm2fa']);
             Route::post('/2fa/disable', [UserSettingsController::class, 'disable2fa']);
         });
+
+        Route::get('export/full', [DataExportController::class, 'full']);
+        Route::post('import/{entity}', [DataImportController::class, 'import']);
+        Route::delete('account', AccountDeletionController::class);
 
         // Clients
         Route::get('clients/export/csv', [ClientController::class, 'exportCsv']);
