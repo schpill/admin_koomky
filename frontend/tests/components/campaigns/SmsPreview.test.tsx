@@ -16,6 +16,8 @@ describe("SmsPreview", () => {
       />
     );
 
-    expect(screen.getByText("Hi Alice, your company is Acme")).toBeInTheDocument();
+    expect(
+      screen.getByText("Hi Alice, your company is Acme")
+    ).toBeInTheDocument();
   });
 });

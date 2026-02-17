@@ -1,8 +1,5 @@
 import { test, expect } from "@playwright/test";
-import {
-  mockProtectedApi,
-  seedAuthenticatedSession,
-} from "../helpers/session";
+import { mockProtectedApi, seedAuthenticatedSession } from "../helpers/session";
 
 test.describe("SMS Campaign", () => {
   test("create sms campaign via wizard", async ({ page }) => {

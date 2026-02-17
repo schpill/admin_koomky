@@ -56,7 +56,9 @@ describe("useCampaignStore", () => {
 
   it("runs campaign actions and template operations", async () => {
     (apiClient.post as any).mockResolvedValueOnce({ data: baseCampaign });
-    const created = await useCampaignStore.getState().createCampaign(baseCampaign);
+    const created = await useCampaignStore
+      .getState()
+      .createCampaign(baseCampaign);
     expect(created?.id).toBe("camp_1");
 
     (apiClient.put as any).mockResolvedValueOnce({

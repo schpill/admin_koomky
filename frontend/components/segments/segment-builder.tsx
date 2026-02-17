@@ -91,7 +91,8 @@ export function SegmentBuilder({
 
     onChange({
       ...filters,
-      groups: groups.length === 0 ? [{ criteria: [fallbackCriterion()] }] : groups,
+      groups:
+        groups.length === 0 ? [{ criteria: [fallbackCriterion()] }] : groups,
     });
   };
 
@@ -201,7 +202,10 @@ export function SegmentBuilder({
 
       <div className="space-y-4">
         {filters.groups.map((group, groupIndex) => (
-          <div key={`group-${groupIndex}`} className="space-y-3 rounded-lg border p-4">
+          <div
+            key={`group-${groupIndex}`}
+            className="space-y-3 rounded-lg border p-4"
+          >
             <div className="flex items-center justify-between">
               <p className="text-sm font-semibold">Group {groupIndex + 1}</p>
               <Button
@@ -288,7 +292,9 @@ export function SegmentBuilder({
                       type="button"
                       variant="outline"
                       size="sm"
-                      onClick={() => removeCriterion(groupIndex, criterionIndex)}
+                      onClick={() =>
+                        removeCriterion(groupIndex, criterionIndex)
+                      }
                     >
                       Remove criterion
                     </Button>

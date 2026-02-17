@@ -71,7 +71,9 @@ export default function CampaignComparePage() {
         </CardHeader>
         <CardContent>
           {comparison.length === 0 ? (
-            <p className="text-sm text-muted-foreground">No comparison data yet.</p>
+            <p className="text-sm text-muted-foreground">
+              No comparison data yet.
+            </p>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
@@ -85,8 +87,13 @@ export default function CampaignComparePage() {
                 </thead>
                 <tbody>
                   {comparison.map((item) => (
-                    <tr key={item.campaign_id} className="border-b last:border-0">
-                      <td className="py-2">{item.campaign_name || item.campaign_id}</td>
+                    <tr
+                      key={item.campaign_id}
+                      className="border-b last:border-0"
+                    >
+                      <td className="py-2">
+                        {item.campaign_name || item.campaign_id}
+                      </td>
                       <td className="py-2">{item.total_recipients}</td>
                       <td className="py-2">{item.open_rate}%</td>
                       <td className="py-2">{item.click_rate}%</td>

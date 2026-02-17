@@ -60,7 +60,9 @@ export function NotificationBell() {
             >
               <div className="space-y-1">
                 <p className="text-sm font-medium">{notification.title}</p>
-                <p className="text-xs text-muted-foreground">{notification.body}</p>
+                <p className="text-xs text-muted-foreground">
+                  {notification.body}
+                </p>
                 {!notification.read_at && (
                   <p className="text-[10px] font-semibold uppercase tracking-wide text-primary">
                     Unread

@@ -23,7 +23,8 @@ export default function EmailSettingsPage() {
   const [apiSecret, setApiSecret] = useState("");
   const [apiRegion, setApiRegion] = useState("us-east-1");
 
-  const isApiProvider = provider === "mailgun" || provider === "ses" || provider === "postmark";
+  const isApiProvider =
+    provider === "mailgun" || provider === "ses" || provider === "postmark";
 
   const save = async () => {
     try {
@@ -42,7 +43,9 @@ export default function EmailSettingsPage() {
       });
       toast.success("Email settings updated");
     } catch (error) {
-      toast.error((error as Error).message || "Unable to update email settings");
+      toast.error(
+        (error as Error).message || "Unable to update email settings"
+      );
     }
   };
 

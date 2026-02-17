@@ -1,8 +1,5 @@
 import { test, expect } from "@playwright/test";
-import {
-  mockProtectedApi,
-  seedAuthenticatedSession,
-} from "../helpers/session";
+import { mockProtectedApi, seedAuthenticatedSession } from "../helpers/session";
 
 test.describe("Invoice PDF", () => {
   test("invoice page exposes pdf preview section", async ({ page }) => {

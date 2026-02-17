@@ -41,13 +41,28 @@ export function EmailEditor({ value, onChange }: EmailEditorProps) {
   return (
     <div className="space-y-3 rounded-lg border p-4">
       <div className="flex flex-wrap gap-2">
-        <Button type="button" variant="outline" size="sm" onClick={() => wrap("<strong>", "</strong>")}>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={() => wrap("<strong>", "</strong>")}
+        >
           Bold
         </Button>
-        <Button type="button" variant="outline" size="sm" onClick={() => wrap("<em>", "</em>")}>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={() => wrap("<em>", "</em>")}
+        >
           Italic
         </Button>
-        <Button type="button" variant="outline" size="sm" onClick={() => wrap("<u>", "</u>")}>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={() => wrap("<u>", "</u>")}
+        >
           Underline
         </Button>
         <Button
@@ -69,7 +84,9 @@ export function EmailEditor({ value, onChange }: EmailEditorProps) {
       </div>
 
       {sourceMode && (
-        <p className="text-xs font-medium text-muted-foreground">Source mode enabled</p>
+        <p className="text-xs font-medium text-muted-foreground">
+          Source mode enabled
+        </p>
       )}
 
       <div className="space-y-2">

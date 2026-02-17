@@ -18,7 +18,10 @@ interface CampaignPreviewProps {
   recipients: CampaignPreviewRecipient[];
 }
 
-function personalize(template: string, recipient: CampaignPreviewRecipient): string {
+function personalize(
+  template: string,
+  recipient: CampaignPreviewRecipient
+): string {
   return template
     .replaceAll("{{first_name}}", recipient.first_name || "")
     .replaceAll("{{last_name}}", recipient.last_name || "")
@@ -45,7 +48,9 @@ export function CampaignPreview({
           <CardTitle>Campaign preview</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground">No sample recipient available.</p>
+          <p className="text-sm text-muted-foreground">
+            No sample recipient available.
+          </p>
         </CardContent>
       </Card>
     );

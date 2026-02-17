@@ -117,9 +117,7 @@ export async function mockProtectedApi(page: Page): Promise<void> {
               criteria_boolean: "or",
               groups: [
                 {
-                  criteria: [
-                    { type: "tag", operator: "equals", value: "vip" },
-                  ],
+                  criteria: [{ type: "tag", operator: "equals", value: "vip" }],
                 },
               ],
             },

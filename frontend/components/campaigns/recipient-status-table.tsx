@@ -20,7 +20,9 @@ interface RecipientStatusTableProps {
   recipients: RecipientStatusItem[];
 }
 
-export function RecipientStatusTable({ recipients }: RecipientStatusTableProps) {
+export function RecipientStatusTable({
+  recipients,
+}: RecipientStatusTableProps) {
   return (
     <div className="overflow-x-auto rounded-lg border">
       <table className="w-full text-sm">

@@ -1,8 +1,5 @@
 import { test, expect } from "@playwright/test";
-import {
-  mockProtectedApi,
-  seedAuthenticatedSession,
-} from "../helpers/session";
+import { mockProtectedApi, seedAuthenticatedSession } from "../helpers/session";
 
 test.describe("Segment CRUD", () => {
   test("create segment and redirect to edit page", async ({ page }) => {

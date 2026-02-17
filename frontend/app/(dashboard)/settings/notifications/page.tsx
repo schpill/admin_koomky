@@ -56,16 +56,15 @@ export default function NotificationSettingsPage() {
   };
 
   const save = async () => {
-    const payload = rows.reduce<Record<string, { email: boolean; in_app: boolean }>>(
-      (accumulator, row) => {
-        accumulator[row.key] = {
-          email: row.email,
-          in_app: row.in_app,
-        };
-        return accumulator;
-      },
-      {}
-    );
+    const payload = rows.reduce<
+      Record<string, { email: boolean; in_app: boolean }>
+    >((accumulator, row) => {
+      accumulator[row.key] = {
+        email: row.email,
+        in_app: row.in_app,
+      };
+      return accumulator;
+    }, {});
 
     try {
       await updateNotificationPreferences(payload);

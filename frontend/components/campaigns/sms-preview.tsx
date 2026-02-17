@@ -7,7 +7,10 @@ interface SmsPreviewProps {
   recipient: Omit<CampaignPreviewRecipient, "id">;
 }
 
-function personalize(content: string, recipient: Omit<CampaignPreviewRecipient, "id">): string {
+function personalize(
+  content: string,
+  recipient: Omit<CampaignPreviewRecipient, "id">
+): string {
   return content
     .replaceAll("{{first_name}}", recipient.first_name || "")
     .replaceAll("{{last_name}}", recipient.last_name || "")

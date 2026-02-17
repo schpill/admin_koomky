@@ -352,7 +352,10 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
   updateTemplate: async (id, data) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await apiClient.put<any>(`/campaign-templates/${id}`, data);
+      const response = await apiClient.put<any>(
+        `/campaign-templates/${id}`,
+        data
+      );
       const template = response.data as CampaignTemplate;
       set({
         templates: upsertTemplate(get().templates, template),

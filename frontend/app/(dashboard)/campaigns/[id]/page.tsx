@@ -17,7 +17,9 @@ interface CampaignDetailPageProps {
   };
 }
 
-export default function CampaignDetailPage({ params }: CampaignDetailPageProps) {
+export default function CampaignDetailPage({
+  params,
+}: CampaignDetailPageProps) {
   const {
     currentCampaign,
     isLoading,
@@ -57,7 +59,9 @@ export default function CampaignDetailPage({ params }: CampaignDetailPageProps) 
 
         <div className="flex flex-wrap gap-2">
           <Button variant="outline" asChild>
-            <Link href={`/campaigns/${currentCampaign.id}/analytics`}>Analytics</Link>
+            <Link href={`/campaigns/${currentCampaign.id}/analytics`}>
+              Analytics
+            </Link>
           </Button>
           <Button
             variant="outline"

@@ -7,7 +7,9 @@ interface AnalyticsSummaryCardsProps {
   analytics: CampaignAnalytics;
 }
 
-export function AnalyticsSummaryCards({ analytics }: AnalyticsSummaryCardsProps) {
+export function AnalyticsSummaryCards({
+  analytics,
+}: AnalyticsSummaryCardsProps) {
   const items = [
     { label: "Recipients", value: analytics.total_recipients },
     { label: "Open rate", value: `${analytics.open_rate}%` },

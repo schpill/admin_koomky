@@ -1,8 +1,5 @@
 import { test, expect } from "@playwright/test";
-import {
-  mockProtectedApi,
-  seedAuthenticatedSession,
-} from "../helpers/session";
+import { mockProtectedApi, seedAuthenticatedSession } from "../helpers/session";
 
 test.describe("Email Campaign", () => {
   test("create email campaign via wizard", async ({ page }) => {
@@ -15,7 +12,10 @@ test.describe("Email Campaign", () => {
     await page.click('button:has-text("Next")');
 
     await page.fill("#campaign-subject", "Hello {{first_name}}");
-    await page.fill("#email-content", "Welcome {{first_name}} from {{company}}");
+    await page.fill(
+      "#email-content",
+      "Welcome {{first_name}} from {{company}}"
+    );
     await page.click('button:has-text("Next")');
 
     await expect(page.getByText("Campaign preview")).toBeVisible();

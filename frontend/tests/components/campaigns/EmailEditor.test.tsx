@@ -16,7 +16,9 @@ describe("EmailEditor", () => {
     render(<EmailEditor value="Hello" onChange={onChange} />);
 
     fireEvent.click(screen.getByRole("button", { name: "Bold" }));
-    fireEvent.click(screen.getByRole("button", { name: "Insert {{first_name}}" }));
+    fireEvent.click(
+      screen.getByRole("button", { name: "Insert {{first_name}}" })
+    );
 
     expect(onChange).toHaveBeenCalled();
   });

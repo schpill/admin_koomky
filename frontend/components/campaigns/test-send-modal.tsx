@@ -58,13 +58,15 @@ export function TestSendModal({
               id="test-destination"
               value={value}
               onChange={(event) => setValue(event.target.value)}
-              placeholder={
-                type === "sms" ? "+33612345678" : "qa@example.com"
-              }
+              placeholder={type === "sms" ? "+33612345678" : "qa@example.com"}
             />
           </div>
 
-          <Button type="button" onClick={submit} disabled={!value || isSubmitting}>
+          <Button
+            type="button"
+            onClick={submit}
+            disabled={!value || isSubmitting}
+          >
             {isSubmitting ? "Sending..." : "Send"}
           </Button>
         </div>

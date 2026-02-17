@@ -15,7 +15,9 @@ interface CampaignAnalyticsPageProps {
   };
 }
 
-export default function CampaignAnalyticsPage({ params }: CampaignAnalyticsPageProps) {
+export default function CampaignAnalyticsPage({
+  params,
+}: CampaignAnalyticsPageProps) {
   const { analytics, fetchCampaignAnalytics } = useCampaignStore();
   const accessToken = useAuthStore((state) => state.accessToken);
 
@@ -27,13 +29,17 @@ export default function CampaignAnalyticsPage({ params }: CampaignAnalyticsPageP
 
   const exportCsv = async () => {
     try {
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost/api/v1";
-      const response = await fetch(`${baseUrl}/campaigns/${params.id}/analytics/export`, {
-        headers: {
-          Accept: "text/csv",
-          Authorization: accessToken ? `Bearer ${accessToken}` : "",
-        },
-      });
+      const baseUrl =
+        process.env.NEXT_PUBLIC_API_URL || "http://localhost/api/v1";
+      const response = await fetch(
+        `${baseUrl}/campaigns/${params.id}/analytics/export`,
+        {
+          headers: {
+            Accept: "text/csv",
+            Authorization: accessToken ? `Bearer ${accessToken}` : "",
+          },
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Unable to export analytics");
@@ -52,7 +58,9 @@ export default function CampaignAnalyticsPage({ params }: CampaignAnalyticsPageP
   };
 
   if (!analytics) {
-    return <p className="text-sm text-muted-foreground">Loading analytics...</p>;
+    return (
+      <p className="text-sm text-muted-foreground">Loading analytics...</p>
+    );
   }
 
   return (
@@ -60,7 +68,9 @@ export default function CampaignAnalyticsPage({ params }: CampaignAnalyticsPageP
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">Campaign analytics</h1>
-          <p className="text-sm text-muted-foreground">{analytics.campaign_name}</p>
+          <p className="text-sm text-muted-foreground">
+            {analytics.campaign_name}
+          </p>
         </div>
 
         <Button variant="outline" onClick={exportCsv}>

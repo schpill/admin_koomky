@@ -13,7 +13,10 @@ function hasUnicode(content: string): boolean {
   return /[^\u0000-\u007f]/.test(content);
 }
 
-function countSegments(content: string): { perSegment: number; segments: number } {
+function countSegments(content: string): {
+  perSegment: number;
+  segments: number;
+} {
   const perSegment = hasUnicode(content) ? 70 : 160;
   const length = content.length;
 

@@ -14,7 +14,9 @@ import { useNotificationStore } from "@/lib/stores/notifications";
 export default function DashboardPage() {
   const { stats, isLoading, fetchStats } = useDashboardStore();
   const { t } = useI18n();
-  const setNotifications = useNotificationStore((state) => state.setNotifications);
+  const setNotifications = useNotificationStore(
+    (state) => state.setNotifications
+  );
 
   useEffect(() => {
     fetchStats();

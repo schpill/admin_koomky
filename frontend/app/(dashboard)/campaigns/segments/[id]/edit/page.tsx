@@ -120,7 +120,9 @@ export default function EditSegmentPage({ params }: EditSegmentPageProps) {
       <SegmentBuilder
         value={filters}
         onChange={setFilters}
-        previewCount={preview?.total_matching || currentSegment?.contact_count || 0}
+        previewCount={
+          preview?.total_matching || currentSegment?.contact_count || 0
+        }
         onPreview={() => previewSegment(params.id).catch(() => undefined)}
       />
 

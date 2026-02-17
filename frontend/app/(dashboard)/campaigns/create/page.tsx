@@ -131,7 +131,10 @@ export default function CreateCampaignPage() {
     }
   };
 
-  const handleTestSend = async (destination: { email?: string; phone?: string }) => {
+  const handleTestSend = async (destination: {
+    email?: string;
+    phone?: string;
+  }) => {
     const campaignId = await ensureDraftExists();
     await testSendCampaign(campaignId, destination);
     toast.success("Test campaign sent");
@@ -181,7 +184,9 @@ export default function CreateCampaignPage() {
                 <select
                   id="campaign-type"
                   value={type}
-                  onChange={(event) => setType(event.target.value as "email" | "sms")}
+                  onChange={(event) =>
+                    setType(event.target.value as "email" | "sms")
+                  }
                   className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
                 >
                   <option value="email">Email</option>
@@ -262,7 +267,11 @@ export default function CreateCampaignPage() {
             </Card>
           )}
 
-          <TestSendModal type={type} onSend={handleTestSend} isSubmitting={isLoading} />
+          <TestSendModal
+            type={type}
+            onSend={handleTestSend}
+            isSubmitting={isLoading}
+          />
         </div>
       )}
 
@@ -283,7 +292,11 @@ export default function CreateCampaignPage() {
             </div>
 
             <div className="flex flex-wrap justify-end gap-2">
-              <Button variant="outline" onClick={saveDraft} disabled={isLoading}>
+              <Button
+                variant="outline"
+                onClick={saveDraft}
+                disabled={isLoading}
+              >
                 Save draft
               </Button>
               <Button onClick={saveAndSendNow} disabled={isLoading}>

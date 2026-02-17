@@ -75,7 +75,9 @@ export default function SegmentListPage() {
                         {segment.description || "-"}
                       </td>
                       <td className="py-3">
-                        {segment.cached_contact_count ?? segment.contact_count ?? 0}
+                        {segment.cached_contact_count ??
+                          segment.contact_count ??
+                          0}
                       </td>
                       <td className="py-3 text-muted-foreground">
                         {segment.updated_at || "-"}
