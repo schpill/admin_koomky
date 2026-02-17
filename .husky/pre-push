@@ -9,6 +9,9 @@ run_backend_cmd() {
   fi
 }
 
+echo "Cleaning generated frontend artifacts..."
+./scripts/cleanup-artifacts.sh
+
 echo "Running frontend Prettier check before push..."
 pnpm --dir frontend format:check
 
