@@ -16,6 +16,9 @@ export default function CalendarSettingsPage() {
     createConnection,
     updateConnection,
     deleteConnection,
+    autoEventRules,
+    fetchAutoEventRules,
+    updateAutoEventRules,
   } = useCalendarStore();
 
   const [provider, setProvider] = useState<"google" | "caldav">("google");
@@ -25,10 +28,20 @@ export default function CalendarSettingsPage() {
   const [autoProjectDeadlines, setAutoProjectDeadlines] = useState(true);
   const [autoTaskDues, setAutoTaskDues] = useState(true);
   const [autoInvoiceReminders, setAutoInvoiceReminders] = useState(true);
+  const [isSavingRules, setIsSavingRules] = useState(false);
 
   useEffect(() => {
     fetchConnections();
-  }, [fetchConnections]);
+    fetchAutoEventRules().catch(() => {
+      toast.error("Unable to load calendar settings");
+    });
+  }, [fetchConnections, fetchAutoEventRules]);
+
+  useEffect(() => {
+    setAutoProjectDeadlines(autoEventRules.project_deadlines);
+    setAutoTaskDues(autoEventRules.task_due_dates);
+    setAutoInvoiceReminders(autoEventRules.invoice_reminders);
+  }, [autoEventRules]);
 
   const credentials = useMemo(() => {
     if (provider === "google") {
@@ -64,6 +77,24 @@ export default function CalendarSettingsPage() {
       await fetchConnections();
     } catch (error) {
       toast.error((error as Error).message || "Unable to create connection");
+    }
+  };
+
+  const handleSaveAutoEventRules = async () => {
+    setIsSavingRules(true);
+    try {
+      await updateAutoEventRules({
+        project_deadlines: autoProjectDeadlines,
+        task_due_dates: autoTaskDues,
+        invoice_reminders: autoInvoiceReminders,
+      });
+      toast.success("Auto-event rules saved");
+    } catch (error) {
+      toast.error(
+        (error as Error).message || "Unable to save auto-event rules"
+      );
+    } finally {
+      setIsSavingRules(false);
     }
   };
 
@@ -169,6 +200,15 @@ export default function CalendarSettingsPage() {
             />
             Invoice reminders
           </label>
+          <div className="flex justify-end pt-2">
+            <Button
+              type="button"
+              onClick={handleSaveAutoEventRules}
+              disabled={isSavingRules}
+            >
+              {isSavingRules ? "Saving..." : "Save auto-event rules"}
+            </Button>
+          </div>
         </CardContent>
       </Card>
 

@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class CalendarConnectionController extends Controller
 {
@@ -18,6 +19,8 @@ class CalendarConnectionController extends Controller
 
     public function index(Request $request): JsonResponse
     {
+        Gate::authorize('viewAny', CalendarConnection::class);
+
         /** @var User $user */
         $user = $request->user();
 
@@ -34,6 +37,8 @@ class CalendarConnectionController extends Controller
 
     public function store(StoreCalendarConnectionRequest $request): JsonResponse
     {
+        Gate::authorize('create', CalendarConnection::class);
+
         /** @var User $user */
         $user = $request->user();
 
@@ -45,42 +50,34 @@ class CalendarConnectionController extends Controller
         return $this->success(new CalendarConnectionResource($connection), 'Calendar connection created successfully', 201);
     }
 
-    public function show(Request $request, CalendarConnection $calendar_connection): JsonResponse
+    public function show(CalendarConnection $calendar_connection): JsonResponse
     {
-        if ($calendar_connection->user_id !== $request->user()?->id) {
-            return $this->error('Forbidden', 403);
-        }
+        Gate::authorize('view', $calendar_connection);
 
         return $this->success(new CalendarConnectionResource($calendar_connection), 'Calendar connection retrieved successfully');
     }
 
     public function update(UpdateCalendarConnectionRequest $request, CalendarConnection $calendar_connection): JsonResponse
     {
-        if ($calendar_connection->user_id !== $request->user()?->id) {
-            return $this->error('Forbidden', 403);
-        }
+        Gate::authorize('update', $calendar_connection);
 
         $calendar_connection->update($request->validated());
 
         return $this->success(new CalendarConnectionResource($calendar_connection->fresh()), 'Calendar connection updated successfully');
     }
 
-    public function destroy(Request $request, CalendarConnection $calendar_connection): JsonResponse
+    public function destroy(CalendarConnection $calendar_connection): JsonResponse
     {
-        if ($calendar_connection->user_id !== $request->user()?->id) {
-            return $this->error('Forbidden', 403);
-        }
+        Gate::authorize('delete', $calendar_connection);
 
         $calendar_connection->delete();
 
         return $this->success(null, 'Calendar connection deleted successfully');
     }
 
-    public function test(Request $request, CalendarConnection $calendar_connection): JsonResponse
+    public function test(CalendarConnection $calendar_connection): JsonResponse
     {
-        if ($calendar_connection->user_id !== $request->user()?->id) {
-            return $this->error('Forbidden', 403);
-        }
+        Gate::authorize('view', $calendar_connection);
 
         $credentials = $calendar_connection->credentials;
         $hasCredentials = $credentials !== [];

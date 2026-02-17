@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class CalendarEventController extends Controller
 {
@@ -19,6 +20,8 @@ class CalendarEventController extends Controller
 
     public function index(Request $request): JsonResponse
     {
+        Gate::authorize('viewAny', CalendarEvent::class);
+
         /** @var User $user */
         $user = $request->user();
 
@@ -40,6 +43,8 @@ class CalendarEventController extends Controller
 
     public function store(StoreCalendarEventRequest $request): JsonResponse
     {
+        Gate::authorize('create', CalendarEvent::class);
+
         /** @var User $user */
         $user = $request->user();
 
@@ -54,11 +59,9 @@ class CalendarEventController extends Controller
         return $this->success(new CalendarEventResource($event), 'Calendar event created successfully', 201);
     }
 
-    public function show(Request $request, CalendarEvent $calendar_event): JsonResponse
+    public function show(CalendarEvent $calendar_event): JsonResponse
     {
-        if ($calendar_event->user_id !== $request->user()?->id) {
-            return $this->error('Forbidden', 403);
-        }
+        Gate::authorize('view', $calendar_event);
 
         return $this->success(new CalendarEventResource($calendar_event), 'Calendar event retrieved successfully');
     }
@@ -68,9 +71,7 @@ class CalendarEventController extends Controller
         /** @var User $user */
         $user = $request->user();
 
-        if ($calendar_event->user_id !== $user->id) {
-            return $this->error('Forbidden', 403);
-        }
+        Gate::authorize('update', $calendar_event);
 
         $payload = $request->validated();
         if (isset($payload['calendar_connection_id']) && ! $this->connectionOwnedByUser($user, (string) $payload['calendar_connection_id'])) {
@@ -82,11 +83,9 @@ class CalendarEventController extends Controller
         return $this->success(new CalendarEventResource($calendar_event->fresh()), 'Calendar event updated successfully');
     }
 
-    public function destroy(Request $request, CalendarEvent $calendar_event): JsonResponse
+    public function destroy(CalendarEvent $calendar_event): JsonResponse
     {
-        if ($calendar_event->user_id !== $request->user()?->id) {
-            return $this->error('Forbidden', 403);
-        }
+        Gate::authorize('delete', $calendar_event);
 
         $calendar_event->delete();
 

@@ -128,6 +128,53 @@ class UserSettingsController extends Controller
         return $this->success($user->fresh(), 'Notification preferences updated successfully');
     }
 
+    public function calendarSettings(Request $request): JsonResponse
+    {
+        /** @var User $user */
+        $user = $request->user();
+
+        $preferences = is_array($user->notification_preferences)
+            ? $user->notification_preferences
+            : [];
+        $autoEvents = isset($preferences['calendar_auto_events']) && is_array($preferences['calendar_auto_events'])
+            ? $preferences['calendar_auto_events']
+            : [];
+
+        return $this->success([
+            'auto_events' => [
+                'project_deadlines' => (bool) ($autoEvents['project_deadlines'] ?? true),
+                'task_due_dates' => (bool) ($autoEvents['task_due_dates'] ?? true),
+                'invoice_reminders' => (bool) ($autoEvents['invoice_reminders'] ?? true),
+            ],
+        ], 'Calendar settings retrieved successfully');
+    }
+
+    public function updateCalendarSettings(Request $request): JsonResponse
+    {
+        /** @var User $user */
+        $user = $request->user();
+
+        $validated = $request->validate([
+            'auto_events' => ['required', 'array'],
+            'auto_events.project_deadlines' => ['required', 'boolean'],
+            'auto_events.task_due_dates' => ['required', 'boolean'],
+            'auto_events.invoice_reminders' => ['required', 'boolean'],
+        ]);
+
+        $preferences = is_array($user->notification_preferences)
+            ? $user->notification_preferences
+            : [];
+        $preferences['calendar_auto_events'] = $validated['auto_events'];
+
+        $user->update([
+            'notification_preferences' => $preferences,
+        ]);
+
+        return $this->success([
+            'auto_events' => $preferences['calendar_auto_events'],
+        ], 'Calendar settings updated successfully');
+    }
+
     public function enable2fa(Request $request): JsonResponse
     {
         /** @var User $user */

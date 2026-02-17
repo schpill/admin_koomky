@@ -17,6 +17,11 @@ describe("useCalendarStore", () => {
     useCalendarStore.setState({
       events: [],
       connections: [],
+      autoEventRules: {
+        project_deadlines: true,
+        task_due_dates: true,
+        invoice_reminders: true,
+      },
       selectedRange: {
         from: "2026-03-01",
         to: "2026-03-31",
@@ -112,5 +117,56 @@ describe("useCalendarStore", () => {
     (apiClient.delete as any).mockResolvedValueOnce({});
     await useCalendarStore.getState().deleteEvent("evt_2");
     expect(useCalendarStore.getState().events).toEqual([]);
+  });
+
+  it("fetches and updates auto-event rules", async () => {
+    (apiClient.get as any).mockResolvedValueOnce({
+      data: {
+        auto_events: {
+          project_deadlines: false,
+          task_due_dates: true,
+          invoice_reminders: false,
+        },
+      },
+    });
+
+    await useCalendarStore.getState().fetchAutoEventRules();
+
+    expect(useCalendarStore.getState().autoEventRules).toEqual({
+      project_deadlines: false,
+      task_due_dates: true,
+      invoice_reminders: false,
+    });
+    expect(apiClient.get).toHaveBeenCalledWith("/settings/calendar");
+
+    (apiClient.put as any).mockResolvedValueOnce({
+      data: {
+        auto_events: {
+          project_deadlines: true,
+          task_due_dates: false,
+          invoice_reminders: true,
+        },
+      },
+    });
+
+    const updated = await useCalendarStore.getState().updateAutoEventRules({
+      project_deadlines: true,
+      task_due_dates: false,
+      invoice_reminders: true,
+    });
+
+    expect(updated).toEqual({
+      project_deadlines: true,
+      task_due_dates: false,
+      invoice_reminders: true,
+    });
+    expect(useCalendarStore.getState().autoEventRules).toEqual(updated);
+    expect(apiClient.put).toHaveBeenCalledWith("/settings/calendar", {
+      auto_events: {
+        project_deadlines: true,
+        task_due_dates: false,
+        invoice_reminders: true,
+      },
+    });
   });
 });

@@ -28,6 +28,39 @@ export async function seedAuthenticatedSession(page: Page): Promise<void> {
 }
 
 export async function mockProtectedApi(page: Page): Promise<void> {
+  const calendarEvents: Array<Record<string, unknown>> = [
+    {
+      id: "evt_1",
+      title: "Sprint planning",
+      description: "Weekly planning",
+      start_at: "2026-03-10 09:00:00",
+      end_at: "2026-03-10 10:00:00",
+      all_day: false,
+      location: "Remote",
+      type: "meeting",
+      sync_status: "synced",
+    },
+  ];
+
+  const calendarConnections: Array<Record<string, unknown>> = [
+    {
+      id: "conn_1",
+      provider: "google",
+      name: "Google Work",
+      calendar_id: "primary",
+      sync_enabled: true,
+      last_synced_at: "2026-03-01 10:00:00",
+    },
+  ];
+
+  let calendarConnectionIndex = 2;
+  let calendarEventIndex = 2;
+  let calendarAutoEvents = {
+    project_deadlines: true,
+    task_due_dates: true,
+    invoice_reminders: true,
+  };
+
   await page.route("**/api/v1/**", async (route) => {
     const request = route.request();
     const url = new URL(request.url());
@@ -116,88 +149,136 @@ export async function mockProtectedApi(page: Page): Promise<void> {
     }
 
     if (path.endsWith("/calendar-events") && method === "GET") {
-      return fulfillJson(route, [
-        {
-          id: "evt_1",
-          title: "Sprint planning",
-          description: "Weekly planning",
-          start_at: "2026-03-10 09:00:00",
-          end_at: "2026-03-10 10:00:00",
-          all_day: false,
-          location: "Remote",
-          type: "meeting",
-          sync_status: "synced",
-        },
-      ]);
+      return fulfillJson(route, calendarEvents);
     }
 
     if (path.endsWith("/calendar-events") && method === "POST") {
-      return fulfillJson(route, {
-        id: "evt_2",
-        title: "Created event",
-        description: "",
-        start_at: "2026-03-11 09:00:00",
-        end_at: "2026-03-11 10:00:00",
-        all_day: false,
-        location: "Remote",
-        type: "meeting",
+      const payload = request.postDataJSON() as Record<string, unknown>;
+      const created = {
+        id: `evt_${calendarEventIndex++}`,
+        title: String(payload.title || "Created event"),
+        description: payload.description ? String(payload.description) : "",
+        start_at: String(payload.start_at || "2026-03-11 09:00:00"),
+        end_at: String(payload.end_at || "2026-03-11 10:00:00"),
+        all_day: Boolean(payload.all_day || false),
+        location: payload.location ? String(payload.location) : "Remote",
+        type: String(payload.type || "meeting"),
         sync_status: "local",
-      });
+      };
+      calendarEvents.push(created);
+      return fulfillJson(route, created);
     }
 
     if (/\/calendar-events\/[^/]+$/.test(path) && method === "PUT") {
-      return fulfillJson(route, {
-        id: "evt_1",
-        title: "Updated event",
-        description: "Updated",
-        start_at: "2026-03-10 09:00:00",
-        end_at: "2026-03-10 10:00:00",
-        all_day: false,
-        location: "Remote",
-        type: "meeting",
+      const eventId = path.split("/").pop() || "";
+      const payload = request.postDataJSON() as Record<string, unknown>;
+      const eventIndex = calendarEvents.findIndex(
+        (item) => item.id === eventId
+      );
+      const existing =
+        eventIndex >= 0
+          ? calendarEvents[eventIndex]
+          : { id: eventId, sync_status: "local" };
+      const updated = {
+        ...existing,
+        ...payload,
+        id: eventId,
         sync_status: "local",
-      });
+      };
+
+      if (eventIndex >= 0) {
+        calendarEvents[eventIndex] = updated;
+      } else {
+        calendarEvents.push(updated);
+      }
+
+      return fulfillJson(route, updated);
     }
 
     if (/\/calendar-events\/[^/]+$/.test(path) && method === "DELETE") {
+      const eventId = path.split("/").pop() || "";
+      const index = calendarEvents.findIndex((item) => item.id === eventId);
+      if (index >= 0) {
+        calendarEvents.splice(index, 1);
+      }
+
       return fulfillJson(route, {});
     }
 
     if (path.endsWith("/calendar-connections") && method === "GET") {
-      return fulfillJson(route, [
-        {
-          id: "conn_1",
-          provider: "google",
-          name: "Google Work",
-          calendar_id: "primary",
-          sync_enabled: true,
-          last_synced_at: "2026-03-01 10:00:00",
-        },
-      ]);
+      return fulfillJson(route, calendarConnections);
     }
 
     if (path.endsWith("/calendar-connections") && method === "POST") {
-      return fulfillJson(route, {
-        id: "conn_2",
-        provider: "google",
-        name: "Google Personal",
-        calendar_id: "primary",
-        sync_enabled: true,
-      });
+      const payload = request.postDataJSON() as Record<string, unknown>;
+      const created = {
+        id: `conn_${calendarConnectionIndex++}`,
+        provider: String(payload.provider || "google"),
+        name: String(payload.name || "Google Personal"),
+        calendar_id: String(payload.calendar_id || "primary"),
+        sync_enabled: payload.sync_enabled !== false,
+      };
+      calendarConnections.push(created);
+      return fulfillJson(route, created);
     }
 
     if (/\/calendar-connections\/[^/]+$/.test(path) && method === "PUT") {
-      return fulfillJson(route, {
-        id: "conn_1",
-        provider: "google",
-        name: "Google Work",
-        calendar_id: "primary",
-        sync_enabled: false,
-      });
+      const connectionId = path.split("/").pop() || "";
+      const payload = request.postDataJSON() as Record<string, unknown>;
+      const connectionIndex = calendarConnections.findIndex(
+        (item) => item.id === connectionId
+      );
+      const existing =
+        connectionIndex >= 0
+          ? calendarConnections[connectionIndex]
+          : { id: connectionId, provider: "google", name: "Calendar" };
+      const updated = {
+        ...existing,
+        ...payload,
+        id: connectionId,
+      };
+
+      if (connectionIndex >= 0) {
+        calendarConnections[connectionIndex] = updated;
+      } else {
+        calendarConnections.push(updated);
+      }
+
+      return fulfillJson(route, updated);
     }
 
     if (/\/calendar-connections\/[^/]+$/.test(path) && method === "DELETE") {
+      const connectionId = path.split("/").pop() || "";
+      const index = calendarConnections.findIndex(
+        (item) => item.id === connectionId
+      );
+      if (index >= 0) {
+        calendarConnections.splice(index, 1);
+      }
+
       return fulfillJson(route, {});
+    }
+
+    if (path.endsWith("/settings/calendar") && method === "GET") {
+      return fulfillJson(route, {
+        auto_events: calendarAutoEvents,
+      });
+    }
+
+    if (path.endsWith("/settings/calendar") && method === "PUT") {
+      const payload = request.postDataJSON() as {
+        auto_events?: typeof calendarAutoEvents;
+      };
+      if (payload.auto_events) {
+        calendarAutoEvents = {
+          ...calendarAutoEvents,
+          ...payload.auto_events,
+        };
+      }
+
+      return fulfillJson(route, {
+        auto_events: calendarAutoEvents,
+      });
     }
 
     if (path.endsWith("/clients")) {

@@ -56,9 +56,16 @@ export interface CalendarConnectionPayload {
   sync_enabled?: boolean;
 }
 
+export interface CalendarAutoEventRules {
+  project_deadlines: boolean;
+  task_due_dates: boolean;
+  invoice_reminders: boolean;
+}
+
 interface CalendarState {
   events: CalendarEvent[];
   connections: CalendarConnection[];
+  autoEventRules: CalendarAutoEventRules;
   selectedRange: { from: string; to: string };
   isLoading: boolean;
   error: string | null;
@@ -80,6 +87,11 @@ interface CalendarState {
     payload: Partial<CalendarConnectionPayload>
   ) => Promise<CalendarConnection | null>;
   deleteConnection: (id: string) => Promise<void>;
+
+  fetchAutoEventRules: () => Promise<void>;
+  updateAutoEventRules: (
+    rules: CalendarAutoEventRules
+  ) => Promise<CalendarAutoEventRules>;
 }
 
 function upsertEvent(
@@ -115,6 +127,11 @@ function upsertConnection(
 export const useCalendarStore = create<CalendarState>((set, get) => ({
   events: [],
   connections: [],
+  autoEventRules: {
+    project_deadlines: true,
+    task_due_dates: true,
+    invoice_reminders: true,
+  },
   selectedRange: {
     from: new Date().toISOString().slice(0, 10),
     to: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
@@ -257,6 +274,43 @@ export const useCalendarStore = create<CalendarState>((set, get) => ({
         ),
         isLoading: false,
       });
+    } catch (error) {
+      set({ isLoading: false, error: (error as Error).message });
+      throw error;
+    }
+  },
+
+  fetchAutoEventRules: async () => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await apiClient.get<{
+        auto_events: CalendarAutoEventRules;
+      }>("/settings/calendar");
+      set({
+        autoEventRules: response.data?.auto_events || get().autoEventRules,
+        isLoading: false,
+      });
+    } catch (error) {
+      set({ isLoading: false, error: (error as Error).message });
+      throw error;
+    }
+  },
+
+  updateAutoEventRules: async (rules) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await apiClient.put<{
+        auto_events: CalendarAutoEventRules;
+      }>("/settings/calendar", {
+        auto_events: rules,
+      });
+      const nextRules = response.data?.auto_events || rules;
+      set({
+        autoEventRules: nextRules,
+        isLoading: false,
+      });
+
+      return nextRules;
     } catch (error) {
       set({ isLoading: false, error: (error as Error).message });
       throw error;
