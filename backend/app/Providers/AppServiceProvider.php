@@ -42,8 +42,8 @@ class AppServiceProvider extends ServiceProvider
             $provider = (string) config('services.exchange_rates.provider', 'open_exchange_rates');
 
             return $provider === 'ecb'
-                ? new EcbExchangeRatesDriver()
-                : new OpenExchangeRatesDriver();
+                ? new EcbExchangeRatesDriver
+                : new OpenExchangeRatesDriver;
         });
 
         $this->app->bind(ExchangeRateService::class, ApiExchangeRateService::class);

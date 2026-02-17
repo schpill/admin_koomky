@@ -66,4 +66,3 @@ test('recurring invoice profile scopes active and due work', function () {
     expect($active)->toContain($activeDue->id);
     expect($due)->toContain($activeDue->id);
 });
-

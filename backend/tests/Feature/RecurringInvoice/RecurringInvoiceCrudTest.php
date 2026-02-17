@@ -113,4 +113,3 @@ test('user cannot access another user recurring profile', function () {
         ->getJson('/api/v1/recurring-invoices/'.$profile->id)
         ->assertStatus(403);
 });
-

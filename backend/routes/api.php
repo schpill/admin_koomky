@@ -3,11 +3,11 @@
 use App\Http\Controllers\Api\V1\AccountDeletionController;
 use App\Http\Controllers\Api\V1\ActivityController;
 use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\CalendarConnectionController;
+use App\Http\Controllers\Api\V1\CalendarEventController;
 use App\Http\Controllers\Api\V1\CampaignAnalyticsController;
 use App\Http\Controllers\Api\V1\CampaignController;
 use App\Http\Controllers\Api\V1\CampaignTemplateController;
-use App\Http\Controllers\Api\V1\CalendarConnectionController;
-use App\Http\Controllers\Api\V1\CalendarEventController;
 use App\Http\Controllers\Api\V1\ClientController;
 use App\Http\Controllers\Api\V1\ContactController;
 use App\Http\Controllers\Api\V1\CreditNoteController;

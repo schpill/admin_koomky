@@ -57,6 +57,7 @@ class SyncCalendarJob implements ShouldQueue
 
             if ($existing && $existing->isLocallyNewerThan($remoteUpdatedAt)) {
                 $existing->update(['sync_status' => 'conflict']);
+
                 continue;
             }
 

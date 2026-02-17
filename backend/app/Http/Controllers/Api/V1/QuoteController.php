@@ -81,8 +81,7 @@ class QuoteController extends Controller
         StoreQuoteRequest $request,
         InvoiceCalculationService $calculationService,
         CurrencyConversionService $currencyConversionService
-    ): JsonResponse
-    {
+    ): JsonResponse {
         /** @var User $user */
         $user = $request->user();
 
@@ -174,8 +173,7 @@ class QuoteController extends Controller
         Quote $quote,
         InvoiceCalculationService $calculationService,
         CurrencyConversionService $currencyConversionService
-    ): JsonResponse
-    {
+    ): JsonResponse {
         Gate::authorize('update', $quote);
 
         if ($quote->status !== 'draft') {

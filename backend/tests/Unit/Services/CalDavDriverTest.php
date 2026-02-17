@@ -40,7 +40,7 @@ test('caldav driver fetches pushes and deletes events', function () {
         'https://caldav.example.test/events/*' => Http::response('', 204),
     ]);
 
-    $driver = new CalDavDriver();
+    $driver = new CalDavDriver;
 
     $events = $driver->fetchEvents($connection, [
         'from' => '2026-03-01T00:00:00Z',
@@ -76,7 +76,7 @@ test('caldav driver throws on authentication failure', function () {
         'https://caldav.example.test/events?*' => Http::response([], 401),
     ]);
 
-    $driver = new CalDavDriver();
+    $driver = new CalDavDriver;
 
     expect(fn () => $driver->fetchEvents($connection, [
         'from' => '2026-03-01T00:00:00Z',

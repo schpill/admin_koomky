@@ -61,4 +61,3 @@ test('profile without end date keeps generating indefinitely', function () {
     expect($profile->status)->toBe('active');
     expect($profile->occurrences_generated)->toBe(3);
 });
-

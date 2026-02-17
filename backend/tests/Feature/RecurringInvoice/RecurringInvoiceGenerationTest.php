@@ -62,4 +62,3 @@ test('generation job creates invoice, can auto send and dispatches notification'
     Queue::assertPushed(SendInvoiceJob::class);
     Notification::assertSentTo($user, RecurringInvoiceGeneratedNotification::class);
 });
-
