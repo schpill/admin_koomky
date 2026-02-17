@@ -8,7 +8,7 @@
 | **Milestone**       | M5 — v1.1.0 Release                            |
 | **PRD Sections**    | Post-Release Roadmap v1.1                       |
 | **Prerequisite**    | Phase 4 fully completed and validated           |
-| **Status**          | Not started                                    |
+| **Status**          | Completed                                      |
 
 ---
 
