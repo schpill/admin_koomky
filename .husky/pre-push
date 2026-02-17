@@ -1,5 +1,19 @@
 #!/usr/bin/env sh
 set -e
 
+run_backend_cmd() {
+  if docker compose ps --status running api 2>/dev/null | grep -q "api"; then
+    docker compose exec -T api "$@"
+  else
+    docker compose run --rm api "$@"
+  fi
+}
+
 echo "Running frontend Prettier check before push..."
 pnpm --dir frontend format:check
+
+echo "Running backend Pint check before push..."
+run_backend_cmd ./vendor/bin/pint --test
+
+echo "Running backend PHPStan check before push..."
+run_backend_cmd ./vendor/bin/phpstan analyse --memory-limit=1G
