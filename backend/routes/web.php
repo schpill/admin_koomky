@@ -15,5 +15,8 @@ Route::get('/unsubscribe/{contact}', UnsubscribeController::class)
 
 Route::get('/t/open/{token}', [EmailTrackingController::class, 'open']);
 Route::get('/t/click/{token}', [EmailTrackingController::class, 'click']);
-Route::post('/webhooks/email', CampaignWebhookController::class);
-Route::post('/webhooks/sms', SmsWebhookController::class);
+
+Route::middleware('throttle:webhooks')->group(function (): void {
+    Route::post('/webhooks/email', CampaignWebhookController::class);
+    Route::post('/webhooks/sms', SmsWebhookController::class);
+});

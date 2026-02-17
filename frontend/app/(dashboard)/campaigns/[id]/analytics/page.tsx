@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { useParams } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,30 +10,33 @@ import { EngagementChart } from "@/components/campaigns/engagement-chart";
 import { useCampaignStore } from "@/lib/stores/campaigns";
 import { useAuthStore } from "@/lib/stores/auth";
 
-interface CampaignAnalyticsPageProps {
-  params: {
-    id: string;
-  };
-}
-
-export default function CampaignAnalyticsPage({
-  params,
-}: CampaignAnalyticsPageProps) {
+export default function CampaignAnalyticsPage() {
+  const params = useParams<{ id: string }>();
+  const campaignId = params.id;
   const { analytics, fetchCampaignAnalytics } = useCampaignStore();
   const accessToken = useAuthStore((state) => state.accessToken);
 
   useEffect(() => {
-    fetchCampaignAnalytics(params.id).catch((error) => {
+    if (!campaignId) {
+      return;
+    }
+
+    fetchCampaignAnalytics(campaignId).catch((error) => {
       toast.error((error as Error).message || "Unable to load analytics");
     });
-  }, [fetchCampaignAnalytics, params.id]);
+  }, [campaignId, fetchCampaignAnalytics]);
 
   const exportCsv = async () => {
+    if (!campaignId) {
+      toast.error("Missing campaign id");
+      return;
+    }
+
     try {
       const baseUrl =
         process.env.NEXT_PUBLIC_API_URL || "http://localhost/api/v1";
       const response = await fetch(
-        `${baseUrl}/campaigns/${params.id}/analytics/export`,
+        `${baseUrl}/campaigns/${campaignId}/analytics/export`,
         {
           headers: {
             Accept: "text/csv",
@@ -49,7 +53,7 @@ export default function CampaignAnalyticsPage({
       const url = URL.createObjectURL(blob);
       const anchor = document.createElement("a");
       anchor.href = url;
-      anchor.download = `campaign-${params.id}-analytics.csv`;
+      anchor.download = `campaign-${campaignId}-analytics.csv`;
       anchor.click();
       URL.revokeObjectURL(url);
     } catch (error) {

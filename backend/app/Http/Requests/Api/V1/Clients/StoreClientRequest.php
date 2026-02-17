@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Api\V1\Clients;
 
+use App\Support\InputSanitizer;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreClientRequest extends FormRequest
@@ -26,5 +27,20 @@ class StoreClientRequest extends FormRequest
             'country' => ['nullable', 'string', 'max:100'],
             'notes' => ['nullable', 'string'],
         ];
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $sanitized = InputSanitizer::sanitizeFields($this->all(), [
+            'name',
+            'phone',
+            'address',
+            'city',
+            'zip_code',
+            'country',
+            'notes',
+        ]);
+
+        $this->merge($sanitized);
     }
 }

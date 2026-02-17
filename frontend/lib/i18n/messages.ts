@@ -42,6 +42,8 @@ export const messages: Record<Locale, MessageTree> = {
       toggleTheme: "Basculer le theme",
       notifications: "Notifications",
       userMenu: "Menu utilisateur",
+      openNavigation: "Ouvrir la navigation",
+      openShortcuts: "Ouvrir les raccourcis clavier",
     },
     ui: {
       dialog: {
@@ -221,6 +223,7 @@ export const messages: Record<Locale, MessageTree> = {
         primary: "Principal",
         contactInfo: "Coordonnees",
         empty: "Aucun contact trouve pour ce client.",
+        deleteContact: "Supprimer le contact",
         deleteConfirmation: "Voulez-vous vraiment supprimer ce contact ?",
         validation: {
           firstNameMin: "Le prenom doit contenir au moins 2 caracteres",
@@ -421,6 +424,8 @@ export const messages: Record<Locale, MessageTree> = {
       toggleTheme: "Toggle theme",
       notifications: "Notifications",
       userMenu: "User menu",
+      openNavigation: "Open navigation",
+      openShortcuts: "Open shortcuts",
     },
     ui: {
       dialog: {
@@ -599,6 +604,7 @@ export const messages: Record<Locale, MessageTree> = {
         primary: "Primary",
         contactInfo: "Contact Info",
         empty: "No contacts found for this client.",
+        deleteContact: "Delete contact",
         deleteConfirmation: "Are you sure you want to delete this contact?",
         validation: {
           firstNameMin: "First name must be at least 2 characters",

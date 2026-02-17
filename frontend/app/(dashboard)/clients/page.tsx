@@ -38,6 +38,7 @@ import { CreateClientDialog } from "@/components/clients/create-client-dialog";
 import { CsvActions } from "@/components/clients/csv-actions";
 import Link from "next/link";
 import { useI18n } from "@/components/providers/i18n-provider";
+import { ConfirmationDialog } from "@/components/common/confirmation-dialog";
 
 export default function ClientsPage() {
   const { clients, isLoading, fetchClients, deleteClient } = useClientStore();
@@ -46,6 +47,10 @@ export default function ClientsPage() {
   const [status, setStatus] = useState<string>("all");
   const [sortBy, setBy] = useState<string>("created_at");
   const [sortOrder, setOrder] = useState<string>("desc");
+  const [archiveTarget, setArchiveTarget] = useState<{
+    id: string;
+    name: string;
+  } | null>(null);
 
   const getStatusLabel = (value: string) => {
     const translationKey = `clients.status.${value}`;
@@ -169,7 +174,7 @@ export default function ClientsPage() {
             />
           ) : (
             <div className="relative overflow-x-auto">
-              <table className="w-full text-left text-sm">
+              <table className="min-w-[680px] w-full text-left text-sm">
                 <thead>
                   <tr className="border-b">
                     <th className="pb-3 font-medium text-muted-foreground">
@@ -178,10 +183,10 @@ export default function ClientsPage() {
                     <th className="pb-3 font-medium text-muted-foreground">
                       {t("clients.table.name")}
                     </th>
-                    <th className="pb-3 font-medium text-muted-foreground">
+                    <th className="hidden pb-3 font-medium text-muted-foreground md:table-cell">
                       {t("clients.table.email")}
                     </th>
-                    <th className="pb-3 font-medium text-muted-foreground">
+                    <th className="hidden pb-3 font-medium text-muted-foreground sm:table-cell">
                       {t("clients.table.status")}
                     </th>
                     <th className="pb-3 font-medium text-muted-foreground text-right">
@@ -206,10 +211,10 @@ export default function ClientsPage() {
                           {client.name}
                         </Link>
                       </td>
-                      <td className="py-4 text-muted-foreground">
+                      <td className="hidden py-4 text-muted-foreground md:table-cell">
                         {client.email || "-"}
                       </td>
-                      <td className="py-4">
+                      <td className="hidden py-4 sm:table-cell">
                         <Badge
                           variant={
                             client.status === "active" ? "default" : "secondary"
@@ -254,13 +259,12 @@ export default function ClientsPage() {
                             <DropdownMenuSeparator />
                             <DropdownMenuItem
                               className="text-destructive"
-                              onClick={() => {
-                                if (
-                                  confirm(t("clients.list.archiveConfirmation"))
-                                ) {
-                                  deleteClient(client.id);
-                                }
-                              }}
+                              onClick={() =>
+                                setArchiveTarget({
+                                  id: client.id,
+                                  name: client.name,
+                                })
+                              }
                             >
                               <Trash2 className="mr-2 h-4 w-4" />{" "}
                               {t("clients.list.archiveClient")}
@@ -276,6 +280,27 @@ export default function ClientsPage() {
           )}
         </CardContent>
       </Card>
+
+      <ConfirmationDialog
+        open={archiveTarget !== null}
+        onOpenChange={(open) => {
+          if (!open) {
+            setArchiveTarget(null);
+          }
+        }}
+        onConfirm={() => {
+          if (!archiveTarget) {
+            return;
+          }
+
+          deleteClient(archiveTarget.id);
+          setArchiveTarget(null);
+        }}
+        title={t("clients.list.archiveClient")}
+        description={t("clients.list.archiveConfirmation")}
+        confirmText={t("clients.list.archiveClient")}
+        variant="destructive"
+      />
     </div>
   );
 }

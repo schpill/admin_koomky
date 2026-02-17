@@ -34,6 +34,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Badge } from "@/components/ui/badge";
 import { useI18n } from "@/components/providers/i18n-provider";
+import { ConfirmationDialog } from "@/components/common/confirmation-dialog";
 
 type ContactFormData = {
   first_name: string;
@@ -64,6 +65,7 @@ export function ClientContactList({ clientId }: ClientContactListProps) {
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingContact, setEditingContact] = useState<Contact | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<Contact | null>(null);
 
   const contactSchema = useMemo(
     () =>
@@ -147,7 +149,6 @@ export function ClientContactList({ clientId }: ClientContactListProps) {
   };
 
   const handleDelete = async (contactId: string) => {
-    if (!confirm(t("clients.contacts.deleteConfirmation"))) return;
     try {
       await apiClient.delete(`/clients/${clientId}/contacts/${contactId}`);
       toast.success(t("clients.contacts.toasts.deleted"));
@@ -202,9 +203,16 @@ export function ClientContactList({ clientId }: ClientContactListProps) {
                   <Label htmlFor="first_name">
                     {t("clients.contacts.firstName")}
                   </Label>
-                  <Input id="first_name" {...register("first_name")} />
+                  <Input
+                    id="first_name"
+                    {...register("first_name")}
+                    aria-invalid={Boolean(errors.first_name)}
+                    aria-describedby={
+                      errors.first_name ? "first_name-error" : undefined
+                    }
+                  />
                   {errors.first_name && (
-                    <p className="text-sm text-destructive">
+                    <p id="first_name-error" className="text-sm text-destructive">
                       {errors.first_name.message}
                     </p>
                   )}
@@ -226,9 +234,17 @@ export function ClientContactList({ clientId }: ClientContactListProps) {
                 <Label htmlFor="contact-email">
                   {t("clients.table.email")}
                 </Label>
-                <Input id="contact-email" type="email" {...register("email")} />
+                <Input
+                  id="contact-email"
+                  type="email"
+                  {...register("email")}
+                  aria-invalid={Boolean(errors.email)}
+                  aria-describedby={
+                    errors.email ? "contact-email-error" : undefined
+                  }
+                />
                 {errors.email && (
-                  <p className="text-sm text-destructive">
+                  <p id="contact-email-error" className="text-sm text-destructive">
                     {errors.email.message}
                   </p>
                 )}
@@ -242,7 +258,7 @@ export function ClientContactList({ clientId }: ClientContactListProps) {
                   type="checkbox"
                   id="is_primary"
                   {...register("is_primary")}
-                  className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                  className="h-4 w-4 rounded border-input text-primary focus:ring-primary"
                 />
                 <Label htmlFor="is_primary">
                   {t("clients.contacts.primaryContact")}
@@ -329,7 +345,7 @@ export function ClientContactList({ clientId }: ClientContactListProps) {
                           variant="ghost"
                           size="icon"
                           className="text-destructive"
-                          onClick={() => handleDelete(contact.id)}
+                          onClick={() => setDeleteTarget(contact)}
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
@@ -342,6 +358,26 @@ export function ClientContactList({ clientId }: ClientContactListProps) {
           </div>
         )}
       </CardContent>
+      <ConfirmationDialog
+        open={deleteTarget !== null}
+        onOpenChange={(open) => {
+          if (!open) {
+            setDeleteTarget(null);
+          }
+        }}
+        onConfirm={() => {
+          if (!deleteTarget) {
+            return;
+          }
+
+          handleDelete(deleteTarget.id);
+          setDeleteTarget(null);
+        }}
+        title={t("clients.contacts.deleteContact")}
+        description={t("clients.contacts.deleteConfirmation")}
+        confirmText={t("clients.contacts.deleteContact")}
+        variant="destructive"
+      />
     </Card>
   );
 }

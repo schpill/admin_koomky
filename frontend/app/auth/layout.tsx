@@ -2,6 +2,8 @@ import Image from "next/image";
 import { BrandFooter } from "@/components/layout/brand-footer";
 import { LocaleSwitcher } from "@/components/layout/locale-switcher";
 
+export const dynamic = "force-static";
+
 export default function AuthLayout({
   children,
 }: Readonly<{
@@ -20,6 +22,7 @@ export default function AuthLayout({
               alt="Koomky"
               width={24}
               height={24}
+              sizes="24px"
               className="h-6 w-6"
               priority
             />

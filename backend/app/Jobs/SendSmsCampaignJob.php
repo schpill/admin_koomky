@@ -41,15 +41,21 @@ class SendSmsCampaignJob implements ShouldQueue
         $contacts = $contactsQuery
             ->smsOptedIn()
             ->whereNotNull('phone')
-            ->get()
-            ->filter(fn (Contact $contact): bool => is_string($contact->phone) && $phoneValidationService->isValidE164($contact->phone))
-            ->values();
+            ->orderBy('contacts.id')
+            ->cursor();
 
-        $throttleRate = (int) (($campaign->settings['throttle_rate_per_minute'] ?? null) ?: 30);
-        $throttleRate = max(1, $throttleRate);
+        $throttleRate = $this->resolveThrottleRate(
+            $campaign->settings['throttle_rate_per_minute'] ?? null,
+            30
+        );
         $interval = 60 / $throttleRate;
+        $index = 0;
 
-        foreach ($contacts as $index => $contact) {
+        foreach ($contacts as $contact) {
+            if (! is_string($contact->phone) || ! $phoneValidationService->isValidE164($contact->phone)) {
+                continue;
+            }
+
             /** @var CampaignRecipient $recipient */
             $recipient = CampaignRecipient::query()->create([
                 'campaign_id' => $campaign->id,
@@ -76,6 +82,8 @@ class SendSmsCampaignJob implements ShouldQueue
                     'channel' => 'sms',
                 ],
             ]);
+
+            $index++;
         }
 
         $campaign->update([
@@ -87,5 +95,16 @@ class SendSmsCampaignJob implements ShouldQueue
         if ($freshCampaign instanceof Campaign) {
             $user->notify(new CampaignCompletedNotification($freshCampaign));
         }
+    }
+
+    private function resolveThrottleRate(mixed $configuredRate, int $defaultRate): int
+    {
+        if (is_numeric($configuredRate)) {
+            $rate = (int) $configuredRate;
+
+            return $rate > 0 ? $rate : $defaultRate;
+        }
+
+        return $defaultRate;
     }
 }

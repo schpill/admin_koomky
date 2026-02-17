@@ -41,9 +41,16 @@ const secondaryNavigation = [
 interface SidebarProps {
   collapsed?: boolean;
   onToggle?: () => void;
+  mobile?: boolean;
+  onNavigate?: () => void;
 }
 
-export function Sidebar({ collapsed = false, onToggle }: SidebarProps) {
+export function Sidebar({
+  collapsed = false,
+  onToggle,
+  mobile = false,
+  onNavigate,
+}: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
   const logout = useAuthStore((state) => state.logout);
@@ -51,14 +58,19 @@ export function Sidebar({ collapsed = false, onToggle }: SidebarProps) {
 
   const handleLogout = () => {
     logout();
+    onNavigate?.();
     router.push("/auth/login");
   };
 
   return (
     <aside
       className={cn(
-        "brand-sidebar flex flex-col border-r border-border/80 transition-all duration-300",
-        collapsed ? "w-16" : "w-64"
+        "brand-sidebar flex h-full flex-col border-r border-border/80 transition-all duration-300",
+        mobile
+          ? "w-72 max-w-[85vw] shadow-2xl"
+          : collapsed
+            ? "w-16"
+            : "w-64"
       )}
     >
       {/* Logo */}
@@ -69,45 +81,53 @@ export function Sidebar({ collapsed = false, onToggle }: SidebarProps) {
         )}
       >
         {!collapsed && (
-          <Link href="/" className="flex items-center gap-2 overflow-hidden">
+          <Link
+            href="/"
+            className="flex items-center gap-2 overflow-hidden"
+            onClick={onNavigate}
+          >
             <Image
               src="/brand/logo.png"
               alt="Koomky"
               width={190}
               height={60}
+              sizes="190px"
               className="h-9 w-auto"
               priority
             />
           </Link>
         )}
         {collapsed && (
-          <Link href="/" className="flex items-center">
+          <Link href="/" className="flex items-center" onClick={onNavigate}>
             <Image
               src="/brand/icon.png"
               alt="Koomky"
               width={32}
               height={32}
+              sizes="32px"
               className="h-8 w-8"
               priority
             />
           </Link>
         )}
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={onToggle}
-          className={cn("brand-control h-8 w-8")}
-        >
-          <ChevronLeft
-            className={cn(
-              "h-4 w-4 transition-transform",
-              collapsed && "rotate-180"
-            )}
-          />
-          <span className="sr-only">
-            {collapsed ? t("sidebar.expand") : t("sidebar.collapse")}
-          </span>
-        </Button>
+        {!mobile && (
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onToggle}
+            className={cn("brand-control h-8 w-8")}
+          >
+            <ChevronLeft
+              className={cn(
+                "h-4 w-4 transition-transform",
+                collapsed && "rotate-180"
+              )}
+            />
+            <span className="sr-only">
+              {collapsed ? t("sidebar.expand") : t("sidebar.collapse")}
+            </span>
+          </Button>
+        )}
       </div>
 
       {/* Main Navigation */}
@@ -122,6 +142,8 @@ export function Sidebar({ collapsed = false, onToggle }: SidebarProps) {
             <Link
               key={item.key}
               href={item.href}
+              onClick={onNavigate}
+              aria-label={t(`sidebar.${item.key}`)}
               className={cn(
                 "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200",
                 isActive
@@ -148,6 +170,8 @@ export function Sidebar({ collapsed = false, onToggle }: SidebarProps) {
             <Link
               key={item.key}
               href={item.href}
+              onClick={onNavigate}
+              aria-label={t(`sidebar.${item.key}`)}
               className={cn(
                 "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200",
                 isActive

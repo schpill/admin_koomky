@@ -58,6 +58,10 @@ export function CommandPalette() {
     command();
   }, []);
 
+  const resultAnnouncement = isLoading
+    ? t("common.loading")
+    : `${results.length} ${results.length === 1 ? "result" : "results"}`;
+
   return (
     <>
       <button
@@ -75,6 +79,9 @@ export function CommandPalette() {
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="brand-glass overflow-hidden p-0 shadow-2xl shadow-primary/20">
+          <div className="sr-only" aria-live="polite">
+            {resultAnnouncement}
+          </div>
           <Command className="flex h-full w-full flex-col overflow-hidden rounded-md bg-popover/90 text-popover-foreground">
             <div
               className="flex items-center border-b border-border/70 px-3"
@@ -87,7 +94,10 @@ export function CommandPalette() {
                 className="flex h-11 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
               />
             </div>
-            <Command.List className="max-h-[300px] overflow-y-auto overflow-x-hidden p-2">
+            <Command.List
+              className="max-h-[300px] overflow-y-auto overflow-x-hidden p-2"
+              aria-busy={isLoading}
+            >
               <Command.Empty className="py-6 text-center text-sm">
                 {isLoading
                   ? t("common.loading")

@@ -25,6 +25,7 @@ export function BrandFooter({ className, compact = false }: BrandFooterProps) {
         alt="Koomky"
         width={188}
         height={44}
+        sizes={compact ? "96px" : "120px"}
         className={compact ? "h-6 w-auto" : "h-7 w-auto"}
       />
     </footer>
