@@ -16,8 +16,8 @@ test.describe("Dark mode theme toggle", () => {
       document.documentElement.classList.contains("dark")
     );
 
-    const initialBackgroundColor = await page.evaluate(() =>
-      getComputedStyle(document.body).backgroundColor
+    const initialBackgroundColor = await page.evaluate(
+      () => getComputedStyle(document.body).backgroundColor
     );
 
     await toggleThemeButton.click();
@@ -31,8 +31,8 @@ test.describe("Dark mode theme toggle", () => {
       })
       .toBe(expectedIsDark);
 
-    const toggledBackgroundColor = await page.evaluate(() =>
-      getComputedStyle(document.body).backgroundColor
+    const toggledBackgroundColor = await page.evaluate(
+      () => getComputedStyle(document.body).backgroundColor
     );
     expect(toggledBackgroundColor).not.toBe(initialBackgroundColor);
 
