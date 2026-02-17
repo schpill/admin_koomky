@@ -125,6 +125,88 @@ describe("useRecurringInvoiceStore", () => {
     expect(useRecurringInvoiceStore.getState().profiles).toEqual([]);
   });
 
+  it("fetches a single profile and keeps unrelated current profile on actions", async () => {
+    useRecurringInvoiceStore.setState({
+      profiles: [
+        { ...baseProfile, id: "rip_1", status: "active" } as any,
+        {
+          ...baseProfile,
+          id: "rip_2",
+          name: "Other profile",
+          status: "active",
+        } as any,
+      ],
+      currentProfile: {
+        ...baseProfile,
+        id: "rip_2",
+        name: "Other profile",
+        status: "active",
+      } as any,
+    });
+
+    (apiClient.get as any).mockResolvedValueOnce({
+      data: { ...baseProfile, id: "rip_1", status: "active" },
+    });
+
+    const fetched = await useRecurringInvoiceStore
+      .getState()
+      .fetchProfile("rip_1");
+    expect(fetched?.id).toBe("rip_1");
+    useRecurringInvoiceStore.setState({
+      currentProfile: {
+        ...baseProfile,
+        id: "rip_2",
+        name: "Other profile",
+        status: "active",
+      } as any,
+    });
+
+    (apiClient.put as any).mockResolvedValueOnce({
+      data: { ...baseProfile, id: "rip_1", name: "Updated profile" },
+    });
+    await useRecurringInvoiceStore.getState().updateProfile("rip_1", {
+      client_id: "cli_1",
+      name: "Updated profile",
+      frequency: "monthly",
+      start_date: "2026-02-01",
+      line_items: baseProfile.line_items,
+    });
+    expect(useRecurringInvoiceStore.getState().currentProfile?.id).toBe(
+      "rip_2"
+    );
+
+    (apiClient.post as any).mockResolvedValueOnce({
+      data: { ...baseProfile, id: "rip_1", status: "paused" },
+    });
+    await useRecurringInvoiceStore.getState().pauseProfile("rip_1");
+    expect(useRecurringInvoiceStore.getState().currentProfile?.id).toBe(
+      "rip_2"
+    );
+
+    (apiClient.post as any).mockResolvedValueOnce({
+      data: { ...baseProfile, id: "rip_1", status: "active" },
+    });
+    await useRecurringInvoiceStore.getState().resumeProfile("rip_1");
+    expect(useRecurringInvoiceStore.getState().currentProfile?.id).toBe(
+      "rip_2"
+    );
+
+    (apiClient.post as any).mockResolvedValueOnce({
+      data: { ...baseProfile, id: "rip_1", status: "cancelled" },
+    });
+    await useRecurringInvoiceStore.getState().cancelProfile("rip_1");
+    expect(useRecurringInvoiceStore.getState().currentProfile?.id).toBe(
+      "rip_2"
+    );
+
+    (apiClient.delete as any).mockResolvedValueOnce({});
+    await useRecurringInvoiceStore.getState().deleteProfile("rip_1");
+
+    const state = useRecurringInvoiceStore.getState();
+    expect(state.currentProfile?.id).toBe("rip_2");
+    expect(state.profiles.map((profile) => profile.id)).toEqual(["rip_2"]);
+  });
+
   it("records list errors and throws action errors", async () => {
     (apiClient.get as any).mockRejectedValueOnce(new Error("list failed"));
     await useRecurringInvoiceStore.getState().fetchProfiles();
@@ -152,5 +234,36 @@ describe("useRecurringInvoiceStore", () => {
         ],
       })
     ).rejects.toThrow("create failed");
+
+    (apiClient.put as any).mockRejectedValueOnce(new Error("update failed"));
+    await expect(
+      useRecurringInvoiceStore.getState().updateProfile("rip_1", {
+        client_id: "cli_1",
+        name: "x",
+        frequency: "monthly",
+        start_date: "2026-02-01",
+        line_items: baseProfile.line_items,
+      })
+    ).rejects.toThrow("update failed");
+
+    (apiClient.delete as any).mockRejectedValueOnce(new Error("delete failed"));
+    await expect(
+      useRecurringInvoiceStore.getState().deleteProfile("rip_1")
+    ).rejects.toThrow("delete failed");
+
+    (apiClient.post as any).mockRejectedValueOnce(new Error("pause failed"));
+    await expect(
+      useRecurringInvoiceStore.getState().pauseProfile("rip_1")
+    ).rejects.toThrow("pause failed");
+
+    (apiClient.post as any).mockRejectedValueOnce(new Error("resume failed"));
+    await expect(
+      useRecurringInvoiceStore.getState().resumeProfile("rip_1")
+    ).rejects.toThrow("resume failed");
+
+    (apiClient.post as any).mockRejectedValueOnce(new Error("cancel failed"));
+    await expect(
+      useRecurringInvoiceStore.getState().cancelProfile("rip_1")
+    ).rejects.toThrow("cancel failed");
   });
 });
