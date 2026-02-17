@@ -33,7 +33,12 @@ class ContactController extends Controller
             'phone' => ['nullable', 'string', 'max:20'],
             'position' => ['nullable', 'string', 'max:255'],
             'is_primary' => ['nullable', 'boolean'],
+            'email_consent' => ['nullable', 'boolean'],
+            'email_consent_date' => ['nullable', 'date', 'required_if:email_consent,true'],
+            'sms_consent' => ['nullable', 'boolean'],
+            'sms_consent_date' => ['nullable', 'date', 'required_if:sms_consent,true'],
         ]);
+        $validated = $this->normalizeConsentPayload($validated);
 
         $contact = DB::transaction(function () use ($client, $validated) {
             if (! empty($validated['is_primary'])) {
@@ -60,7 +65,12 @@ class ContactController extends Controller
             'phone' => ['nullable', 'string', 'max:20'],
             'position' => ['nullable', 'string', 'max:255'],
             'is_primary' => ['nullable', 'boolean'],
+            'email_consent' => ['nullable', 'boolean'],
+            'email_consent_date' => ['nullable', 'date', 'required_if:email_consent,true'],
+            'sms_consent' => ['nullable', 'boolean'],
+            'sms_consent_date' => ['nullable', 'date', 'required_if:sms_consent,true'],
         ]);
+        $validated = $this->normalizeConsentPayload($validated);
 
         DB::transaction(function () use ($client, $contact, $validated) {
             if (! empty($validated['is_primary'])) {
@@ -90,5 +100,22 @@ class ContactController extends Controller
         if ($contact->client_id !== $client->id) {
             abort(404, 'Contact not found for this client');
         }
+    }
+
+    /**
+     * @param  array<string, mixed>  $validated
+     * @return array<string, mixed>
+     */
+    protected function normalizeConsentPayload(array $validated): array
+    {
+        if (array_key_exists('email_consent', $validated) && $validated['email_consent'] !== true) {
+            $validated['email_consent_date'] = null;
+        }
+
+        if (array_key_exists('sms_consent', $validated) && $validated['sms_consent'] !== true) {
+            $validated['sms_consent_date'] = null;
+        }
+
+        return $validated;
     }
 }

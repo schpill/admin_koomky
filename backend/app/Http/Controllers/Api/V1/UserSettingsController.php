@@ -38,6 +38,78 @@ class UserSettingsController extends Controller
         return $this->success($user, 'Business settings updated successfully');
     }
 
+    public function updateEmailSettings(Request $request): JsonResponse
+    {
+        /** @var User $user */
+        $user = $request->user();
+
+        $validated = $request->validate([
+            'provider' => ['required', 'in:smtp,mailgun,ses,postmark,sendmail'],
+            'from_email' => ['nullable', 'email', 'max:255'],
+            'from_name' => ['nullable', 'string', 'max:255'],
+            'reply_to' => ['nullable', 'email', 'max:255'],
+            'smtp_host' => ['nullable', 'string', 'max:255'],
+            'smtp_port' => ['nullable', 'integer', 'min:1', 'max:65535'],
+            'smtp_username' => ['nullable', 'string', 'max:255'],
+            'smtp_password' => ['nullable', 'string', 'max:255'],
+            'encryption' => ['nullable', 'in:tls,ssl'],
+            'api_key' => ['nullable', 'string', 'max:255'],
+            'api_secret' => ['nullable', 'string', 'max:255'],
+            'api_region' => ['nullable', 'string', 'max:64'],
+        ]);
+
+        $user->update([
+            'email_settings' => $validated,
+        ]);
+
+        return $this->success($user->fresh(), 'Email settings updated successfully');
+    }
+
+    public function updateSmsSettings(Request $request): JsonResponse
+    {
+        /** @var User $user */
+        $user = $request->user();
+
+        $validated = $request->validate([
+            'provider' => ['required', 'in:twilio,vonage'],
+            'from' => ['nullable', 'string', 'max:255'],
+            'account_sid' => ['nullable', 'string', 'max:255'],
+            'auth_token' => ['nullable', 'string', 'max:255'],
+            'api_key' => ['nullable', 'string', 'max:255'],
+            'api_secret' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        $user->update([
+            'sms_settings' => $validated,
+        ]);
+
+        return $this->success($user->fresh(), 'SMS settings updated successfully');
+    }
+
+    public function updateNotificationPreferences(Request $request): JsonResponse
+    {
+        /** @var User $user */
+        $user = $request->user();
+
+        $validated = $request->validate([
+            'invoice_paid' => ['required', 'array'],
+            'invoice_paid.email' => ['required', 'boolean'],
+            'invoice_paid.in_app' => ['required', 'boolean'],
+            'campaign_completed' => ['required', 'array'],
+            'campaign_completed.email' => ['required', 'boolean'],
+            'campaign_completed.in_app' => ['required', 'boolean'],
+            'task_overdue' => ['required', 'array'],
+            'task_overdue.email' => ['required', 'boolean'],
+            'task_overdue.in_app' => ['required', 'boolean'],
+        ]);
+
+        $user->update([
+            'notification_preferences' => $validated,
+        ]);
+
+        return $this->success($user->fresh(), 'Notification preferences updated successfully');
+    }
+
     public function enable2fa(Request $request): JsonResponse
     {
         /** @var User $user */

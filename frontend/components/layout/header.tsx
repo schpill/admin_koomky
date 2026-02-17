@@ -1,11 +1,12 @@
 "use client";
 
-import { Bell, Moon, Sun, User } from "lucide-react";
+import { Moon, Sun, User } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { CommandPalette } from "@/components/search/command-palette";
 import { LocaleSwitcher } from "@/components/layout/locale-switcher";
 import { useI18n } from "@/components/providers/i18n-provider";
+import { NotificationBell } from "@/components/layout/notification-bell";
 
 export function Header() {
   const { theme, setTheme } = useTheme();
@@ -33,10 +34,7 @@ export function Header() {
           <span className="sr-only">{t("header.toggleTheme")}</span>
         </Button>
 
-        <Button variant="ghost" size="icon" className="brand-control">
-          <Bell className="h-5 w-5" />
-          <span className="sr-only">{t("header.notifications")}</span>
-        </Button>
+        <NotificationBell />
 
         <Button variant="ghost" size="icon" className="brand-control">
           <User className="h-5 w-5" />

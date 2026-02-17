@@ -2,6 +2,9 @@
 
 use App\Http\Controllers\Api\V1\ActivityController;
 use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\CampaignAnalyticsController;
+use App\Http\Controllers\Api\V1\CampaignController;
+use App\Http\Controllers\Api\V1\CampaignTemplateController;
 use App\Http\Controllers\Api\V1\ClientController;
 use App\Http\Controllers\Api\V1\ContactController;
 use App\Http\Controllers\Api\V1\CreditNoteController;
@@ -15,6 +18,7 @@ use App\Http\Controllers\Api\V1\ProjectInvoiceController;
 use App\Http\Controllers\Api\V1\QuoteController;
 use App\Http\Controllers\Api\V1\ReportController;
 use App\Http\Controllers\Api\V1\SearchController;
+use App\Http\Controllers\Api\V1\SegmentController;
 use App\Http\Controllers\Api\V1\TagController;
 use App\Http\Controllers\Api\V1\TaskController;
 use App\Http\Controllers\Api\V1\TimeEntryController;
@@ -56,6 +60,9 @@ Route::prefix('v1')->group(function () {
             Route::put('/business', [UserSettingsController::class, 'updateBusiness']);
             Route::get('/invoicing', [InvoicingSettingsController::class, 'show']);
             Route::put('/invoicing', [InvoicingSettingsController::class, 'update']);
+            Route::put('/email', [UserSettingsController::class, 'updateEmailSettings']);
+            Route::put('/sms', [UserSettingsController::class, 'updateSmsSettings']);
+            Route::put('/notifications', [UserSettingsController::class, 'updateNotificationPreferences']);
 
             // 2FA Management
             Route::post('/2fa/enable', [UserSettingsController::class, 'enable2fa']);
@@ -97,6 +104,21 @@ Route::prefix('v1')->group(function () {
         // Client Contacts
         Route::apiResource('clients.contacts', ContactController::class)
             ->only(['index', 'store', 'update', 'destroy']);
+
+        // Segments
+        Route::get('segments/{segment}/preview', [SegmentController::class, 'preview']);
+        Route::apiResource('segments', SegmentController::class);
+
+        // Campaigns
+        Route::get('campaigns/compare', [CampaignAnalyticsController::class, 'compare']);
+        Route::apiResource('campaigns', CampaignController::class);
+        Route::post('campaigns/{campaign}/send', [CampaignController::class, 'send']);
+        Route::post('campaigns/{campaign}/pause', [CampaignController::class, 'pause']);
+        Route::post('campaigns/{campaign}/duplicate', [CampaignController::class, 'duplicate']);
+        Route::post('campaigns/{campaign}/test', [CampaignController::class, 'testSend']);
+        Route::get('campaigns/{campaign}/analytics', [CampaignAnalyticsController::class, 'show']);
+        Route::get('campaigns/{campaign}/analytics/export', [CampaignAnalyticsController::class, 'export']);
+        Route::apiResource('campaign-templates', CampaignTemplateController::class)->only(['index', 'store', 'update', 'destroy']);
 
         // Invoices
         Route::apiResource('invoices', InvoiceController::class);

@@ -10,3 +10,4 @@ Artisan::command('inspire', function () {
 
 Schedule::command('invoices:mark-overdue')->dailyAt('01:00');
 Schedule::command('quotes:mark-expired')->dailyAt('01:10');
+Schedule::command('campaigns:dispatch-scheduled')->everyMinute();

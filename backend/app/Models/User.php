@@ -21,6 +21,9 @@ use Laravel\Sanctum\HasApiTokens;
  * @property string|null $bank_details
  * @property string|null $invoice_footer
  * @property string $invoice_numbering_pattern
+ * @property array<string, mixed>|null $email_settings
+ * @property array<string, mixed>|null $sms_settings
+ * @property array<string, mixed>|null $notification_preferences
  * @property string|null $two_factor_secret
  * @property string|null $two_factor_recovery_codes
  * @property \Illuminate\Support\Carbon|null $two_factor_confirmed_at
@@ -45,6 +48,9 @@ class User extends Authenticatable
         'bank_details',
         'invoice_footer',
         'invoice_numbering_pattern',
+        'email_settings',
+        'sms_settings',
+        'notification_preferences',
         'two_factor_secret',
         'two_factor_recovery_codes',
         'two_factor_confirmed_at',
@@ -70,6 +76,9 @@ class User extends Authenticatable
             'password' => 'hashed',
             'payment_terms_days' => 'integer',
             'bank_details' => 'encrypted',
+            'email_settings' => 'array',
+            'sms_settings' => 'array',
+            'notification_preferences' => 'array',
             'two_factor_confirmed_at' => 'datetime',
             'two_factor_secret' => 'encrypted',
             'two_factor_recovery_codes' => 'encrypted',
@@ -130,6 +139,30 @@ class User extends Authenticatable
     public function quotes(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Quote::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\Campaign, \App\Models\User>
+     */
+    public function campaigns(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Campaign::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\CampaignTemplate, \App\Models\User>
+     */
+    public function campaignTemplates(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(CampaignTemplate::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\Segment, \App\Models\User>
+     */
+    public function segments(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Segment::class);
     }
 
     /**

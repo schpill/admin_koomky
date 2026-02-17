@@ -73,3 +73,53 @@ test('contact update returns 404 when contact does not belong to the client rout
 
     $response->assertStatus(404);
 });
+
+test('user can store consent fields when creating a contact', function () {
+    $user = User::factory()->create();
+    $client = Client::factory()->create(['user_id' => $user->id]);
+
+    $response = $this->actingAs($user, 'sanctum')
+        ->postJson("/api/v1/clients/{$client->id}/contacts", [
+            'first_name' => 'Consent',
+            'email' => 'consent@example.test',
+            'email_consent' => true,
+            'email_consent_date' => now()->toDateTimeString(),
+            'sms_consent' => true,
+            'sms_consent_date' => now()->toDateTimeString(),
+        ]);
+
+    $response->assertStatus(201);
+
+    $this->assertDatabaseHas('contacts', [
+        'client_id' => $client->id,
+        'first_name' => 'Consent',
+        'email_consent' => true,
+        'sms_consent' => true,
+    ]);
+});
+
+test('consent date is nulled when consent is explicitly disabled on update', function () {
+    $user = User::factory()->create();
+    $client = Client::factory()->create(['user_id' => $user->id]);
+    $contact = Contact::factory()->create([
+        'client_id' => $client->id,
+        'first_name' => 'Consent Update',
+        'email_consent' => true,
+        'email_consent_date' => now()->subDay(),
+    ]);
+
+    $response = $this->actingAs($user, 'sanctum')
+        ->putJson("/api/v1/clients/{$client->id}/contacts/{$contact->id}", [
+            'first_name' => 'Consent Update',
+            'email_consent' => false,
+            'email_consent_date' => now()->toDateTimeString(),
+        ]);
+
+    $response->assertStatus(200);
+
+    $this->assertDatabaseHas('contacts', [
+        'id' => $contact->id,
+        'email_consent' => false,
+        'email_consent_date' => null,
+    ]);
+});
