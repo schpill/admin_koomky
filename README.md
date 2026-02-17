@@ -72,6 +72,18 @@ make test-be
 make test-fe
 ```
 
+Pre-push formatting gate (Husky):
+
+```bash
+pnpm --dir frontend format:check
+```
+
+If formatting fails, run:
+
+```bash
+pnpm --dir frontend exec prettier --write <file>
+```
+
 ## Production
 
 - Deployment stack: `docker-compose.prod.yml`
