@@ -1,6 +1,6 @@
 # Phase 3 — Task Tracking
 
-> **Status**: Not Started
+> **Status**: In Progress
 > **Prerequisite**: Phase 2 fully merged
 > **Spec**: [docs/phases/phase3.md](../phases/phase3.md)
 
