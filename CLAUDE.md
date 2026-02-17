@@ -12,12 +12,15 @@ Koomky is a self-hosted Freelance CRM built as a monorepo:
 
 ## Current Implementation Snapshot
 
-- **Phase 2 Sprints 5, 6, 7, and 8 are fully implemented and verified** (Projects, Tasks, Time Tracking, Invoices, Payments, Quotes, Credit Notes, and Reports).
+- **Phase 3 is fully implemented and merged to `main`** (Segments, Campaigns Email/SMS, Templates, Scheduling, Tracking, Webhooks, Notifications, and Settings).
 - **Backend Coverage**: 85.48% (PCOV enabled).
-- **Frontend Coverage**: 94.73%.
+- **Frontend Coverage**: 89.10% (Vitest coverage run).
 - **Public signup is disabled**:
   - Backend route `POST /api/v1/auth/register` is removed.
   - Frontend `/auth/register` page and middleware exposure are removed.
+- **Email campaigns support Amazon SES in API mode**:
+  - Per-user runtime credentials are supported via settings (`api_key`, `api_secret`, `api_region`).
+  - Fallback to global `services.ses` config remains available if per-user credentials are absent.
 - **User provisioning is now admin-only via CLI command**:
   - `php artisan users:create`
   - Asks for email (if not provided as argument), creates user, prints generated password in clear text.
@@ -82,6 +85,7 @@ make test        # Run all tests (backend + frontend)
 make test-be     # Run backend tests only
 make test-fe     # Run frontend tests only
 make lint        # Run all linters (Pint, PHPStan, ESLint)
+cd frontend && pnpm prettier --write .   # Auto-fix frontend formatting
 make fresh       # Reset database
 make seed        # Seed database
 cd backend && php artisan users:create   # Create a private CRM user account
