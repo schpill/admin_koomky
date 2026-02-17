@@ -19,6 +19,11 @@ export default function EmailSettingsPage() {
   const [smtpPort, setSmtpPort] = useState("587");
   const [smtpUsername, setSmtpUsername] = useState("");
   const [smtpPassword, setSmtpPassword] = useState("");
+  const [apiKey, setApiKey] = useState("");
+  const [apiSecret, setApiSecret] = useState("");
+  const [apiRegion, setApiRegion] = useState("us-east-1");
+
+  const isApiProvider = provider === "mailgun" || provider === "ses" || provider === "postmark";
 
   const save = async () => {
     try {
@@ -27,10 +32,13 @@ export default function EmailSettingsPage() {
         from_email: fromEmail || null,
         from_name: fromName || null,
         reply_to: replyTo || null,
-        smtp_host: smtpHost || null,
-        smtp_port: Number(smtpPort) || null,
-        smtp_username: smtpUsername || null,
-        smtp_password: smtpPassword || null,
+        smtp_host: provider === "smtp" ? smtpHost || null : null,
+        smtp_port: provider === "smtp" ? Number(smtpPort) || null : null,
+        smtp_username: provider === "smtp" ? smtpUsername || null : null,
+        smtp_password: provider === "smtp" ? smtpPassword || null : null,
+        api_key: isApiProvider ? apiKey || null : null,
+        api_secret: provider === "ses" ? apiSecret || null : null,
+        api_region: provider === "ses" ? apiRegion || null : null,
       });
       toast.success("Email settings updated");
     } catch (error) {
@@ -131,6 +139,42 @@ export default function EmailSettingsPage() {
                   onChange={(event) => setSmtpPassword(event.target.value)}
                 />
               </div>
+            </div>
+          )}
+
+          {isApiProvider && (
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="api-key">API key</Label>
+                <Input
+                  id="api-key"
+                  value={apiKey}
+                  onChange={(event) => setApiKey(event.target.value)}
+                />
+              </div>
+
+              {provider === "ses" && (
+                <div className="space-y-2">
+                  <Label htmlFor="api-secret">API secret</Label>
+                  <Input
+                    id="api-secret"
+                    type="password"
+                    value={apiSecret}
+                    onChange={(event) => setApiSecret(event.target.value)}
+                  />
+                </div>
+              )}
+
+              {provider === "ses" && (
+                <div className="space-y-2">
+                  <Label htmlFor="api-region">AWS region</Label>
+                  <Input
+                    id="api-region"
+                    value={apiRegion}
+                    onChange={(event) => setApiRegion(event.target.value)}
+                  />
+                </div>
+              )}
             </div>
           )}
 

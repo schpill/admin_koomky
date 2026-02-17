@@ -46,3 +46,33 @@ test('mail config service configures api based provider and fallback', function 
     $fallbackUser = User::factory()->create(['email_settings' => null]);
     expect($service->configureForUser($fallbackUser))->toBe((string) config('mail.default'));
 });
+
+test('mail config service configures ses api credentials per user', function () {
+    config([
+        'services.ses.key' => 'global-key',
+        'services.ses.secret' => 'global-secret',
+        'services.ses.region' => 'eu-west-1',
+    ]);
+
+    $user = User::factory()->create([
+        'email_settings' => [
+            'provider' => 'ses',
+            'api_key' => 'user-key',
+            'api_secret' => 'user-secret',
+            'api_region' => 'us-west-2',
+            'from_email' => 'ses@example.test',
+            'from_name' => 'SES Sender',
+        ],
+    ]);
+
+    $service = app(MailConfigService::class);
+    $mailer = $service->configureForUser($user);
+
+    expect($mailer)->toBe('campaign_ses');
+    expect(config('mail.mailers.campaign_ses.transport'))->toBe('ses');
+    expect(config('mail.mailers.campaign_ses.key'))->toBe('user-key');
+    expect(config('mail.mailers.campaign_ses.secret'))->toBe('user-secret');
+    expect(config('mail.mailers.campaign_ses.region'))->toBe('us-west-2');
+    expect(config('mail.from.address'))->toBe('ses@example.test');
+    expect(config('mail.from.name'))->toBe('SES Sender');
+});

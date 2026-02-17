@@ -55,6 +55,7 @@ class UserSettingsController extends Controller
             'encryption' => ['nullable', 'in:tls,ssl'],
             'api_key' => ['nullable', 'string', 'max:255'],
             'api_secret' => ['nullable', 'string', 'max:255'],
+            'api_region' => ['nullable', 'string', 'max:64'],
         ]);
 
         $user->update([

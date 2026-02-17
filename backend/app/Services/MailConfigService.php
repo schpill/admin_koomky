@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\User;
+use Illuminate\Support\Facades\Mail;
 
 class MailConfigService
 {
@@ -18,8 +19,10 @@ class MailConfigService
         $provider = strtolower((string) ($settings['provider'] ?? ''));
 
         if ($provider === 'smtp') {
+            $mailer = 'campaign_smtp';
+
             config([
-                'mail.mailers.campaign_smtp' => [
+                'mail.mailers.'.$mailer => [
                     'transport' => 'smtp',
                     'host' => (string) ($settings['smtp_host'] ?? 'localhost'),
                     'port' => (int) ($settings['smtp_port'] ?? 25),
@@ -30,9 +33,33 @@ class MailConfigService
                 ],
             ]);
 
+            Mail::purge($mailer);
             $this->configureFromAddress($settings);
 
-            return 'campaign_smtp';
+            return $mailer;
+        }
+
+        if ($provider === 'ses') {
+            $apiKey = $settings['api_key'] ?? null;
+            $apiSecret = $settings['api_secret'] ?? null;
+
+            if (is_string($apiKey) && $apiKey !== '' && is_string($apiSecret) && $apiSecret !== '') {
+                $mailer = 'campaign_ses';
+
+                config([
+                    'mail.mailers.'.$mailer => [
+                        'transport' => 'ses',
+                        'key' => $apiKey,
+                        'secret' => $apiSecret,
+                        'region' => $this->resolveSesRegion($settings),
+                    ],
+                ]);
+
+                Mail::purge($mailer);
+                $this->configureFromAddress($settings);
+
+                return $mailer;
+            }
         }
 
         if (in_array($provider, ['mailgun', 'ses', 'postmark', 'sendmail'], true)) {
@@ -59,5 +86,19 @@ class MailConfigService
         if (is_string($fromName) && $fromName !== '') {
             config(['mail.from.name' => $fromName]);
         }
+    }
+
+    /**
+     * @param  array<string, mixed>  $settings
+     */
+    private function resolveSesRegion(array $settings): string
+    {
+        $region = $settings['api_region'] ?? null;
+
+        if (is_string($region) && $region !== '') {
+            return $region;
+        }
+
+        return (string) config('services.ses.region', 'us-east-1');
     }
 }
