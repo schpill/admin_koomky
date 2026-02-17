@@ -344,25 +344,131 @@
 
 ## 6. Exit Criteria
 
-| #  | Criterion                                                                           | Validated |
-|----|-------------------------------------------------------------------------------------|-----------|
-| 1  | Recurring invoice profiles CRUD with all frequencies (weekly → annual)              | [ ]       |
-| 2  | Scheduler auto-generates invoices on due date                                       | [ ]       |
-| 3  | Auto-send emails generated invoices when configured                                 | [ ]       |
-| 4  | Multi-currency: create invoices/quotes/credit notes in any active currency          | [ ]       |
-| 5  | Exchange rates fetched daily and used for base currency conversion                  | [ ]       |
-| 6  | Financial reports aggregate in base currency with currency breakdown                | [ ]       |
-| 7  | Google Calendar OAuth connection and bidirectional sync                              | [ ]       |
-| 8  | CalDAV connection and bidirectional sync                                             | [ ]       |
-| 9  | Auto-events from project deadlines, task due dates, invoice reminders               | [ ]       |
-| 10 | Calendar UI with month/week/day views, drag-to-reschedule                           | [ ]       |
-| 11 | Prometheus `/metrics` endpoint exposes HTTP + application metrics                   | [ ]       |
-| 12 | Grafana dashboards provisioned: application, business, infrastructure, DB, queue    | [ ]       |
-| 13 | Grafana alerting rules configured for critical thresholds                            | [ ]       |
-| 14 | Back-end test coverage >= 80%                                                       | [ ]       |
-| 15 | Front-end test coverage >= 80%                                                      | [ ]       |
-| 16 | CI pipeline fully green on `main`                                                   | [ ]       |
-| 17 | Version tagged as `v1.1.0` on GitHub                                                | [ ]       |
+Legend: `Pre-check` = validation technique disponible aujourd'hui; `Validated` = case finale de recette manuelle.
+
+| #  | Criterion                                                                           | Pre-check                                                                 | Validated |
+|----|-------------------------------------------------------------------------------------|---------------------------------------------------------------------------|-----------|
+| 1  | Recurring invoice profiles CRUD with all frequencies (weekly → annual)             | E2E CRUD profile OK (create + pause/resume/cancel), fréquences à valider | [ ]       |
+| 2  | Scheduler auto-generates invoices on due date                                      | Couverture feature/backend présente, à confirmer en run scheduler réel    | [ ]       |
+| 3  | Auto-send emails generated invoices when configured                                | Couverture backend présente, SMTP provider réel à confirmer               | [ ]       |
+| 4  | Multi-currency: create invoices/quotes/credit notes in any active currency         | E2E invoice OK; quotes/credit notes à confirmer manuellement              | [ ]       |
+| 5  | Exchange rates fetched daily and used for base currency conversion                 | Couverture backend présente, cron quotidien à confirmer                   | [ ]       |
+| 6  | Financial reports aggregate in base currency with currency breakdown               | Implémentation présente, validation métier manuelle requise               | [ ]       |
+| 7  | Google Calendar OAuth connection and bidirectional sync                             | Feature/unit tests OK (mock), OAuth réel à confirmer                      | [ ]       |
+| 8  | CalDAV connection and bidirectional sync                                            | Implémentation présente, serveur CalDAV réel à confirmer                  | [ ]       |
+| 9  | Auto-events from project deadlines, task due dates, invoice reminders              | Feature tests OK + persistance UI/API des règles ajoutée                  | [ ]       |
+| 10 | Calendar UI with month/week/day views, drag-to-reschedule                          | E2E month/week/day OK; drag-to-reschedule à confirmer                     | [ ]       |
+| 11 | Prometheus `/metrics` endpoint exposes HTTP + application metrics                  | Tests monitoring présents, scrape réel à confirmer                        | [ ]       |
+| 12 | Grafana dashboards provisioned: application, business, infrastructure, DB, queue   | Dashboards JSON présents, import/affichage réel à confirmer               | [ ]       |
+| 13 | Grafana alerting rules configured for critical thresholds                           | Fichiers/provisioning présents, trigger réel à confirmer                  | [ ]       |
+| 14 | Back-end test coverage >= 80%                                                      | Non mesuré sur ce passage                                                 | [ ]       |
+| 15 | Front-end test coverage >= 80%                                                     | Non mesuré sur ce passage (scope coverage à vérifier)                     | [ ]       |
+| 16 | CI pipeline fully green on `main`                                                  | Non vérifiable localement                                                 | [ ]       |
+| 17 | Version tagged as `v1.1.0` on GitHub                                               | Non vérifiable localement                                                 | [ ]       |
+
+### 6.1 Manual Validation Checklist (Criterion-by-Criterion)
+
+#### 1) Recurring invoice profiles CRUD (all frequencies)
+- [ ] Créer 6 profils (`weekly`, `biweekly`, `monthly`, `quarterly`, `semiannual`, `annual`).
+- [ ] Vérifier `create`, `read`, `update`, `delete`, `pause`, `resume`, `cancel`.
+- [ ] Vérifier la cohérence `next_due_date` après modification de fréquence.
+- [ ] Preuves: captures UI + réponses API.
+
+#### 2) Scheduler auto-generates invoices
+- [ ] Exécuter le scheduler sur un jeu de profils arrivés à échéance.
+- [ ] Vérifier création unique des factures (idempotence).
+- [ ] Vérifier incrément `occurrences_generated` et mise à jour `next_due_date`.
+- [ ] Preuves: logs scheduler + enregistrements DB.
+
+#### 3) Auto-send generated invoices
+- [ ] Activer `auto_send` sur un profil.
+- [ ] Forcer une génération et vérifier envoi mail.
+- [ ] Vérifier gestion d'erreur provider (retry/log).
+- [ ] Preuves: logs de queue + provider mail + statut facture.
+
+#### 4) Multi-currency across invoices/quotes/credit notes
+- [ ] Créer invoice, quote et credit note avec 3 devises actives différentes.
+- [ ] Vérifier montants document + conversion devise de base.
+- [ ] Vérifier arrondis et affichage symbole/code.
+- [ ] Preuves: captures UI + payload API.
+
+#### 5) Daily exchange rates and conversion usage
+- [ ] Déclencher fetch des taux et vérifier stockage.
+- [ ] Vérifier utilisation des taux dans calculs en devise de base.
+- [ ] Vérifier comportement fallback en cas d'échec provider.
+- [ ] Preuves: logs fetch rates + valeurs stockées + écran de conversion.
+
+#### 6) Financial reports in base currency
+- [ ] Générer des documents multi-devises.
+- [ ] Ouvrir les rapports financiers et vérifier agrégation en devise de base.
+- [ ] Vérifier présence du breakdown par devise.
+- [ ] Preuves: captures rapports + calcul de contrôle.
+
+#### 7) Google Calendar OAuth + bidirectional sync
+- [ ] Connecter un compte Google réel via OAuth.
+- [ ] Créer/modifier/supprimer un événement côté app puis vérifier côté Google.
+- [ ] Créer/modifier/supprimer côté Google puis lancer sync et vérifier côté app.
+- [ ] Preuves: captures des deux côtés + logs sync.
+
+#### 8) CalDAV bidirectional sync
+- [ ] Connecter un serveur CalDAV réel (ex: Nextcloud/Radicale).
+- [ ] Vérifier sync bidirectionnelle create/update/delete.
+- [ ] Vérifier gestion des erreurs auth/certificat et refresh.
+- [ ] Preuves: captures client CalDAV + logs sync.
+
+#### 9) Auto-events from projects/tasks/invoices
+- [ ] Créer projet avec deadline, tâche avec due date, facture avec due date.
+- [ ] Vérifier création auto des 3 types d'événements.
+- [ ] Désactiver une règle auto-event en settings et vérifier absence de création.
+- [ ] Preuves: captures calendrier + payload settings.
+
+#### 10) Calendar UI month/week/day + drag-to-reschedule
+- [ ] Vérifier navigation month/week/day.
+- [ ] Vérifier création/édition/suppression d'événement depuis UI.
+- [ ] Vérifier drag-to-reschedule et persistance backend.
+- [ ] Preuves: enregistrement écran + payload update event.
+
+#### 11) Prometheus metrics endpoint
+- [ ] Appeler `/metrics` et vérifier format Prometheus valide.
+- [ ] Vérifier présence métriques HTTP + application.
+- [ ] Vérifier variation des compteurs après trafic simulé.
+- [ ] Preuves: extrait `/metrics` + requêtes de test.
+
+#### 12) Grafana dashboards provisioned
+- [ ] Démarrer Grafana avec provisioning actif.
+- [ ] Vérifier présence des 5 dashboards attendus.
+- [ ] Vérifier au moins un panel alimenté par dashboard.
+- [ ] Preuves: captures Grafana + export dashboard UID.
+
+#### 13) Grafana alerting rules
+- [ ] Vérifier présence et chargement des règles d'alerting.
+- [ ] Simuler dépassement de seuil pour au moins 2 règles.
+- [ ] Vérifier transition d'état et notification.
+- [ ] Preuves: historique alertes + notifications.
+
+#### 14) Back-end coverage >= 80%
+- [ ] Exécuter la commande de coverage backend.
+- [ ] Archiver le rapport (HTML/XML) et noter le pourcentage global.
+- [ ] Valider que le seuil >= 80% est respecté.
+- [ ] Preuves: rapport coverage backend.
+
+#### 15) Front-end coverage >= 80%
+- [ ] Exécuter la commande de coverage frontend.
+- [ ] Vérifier que le périmètre inclus couvre aussi les composants requis.
+- [ ] Valider que le seuil >= 80% est respecté.
+- [ ] Preuves: rapport coverage frontend + config coverage utilisée.
+
+#### 16) CI fully green on `main`
+- [ ] Vérifier le dernier pipeline sur la branche `main`.
+- [ ] Vérifier que tous les jobs obligatoires sont au vert.
+- [ ] Vérifier absence de flaky/retry masquant des échecs.
+- [ ] Preuves: lien pipeline + capture jobs.
+
+#### 17) GitHub tag `v1.1.0`
+- [ ] Vérifier présence du tag annoté `v1.1.0` sur GitHub.
+- [ ] Vérifier que le tag pointe sur le commit release attendu.
+- [ ] Vérifier publication des release notes associées.
+- [ ] Preuves: page release/tag + SHA.
 
 ---
 

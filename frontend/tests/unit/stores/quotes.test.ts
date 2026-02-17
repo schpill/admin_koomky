@@ -183,6 +183,61 @@ describe("useQuoteStore", () => {
     ).toBe(undefined);
   });
 
+  it("replaces an existing quote on fetch and keeps unrelated current quote on send/accept/reject", async () => {
+    useQuoteStore.setState({
+      quotes: [
+        { ...baseQuote, id: "q1", status: "draft", notes: "old" } as any,
+        {
+          ...baseQuote,
+          id: "q2",
+          number: "DEV-2026-0002",
+          status: "draft",
+        } as any,
+      ],
+      currentQuote: {
+        ...baseQuote,
+        id: "q2",
+        number: "DEV-2026-0002",
+        status: "draft",
+      } as any,
+    });
+
+    (apiClient.get as any).mockResolvedValueOnce({
+      data: { ...baseQuote, id: "q1", status: "sent", notes: "fresh" },
+    });
+    await useQuoteStore.getState().fetchQuote("q1");
+
+    expect(useQuoteStore.getState().quotes).toHaveLength(2);
+    expect(useQuoteStore.getState().quotes[0]?.id).toBe("q1");
+    expect(useQuoteStore.getState().quotes[0]?.notes).toBe("fresh");
+    useQuoteStore.setState({
+      currentQuote: {
+        ...baseQuote,
+        id: "q2",
+        number: "DEV-2026-0002",
+        status: "draft",
+      } as any,
+    });
+
+    (apiClient.post as any).mockResolvedValueOnce({
+      data: { ...baseQuote, id: "q1", status: "sent" },
+    });
+    await useQuoteStore.getState().sendQuote("q1");
+    expect(useQuoteStore.getState().currentQuote?.id).toBe("q2");
+
+    (apiClient.post as any).mockResolvedValueOnce({
+      data: { ...baseQuote, id: "q1", status: "accepted" },
+    });
+    await useQuoteStore.getState().acceptQuote("q1");
+    expect(useQuoteStore.getState().currentQuote?.id).toBe("q2");
+
+    (apiClient.post as any).mockResolvedValueOnce({
+      data: { ...baseQuote, id: "q1", status: "rejected" },
+    });
+    await useQuoteStore.getState().rejectQuote("q1");
+    expect(useQuoteStore.getState().currentQuote?.id).toBe("q2");
+  });
+
   it("handles action failures and list errors", async () => {
     (apiClient.get as any).mockRejectedValueOnce(new Error("list failed"));
     await useQuoteStore.getState().fetchQuotes();

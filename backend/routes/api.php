@@ -75,6 +75,8 @@ Route::prefix('v1')->group(function () {
             Route::put('/email', [UserSettingsController::class, 'updateEmailSettings']);
             Route::put('/sms', [UserSettingsController::class, 'updateSmsSettings']);
             Route::put('/notifications', [UserSettingsController::class, 'updateNotificationPreferences']);
+            Route::get('/calendar', [UserSettingsController::class, 'calendarSettings']);
+            Route::put('/calendar', [UserSettingsController::class, 'updateCalendarSettings']);
 
             // 2FA Management
             Route::post('/2fa/enable', [UserSettingsController::class, 'enable2fa']);

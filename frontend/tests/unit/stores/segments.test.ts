@@ -114,6 +114,30 @@ describe("useSegmentStore", () => {
     expect(useSegmentStore.getState().segments).toEqual([]);
   });
 
+  it("fetches a segment and replaces existing entry", async () => {
+    useSegmentStore.setState({
+      segments: [{ ...baseSegment, id: "seg_1", name: "Old name" } as any],
+      currentSegment: null,
+      pagination: null,
+      preview: null,
+      isLoading: false,
+      error: null,
+    });
+
+    (apiClient.get as any).mockResolvedValueOnce({
+      data: { ...baseSegment, id: "seg_1", name: "Fresh segment" },
+    });
+
+    const fetched = await useSegmentStore.getState().fetchSegment("seg_1");
+
+    expect(fetched?.id).toBe("seg_1");
+    expect(useSegmentStore.getState().currentSegment?.name).toBe(
+      "Fresh segment"
+    );
+    expect(useSegmentStore.getState().segments).toHaveLength(1);
+    expect(useSegmentStore.getState().segments[0]?.name).toBe("Fresh segment");
+  });
+
   it("keeps unrelated current segment on update and delete", async () => {
     useSegmentStore.setState({
       segments: [

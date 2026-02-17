@@ -59,6 +59,23 @@ describe("useRecurringInvoiceStore", () => {
     expect(state.pagination?.total).toBe(1);
   });
 
+  it("uses fallback values when recurring profile payload is empty", async () => {
+    (apiClient.get as any).mockResolvedValue({
+      data: null,
+    });
+
+    await useRecurringInvoiceStore.getState().fetchProfiles();
+
+    const state = useRecurringInvoiceStore.getState();
+    expect(state.profiles).toEqual([]);
+    expect(state.pagination).toEqual({
+      current_page: 1,
+      last_page: 1,
+      total: 0,
+      per_page: 15,
+    });
+  });
+
   it("creates updates pauses resumes cancels and deletes profile", async () => {
     (apiClient.post as any).mockResolvedValueOnce({ data: baseProfile });
 
