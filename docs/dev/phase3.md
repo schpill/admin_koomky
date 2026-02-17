@@ -12,20 +12,20 @@
 
 | ID | Task | Status | Owner |
 |----|------|--------|-------|
-| P3-BE-001 | Create Segment model (UUID, filters as JSON) | todo | |
-| P3-BE-002 | Create SegmentFactory | todo | |
-| P3-BE-003 | Create SegmentPolicy | todo | |
-| P3-BE-004 | Create SegmentController (CRUD + preview) | todo | |
-| P3-BE-005 | Create StoreSegmentRequest | todo | |
-| P3-BE-006 | Create SegmentFilterEngine service | todo | |
-| P3-BE-007 | Implement filter criteria (tag, last_interaction, project_status, revenue, location, created_at, custom) | todo | |
-| P3-BE-008 | Implement AND/OR logic combinator | todo | |
-| P3-BE-009 | Implement preview endpoint (paginated matching contacts) | todo | |
-| P3-BE-010 | Implement dynamic segment resolution | todo | |
-| P3-BE-011 | Implement segment contact count caching (Redis) | todo | |
-| P3-BE-012 | Add unsubscribe/opt-out scopes on Contact | todo | |
-| P3-BE-013 | Create UnsubscribeController (public signed URL) | todo | |
-| P3-BE-014 | Implement consent management fields on Contact | todo | |
+| P3-BE-001 | Create Segment model (UUID, filters as JSON) | done | codex |
+| P3-BE-002 | Create SegmentFactory | done | codex |
+| P3-BE-003 | Create SegmentPolicy | done | codex |
+| P3-BE-004 | Create SegmentController (CRUD + preview) | done | codex |
+| P3-BE-005 | Create StoreSegmentRequest | done | codex |
+| P3-BE-006 | Create SegmentFilterEngine service | done | codex |
+| P3-BE-007 | Implement filter criteria (tag, last_interaction, project_status, revenue, location, created_at, custom) | done | codex |
+| P3-BE-008 | Implement AND/OR logic combinator | done | codex |
+| P3-BE-009 | Implement preview endpoint (paginated matching contacts) | done | codex |
+| P3-BE-010 | Implement dynamic segment resolution | done | codex |
+| P3-BE-011 | Implement segment contact count caching (Redis) | done | codex |
+| P3-BE-012 | Add unsubscribe/opt-out scopes on Contact | done | codex |
+| P3-BE-013 | Create UnsubscribeController (public signed URL) | done | codex |
+| P3-BE-014 | Implement consent management fields on Contact | done | codex |
 
 ### Frontend
 

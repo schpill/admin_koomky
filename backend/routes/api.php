@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\V1\ProjectInvoiceController;
 use App\Http\Controllers\Api\V1\QuoteController;
 use App\Http\Controllers\Api\V1\ReportController;
 use App\Http\Controllers\Api\V1\SearchController;
+use App\Http\Controllers\Api\V1\SegmentController;
 use App\Http\Controllers\Api\V1\TagController;
 use App\Http\Controllers\Api\V1\TaskController;
 use App\Http\Controllers\Api\V1\TimeEntryController;
@@ -97,6 +98,10 @@ Route::prefix('v1')->group(function () {
         // Client Contacts
         Route::apiResource('clients.contacts', ContactController::class)
             ->only(['index', 'store', 'update', 'destroy']);
+
+        // Segments
+        Route::get('segments/{segment}/preview', [SegmentController::class, 'preview']);
+        Route::apiResource('segments', SegmentController::class);
 
         // Invoices
         Route::apiResource('invoices', InvoiceController::class);

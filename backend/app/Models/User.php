@@ -133,6 +133,14 @@ class User extends Authenticatable
     }
 
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\Segment, \App\Models\User>
+     */
+    public function segments(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Segment::class);
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\CreditNote, \App\Models\User>
      */
     public function creditNotes(): \Illuminate\Database\Eloquent\Relations\HasMany

@@ -17,6 +17,12 @@ class ContactFactory extends Factory
             'phone' => $this->faker->phoneNumber(),
             'position' => $this->faker->jobTitle(),
             'is_primary' => false,
+            'email_unsubscribed_at' => null,
+            'sms_opted_out_at' => null,
+            'email_consent' => false,
+            'email_consent_date' => null,
+            'sms_consent' => false,
+            'sms_consent_date' => null,
         ];
     }
 }
