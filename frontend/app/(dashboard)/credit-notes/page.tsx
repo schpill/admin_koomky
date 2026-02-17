@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useCreditNoteStore } from "@/lib/stores/creditNotes";
+import { CurrencyAmount } from "@/components/shared/currency-amount";
 import { CreditNoteStatusBadge } from "@/components/credit-notes/credit-note-status-badge";
 
 export default function CreditNotesPage() {
@@ -90,7 +91,10 @@ export default function CreditNotesPage() {
                         {creditNote.issue_date}
                       </td>
                       <td className="py-4">
-                        {Number(creditNote.total || 0).toFixed(2)} EUR
+                        <CurrencyAmount
+                          amount={Number(creditNote.total || 0)}
+                          currency={creditNote.currency || "EUR"}
+                        />
                       </td>
                       <td className="py-4">
                         <CreditNoteStatusBadge status={creditNote.status} />

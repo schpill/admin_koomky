@@ -3,12 +3,14 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Loader2 } from "lucide-react";
 import { useI18n } from "@/components/providers/i18n-provider";
+import { CurrencySelector } from "@/components/shared/currency-selector";
+import { useCurrencyStore } from "@/lib/stores/currencies";
 
 export type ClientFormData = {
   name: string;
@@ -18,6 +20,7 @@ export type ClientFormData = {
   city?: string | null;
   zip_code?: string | null;
   country?: string | null;
+  preferred_currency?: string | null;
 };
 
 interface ClientFormProps {
@@ -35,6 +38,7 @@ export function ClientForm({
 }: ClientFormProps) {
   const { t } = useI18n();
   const defaultSubmitLabel = submitLabel ?? t("clients.form.saveClient");
+  const { currencies, fetchCurrencies } = useCurrencyStore();
 
   const clientSchema = useMemo(
     () =>
@@ -51,6 +55,12 @@ export function ClientForm({
         city: z.string().optional().nullable(),
         zip_code: z.string().optional().nullable(),
         country: z.string().optional().nullable(),
+        preferred_currency: z
+          .string()
+          .length(3)
+          .optional()
+          .or(z.literal(""))
+          .or(z.null()),
       }),
     [t]
   );
@@ -58,11 +68,19 @@ export function ClientForm({
   const {
     register,
     handleSubmit,
+    watch,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<ClientFormData>({
     resolver: zodResolver(clientSchema),
     defaultValues: initialData,
   });
+
+  useEffect(() => {
+    fetchCurrencies();
+  }, [fetchCurrencies]);
+
+  const preferredCurrency = watch("preferred_currency") || "EUR";
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -115,6 +133,18 @@ export function ClientForm({
           <Input
             id="country"
             {...register("country")}
+            disabled={isSubmitting}
+          />
+        </div>
+        <div className="md:col-span-2">
+          <CurrencySelector
+            id="client-preferred-currency"
+            label="Preferred currency"
+            value={preferredCurrency}
+            currencies={currencies}
+            onValueChange={(next) =>
+              setValue("preferred_currency", next, { shouldDirty: true })
+            }
             disabled={isSubmitting}
           />
         </div>

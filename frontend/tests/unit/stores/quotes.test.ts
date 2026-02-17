@@ -139,6 +139,50 @@ describe("useQuoteStore", () => {
     expect(useQuoteStore.getState().quotes).toEqual([]);
   });
 
+  it("fetches a quote and keeps unrelated current quote on convert", async () => {
+    (apiClient.get as any).mockResolvedValueOnce({
+      data: { ...baseQuote, id: "q1", status: "draft" },
+    });
+
+    const fetched = await useQuoteStore.getState().fetchQuote("q1");
+    expect(fetched?.id).toBe("q1");
+    expect(useQuoteStore.getState().currentQuote?.id).toBe("q1");
+
+    useQuoteStore.setState({
+      quotes: [
+        { ...baseQuote, id: "q1", status: "sent" } as any,
+        {
+          ...baseQuote,
+          id: "q2",
+          number: "DEV-2026-0002",
+          status: "draft",
+        } as any,
+      ],
+      currentQuote: {
+        ...baseQuote,
+        id: "q2",
+        number: "DEV-2026-0002",
+        status: "draft",
+      } as any,
+    });
+
+    (apiClient.post as any).mockResolvedValueOnce({
+      data: { id: "inv_99" },
+    });
+
+    const converted = await useQuoteStore.getState().convertQuote("q1");
+    expect(converted?.id).toBe("inv_99");
+
+    const state = useQuoteStore.getState();
+    expect(state.currentQuote?.id).toBe("q2");
+    expect(
+      state.quotes.find((quote) => quote.id === "q1")?.converted_invoice_id
+    ).toBe("inv_99");
+    expect(
+      state.quotes.find((quote) => quote.id === "q2")?.converted_invoice_id
+    ).toBe(undefined);
+  });
+
   it("handles action failures and list errors", async () => {
     (apiClient.get as any).mockRejectedValueOnce(new Error("list failed"));
     await useQuoteStore.getState().fetchQuotes();

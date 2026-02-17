@@ -16,6 +16,15 @@ interface UpcomingDeadline {
   client_name?: string | null;
 }
 
+interface RecurringUpcomingProfile {
+  id: string;
+  name: string;
+  frequency: string;
+  next_due_date: string;
+  client_id?: string;
+  client_name?: string | null;
+}
+
 interface DashboardStats {
   total_clients: number;
   active_projects: number;
@@ -25,10 +34,14 @@ interface DashboardStats {
   revenue_month: number;
   revenue_quarter: number;
   revenue_year: number;
+  base_currency: string;
   pending_invoices_count: number;
   overdue_invoices_count: number;
   revenue_trend: RevenueTrendItem[];
   upcoming_deadlines: UpcomingDeadline[];
+  recurring_profiles_active_count: number;
+  recurring_upcoming_due_profiles: RecurringUpcomingProfile[];
+  recurring_estimated_revenue_month: number;
   active_campaigns_count: number;
   average_campaign_open_rate: number;
   average_campaign_click_rate: number;

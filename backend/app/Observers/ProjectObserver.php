@@ -4,11 +4,14 @@ namespace App\Observers;
 
 use App\Models\Project;
 use App\Services\ActivityService;
+use App\Services\Calendar\CalendarAutoEventService;
 
 class ProjectObserver
 {
     public function created(Project $project): void
     {
+        app(CalendarAutoEventService::class)->syncProjectDeadline($project);
+
         $client = $project->client;
         if (! $client) {
             return;
@@ -23,6 +26,10 @@ class ProjectObserver
 
     public function updated(Project $project): void
     {
+        if ($project->wasChanged(['deadline', 'name'])) {
+            app(CalendarAutoEventService::class)->syncProjectDeadline($project);
+        }
+
         if (! $project->wasChanged('status')) {
             return;
         }

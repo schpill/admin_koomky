@@ -7,7 +7,11 @@ import { MetricCard } from "@/components/dashboard/metric-card";
 import { RecentActivityWidget } from "@/components/dashboard/recent-activity-widget";
 import { UpcomingDeadlinesWidget } from "@/components/dashboard/upcoming-deadlines-widget";
 import { CampaignSummaryWidget } from "@/components/dashboard/campaign-summary-widget";
+import { RecurringInvoicesWidget } from "@/components/dashboard/recurring-invoices-widget";
+import { CalendarWidget } from "@/components/dashboard/calendar-widget";
+import { CurrencyAmount } from "@/components/shared/currency-amount";
 import { useDashboardStore } from "@/lib/stores/dashboard";
+import { useCalendarStore } from "@/lib/stores/calendar";
 import { useI18n } from "@/components/providers/i18n-provider";
 import { useNotificationStore } from "@/lib/stores/notifications";
 
@@ -25,6 +29,9 @@ const RevenueChart = dynamic(
 
 export default function DashboardPage() {
   const { stats, isLoading, fetchStats } = useDashboardStore();
+  const { events: calendarEvents, fetchEvents: fetchCalendarEvents } =
+    useCalendarStore();
+  const baseCurrency = stats?.base_currency || "EUR";
   const { t } = useI18n();
   const setNotifications = useNotificationStore(
     (state) => state.setNotifications
@@ -33,6 +40,14 @@ export default function DashboardPage() {
   useEffect(() => {
     fetchStats();
   }, [fetchStats]);
+
+  useEffect(() => {
+    const from = new Date().toISOString().slice(0, 10);
+    const to = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+      .toISOString()
+      .slice(0, 10);
+    fetchCalendarEvents({ date_from: from, date_to: to });
+  }, [fetchCalendarEvents]);
 
   useEffect(() => {
     if (!stats?.recent_activities) {
@@ -85,7 +100,12 @@ export default function DashboardPage() {
         />
         <MetricCard
           title={t("dashboard.metrics.monthlyRevenue.title")}
-          value={`${Number(stats?.revenue_month || 0).toFixed(2)} EUR`}
+          value={
+            <CurrencyAmount
+              amount={Number(stats?.revenue_month || 0)}
+              currency={baseCurrency}
+            />
+          }
           isLoading={isLoading}
           icon={<CreditCard className="h-4 w-4" />}
           description={t("dashboard.metrics.monthlyRevenue.description")}
@@ -95,14 +115,24 @@ export default function DashboardPage() {
       <div className="grid gap-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
         <MetricCard
           title="Quarter revenue"
-          value={`${Number(stats?.revenue_quarter || 0).toFixed(2)} EUR`}
+          value={
+            <CurrencyAmount
+              amount={Number(stats?.revenue_quarter || 0)}
+              currency={baseCurrency}
+            />
+          }
           isLoading={isLoading}
           icon={<CreditCard className="h-4 w-4" />}
           description="Current quarter"
         />
         <MetricCard
           title="Year revenue"
-          value={`${Number(stats?.revenue_year || 0).toFixed(2)} EUR`}
+          value={
+            <CurrencyAmount
+              amount={Number(stats?.revenue_year || 0)}
+              currency={baseCurrency}
+            />
+          }
           isLoading={isLoading}
           icon={<CreditCard className="h-4 w-4" />}
           description="Current year"
@@ -132,6 +162,24 @@ export default function DashboardPage() {
         activeCampaigns={stats?.active_campaigns_count || 0}
         averageOpenRate={Number(stats?.average_campaign_open_rate || 0)}
         averageClickRate={Number(stats?.average_campaign_click_rate || 0)}
+      />
+
+      <RecurringInvoicesWidget
+        activeCount={stats?.recurring_profiles_active_count || 0}
+        estimatedMonthlyRevenue={Number(
+          stats?.recurring_estimated_revenue_month || 0
+        )}
+        currency={baseCurrency}
+        upcomingProfiles={stats?.recurring_upcoming_due_profiles || []}
+      />
+
+      <CalendarWidget
+        events={(calendarEvents || []).map((event) => ({
+          id: event.id,
+          title: event.title,
+          start_at: event.start_at,
+          type: event.type,
+        }))}
       />
 
       {/* Responsive Layout: 1 col on mobile/tablet, 3 cols on desktop */}

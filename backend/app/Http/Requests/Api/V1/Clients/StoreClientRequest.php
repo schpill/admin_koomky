@@ -25,6 +25,7 @@ class StoreClientRequest extends FormRequest
             'city' => ['nullable', 'string', 'max:100'],
             'zip_code' => ['nullable', 'string', 'max:20'],
             'country' => ['nullable', 'string', 'max:100'],
+            'preferred_currency' => ['nullable', 'string', 'size:3'],
             'notes' => ['nullable', 'string'],
         ];
     }
@@ -38,8 +39,13 @@ class StoreClientRequest extends FormRequest
             'city',
             'zip_code',
             'country',
+            'preferred_currency',
             'notes',
         ]);
+
+        if (isset($sanitized['preferred_currency']) && is_string($sanitized['preferred_currency'])) {
+            $sanitized['preferred_currency'] = strtoupper($sanitized['preferred_currency']);
+        }
 
         $this->merge($sanitized);
     }

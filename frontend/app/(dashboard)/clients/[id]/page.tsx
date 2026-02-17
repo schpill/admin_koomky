@@ -301,6 +301,14 @@ export default function ClientDetailPage() {
                         {getStatusLabel(client.status)}
                       </p>
                     </div>
+                    <div>
+                      <p className="text-muted-foreground">
+                        Preferred currency
+                      </p>
+                      <p className="font-medium">
+                        {client.preferred_currency || "EUR"}
+                      </p>
+                    </div>
                     <div className="col-span-2">
                       <p className="text-muted-foreground">
                         {t("clients.detail.address")}

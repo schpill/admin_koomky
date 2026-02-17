@@ -114,6 +114,38 @@ describe("useSegmentStore", () => {
     expect(useSegmentStore.getState().segments).toEqual([]);
   });
 
+  it("keeps unrelated current segment on update and delete", async () => {
+    useSegmentStore.setState({
+      segments: [
+        baseSegment as any,
+        { ...baseSegment, id: "seg_2", name: "Other segment" } as any,
+      ],
+      currentSegment: {
+        ...baseSegment,
+        id: "seg_2",
+        name: "Other segment",
+      } as any,
+    });
+
+    (apiClient.put as any).mockResolvedValueOnce({
+      data: { ...baseSegment, id: "seg_1", name: "VIP Updated" },
+    });
+
+    const updated = await useSegmentStore
+      .getState()
+      .updateSegment("seg_1", { name: "VIP Updated" });
+
+    expect(updated?.name).toBe("VIP Updated");
+    expect(useSegmentStore.getState().currentSegment?.id).toBe("seg_2");
+
+    (apiClient.delete as any).mockResolvedValueOnce({});
+    await useSegmentStore.getState().deleteSegment("seg_1");
+
+    const state = useSegmentStore.getState();
+    expect(state.currentSegment?.id).toBe("seg_2");
+    expect(state.segments.map((segment) => segment.id)).toEqual(["seg_2"]);
+  });
+
   it("records API failures", async () => {
     (apiClient.get as any).mockRejectedValueOnce(new Error("list failed"));
     await useSegmentStore.getState().fetchSegments();
@@ -131,5 +163,20 @@ describe("useSegmentStore", () => {
     await expect(
       useSegmentStore.getState().previewSegment("seg_1")
     ).rejects.toThrow("preview failed");
+
+    (apiClient.get as any).mockRejectedValueOnce(new Error("fetch failed"));
+    await expect(
+      useSegmentStore.getState().fetchSegment("seg_1")
+    ).rejects.toThrow("fetch failed");
+
+    (apiClient.put as any).mockRejectedValueOnce(new Error("update failed"));
+    await expect(
+      useSegmentStore.getState().updateSegment("seg_1", { name: "x" })
+    ).rejects.toThrow("update failed");
+
+    (apiClient.delete as any).mockRejectedValueOnce(new Error("delete failed"));
+    await expect(
+      useSegmentStore.getState().deleteSegment("seg_1")
+    ).rejects.toThrow("delete failed");
   });
 });

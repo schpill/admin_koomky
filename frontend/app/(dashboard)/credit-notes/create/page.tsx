@@ -14,6 +14,9 @@ import {
   LineItemsEditor,
   type InvoiceLineItemInput,
 } from "@/components/invoices/line-items-editor";
+import { CurrencyAmount } from "@/components/shared/currency-amount";
+import { CurrencySelector } from "@/components/shared/currency-selector";
+import { useCurrencyStore } from "@/lib/stores/currencies";
 import { useInvoiceStore } from "@/lib/stores/invoices";
 import { useCreditNoteStore } from "@/lib/stores/creditNotes";
 
@@ -21,18 +24,23 @@ const today = new Date().toISOString().slice(0, 10);
 
 export default function CreateCreditNotePage() {
   const router = useRouter();
+  const { currencies, rates, baseCurrency, fetchCurrencies, fetchRates } =
+    useCurrencyStore();
   const { invoices, currentInvoice, fetchInvoices, fetchInvoice } =
     useInvoiceStore();
   const { createCreditNote, isLoading } = useCreditNoteStore();
 
   const [invoiceId, setInvoiceId] = useState("");
+  const [currency, setCurrency] = useState("EUR");
   const [issueDate, setIssueDate] = useState(today);
   const [reason, setReason] = useState("");
   const [lineItems, setLineItems] = useState<InvoiceLineItemInput[]>([]);
 
   useEffect(() => {
     fetchInvoices({ per_page: 100, sort_by: "issue_date", sort_order: "desc" });
-  }, [fetchInvoices]);
+    fetchCurrencies();
+    fetchRates();
+  }, [fetchCurrencies, fetchInvoices, fetchRates]);
 
   useEffect(() => {
     if (!invoiceId) {
@@ -64,6 +72,37 @@ export default function CreateCreditNotePage() {
       : invoices.find((invoice) => invoice.id === invoiceId) || null;
   }, [currentInvoice, invoiceId, invoices]);
 
+  useEffect(() => {
+    if (selectedInvoice?.currency) {
+      setCurrency(selectedInvoice.currency.toUpperCase());
+    }
+  }, [selectedInvoice?.currency]);
+
+  const estimatedDocumentTotal = useMemo(() => {
+    return lineItems.reduce((sum, item) => {
+      const subtotal =
+        Number(item.quantity || 0) * Number(item.unit_price || 0);
+      const tax = subtotal * (Number(item.vat_rate || 0) / 100);
+      return sum + subtotal + tax;
+    }, 0);
+  }, [lineItems]);
+
+  const estimatedBaseTotal = useMemo(() => {
+    const normalizedCurrency = currency.toUpperCase();
+    const normalizedBase = String(baseCurrency || "EUR").toUpperCase();
+
+    if (normalizedCurrency === normalizedBase) {
+      return estimatedDocumentTotal;
+    }
+
+    const baseToDocumentRate = rates[normalizedCurrency];
+    if (typeof baseToDocumentRate === "number" && baseToDocumentRate > 0) {
+      return estimatedDocumentTotal / baseToDocumentRate;
+    }
+
+    return estimatedDocumentTotal;
+  }, [baseCurrency, currency, estimatedDocumentTotal, rates]);
+
   const handleSubmit = async () => {
     if (!invoiceId) {
       toast.error("Please select an invoice");
@@ -86,6 +125,7 @@ export default function CreateCreditNotePage() {
       const created = await createCreditNote({
         invoice_id: invoiceId,
         issue_date: issueDate,
+        currency: currency.toUpperCase(),
         reason,
         line_items: sanitizedItems,
       });
@@ -156,10 +196,41 @@ export default function CreateCreditNotePage() {
               </p>
               <p className="text-muted-foreground">
                 Remaining balance:{" "}
-                {Number(selectedInvoice.balance_due || 0).toFixed(2)} EUR
+                <CurrencyAmount
+                  amount={Number(selectedInvoice.balance_due || 0)}
+                  currency={selectedInvoice.currency || currency}
+                  currencies={currencies}
+                />
               </p>
             </div>
           )}
+
+          <div className="space-y-2 rounded-md border bg-muted/20 p-3">
+            <CurrencySelector
+              id="credit-note-currency"
+              label="Currency"
+              value={currency}
+              currencies={currencies}
+              onValueChange={setCurrency}
+            />
+            <p className="text-xs text-muted-foreground">
+              Estimated in{" "}
+              <span className="font-medium">{baseCurrency || "EUR"}:</span>{" "}
+              <CurrencyAmount
+                amount={estimatedBaseTotal}
+                currency={baseCurrency || "EUR"}
+                currencies={currencies}
+              />
+            </p>
+            <p className="text-xs text-muted-foreground">
+              Document total:{" "}
+              <CurrencyAmount
+                amount={estimatedDocumentTotal}
+                currency={currency}
+                currencies={currencies}
+              />
+            </p>
+          </div>
 
           <LineItemsEditor
             items={lineItems}

@@ -30,6 +30,8 @@ class UserFactory extends Factory
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
             'business_name' => fake()->company(),
+            'base_currency' => 'EUR',
+            'exchange_rate_provider' => 'open_exchange_rates',
         ];
     }
 

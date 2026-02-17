@@ -20,6 +20,7 @@ use Laravel\Scout\Searchable;
  * @property string|null $description
  * @property string $status
  * @property string $billing_type
+ * @property string $currency
  * @property float|null $hourly_rate
  * @property float|null $fixed_price
  * @property float|null $estimated_hours
@@ -43,6 +44,7 @@ class Project extends Model
         'description',
         'status',
         'billing_type',
+        'currency',
         'hourly_rate',
         'fixed_price',
         'estimated_hours',
@@ -69,6 +71,7 @@ class Project extends Model
             'hourly_rate' => 'decimal:2',
             'fixed_price' => 'decimal:2',
             'estimated_hours' => 'decimal:2',
+            'currency' => 'string',
             'start_date' => 'date',
             'deadline' => 'date',
             'completed_at' => 'datetime',
@@ -223,6 +226,7 @@ class Project extends Model
             'description' => $this->description,
             'status' => $this->status,
             'billing_type' => $this->billing_type,
+            'currency' => $this->currency,
             'deadline' => $this->deadline?->toDateString(),
             'created_at' => $this->created_at?->toDateTimeString(),
         ];

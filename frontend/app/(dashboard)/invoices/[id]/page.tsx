@@ -13,6 +13,7 @@ import { InvoiceStatusBadge } from "@/components/invoices/invoice-status-badge";
 import { RecordPaymentModal } from "@/components/invoices/record-payment-modal";
 import { SendInvoiceModal } from "@/components/invoices/send-invoice-modal";
 import { InvoicePdfPreview } from "@/components/invoices/invoice-pdf-preview";
+import { CurrencyAmount } from "@/components/shared/currency-amount";
 import { useInvoiceStore } from "@/lib/stores/invoices";
 
 function buildPreviewHtml(invoice: any): string {
@@ -43,7 +44,7 @@ function buildPreviewHtml(invoice: any): string {
           <thead><tr><th>Description</th><th>Qty</th><th>Unit</th><th>Total</th></tr></thead>
           <tbody>${rows}</tbody>
         </table>
-        <p style="margin-top: 12px;"><strong>Total:</strong> ${Number(invoice.total).toFixed(2)} EUR</p>
+        <p style="margin-top: 12px;"><strong>Total:</strong> ${Number(invoice.total).toFixed(2)} ${invoice.currency || "EUR"}</p>
       </body>
     </html>
   `;
@@ -186,13 +187,19 @@ export default function InvoiceDetailPage() {
               <div>
                 <p className="text-xs text-muted-foreground">Total</p>
                 <p className="font-medium">
-                  {Number(currentInvoice.total).toFixed(2)} EUR
+                  <CurrencyAmount
+                    amount={Number(currentInvoice.total)}
+                    currency={currentInvoice.currency || "EUR"}
+                  />
                 </p>
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">Amount paid</p>
                 <p className="font-medium">
-                  {Number(currentInvoice.amount_paid || 0).toFixed(2)} EUR
+                  <CurrencyAmount
+                    amount={Number(currentInvoice.amount_paid || 0)}
+                    currency={currentInvoice.currency || "EUR"}
+                  />
                 </p>
               </div>
             </div>
@@ -227,9 +234,12 @@ export default function InvoiceDetailPage() {
                           {Number(line.vat_rate).toFixed(2)}%
                         </td>
                         <td className="py-2">
-                          {Number(
-                            line.total || line.quantity * line.unit_price
-                          ).toFixed(2)}
+                          <CurrencyAmount
+                            amount={Number(
+                              line.total || line.quantity * line.unit_price
+                            )}
+                            currency={currentInvoice.currency || "EUR"}
+                          />
                         </td>
                       </tr>
                     ))}
@@ -252,7 +262,10 @@ export default function InvoiceDetailPage() {
                       className="rounded-md border p-2 text-sm"
                     >
                       {payment.payment_date} -{" "}
-                      {Number(payment.amount).toFixed(2)} EUR
+                      <CurrencyAmount
+                        amount={Number(payment.amount)}
+                        currency={currentInvoice.currency || "EUR"}
+                      />
                     </li>
                   ))}
                 </ul>
@@ -280,7 +293,11 @@ export default function InvoiceDetailPage() {
                       >
                         {creditNote.number}
                       </Link>{" "}
-                      - {Number(creditNote.total).toFixed(2)} EUR
+                      -{" "}
+                      <CurrencyAmount
+                        amount={Number(creditNote.total)}
+                        currency={currentInvoice.currency || "EUR"}
+                      />
                     </li>
                   ))}
                 </ul>

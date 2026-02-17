@@ -11,6 +11,7 @@ use App\Jobs\SendQuoteJob;
 use App\Models\Quote;
 use App\Models\User;
 use App\Services\ConvertQuoteToInvoiceService;
+use App\Services\CurrencyConversionService;
 use App\Services\InvoiceCalculationService;
 use App\Services\QuotePdfService;
 use App\Services\ReferenceGenerator;
@@ -21,6 +22,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use RuntimeException;
 
 class QuoteController extends Controller
 {
@@ -75,58 +77,82 @@ class QuoteController extends Controller
         ], 'Quotes retrieved successfully');
     }
 
-    public function store(StoreQuoteRequest $request, InvoiceCalculationService $calculationService): JsonResponse
-    {
+    public function store(
+        StoreQuoteRequest $request,
+        InvoiceCalculationService $calculationService,
+        CurrencyConversionService $currencyConversionService
+    ): JsonResponse {
         /** @var User $user */
         $user = $request->user();
 
         $validated = $request->validated();
 
-        /** @var Quote $quote */
-        $quote = DB::transaction(function () use ($validated, $user, $calculationService): Quote {
-            /** @var array<int, array<string, mixed>> $lineItems */
-            $lineItems = $validated['line_items'];
-            $issueDate = Carbon::parse((string) $validated['issue_date']);
-            $validUntil = array_key_exists('valid_until', $validated) && is_string($validated['valid_until'])
-                ? Carbon::parse($validated['valid_until'])
-                : $issueDate->copy()->addDays(30);
+        try {
+            /** @var Quote $quote */
+            $quote = DB::transaction(function () use ($validated, $user, $calculationService, $currencyConversionService): Quote {
+                /** @var array<int, array<string, mixed>> $lineItems */
+                $lineItems = $validated['line_items'];
+                $issueDate = Carbon::parse((string) $validated['issue_date']);
+                $validUntil = array_key_exists('valid_until', $validated) && is_string($validated['valid_until'])
+                    ? Carbon::parse($validated['valid_until'])
+                    : $issueDate->copy()->addDays(30);
+                $currency = strtoupper((string) ($validated['currency'] ?? 'EUR'));
+                $baseCurrency = strtoupper((string) ($user->base_currency ?? 'EUR'));
 
-            $calculation = $calculationService->calculate(
-                $lineItems,
-                $validated['discount_type'] ?? null,
-                $validated['discount_value'] ?? null,
-            );
+                $calculation = $calculationService->calculate(
+                    $lineItems,
+                    $validated['discount_type'] ?? null,
+                    $validated['discount_value'] ?? null,
+                );
 
-            $quote = Quote::query()->create([
-                'user_id' => $user->id,
-                'client_id' => $validated['client_id'],
-                'project_id' => $validated['project_id'] ?? null,
-                'number' => ReferenceGenerator::generate('quotes', 'DEV'),
-                'status' => 'draft',
-                'issue_date' => $issueDate->toDateString(),
-                'valid_until' => $validUntil->toDateString(),
-                'subtotal' => $calculation['subtotal'],
-                'tax_amount' => $calculation['tax_amount'],
-                'discount_type' => $validated['discount_type'] ?? null,
-                'discount_value' => $validated['discount_value'] ?? null,
-                'discount_amount' => $calculation['discount_amount'],
-                'total' => $calculation['total'],
-                'currency' => $validated['currency'] ?? 'EUR',
-                'notes' => $validated['notes'] ?? null,
-            ]);
+                $exchangeRate = $currencyConversionService->rateFor(
+                    $currency,
+                    $baseCurrency,
+                    $issueDate
+                );
+                $baseCurrencyTotal = $currencyConversionService->convert(
+                    (float) $calculation['total'],
+                    $currency,
+                    $baseCurrency,
+                    $issueDate
+                );
 
-            foreach ($lineItems as $index => $lineItem) {
-                $quote->lineItems()->create([
-                    'description' => $lineItem['description'],
-                    'quantity' => $lineItem['quantity'],
-                    'unit_price' => $lineItem['unit_price'],
-                    'vat_rate' => $lineItem['vat_rate'],
-                    'sort_order' => $index,
+                $quote = Quote::query()->create([
+                    'user_id' => $user->id,
+                    'client_id' => $validated['client_id'],
+                    'project_id' => $validated['project_id'] ?? null,
+                    'number' => ReferenceGenerator::generate('quotes', 'DEV'),
+                    'status' => 'draft',
+                    'issue_date' => $issueDate->toDateString(),
+                    'valid_until' => $validUntil->toDateString(),
+                    'subtotal' => $calculation['subtotal'],
+                    'tax_amount' => $calculation['tax_amount'],
+                    'discount_type' => $validated['discount_type'] ?? null,
+                    'discount_value' => $validated['discount_value'] ?? null,
+                    'discount_amount' => $calculation['discount_amount'],
+                    'total' => $calculation['total'],
+                    'currency' => $currency,
+                    'base_currency' => $baseCurrency,
+                    'exchange_rate' => $exchangeRate,
+                    'base_currency_total' => $baseCurrencyTotal,
+                    'notes' => $validated['notes'] ?? null,
                 ]);
-            }
 
-            return $quote;
-        });
+                foreach ($lineItems as $index => $lineItem) {
+                    $quote->lineItems()->create([
+                        'description' => $lineItem['description'],
+                        'quantity' => $lineItem['quantity'],
+                        'unit_price' => $lineItem['unit_price'],
+                        'vat_rate' => $lineItem['vat_rate'],
+                        'sort_order' => $index,
+                    ]);
+                }
+
+                return $quote;
+            });
+        } catch (RuntimeException $exception) {
+            return $this->error($exception->getMessage(), 422);
+        }
 
         $quote->load(['client', 'project', 'convertedInvoice', 'lineItems']);
 
@@ -142,8 +168,12 @@ class QuoteController extends Controller
         return $this->success(new QuoteResource($quote), 'Quote retrieved successfully');
     }
 
-    public function update(UpdateQuoteRequest $request, Quote $quote, InvoiceCalculationService $calculationService): JsonResponse
-    {
+    public function update(
+        UpdateQuoteRequest $request,
+        Quote $quote,
+        InvoiceCalculationService $calculationService,
+        CurrencyConversionService $currencyConversionService
+    ): JsonResponse {
         Gate::authorize('update', $quote);
 
         if ($quote->status !== 'draft') {
@@ -161,47 +191,68 @@ class QuoteController extends Controller
             return $this->error('Invalid quote status transition', 422);
         }
 
-        DB::transaction(function () use ($quote, $validated, $calculationService): void {
-            /** @var array<int, array<string, mixed>> $lineItems */
-            $lineItems = $validated['line_items'];
-            $issueDate = Carbon::parse((string) $validated['issue_date']);
-            $validUntil = array_key_exists('valid_until', $validated) && is_string($validated['valid_until'])
-                ? Carbon::parse($validated['valid_until'])
-                : $issueDate->copy()->addDays(30);
+        try {
+            DB::transaction(function () use ($quote, $validated, $calculationService, $currencyConversionService): void {
+                /** @var array<int, array<string, mixed>> $lineItems */
+                $lineItems = $validated['line_items'];
+                $issueDate = Carbon::parse((string) $validated['issue_date']);
+                $validUntil = array_key_exists('valid_until', $validated) && is_string($validated['valid_until'])
+                    ? Carbon::parse($validated['valid_until'])
+                    : $issueDate->copy()->addDays(30);
+                $currency = strtoupper((string) ($validated['currency'] ?? $quote->currency));
+                $baseCurrency = strtoupper((string) ($quote->user->base_currency ?? 'EUR'));
 
-            $calculation = $calculationService->calculate(
-                $lineItems,
-                $validated['discount_type'] ?? null,
-                $validated['discount_value'] ?? null,
-            );
+                $calculation = $calculationService->calculate(
+                    $lineItems,
+                    $validated['discount_type'] ?? null,
+                    $validated['discount_value'] ?? null,
+                );
 
-            $quote->update([
-                'client_id' => $validated['client_id'],
-                'project_id' => $validated['project_id'] ?? null,
-                'issue_date' => $issueDate->toDateString(),
-                'valid_until' => $validUntil->toDateString(),
-                'subtotal' => $calculation['subtotal'],
-                'tax_amount' => $calculation['tax_amount'],
-                'discount_type' => $validated['discount_type'] ?? null,
-                'discount_value' => $validated['discount_value'] ?? null,
-                'discount_amount' => $calculation['discount_amount'],
-                'total' => $calculation['total'],
-                'currency' => $validated['currency'] ?? $quote->currency,
-                'notes' => $validated['notes'] ?? null,
-            ]);
+                $exchangeRate = $currencyConversionService->rateFor(
+                    $currency,
+                    $baseCurrency,
+                    $issueDate
+                );
+                $baseCurrencyTotal = $currencyConversionService->convert(
+                    (float) $calculation['total'],
+                    $currency,
+                    $baseCurrency,
+                    $issueDate
+                );
 
-            $quote->lineItems()->delete();
-
-            foreach ($lineItems as $index => $lineItem) {
-                $quote->lineItems()->create([
-                    'description' => $lineItem['description'],
-                    'quantity' => $lineItem['quantity'],
-                    'unit_price' => $lineItem['unit_price'],
-                    'vat_rate' => $lineItem['vat_rate'],
-                    'sort_order' => $index,
+                $quote->update([
+                    'client_id' => $validated['client_id'],
+                    'project_id' => $validated['project_id'] ?? null,
+                    'issue_date' => $issueDate->toDateString(),
+                    'valid_until' => $validUntil->toDateString(),
+                    'subtotal' => $calculation['subtotal'],
+                    'tax_amount' => $calculation['tax_amount'],
+                    'discount_type' => $validated['discount_type'] ?? null,
+                    'discount_value' => $validated['discount_value'] ?? null,
+                    'discount_amount' => $calculation['discount_amount'],
+                    'total' => $calculation['total'],
+                    'currency' => $currency,
+                    'base_currency' => $baseCurrency,
+                    'exchange_rate' => $exchangeRate,
+                    'base_currency_total' => $baseCurrencyTotal,
+                    'notes' => $validated['notes'] ?? null,
                 ]);
-            }
-        });
+
+                $quote->lineItems()->delete();
+
+                foreach ($lineItems as $index => $lineItem) {
+                    $quote->lineItems()->create([
+                        'description' => $lineItem['description'],
+                        'quantity' => $lineItem['quantity'],
+                        'unit_price' => $lineItem['unit_price'],
+                        'vat_rate' => $lineItem['vat_rate'],
+                        'sort_order' => $index,
+                    ]);
+                }
+            });
+        } catch (RuntimeException $exception) {
+            return $this->error($exception->getMessage(), 422);
+        }
 
         $quote->refresh()->load(['client', 'project', 'convertedInvoice', 'lineItems']);
 

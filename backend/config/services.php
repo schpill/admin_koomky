@@ -28,6 +28,14 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'open_exchange_rates' => [
+        'app_id' => env('OPEN_EXCHANGE_RATES_APP_ID'),
+    ],
+
+    'exchange_rates' => [
+        'provider' => env('EXCHANGE_RATES_PROVIDER', 'open_exchange_rates'),
+    ],
+
     'slack' => [
         'notifications' => [
             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),

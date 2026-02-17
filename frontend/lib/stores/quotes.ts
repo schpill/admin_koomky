@@ -32,6 +32,9 @@ export interface Quote {
   discount_amount?: number;
   total: number;
   currency?: string;
+  base_currency?: string;
+  exchange_rate?: number | null;
+  base_currency_total?: number | null;
   notes?: string | null;
   pdf_path?: string | null;
   sent_at?: string | null;

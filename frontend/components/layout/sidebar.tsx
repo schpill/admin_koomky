@@ -11,8 +11,10 @@ import {
   FolderKanban,
   Megaphone,
   BarChart3,
+  CalendarDays,
   Settings,
   HelpCircle,
+  ExternalLink,
   LogOut,
   ChevronLeft,
 } from "lucide-react";
@@ -31,11 +33,21 @@ const navigation = [
   { key: "quotes", href: "/quotes", icon: FileText },
   { key: "creditNotes", href: "/credit-notes", icon: FileText },
   { key: "reports", href: "/reports", icon: BarChart3 },
+  { key: "calendar", href: "/calendar", icon: CalendarDays },
 ];
 
+const grafanaUrl =
+  process.env.NEXT_PUBLIC_GRAFANA_URL || "http://localhost:3001";
+
 const secondaryNavigation = [
-  { key: "settings", href: "/settings/profile", icon: Settings },
-  { key: "help", href: "/help", icon: HelpCircle },
+  {
+    key: "settings",
+    href: "/settings/profile",
+    icon: Settings,
+    external: false,
+  },
+  { key: "grafana", href: grafanaUrl, icon: ExternalLink, external: true },
+  { key: "help", href: "/help", icon: HelpCircle, external: false },
 ];
 
 interface SidebarProps {
@@ -160,12 +172,16 @@ export function Sidebar({
       {/* Secondary Navigation */}
       <nav className="space-y-1 p-2">
         {secondaryNavigation.map((item) => {
-          const isActive = pathname.startsWith(item.href);
+          const isActive = item.external
+            ? false
+            : pathname.startsWith(item.href);
 
           return (
             <Link
               key={item.key}
               href={item.href}
+              target={item.external ? "_blank" : undefined}
+              rel={item.external ? "noopener noreferrer" : undefined}
               onClick={onNavigate}
               aria-label={t(`sidebar.${item.key}`)}
               className={cn(

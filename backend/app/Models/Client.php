@@ -23,6 +23,7 @@ use Laravel\Scout\Searchable;
  * @property string|null $city
  * @property string|null $zip_code
  * @property string|null $country
+ * @property string|null $preferred_currency
  * @property string $status
  * @property string|null $notes
  * @property \Illuminate\Support\Carbon|null $deleted_at
@@ -48,6 +49,7 @@ class Client extends Model
         'city',
         'zip_code',
         'country',
+        'preferred_currency',
         'notes',
         'status',
     ];
@@ -98,6 +100,14 @@ class Client extends Model
     public function creditNotes(): HasMany
     {
         return $this->hasMany(CreditNote::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\RecurringInvoiceProfile, \App\Models\Client>
+     */
+    public function recurringInvoiceProfiles(): HasMany
+    {
+        return $this->hasMany(RecurringInvoiceProfile::class);
     }
 
     /**

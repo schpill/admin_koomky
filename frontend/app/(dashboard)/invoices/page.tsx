@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -12,6 +13,7 @@ import { useClientStore } from "@/lib/stores/clients";
 import { InvoiceFilterBar } from "@/components/invoices/invoice-filter-bar";
 import { InvoiceStatusBadge } from "@/components/invoices/invoice-status-badge";
 import { InvoicePdfPreview } from "@/components/invoices/invoice-pdf-preview";
+import { CurrencyAmount } from "@/components/shared/currency-amount";
 
 function buildPreviewHtml(invoice?: Invoice | null): string {
   if (!invoice) {
@@ -44,7 +46,7 @@ function buildPreviewHtml(invoice?: Invoice | null): string {
           </thead>
           <tbody>${lineRows}</tbody>
         </table>
-        <p style="margin-top: 12px;"><strong>Total:</strong> ${Number(invoice.total).toFixed(2)} EUR</p>
+        <p style="margin-top: 12px;"><strong>Total:</strong> ${Number(invoice.total).toFixed(2)} ${invoice.currency || "EUR"}</p>
       </body>
     </html>
   `;
@@ -157,6 +159,14 @@ export default function InvoicesPage() {
                           >
                             {invoice.number}
                           </Link>
+                          {invoice.recurring_invoice_profile_id && (
+                            <Badge
+                              variant="outline"
+                              className="ml-2 align-middle text-[10px] uppercase"
+                            >
+                              Recurring
+                            </Badge>
+                          )}
                         </td>
                         <td className="py-4 text-muted-foreground">
                           {invoice.client?.name || invoice.client_id}
@@ -168,7 +178,10 @@ export default function InvoicesPage() {
                           {invoice.due_date}
                         </td>
                         <td className="py-4">
-                          {Number(invoice.total || 0).toFixed(2)} EUR
+                          <CurrencyAmount
+                            amount={Number(invoice.total || 0)}
+                            currency={invoice.currency || "EUR"}
+                          />
                         </td>
                         <td className="py-4">
                           <InvoiceStatusBadge status={invoice.status} />

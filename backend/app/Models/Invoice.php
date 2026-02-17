@@ -16,6 +16,7 @@ use Laravel\Scout\Searchable;
  * @property string $user_id
  * @property string $client_id
  * @property string|null $project_id
+ * @property string|null $recurring_invoice_profile_id
  * @property string $number
  * @property string $status
  * @property \Illuminate\Support\Carbon $issue_date
@@ -27,6 +28,9 @@ use Laravel\Scout\Searchable;
  * @property float $discount_amount
  * @property float $total
  * @property string $currency
+ * @property string $base_currency
+ * @property float|null $exchange_rate
+ * @property float|null $base_currency_total
  * @property string|null $notes
  * @property string|null $payment_terms
  * @property string|null $pdf_path
@@ -44,6 +48,7 @@ class Invoice extends Model
         'user_id',
         'client_id',
         'project_id',
+        'recurring_invoice_profile_id',
         'number',
         'status',
         'issue_date',
@@ -55,6 +60,9 @@ class Invoice extends Model
         'discount_amount',
         'total',
         'currency',
+        'base_currency',
+        'exchange_rate',
+        'base_currency_total',
         'notes',
         'payment_terms',
         'pdf_path',
@@ -82,6 +90,8 @@ class Invoice extends Model
             'discount_value' => 'decimal:2',
             'discount_amount' => 'decimal:2',
             'total' => 'decimal:2',
+            'exchange_rate' => 'decimal:6',
+            'base_currency_total' => 'decimal:2',
             'sent_at' => 'datetime',
             'viewed_at' => 'datetime',
             'paid_at' => 'datetime',
@@ -110,6 +120,14 @@ class Invoice extends Model
     public function project(): BelongsTo
     {
         return $this->belongsTo(Project::class);
+    }
+
+    /**
+     * @return BelongsTo<RecurringInvoiceProfile, Invoice>
+     */
+    public function recurringProfile(): BelongsTo
+    {
+        return $this->belongsTo(RecurringInvoiceProfile::class, 'recurring_invoice_profile_id');
     }
 
     /**
@@ -209,11 +227,14 @@ class Invoice extends Model
             'user_id' => $this->user_id,
             'client_id' => $this->client_id,
             'project_id' => $this->project_id,
+            'recurring_invoice_profile_id' => $this->recurring_invoice_profile_id,
             'number' => $this->number,
             'status' => $this->status,
             'notes' => $this->notes,
             'issue_date' => $this->issue_date->toDateString(),
             'total' => (float) $this->total,
+            'base_currency' => $this->base_currency,
+            'base_currency_total' => $this->base_currency_total !== null ? (float) $this->base_currency_total : null,
             'client_name' => $this->client?->name,
         ];
     }

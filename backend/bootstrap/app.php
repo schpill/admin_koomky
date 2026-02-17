@@ -21,6 +21,7 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         $middleware->api(append: [
+            \App\Http\Middleware\PrometheusMiddleware::class,
             \App\Http\Middleware\RequestTelemetryMiddleware::class,
         ]);
     })

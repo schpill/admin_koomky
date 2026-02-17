@@ -22,6 +22,9 @@ export interface CreditNote {
   tax_amount: number;
   total: number;
   currency?: string;
+  base_currency?: string;
+  exchange_rate?: number | null;
+  base_currency_total?: number | null;
   reason?: string | null;
   pdf_path?: string | null;
   sent_at?: string | null;

@@ -3,12 +3,15 @@
 use App\Http\Controllers\Api\V1\AccountDeletionController;
 use App\Http\Controllers\Api\V1\ActivityController;
 use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\CalendarConnectionController;
+use App\Http\Controllers\Api\V1\CalendarEventController;
 use App\Http\Controllers\Api\V1\CampaignAnalyticsController;
 use App\Http\Controllers\Api\V1\CampaignController;
 use App\Http\Controllers\Api\V1\CampaignTemplateController;
 use App\Http\Controllers\Api\V1\ClientController;
 use App\Http\Controllers\Api\V1\ContactController;
 use App\Http\Controllers\Api\V1\CreditNoteController;
+use App\Http\Controllers\Api\V1\CurrencyController;
 use App\Http\Controllers\Api\V1\DashboardController;
 use App\Http\Controllers\Api\V1\DataExportController;
 use App\Http\Controllers\Api\V1\DataImportController;
@@ -19,6 +22,7 @@ use App\Http\Controllers\Api\V1\PaymentController;
 use App\Http\Controllers\Api\V1\ProjectController;
 use App\Http\Controllers\Api\V1\ProjectInvoiceController;
 use App\Http\Controllers\Api\V1\QuoteController;
+use App\Http\Controllers\Api\V1\RecurringInvoiceProfileController;
 use App\Http\Controllers\Api\V1\ReportController;
 use App\Http\Controllers\Api\V1\SearchController;
 use App\Http\Controllers\Api\V1\SegmentController;
@@ -67,6 +71,7 @@ Route::prefix('v1')->group(function () {
             Route::put('/business', [UserSettingsController::class, 'updateBusiness']);
             Route::get('/invoicing', [InvoicingSettingsController::class, 'show']);
             Route::put('/invoicing', [InvoicingSettingsController::class, 'update']);
+            Route::put('/currency', [UserSettingsController::class, 'updateCurrencySettings']);
             Route::put('/email', [UserSettingsController::class, 'updateEmailSettings']);
             Route::put('/sms', [UserSettingsController::class, 'updateSmsSettings']);
             Route::put('/notifications', [UserSettingsController::class, 'updateNotificationPreferences']);
@@ -137,6 +142,12 @@ Route::prefix('v1')->group(function () {
         Route::post('invoices/{invoice}/duplicate', [InvoiceController::class, 'duplicate']);
         Route::post('invoices/{invoice}/payments', [PaymentController::class, 'store']);
 
+        // Recurring Invoices
+        Route::apiResource('recurring-invoices', RecurringInvoiceProfileController::class);
+        Route::post('recurring-invoices/{recurring_invoice}/pause', [RecurringInvoiceProfileController::class, 'pause']);
+        Route::post('recurring-invoices/{recurring_invoice}/resume', [RecurringInvoiceProfileController::class, 'resume']);
+        Route::post('recurring-invoices/{recurring_invoice}/cancel', [RecurringInvoiceProfileController::class, 'cancel']);
+
         // Quotes
         Route::apiResource('quotes', QuoteController::class);
         Route::post('quotes/{quote}/send', [QuoteController::class, 'send']);
@@ -150,6 +161,16 @@ Route::prefix('v1')->group(function () {
         Route::post('credit-notes/{credit_note}/send', [CreditNoteController::class, 'send']);
         Route::post('credit-notes/{credit_note}/apply', [CreditNoteController::class, 'apply']);
         Route::get('credit-notes/{credit_note}/pdf', [CreditNoteController::class, 'pdf']);
+
+        // Currencies
+        Route::get('currencies', [CurrencyController::class, 'index']);
+        Route::get('currencies/rates', [CurrencyController::class, 'rates']);
+
+        // Calendar
+        Route::apiResource('calendar-connections', CalendarConnectionController::class);
+        Route::post('calendar-connections/{calendar_connection}/test', [CalendarConnectionController::class, 'test']);
+        Route::get('calendar-connections/google/callback', [CalendarConnectionController::class, 'googleCallback']);
+        Route::apiResource('calendar-events', CalendarEventController::class);
 
         // Reports
         Route::prefix('reports')->group(function () {

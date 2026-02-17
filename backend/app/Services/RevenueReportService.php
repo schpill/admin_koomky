@@ -13,6 +13,8 @@ use Throwable;
 
 class RevenueReportService
 {
+    public function __construct(protected CurrencyConversionService $currencyConversionService) {}
+
     /**
      * @param  array<string, mixed>  $filters
      * @return array<string, mixed>
@@ -34,23 +36,49 @@ class RevenueReportService
 
             /** @var Collection<int, Invoice> $invoices */
             $invoices = $query->orderBy('issue_date')->get();
+            $baseCurrency = strtoupper((string) ($user->base_currency ?? 'EUR'));
 
             $byMonth = $invoices
                 ->groupBy(fn (Invoice $invoice): string => $invoice->issue_date->format('Y-m'))
-                ->map(function (Collection $monthInvoices, string $month): array {
+                ->map(function (Collection $monthInvoices, string $month) use ($baseCurrency): array {
+                    $monthTotal = $monthInvoices->sum(function (Invoice $invoice) use ($baseCurrency): float {
+                        return $this->currencyConversionService->convert(
+                            (float) $invoice->total,
+                            (string) $invoice->currency,
+                            $baseCurrency,
+                            $invoice->issue_date
+                        );
+                    });
+
                     return [
                         'month' => $month,
-                        'total' => round((float) $monthInvoices->sum(fn ($invoice): float => (float) $invoice->total), 2),
+                        'total' => round((float) $monthTotal, 2),
                         'count' => $monthInvoices->count(),
                     ];
                 })
                 ->values()
                 ->all();
 
+            $currencyBreakdown = $invoices
+                ->groupBy(fn (Invoice $invoice): string => strtoupper((string) $invoice->currency))
+                ->map(fn (Collection $items): float => round((float) $items->sum(fn (Invoice $invoice): float => (float) $invoice->total), 2))
+                ->toArray();
+
+            $totalRevenue = $invoices->sum(function (Invoice $invoice) use ($baseCurrency): float {
+                return $this->currencyConversionService->convert(
+                    (float) $invoice->total,
+                    (string) $invoice->currency,
+                    $baseCurrency,
+                    $invoice->issue_date
+                );
+            });
+
             return [
                 'filters' => $filters,
-                'total_revenue' => round((float) $invoices->sum(fn (Invoice $invoice): float => (float) $invoice->total), 2),
+                'base_currency' => $baseCurrency,
+                'total_revenue' => round((float) $totalRevenue, 2),
                 'count' => $invoices->count(),
+                'currency_breakdown' => $currencyBreakdown,
                 'by_month' => $byMonth,
             ];
         });
