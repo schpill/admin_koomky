@@ -85,8 +85,7 @@ class CreditNoteController extends Controller
         StoreCreditNoteRequest $request,
         InvoiceCalculationService $calculationService,
         CurrencyConversionService $currencyConversionService
-    ): JsonResponse
-    {
+    ): JsonResponse {
         /** @var User $user */
         $user = $request->user();
         $validated = $request->validated();
@@ -172,8 +171,7 @@ class CreditNoteController extends Controller
         CreditNote $creditNote,
         InvoiceCalculationService $calculationService,
         CurrencyConversionService $currencyConversionService
-    ): JsonResponse
-    {
+    ): JsonResponse {
         Gate::authorize('update', $creditNote);
 
         if ($creditNote->status !== 'draft') {

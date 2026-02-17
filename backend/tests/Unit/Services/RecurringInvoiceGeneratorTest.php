@@ -109,4 +109,3 @@ test('generator computes next due date for all frequencies', function (string $f
     ['semiannual', '2026-07-15'],
     ['annual', '2027-01-15'],
 ]);
-

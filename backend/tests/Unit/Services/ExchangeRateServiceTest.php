@@ -26,7 +26,7 @@ test('open exchange rates driver fetches and service stores rates', function () 
         ], 200),
     ]);
 
-    $driver = new OpenExchangeRatesDriver();
+    $driver = new OpenExchangeRatesDriver;
     $service = new ApiExchangeRateService($driver);
 
     $stored = $service->fetchAndStore('EUR');
@@ -43,7 +43,7 @@ test('ecb driver fetches and stores rates', function () {
     Currency::factory()->create(['code' => 'EUR', 'is_active' => true]);
     Currency::factory()->create(['code' => 'USD', 'is_active' => true]);
 
-    $xml = <<<XML
+    $xml = <<<'XML'
 <?xml version="1.0" encoding="UTF-8"?>
 <gesmes:Envelope xmlns:gesmes="http://www.gesmes.org/xml/2002-08-01" xmlns="http://www.ecb.int/vocabulary/2002-08-01/eurofxref">
   <Cube>
@@ -59,7 +59,7 @@ XML;
         '*' => Http::response('', 500),
     ]);
 
-    $driver = new EcbExchangeRatesDriver();
+    $driver = new EcbExchangeRatesDriver;
     $service = new ApiExchangeRateService($driver);
 
     $stored = $service->fetchAndStore('EUR');
@@ -76,7 +76,8 @@ test('exchange rate service handles driver failures gracefully', function () {
     Currency::factory()->create(['code' => 'EUR', 'is_active' => true]);
     Currency::factory()->create(['code' => 'USD', 'is_active' => true]);
 
-    $failingDriver = new class implements ExchangeRateDriver {
+    $failingDriver = new class implements ExchangeRateDriver
+    {
         public function fetchRates(string $baseCurrency): array
         {
             throw new RuntimeException('Simulated provider failure');

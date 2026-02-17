@@ -39,7 +39,7 @@ test('google calendar driver fetches pushes and deletes events', function () {
         'https://www.googleapis.com/calendar/v3/calendars/*/events/*' => Http::response('', 204),
     ]);
 
-    $driver = new GoogleCalendarDriver();
+    $driver = new GoogleCalendarDriver;
 
     $events = $driver->fetchEvents($connection, [
         'from' => '2026-03-01T00:00:00Z',
@@ -81,7 +81,7 @@ test('google calendar driver refreshes token on 401', function () {
         ], 200),
     ]);
 
-    $driver = new GoogleCalendarDriver();
+    $driver = new GoogleCalendarDriver;
     $events = $driver->fetchEvents($connection, [
         'from' => '2026-03-01T00:00:00Z',
         'to' => '2026-03-31T23:59:59Z',

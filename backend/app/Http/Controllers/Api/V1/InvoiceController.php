@@ -81,8 +81,7 @@ class InvoiceController extends Controller
         StoreInvoiceRequest $request,
         InvoiceCalculationService $calculationService,
         CurrencyConversionService $currencyConversionService
-    ): JsonResponse
-    {
+    ): JsonResponse {
         /** @var User $user */
         $user = $request->user();
 
@@ -172,8 +171,7 @@ class InvoiceController extends Controller
         Invoice $invoice,
         InvoiceCalculationService $calculationService,
         CurrencyConversionService $currencyConversionService
-    ): JsonResponse
-    {
+    ): JsonResponse {
         Gate::authorize('update', $invoice);
 
         if ($invoice->status !== 'draft') {
@@ -283,8 +281,7 @@ class InvoiceController extends Controller
         Invoice $invoice,
         InvoiceCalculationService $calculationService,
         CurrencyConversionService $currencyConversionService
-    ): JsonResponse
-    {
+    ): JsonResponse {
         Gate::authorize('view', $invoice);
 
         /** @var User $user */
