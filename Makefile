@@ -1,4 +1,4 @@
-.PHONY: up down restart build install test lint fresh seed shell-api shell-frontend deploy
+.PHONY: up down restart build install test lint fresh seed shell-api shell-frontend deploy tinker
 
 up:
 	docker compose up -d
@@ -57,3 +57,6 @@ shell-api:
 
 shell-frontend:
 	docker compose exec frontend sh
+
+tinker:
+	docker compose run --rm api php artisan tinker
