@@ -103,7 +103,10 @@ export default function ClientsPage() {
               <div className="flex items-center gap-2">
                 <Filter className="h-4 w-4 text-muted-foreground" />
                 <Select value={status} onValueChange={setStatus}>
-                  <SelectTrigger className="w-[130px] h-9">
+                  <SelectTrigger
+                    className="w-[130px] h-9"
+                    aria-label={t("clients.list.statusPlaceholder")}
+                  >
                     <SelectValue
                       placeholder={t("clients.list.statusPlaceholder")}
                     />
@@ -134,7 +137,10 @@ export default function ClientsPage() {
                     setOrder(o);
                   }}
                 >
-                  <SelectTrigger className="w-[180px] h-9">
+                  <SelectTrigger
+                    className="w-[180px] h-9"
+                    aria-label={t("clients.list.sortPlaceholder")}
+                  >
                     <SelectValue
                       placeholder={t("clients.list.sortPlaceholder")}
                     />
