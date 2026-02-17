@@ -81,7 +81,12 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         onOpenChange={setShortcutsOpen}
         hideTrigger
       />
-      <div id="app-live-region" aria-live="polite" aria-atomic="true" className="sr-only" />
+      <div
+        id="app-live-region"
+        aria-live="polite"
+        aria-atomic="true"
+        className="sr-only"
+      />
     </div>
   );
 }

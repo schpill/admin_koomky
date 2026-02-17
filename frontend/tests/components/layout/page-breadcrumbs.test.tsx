@@ -6,7 +6,9 @@ describe("PageBreadcrumbs", () => {
   it("renders crumbs for nested detail/edit routes", () => {
     render(<PageBreadcrumbs pathname="/clients/4f0d7d20/edit" />);
 
-    expect(screen.getByRole("navigation", { name: "Breadcrumb" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("navigation", { name: "Breadcrumb" })
+    ).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Clients" })).toBeInTheDocument();
     expect(screen.getByText("4f0d7d20")).toBeInTheDocument();
     expect(screen.getByText("Edit")).toBeInTheDocument();

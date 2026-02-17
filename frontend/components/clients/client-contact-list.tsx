@@ -212,7 +212,10 @@ export function ClientContactList({ clientId }: ClientContactListProps) {
                     }
                   />
                   {errors.first_name && (
-                    <p id="first_name-error" className="text-sm text-destructive">
+                    <p
+                      id="first_name-error"
+                      className="text-sm text-destructive"
+                    >
                       {errors.first_name.message}
                     </p>
                   )}
@@ -244,7 +247,10 @@ export function ClientContactList({ clientId }: ClientContactListProps) {
                   }
                 />
                 {errors.email && (
-                  <p id="contact-email-error" className="text-sm text-destructive">
+                  <p
+                    id="contact-email-error"
+                    className="text-sm text-destructive"
+                  >
                     {errors.email.message}
                   </p>
                 )}

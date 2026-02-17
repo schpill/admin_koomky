@@ -15,7 +15,10 @@ import { VatSummaryTable } from "@/components/reports/vat-summary-table";
 import { useAuthStore } from "@/lib/stores/auth";
 
 const RevenueChart = dynamic(
-  () => import("@/components/reports/revenue-chart").then((mod) => mod.RevenueChart),
+  () =>
+    import("@/components/reports/revenue-chart").then(
+      (mod) => mod.RevenueChart
+    ),
   {
     loading: () => (
       <div className="h-64 animate-pulse rounded-lg border border-border bg-muted/40" />

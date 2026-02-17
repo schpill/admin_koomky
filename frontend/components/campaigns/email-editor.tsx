@@ -101,7 +101,11 @@ export function EmailEditor({ value, onChange }: EmailEditorProps) {
         />
       </div>
 
-      <p id="email-content-stats" className="text-xs text-muted-foreground" aria-live="polite">
+      <p
+        id="email-content-stats"
+        className="text-xs text-muted-foreground"
+        aria-live="polite"
+      >
         {stats.characters} characters - {stats.words} words
       </p>
     </div>

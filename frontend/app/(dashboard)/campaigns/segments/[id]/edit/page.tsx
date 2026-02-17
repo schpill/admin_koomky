@@ -134,7 +134,9 @@ export default function EditSegmentPage() {
           preview?.total_matching || currentSegment?.contact_count || 0
         }
         onPreview={() =>
-          segmentId ? previewSegment(segmentId).catch(() => undefined) : Promise.resolve()
+          segmentId
+            ? previewSegment(segmentId).catch(() => undefined)
+            : Promise.resolve()
         }
       />
 

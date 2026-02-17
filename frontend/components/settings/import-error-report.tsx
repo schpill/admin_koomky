@@ -24,12 +24,17 @@ export function ImportErrorReport({ errors }: ImportErrorReportProps) {
             <tr className="border-b border-border/70">
               <th className="pb-2 font-medium text-muted-foreground">Row</th>
               <th className="pb-2 font-medium text-muted-foreground">Field</th>
-              <th className="pb-2 font-medium text-muted-foreground">Message</th>
+              <th className="pb-2 font-medium text-muted-foreground">
+                Message
+              </th>
             </tr>
           </thead>
           <tbody>
             {errors.map((error, index) => (
-              <tr key={`${error.row}-${error.field}-${index}`} className="border-b border-border/40 last:border-0">
+              <tr
+                key={`${error.row}-${error.field}-${index}`}
+                className="border-b border-border/40 last:border-0"
+              >
                 <td className="py-2">Row {error.row}</td>
                 <td className="py-2 font-mono text-xs">{error.field}</td>
                 <td className="py-2">{error.message}</td>

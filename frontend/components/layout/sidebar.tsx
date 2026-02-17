@@ -66,11 +66,7 @@ export function Sidebar({
     <aside
       className={cn(
         "brand-sidebar flex h-full flex-col border-r border-border/80 transition-all duration-300",
-        mobile
-          ? "w-72 max-w-[85vw] shadow-2xl"
-          : collapsed
-            ? "w-16"
-            : "w-64"
+        mobile ? "w-72 max-w-[85vw] shadow-2xl" : collapsed ? "w-16" : "w-64"
       )}
     >
       {/* Logo */}

@@ -5,9 +5,19 @@ import path from "node:path";
 import zlib from "node:zlib";
 
 const nextStaticDir = path.resolve(process.cwd(), ".next", "static");
-const appBuildManifestPath = path.resolve(process.cwd(), ".next", "app-build-manifest.json");
-const maxJsGzipBytes = Number.parseInt(process.env.MAX_JS_GZIP_BYTES ?? `${300 * 1024}`, 10);
-const maxCssGzipBytes = Number.parseInt(process.env.MAX_CSS_GZIP_BYTES ?? `${50 * 1024}`, 10);
+const appBuildManifestPath = path.resolve(
+  process.cwd(),
+  ".next",
+  "app-build-manifest.json"
+);
+const maxJsGzipBytes = Number.parseInt(
+  process.env.MAX_JS_GZIP_BYTES ?? `${300 * 1024}`,
+  10
+);
+const maxCssGzipBytes = Number.parseInt(
+  process.env.MAX_CSS_GZIP_BYTES ?? `${50 * 1024}`,
+  10
+);
 
 function collectFiles(dir) {
   if (!fs.existsSync(dir)) {
@@ -53,7 +63,9 @@ const files = collectFiles(nextStaticDir);
 const jsFiles = files.filter((filePath) => filePath.endsWith(".js"));
 const cssFiles = files.filter((filePath) => filePath.endsWith(".css"));
 
-const appBuildManifest = JSON.parse(fs.readFileSync(appBuildManifestPath, "utf8"));
+const appBuildManifest = JSON.parse(
+  fs.readFileSync(appBuildManifestPath, "utf8")
+);
 const pageEntries = Object.entries(appBuildManifest.pages ?? {});
 
 const routeBudgets = pageEntries.map(([route, routeFiles]) => {
@@ -106,18 +118,25 @@ const topCss = cssFiles
 if (topJs.length > 0) {
   console.log("Top JS files:");
   for (const file of topJs) {
-    console.log(`  - ${path.relative(process.cwd(), file.filePath)}: ${formatKb(file.size)}`);
+    console.log(
+      `  - ${path.relative(process.cwd(), file.filePath)}: ${formatKb(file.size)}`
+    );
   }
 }
 
 if (topCss.length > 0) {
   console.log("Top CSS files:");
   for (const file of topCss) {
-    console.log(`  - ${path.relative(process.cwd(), file.filePath)}: ${formatKb(file.size)}`);
+    console.log(
+      `  - ${path.relative(process.cwd(), file.filePath)}: ${formatKb(file.size)}`
+    );
   }
 }
 
-if (heaviestJsRoute.js > maxJsGzipBytes || heaviestCssRoute.css > maxCssGzipBytes) {
+if (
+  heaviestJsRoute.js > maxJsGzipBytes ||
+  heaviestCssRoute.css > maxCssGzipBytes
+) {
   console.error("Bundle budget exceeded.");
   process.exit(1);
 }

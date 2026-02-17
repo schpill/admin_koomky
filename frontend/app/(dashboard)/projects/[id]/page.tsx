@@ -54,11 +54,10 @@ const TaskKanbanBoard = dynamic(
     ),
   }
 );
-const TaskDetailDrawer = dynamic(
-  () =>
-    import("@/components/projects/task-detail-drawer").then(
-      (mod) => mod.TaskDetailDrawer
-    )
+const TaskDetailDrawer = dynamic(() =>
+  import("@/components/projects/task-detail-drawer").then(
+    (mod) => mod.TaskDetailDrawer
+  )
 );
 
 export default function ProjectDetailPage() {

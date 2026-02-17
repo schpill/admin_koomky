@@ -15,7 +15,10 @@ import { useCampaignStore } from "@/lib/stores/campaigns";
 import { useSegmentStore } from "@/lib/stores/segments";
 
 const EmailEditor = dynamic(
-  () => import("@/components/campaigns/email-editor").then((mod) => mod.EmailEditor),
+  () =>
+    import("@/components/campaigns/email-editor").then(
+      (mod) => mod.EmailEditor
+    ),
   {
     loading: () => (
       <div className="h-72 animate-pulse rounded-lg border border-border bg-muted/40" />
@@ -23,15 +26,18 @@ const EmailEditor = dynamic(
   }
 );
 const SmsComposer = dynamic(
-  () => import("@/components/campaigns/sms-composer").then((mod) => mod.SmsComposer),
+  () =>
+    import("@/components/campaigns/sms-composer").then(
+      (mod) => mod.SmsComposer
+    ),
   {
     loading: () => (
       <div className="h-40 animate-pulse rounded-lg border border-border bg-muted/40" />
     ),
   }
 );
-const SmsPreview = dynamic(
-  () => import("@/components/campaigns/sms-preview").then((mod) => mod.SmsPreview)
+const SmsPreview = dynamic(() =>
+  import("@/components/campaigns/sms-preview").then((mod) => mod.SmsPreview)
 );
 
 const sampleRecipients = [

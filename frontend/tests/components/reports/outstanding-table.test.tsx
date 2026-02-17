@@ -26,7 +26,9 @@ describe("OutstandingTable", () => {
     expect(visibleRows.length).toBeLessThan(120);
 
     fireEvent.scroll(scrollContainer, { target: { scrollTop: 600 } });
-    expect(screen.getAllByTestId("outstanding-table-row").length).toBeLessThan(120);
+    expect(screen.getAllByTestId("outstanding-table-row").length).toBeLessThan(
+      120
+    );
   });
 
   it("renders all rows when dataset is small", () => {

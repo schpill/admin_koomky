@@ -12,7 +12,10 @@ import { useI18n } from "@/components/providers/i18n-provider";
 import { useNotificationStore } from "@/lib/stores/notifications";
 
 const RevenueChart = dynamic(
-  () => import("@/components/reports/revenue-chart").then((mod) => mod.RevenueChart),
+  () =>
+    import("@/components/reports/revenue-chart").then(
+      (mod) => mod.RevenueChart
+    ),
   {
     loading: () => (
       <div className="h-64 animate-pulse rounded-lg border border-border bg-muted/40" />

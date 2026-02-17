@@ -80,7 +80,10 @@ export function OutstandingTable({ items }: OutstandingTableProps) {
     return {
       visibleItems: items.slice(startIndex, endIndex),
       paddingTop: startIndex * VIRTUAL_ROW_HEIGHT,
-      paddingBottom: Math.max(0, (items.length - endIndex) * VIRTUAL_ROW_HEIGHT),
+      paddingBottom: Math.max(
+        0,
+        (items.length - endIndex) * VIRTUAL_ROW_HEIGHT
+      ),
     };
   }, [isVirtualized, items, scrollTop]);
 

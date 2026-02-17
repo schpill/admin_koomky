@@ -126,7 +126,9 @@ export default function DataSettingsPage() {
 
       const payload = await response.json();
       if (!response.ok) {
-        throw new Error(payload?.message || `Import failed (${response.status})`);
+        throw new Error(
+          payload?.message || `Import failed (${response.status})`
+        );
       }
 
       const imported = Number(payload?.data?.imported || 0);

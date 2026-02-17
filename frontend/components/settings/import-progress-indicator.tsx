@@ -27,7 +27,9 @@ interface ImportProgressIndicatorProps {
   stage: ImportStage;
 }
 
-export function ImportProgressIndicator({ stage }: ImportProgressIndicatorProps) {
+export function ImportProgressIndicator({
+  stage,
+}: ImportProgressIndicatorProps) {
   if (stage === "idle") {
     return null;
   }
