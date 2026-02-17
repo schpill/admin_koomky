@@ -127,9 +127,12 @@ export const useCalendarStore = create<CalendarState>((set, get) => ({
   fetchEvents: async (params = {}) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await apiClient.get<CalendarEvent[]>("/calendar-events", {
-        params,
-      });
+      const response = await apiClient.get<CalendarEvent[]>(
+        "/calendar-events",
+        {
+          params,
+        }
+      );
       set({
         events: response.data || [],
         isLoading: false,

@@ -175,7 +175,10 @@ export const useRecurringInvoiceStore = create<RecurringInvoiceState>(
     createProfile: async (payload) => {
       set({ isLoading: true, error: null });
       try {
-        const response = await apiClient.post<any>("/recurring-invoices", payload);
+        const response = await apiClient.post<any>(
+          "/recurring-invoices",
+          payload
+        );
         const profile = response.data as RecurringInvoiceProfile;
 
         set({

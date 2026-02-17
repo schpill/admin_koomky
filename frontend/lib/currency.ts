@@ -14,7 +14,12 @@ const FALLBACK_CURRENCIES: Record<
   USD: { name: "US Dollar", symbol: "USD", decimal_places: 2, flag: "🇺🇸" },
   GBP: { name: "British Pound", symbol: "GBP", decimal_places: 2, flag: "🇬🇧" },
   CHF: { name: "Swiss Franc", symbol: "CHF", decimal_places: 2, flag: "🇨🇭" },
-  CAD: { name: "Canadian Dollar", symbol: "CAD", decimal_places: 2, flag: "🇨🇦" },
+  CAD: {
+    name: "Canadian Dollar",
+    symbol: "CAD",
+    decimal_places: 2,
+    flag: "🇨🇦",
+  },
   JPY: { name: "Japanese Yen", symbol: "JPY", decimal_places: 0, flag: "🇯🇵" },
   AUD: {
     name: "Australian Dollar",

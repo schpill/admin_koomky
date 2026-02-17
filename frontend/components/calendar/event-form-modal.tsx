@@ -166,7 +166,9 @@ export function EventFormModal({
               aria-label="Type"
               className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
               value={type}
-              onChange={(event) => setType(event.target.value as CalendarEventType)}
+              onChange={(event) =>
+                setType(event.target.value as CalendarEventType)
+              }
             >
               <option value="meeting">Meeting</option>
               <option value="deadline">Deadline</option>

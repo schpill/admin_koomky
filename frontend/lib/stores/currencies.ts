@@ -50,7 +50,11 @@ export const useCurrencyStore = create<CurrencyState>((set, get) => ({
   fetchRates: async (baseCurrency) => {
     set({ isLoading: true, error: null });
     try {
-      const nextBase = (baseCurrency || get().baseCurrency || "EUR").toUpperCase();
+      const nextBase = (
+        baseCurrency ||
+        get().baseCurrency ||
+        "EUR"
+      ).toUpperCase();
       const response = await apiClient.get<{
         base_currency: string;
         rates: Record<string, number>;
@@ -59,7 +63,9 @@ export const useCurrencyStore = create<CurrencyState>((set, get) => ({
       });
 
       set({
-        baseCurrency: String(response.data?.base_currency || nextBase).toUpperCase(),
+        baseCurrency: String(
+          response.data?.base_currency || nextBase
+        ).toUpperCase(),
         rates: response.data?.rates || {},
         isLoading: false,
       });
@@ -86,7 +92,9 @@ export const useCurrencyStore = create<CurrencyState>((set, get) => ({
 
       const userSettings = response.data || {};
       set({
-        baseCurrency: String(userSettings.base_currency || payload.base_currency),
+        baseCurrency: String(
+          userSettings.base_currency || payload.base_currency
+        ),
         exchangeRateProvider: String(
           userSettings.exchange_rate_provider ||
             exchangeRateProvider ||

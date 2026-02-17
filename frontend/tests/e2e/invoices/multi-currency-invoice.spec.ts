@@ -14,8 +14,6 @@ test.describe("Multi-currency invoices", () => {
       page.getByRole("heading", { name: "Create invoice", exact: true })
     ).toBeVisible();
     await expect(page.getByLabel("Currency", { exact: true })).toBeVisible();
-    await expect(
-      page.getByText(/estimated in .*: /i).first()
-    ).toBeVisible();
+    await expect(page.getByText(/estimated in .*: /i).first()).toBeVisible();
   });
 });

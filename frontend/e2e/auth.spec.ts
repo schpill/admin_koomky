@@ -35,7 +35,9 @@ test.describe("Authentication", () => {
 
     // Should redirect to dashboard
     await expect(page).toHaveURL("/");
-    await expect(page.locator("h1")).toContainText(/Dashboard|Tableau de bord/i);
+    await expect(page.locator("h1")).toContainText(
+      /Dashboard|Tableau de bord/i
+    );
 
     // Check if cookies are set
     const cookies = await page.context().cookies();

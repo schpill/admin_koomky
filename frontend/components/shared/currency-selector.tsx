@@ -3,7 +3,11 @@
 import { useMemo, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { currencyFlag, defaultCurrencyList, type CurrencyLike } from "@/lib/currency";
+import {
+  currencyFlag,
+  defaultCurrencyList,
+  type CurrencyLike,
+} from "@/lib/currency";
 
 interface CurrencySelectorProps {
   id: string;
@@ -47,7 +51,8 @@ export function CurrencySelector({
     }
 
     return normalized.filter((currency) => {
-      const text = `${currency.code} ${currency.name} ${currency.symbol}`.toLowerCase();
+      const text =
+        `${currency.code} ${currency.name} ${currency.symbol}`.toLowerCase();
       return text.includes(term);
     });
   }, [normalized, query]);

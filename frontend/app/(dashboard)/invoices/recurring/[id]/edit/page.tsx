@@ -76,7 +76,10 @@ export default function EditRecurringInvoicePage() {
         </CardHeader>
         <CardContent>
           <RecurringInvoiceForm
-            clients={clients.map((client) => ({ id: client.id, name: client.name }))}
+            clients={clients.map((client) => ({
+              id: client.id,
+              name: client.name,
+            }))}
             initialPayload={{
               client_id: currentProfile.client_id,
               name: currentProfile.name,

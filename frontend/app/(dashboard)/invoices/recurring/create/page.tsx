@@ -34,7 +34,9 @@ export default function CreateRecurringInvoicePage() {
         router.push("/invoices/recurring");
       }
     } catch (error) {
-      toast.error((error as Error).message || "Unable to create recurring profile");
+      toast.error(
+        (error as Error).message || "Unable to create recurring profile"
+      );
     }
   };
 
@@ -56,7 +58,10 @@ export default function CreateRecurringInvoicePage() {
         </CardHeader>
         <CardContent>
           <RecurringInvoiceForm
-            clients={clients.map((client) => ({ id: client.id, name: client.name }))}
+            clients={clients.map((client) => ({
+              id: client.id,
+              name: client.name,
+            }))}
             onSubmit={handleSubmit}
             isSubmitting={isLoading}
             submitLabel="Create profile"

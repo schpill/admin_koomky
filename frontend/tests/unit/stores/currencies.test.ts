@@ -77,9 +77,7 @@ describe("useCurrencyStore", () => {
       },
     });
 
-    await useCurrencyStore
-      .getState()
-      .updateCurrencySettings("USD", "ecb");
+    await useCurrencyStore.getState().updateCurrencySettings("USD", "ecb");
 
     const state = useCurrencyStore.getState();
     expect(state.baseCurrency).toBe("USD");
@@ -91,7 +89,9 @@ describe("useCurrencyStore", () => {
   });
 
   it("keeps last error when request fails", async () => {
-    (apiClient.get as any).mockRejectedValueOnce(new Error("currencies failed"));
+    (apiClient.get as any).mockRejectedValueOnce(
+      new Error("currencies failed")
+    );
     await useCurrencyStore.getState().fetchCurrencies();
     expect(useCurrencyStore.getState().error).toBe("currencies failed");
 

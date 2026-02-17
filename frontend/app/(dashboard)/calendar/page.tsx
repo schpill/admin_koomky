@@ -28,8 +28,14 @@ function addDays(input: string, days: number): string {
 }
 
 export default function CalendarPage() {
-  const { events, isLoading, fetchEvents, createEvent, updateEvent, deleteEvent } =
-    useCalendarStore();
+  const {
+    events,
+    isLoading,
+    fetchEvents,
+    createEvent,
+    updateEvent,
+    deleteEvent,
+  } = useCalendarStore();
 
   const [view, setView] = useState<CalendarView>("month");
   const [dateFrom, setDateFrom] = useState(todayIso());

@@ -166,9 +166,9 @@ export default function DashboardPage() {
 
       <RecurringInvoicesWidget
         activeCount={stats?.recurring_profiles_active_count || 0}
-        estimatedMonthlyRevenue={
-          Number(stats?.recurring_estimated_revenue_month || 0)
-        }
+        estimatedMonthlyRevenue={Number(
+          stats?.recurring_estimated_revenue_month || 0
+        )}
         currency={baseCurrency}
         upcomingProfiles={stats?.recurring_upcoming_due_profiles || []}
       />

@@ -21,14 +21,15 @@ const RECURRING_WITH_DAY: RecurringInvoiceFrequency[] = [
   "annual",
 ];
 
-const FREQUENCIES: Array<{ value: RecurringInvoiceFrequency; label: string }> = [
-  { value: "weekly", label: "Weekly" },
-  { value: "biweekly", label: "Biweekly" },
-  { value: "monthly", label: "Monthly" },
-  { value: "quarterly", label: "Quarterly" },
-  { value: "semiannual", label: "Semiannual" },
-  { value: "annual", label: "Annual" },
-];
+const FREQUENCIES: Array<{ value: RecurringInvoiceFrequency; label: string }> =
+  [
+    { value: "weekly", label: "Weekly" },
+    { value: "biweekly", label: "Biweekly" },
+    { value: "monthly", label: "Monthly" },
+    { value: "quarterly", label: "Quarterly" },
+    { value: "semiannual", label: "Semiannual" },
+    { value: "annual", label: "Annual" },
+  ];
 
 interface RecurringInvoiceFormProps {
   clients: Array<{ id: string; name: string }>;
@@ -56,7 +57,9 @@ export function RecurringInvoiceForm({
   const [frequency, setFrequency] = useState<RecurringInvoiceFrequency>(
     initialPayload?.frequency || "monthly"
   );
-  const [startDate, setStartDate] = useState(initialPayload?.start_date || today());
+  const [startDate, setStartDate] = useState(
+    initialPayload?.start_date || today()
+  );
   const [nextDueDate, setNextDueDate] = useState(
     initialPayload?.next_due_date || initialPayload?.start_date || today()
   );
@@ -70,14 +73,16 @@ export function RecurringInvoiceForm({
   const [taxRate, setTaxRate] = useState<number>(
     initialPayload?.tax_rate || 20
   );
-  const [discountType, setDiscountType] = useState<"percentage" | "fixed" | null>(
-    "percentage"
-  );
+  const [discountType, setDiscountType] = useState<
+    "percentage" | "fixed" | null
+  >("percentage");
   const [discountValue, setDiscountValue] = useState<number>(
     initialPayload?.discount_percent || 0
   );
   const [maxOccurrences, setMaxOccurrences] = useState<string>(
-    initialPayload?.max_occurrences ? String(initialPayload.max_occurrences) : ""
+    initialPayload?.max_occurrences
+      ? String(initialPayload.max_occurrences)
+      : ""
   );
   const [autoSend, setAutoSend] = useState<boolean>(
     initialPayload?.auto_send || false
@@ -207,7 +212,9 @@ export function RecurringInvoiceForm({
               min={1}
               max={31}
               value={dayOfMonth}
-              onChange={(event) => setDayOfMonth(Number(event.target.value || 1))}
+              onChange={(event) =>
+                setDayOfMonth(Number(event.target.value || 1))
+              }
             />
           </div>
         )}
@@ -255,7 +262,9 @@ export function RecurringInvoiceForm({
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="recurring-payment-terms-days">Payment terms (days)</Label>
+          <Label htmlFor="recurring-payment-terms-days">
+            Payment terms (days)
+          </Label>
           <Input
             id="recurring-payment-terms-days"
             type="number"
@@ -291,7 +300,9 @@ export function RecurringInvoiceForm({
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="recurring-auto-send">Auto send generated invoices</Label>
+          <Label htmlFor="recurring-auto-send">
+            Auto send generated invoices
+          </Label>
           <select
             id="recurring-auto-send"
             className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"

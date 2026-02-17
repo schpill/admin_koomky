@@ -166,7 +166,9 @@ export function OutstandingTable({
                     </td>
                     <td className="py-3">
                       <CurrencyAmount
-                        amount={Number(item.balance_due_base ?? item.balance_due)}
+                        amount={Number(
+                          item.balance_due_base ?? item.balance_due
+                        )}
                         currency={baseCurrency}
                       />
                       {showOriginalCurrency &&

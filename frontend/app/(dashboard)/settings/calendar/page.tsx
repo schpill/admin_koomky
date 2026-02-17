@@ -145,7 +145,9 @@ export default function CalendarSettingsPage() {
             <input
               type="checkbox"
               checked={autoProjectDeadlines}
-              onChange={(event) => setAutoProjectDeadlines(event.target.checked)}
+              onChange={(event) =>
+                setAutoProjectDeadlines(event.target.checked)
+              }
             />
             Project deadlines
           </label>
@@ -161,7 +163,9 @@ export default function CalendarSettingsPage() {
             <input
               type="checkbox"
               checked={autoInvoiceReminders}
-              onChange={(event) => setAutoInvoiceReminders(event.target.checked)}
+              onChange={(event) =>
+                setAutoInvoiceReminders(event.target.checked)
+              }
             />
             Invoice reminders
           </label>

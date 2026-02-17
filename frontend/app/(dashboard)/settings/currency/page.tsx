@@ -26,9 +26,9 @@ export default function CurrencySettingsPage() {
   const [selectedProvider, setSelectedProvider] = useState(
     "open_exchange_rates"
   );
-  const [manualOverrides, setManualOverrides] = useState<Record<string, string>>(
-    {}
-  );
+  const [manualOverrides, setManualOverrides] = useState<
+    Record<string, string>
+  >({});
 
   useEffect(() => {
     fetchCurrencies();
@@ -140,7 +140,9 @@ export default function CurrencySettingsPage() {
                 <p className="text-sm text-muted-foreground">
                   100 {selectedBaseCurrency} ={" "}
                   <CurrencyAmount
-                    amount={100 * Number(manualOverrides[currency] ?? rate || 0)}
+                    amount={
+                      100 * Number((manualOverrides[currency] ?? rate) || 0)
+                    }
                     currency={currency}
                     currencies={currencies}
                   />{" "}

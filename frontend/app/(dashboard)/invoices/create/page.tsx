@@ -72,7 +72,8 @@ export default function CreateInvoicePage() {
 
   const estimatedDocumentTotal = useMemo(() => {
     const subtotal = lineItems.reduce(
-      (sum, item) => sum + Number(item.quantity || 0) * Number(item.unit_price || 0),
+      (sum, item) =>
+        sum + Number(item.quantity || 0) * Number(item.unit_price || 0),
       0
     );
     const taxAmount = lineItems.reduce((sum, item) => {

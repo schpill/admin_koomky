@@ -36,7 +36,10 @@ export default function RecurringInvoiceDetailPage() {
     });
   }, [fetchProfile, profileId, router]);
 
-  const runAction = async (action: () => Promise<unknown>, successMessage: string) => {
+  const runAction = async (
+    action: () => Promise<unknown>,
+    successMessage: string
+  ) => {
     try {
       await action();
       toast.success(successMessage);
@@ -83,7 +86,8 @@ export default function RecurringInvoiceDetailPage() {
           <div>
             <h1 className="text-3xl font-bold">{currentProfile.name}</h1>
             <p className="text-sm text-muted-foreground">
-              {currentProfile.frequency} - Next due {currentProfile.next_due_date}
+              {currentProfile.frequency} - Next due{" "}
+              {currentProfile.next_due_date}
             </p>
           </div>
           <div className="flex gap-2">
@@ -97,7 +101,10 @@ export default function RecurringInvoiceDetailPage() {
               <Button
                 variant="outline"
                 onClick={() =>
-                  runAction(() => pauseProfile(currentProfile.id), "Profile paused")
+                  runAction(
+                    () => pauseProfile(currentProfile.id),
+                    "Profile paused"
+                  )
                 }
               >
                 Pause
@@ -107,7 +114,10 @@ export default function RecurringInvoiceDetailPage() {
               <Button
                 variant="outline"
                 onClick={() =>
-                  runAction(() => resumeProfile(currentProfile.id), "Profile resumed")
+                  runAction(
+                    () => resumeProfile(currentProfile.id),
+                    "Profile resumed"
+                  )
                 }
               >
                 Resume
@@ -117,7 +127,10 @@ export default function RecurringInvoiceDetailPage() {
               <Button
                 variant="outline"
                 onClick={() =>
-                  runAction(() => cancelProfile(currentProfile.id), "Profile cancelled")
+                  runAction(
+                    () => cancelProfile(currentProfile.id),
+                    "Profile cancelled"
+                  )
                 }
               >
                 Cancel
@@ -143,12 +156,18 @@ export default function RecurringInvoiceDetailPage() {
             <p className="font-medium capitalize">{currentProfile.status}</p>
           </div>
           <div>
-            <p className="text-xs text-muted-foreground">Occurrences generated</p>
-            <p className="font-medium">{currentProfile.occurrences_generated}</p>
+            <p className="text-xs text-muted-foreground">
+              Occurrences generated
+            </p>
+            <p className="font-medium">
+              {currentProfile.occurrences_generated}
+            </p>
           </div>
           <div>
             <p className="text-xs text-muted-foreground">Payment terms</p>
-            <p className="font-medium">{currentProfile.payment_terms_days} days</p>
+            <p className="font-medium">
+              {currentProfile.payment_terms_days} days
+            </p>
           </div>
           <div>
             <p className="text-xs text-muted-foreground">Currency</p>
@@ -156,7 +175,9 @@ export default function RecurringInvoiceDetailPage() {
           </div>
           <div>
             <p className="text-xs text-muted-foreground">Auto send</p>
-            <p className="font-medium">{currentProfile.auto_send ? "Yes" : "No"}</p>
+            <p className="font-medium">
+              {currentProfile.auto_send ? "Yes" : "No"}
+            </p>
           </div>
         </CardContent>
       </Card>
@@ -167,7 +188,9 @@ export default function RecurringInvoiceDetailPage() {
         </CardHeader>
         <CardContent>
           {(currentProfile.generated_invoices || []).length === 0 ? (
-            <p className="text-sm text-muted-foreground">No generated invoices yet.</p>
+            <p className="text-sm text-muted-foreground">
+              No generated invoices yet.
+            </p>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
@@ -194,7 +217,9 @@ export default function RecurringInvoiceDetailPage() {
                       <td className="py-2">{invoice.issue_date}</td>
                       <td className="py-2">{invoice.due_date}</td>
                       <td className="py-2 capitalize">{invoice.status}</td>
-                      <td className="py-2">{Number(invoice.total).toFixed(2)} EUR</td>
+                      <td className="py-2">
+                        {Number(invoice.total).toFixed(2)} EUR
+                      </td>
                     </tr>
                   ))}
                 </tbody>

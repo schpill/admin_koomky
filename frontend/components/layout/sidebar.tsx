@@ -36,10 +36,16 @@ const navigation = [
   { key: "calendar", href: "/calendar", icon: CalendarDays },
 ];
 
-const grafanaUrl = process.env.NEXT_PUBLIC_GRAFANA_URL || "http://localhost:3001";
+const grafanaUrl =
+  process.env.NEXT_PUBLIC_GRAFANA_URL || "http://localhost:3001";
 
 const secondaryNavigation = [
-  { key: "settings", href: "/settings/profile", icon: Settings, external: false },
+  {
+    key: "settings",
+    href: "/settings/profile",
+    icon: Settings,
+    external: false,
+  },
   { key: "grafana", href: grafanaUrl, icon: ExternalLink, external: true },
   { key: "help", href: "/help", icon: HelpCircle, external: false },
 ];
@@ -166,7 +172,9 @@ export function Sidebar({
       {/* Secondary Navigation */}
       <nav className="space-y-1 p-2">
         {secondaryNavigation.map((item) => {
-          const isActive = item.external ? false : pathname.startsWith(item.href);
+          const isActive = item.external
+            ? false
+            : pathname.startsWith(item.href);
 
           return (
             <Link

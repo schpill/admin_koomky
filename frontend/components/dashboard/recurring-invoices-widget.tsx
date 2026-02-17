@@ -50,7 +50,9 @@ export function RecurringInvoicesWidget({
 
         <div className="space-y-2">
           {upcomingProfiles.length === 0 ? (
-            <p className="text-sm text-muted-foreground">No upcoming recurring invoices.</p>
+            <p className="text-sm text-muted-foreground">
+              No upcoming recurring invoices.
+            </p>
           ) : (
             upcomingProfiles.map((profile) => (
               <div
@@ -59,7 +61,8 @@ export function RecurringInvoicesWidget({
               >
                 <p className="text-sm font-medium">{profile.name}</p>
                 <p className="text-xs text-muted-foreground">
-                  {profile.client_name || "Unknown client"} - {profile.frequency}
+                  {profile.client_name || "Unknown client"} -{" "}
+                  {profile.frequency}
                 </p>
                 <p className="text-xs text-muted-foreground">
                   Next due: {profile.next_due_date}

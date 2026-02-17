@@ -7,7 +7,11 @@ describe("RecurringInvoiceForm", () => {
 
   it("shows day-of-month field for monthly frequency", () => {
     render(
-      <RecurringInvoiceForm clients={clients} onSubmit={vi.fn()} submitLabel="Save" />
+      <RecurringInvoiceForm
+        clients={clients}
+        onSubmit={vi.fn()}
+        submitLabel="Save"
+      />
     );
 
     expect(screen.getByLabelText("Day of month")).toBeInTheDocument();
@@ -15,7 +19,11 @@ describe("RecurringInvoiceForm", () => {
 
   it("hides day-of-month field for weekly frequency", () => {
     render(
-      <RecurringInvoiceForm clients={clients} onSubmit={vi.fn()} submitLabel="Save" />
+      <RecurringInvoiceForm
+        clients={clients}
+        onSubmit={vi.fn()}
+        submitLabel="Save"
+      />
     );
 
     fireEvent.change(screen.getByLabelText("Frequency"), {
@@ -27,7 +35,11 @@ describe("RecurringInvoiceForm", () => {
 
   it("validates end date is after start date", async () => {
     render(
-      <RecurringInvoiceForm clients={clients} onSubmit={vi.fn()} submitLabel="Save" />
+      <RecurringInvoiceForm
+        clients={clients}
+        onSubmit={vi.fn()}
+        submitLabel="Save"
+      />
     );
 
     fireEvent.change(screen.getByLabelText("Client"), {

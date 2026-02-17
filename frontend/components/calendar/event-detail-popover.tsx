@@ -27,7 +27,9 @@ export function EventDetailPopover({
       <PopoverContent className="space-y-3">
         <div>
           <p className="text-sm font-semibold">{event.title}</p>
-          <p className="text-xs text-muted-foreground capitalize">{event.type}</p>
+          <p className="text-xs text-muted-foreground capitalize">
+            {event.type}
+          </p>
         </div>
 
         {event.description && (

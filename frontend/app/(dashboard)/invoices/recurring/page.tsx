@@ -91,7 +91,9 @@ export default function RecurringInvoicesPage() {
                           {profile.name}
                         </Link>
                       </td>
-                      <td className="py-3">{profile.client?.name || profile.client_id}</td>
+                      <td className="py-3">
+                        {profile.client?.name || profile.client_id}
+                      </td>
                       <td className="py-3 capitalize">{profile.frequency}</td>
                       <td className="py-3">{profile.next_due_date}</td>
                       <td className="py-3 capitalize">{profile.status}</td>
