@@ -23,7 +23,10 @@ class PrometheusMiddleware
 
         $durationSeconds = microtime(true) - $startedAt;
         $requestSize = (float) ((int) ($request->headers->get('content-length') ?? 0));
-        $routePath = $request->route()?->uri() ? '/'.ltrim((string) $request->route()?->uri(), '/') : '/'.ltrim($request->path(), '/');
+        $route = $request->route();
+        $routePath = $route !== null
+            ? '/'.ltrim((string) $route->uri(), '/')
+            : '/'.ltrim($request->path(), '/');
 
         $counterLabels = [
             'method' => strtoupper($request->method()),

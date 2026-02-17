@@ -185,7 +185,7 @@ class InvoiceController extends Controller
                 /** @var array<int, array<string, mixed>> $lineItems */
                 $lineItems = $validated['line_items'];
                 $currency = strtoupper((string) ($validated['currency'] ?? $invoice->currency));
-                $baseCurrency = strtoupper((string) ($invoice->user?->base_currency ?? 'EUR'));
+                $baseCurrency = strtoupper((string) ($invoice->user->base_currency ?? 'EUR'));
                 $issueDate = Carbon::parse((string) $validated['issue_date']);
 
                 $calculation = $calculationService->calculate(

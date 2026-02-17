@@ -66,10 +66,6 @@ class CalendarAutoEventService
 
     public function syncInvoiceReminder(Invoice $invoice): void
     {
-        if (! $invoice->due_date) {
-            return;
-        }
-
         $reminderAt = $invoice->due_date->copy()->subDays(3)->startOfDay();
 
         $event = CalendarEvent::query()->updateOrCreate(

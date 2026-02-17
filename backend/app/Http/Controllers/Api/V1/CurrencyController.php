@@ -29,7 +29,10 @@ class CurrencyController extends Controller
         /** @var User $user */
         $user = $request->user();
 
-        $baseCurrency = strtoupper((string) ($request->query('base') ?: ($user->base_currency ?? 'EUR')));
+        $baseQuery = $request->query('base');
+        $baseCurrency = is_string($baseQuery) && $baseQuery !== ''
+            ? strtoupper($baseQuery)
+            : strtoupper((string) ($user->base_currency ?? 'EUR'));
 
         return $this->success([
             'base_currency' => $baseCurrency,

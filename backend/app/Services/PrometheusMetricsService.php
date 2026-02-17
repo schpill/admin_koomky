@@ -22,7 +22,7 @@ class PrometheusMetricsService
      *   labels: array<string, string>,
      *   count: int,
      *   sum: float,
-     *   buckets: array<string, int>
+     *   buckets: array<int|string, int>
      * }>>
      */
     private static array $histograms = [];
@@ -71,9 +71,11 @@ class PrometheusMetricsService
         $key = $this->labelsKey($labels);
 
         if (! isset(self::$histograms[$name][$key])) {
+            /** @var array<string, int> $bucketState */
             $bucketState = [];
             foreach ($this->defaultBuckets as $bucket) {
-                $bucketState[(string) $bucket] = 0;
+                $bucketKey = (string) $bucket;
+                $bucketState[$bucketKey] = 0;
             }
             $bucketState['+Inf'] = 0;
 
@@ -90,7 +92,8 @@ class PrometheusMetricsService
 
         foreach ($this->defaultBuckets as $bucket) {
             if ($value <= $bucket) {
-                self::$histograms[$name][$key]['buckets'][(string) $bucket]++;
+                $bucketKey = (string) $bucket;
+                self::$histograms[$name][$key]['buckets'][$bucketKey]++;
             }
         }
         self::$histograms[$name][$key]['buckets']['+Inf']++;
@@ -121,7 +124,7 @@ class PrometheusMetricsService
             foreach ($series as $sample) {
                 $labels = $sample['labels'];
                 foreach ($sample['buckets'] as $bucket => $count) {
-                    $bucketLabels = [...$labels, 'le' => $bucket];
+                    $bucketLabels = [...$labels, 'le' => (string) $bucket];
                     $lines[] = $this->sampleLine($name.'_bucket', $bucketLabels, $count);
                 }
                 $lines[] = $this->sampleLine($name.'_sum', $labels, $sample['sum']);

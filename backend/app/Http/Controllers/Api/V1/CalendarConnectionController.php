@@ -83,7 +83,7 @@ class CalendarConnectionController extends Controller
         }
 
         $credentials = $calendar_connection->credentials;
-        $hasCredentials = is_array($credentials) && $credentials !== [];
+        $hasCredentials = $credentials !== [];
 
         return $this->success([
             'ok' => $hasCredentials,

@@ -196,7 +196,7 @@ class CreditNoteController extends Controller
                 }
 
                 $currency = strtoupper((string) ($validated['currency'] ?? $creditNote->currency));
-                $baseCurrency = strtoupper((string) ($creditNote->user?->base_currency ?? 'EUR'));
+                $baseCurrency = strtoupper((string) ($creditNote->user->base_currency ?? 'EUR'));
                 $issueDate = Carbon::parse((string) $validated['issue_date']);
                 $exchangeRate = $currencyConversionService->rateFor(
                     $currency,

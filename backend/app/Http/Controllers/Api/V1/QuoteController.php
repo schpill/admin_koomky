@@ -200,7 +200,7 @@ class QuoteController extends Controller
                     ? Carbon::parse($validated['valid_until'])
                     : $issueDate->copy()->addDays(30);
                 $currency = strtoupper((string) ($validated['currency'] ?? $quote->currency));
-                $baseCurrency = strtoupper((string) ($quote->user?->base_currency ?? 'EUR'));
+                $baseCurrency = strtoupper((string) ($quote->user->base_currency ?? 'EUR'));
 
                 $calculation = $calculationService->calculate(
                     $lineItems,
