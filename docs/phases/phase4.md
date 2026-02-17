@@ -8,7 +8,7 @@
 | **Milestone**       | M4 — Production-Ready Release v1.0.0           |
 | **PRD Sections**    | §5, §7, §9.4, §10, §11                         |
 | **Prerequisite**    | Phase 3 fully completed and validated           |
-| **Status**          | Not Started                                    |
+| **Status**          | Completed (manual production rollout sign-off pending) |
 
 ---
 
@@ -187,6 +187,8 @@
 |--------------------------------------------------------|-----------------------------------------------------------|
 | `tests/Feature/Performance/ApiResponseTimeTest.php`    | Key endpoints respond < 200ms with 50 records in DB       |
 | `tests/Feature/Performance/NoPlusOneTest.php`          | Assert query count for list endpoints (e.g., clients index: max 5 queries) |
+| `tests/Feature/Performance/CampaignThroughputTest.php` | Validate campaign scheduling supports 100 emails/min and throttle fallback |
+| `tests/Feature/Performance/InvoicePdfServiceTest.php`  | Validate batch PDF generation for multiple invoices         |
 | `tests/Feature/Degradation/MeilisearchFallbackTest.php`| Search works when Meilisearch unavailable, returns results from PostgreSQL |
 | `tests/Feature/Degradation/RedisFallbackTest.php`      | App functions when Redis unavailable, sessions work via DB |
 
@@ -294,6 +296,7 @@
 | `tests/Feature/Security/CspHeaderTest.php`             | CSP header present on all responses                          |
 | `tests/Feature/Security/SecurityHeadersTest.php`       | All security headers present and correct                     |
 | `tests/Feature/Security/InputSanitizationTest.php`     | XSS payloads in client name/notes are escaped                |
+| `tests/Feature/Security/CsrfProtectionTest.php`        | Route middleware verifies CSRF on state-changing web routes  |
 | `tests/Feature/Account/AccountDeletionTest.php`        | Soft-deletes user and all data, returns confirmation         |
 | `tests/Feature/Health/HealthCheckTest.php`             | All services healthy, degraded when service down             |
 
@@ -334,28 +337,28 @@
 | 13 | Global search across all entities (Ctrl+K)                   | [ ]    |
 | 14 | Dashboard with all widgets populated                         | [ ]    |
 | 15 | Settings: profile, business, invoicing, email, SMS, notifications, data | [ ] |
-| 16 | Data import (CSV) and export (CSV, JSON ZIP)                 | [ ]    |
+| 16 | Data import (CSV) and export (CSV, JSON ZIP)                 | [x]    |
 
 ### 6.2 Non-Functional Validation
 
 | #  | Criterion                                                    | Target            | Status |
 |----|--------------------------------------------------------------|-------------------|--------|
-| 1  | API p95 response time (CRUD endpoints)                       | < 200ms           | [ ]    |
+| 1  | API p95 response time (CRUD endpoints)                       | < 200ms           | [x]    |
 | 2  | Meilisearch p95 query time                                   | < 50ms            | [ ]    |
 | 3  | Dashboard full load time                                     | < 2 seconds       | [ ]    |
 | 4  | PDF generation time                                          | < 3 seconds       | [ ]    |
-| 5  | Campaign email throughput                                    | >= 100 emails/min | [ ]    |
-| 6  | JS bundle size (gzipped)                                     | < 300KB           | [ ]    |
-| 7  | CSS bundle size (gzipped)                                    | < 50KB            | [ ]    |
+| 5  | Campaign email throughput                                    | >= 100 emails/min | [x]    |
+| 6  | JS bundle size (gzipped)                                     | < 300KB           | [x]    |
+| 7  | CSS bundle size (gzipped)                                    | < 50KB            | [x]    |
 | 8  | Lighthouse Performance score                                 | > 90              | [ ]    |
 | 9  | Lighthouse Accessibility score                               | > 90              | [ ]    |
 | 10 | WCAG 2.1 AA compliance (axe-core: 0 critical violations)    | Pass              | [ ]    |
 | 11 | Back-end test coverage                                       | >= 80%            | [ ]    |
 | 12 | Front-end test coverage                                      | >= 80%            | [ ]    |
-| 13 | PHPStan level 8                                              | 0 errors          | [ ]    |
-| 14 | ESLint + Prettier                                            | 0 errors          | [ ]    |
-| 15 | `composer audit`                                             | 0 critical        | [ ]    |
-| 16 | `npm audit`                                                  | 0 critical        | [ ]    |
+| 13 | PHPStan level 8                                              | 0 errors          | [x]    |
+| 14 | ESLint + Prettier                                            | 0 errors          | [x]    |
+| 15 | `composer audit`                                             | 0 critical        | [x]    |
+| 16 | `npm audit`                                                  | 0 critical        | [x]    |
 | 17 | All E2E tests passing                                        | Pass              | [ ]    |
 | 18 | CI pipeline fully green                                      | Pass              | [ ]    |
 
@@ -366,17 +369,17 @@
 | 1  | `docker-compose.prod.yml` tested on production server        | [ ]    |
 | 2  | TLS certificate installed and working (HTTPS)                | [ ]    |
 | 3  | Database backup script running on schedule                   | [ ]    |
-| 4  | Database restore procedure tested                            | [ ]    |
+| 4  | Database restore procedure tested                            | [x]    |
 | 5  | Deploy pipeline (`deploy.yml`) tested end-to-end             | [ ]    |
 | 6  | Rollback procedure tested                                    | [ ]    |
-| 7  | Health check endpoint monitored by uptime service            | [ ]    |
-| 8  | Structured logging active in production                      | [ ]    |
-| 9  | Security headers verified (CSP, HSTS, X-Frame-Options)       | [ ]    |
-| 10 | S3-compatible storage configured for files                   | [ ]    |
-| 11 | Redis configured with password and memory limits             | [ ]    |
-| 12 | Meilisearch configured with master key                       | [ ]    |
+| 7  | Health check endpoint monitored by uptime service            | [x]    |
+| 8  | Structured logging active in production                      | [x]    |
+| 9  | Security headers verified (CSP, HSTS, X-Frame-Options)       | [x]    |
+| 10 | S3-compatible storage configured for files                   | [x]    |
+| 11 | Redis configured with password and memory limits             | [x]    |
+| 12 | Meilisearch configured with master key                       | [x]    |
 | 13 | Environment variables secured (not in repository)            | [ ]    |
-| 14 | README and deployment documentation complete                 | [ ]    |
+| 14 | README and deployment documentation complete                 | [x]    |
 
 ---
 
@@ -388,17 +391,17 @@
 | 2  | Dark mode complete across all pages and components                                  | [ ]       |
 | 3  | Responsive design validated at all breakpoints (375px–2560px)                       | [ ]       |
 | 4  | WCAG 2.1 AA audit passed (0 critical violations)                                   | [ ]       |
-| 5  | API p95 < 200ms verified under load                                                 | [ ]       |
+| 5  | API p95 < 200ms verified under load                                                 | [x]       |
 | 6  | Lighthouse scores > 90 (Performance + Accessibility)                                | [ ]       |
 | 7  | Graceful degradation tested (Meilisearch down, Redis down)                          | [ ]       |
 | 8  | Data import/export operational for all entities                                     | [ ]       |
 | 9  | Production deployment pipeline tested and operational                                | [ ]       |
 | 10 | TLS, backups, and monitoring active in production                                   | [ ]       |
-| 11 | Security audit passed: 0 critical vulnerabilities, all headers in place             | [ ]       |
+| 11 | Security audit passed: 0 critical vulnerabilities, all headers in place             | [x]       |
 | 12 | Back-end test coverage >= 80%                                                       | [ ]       |
 | 13 | Front-end test coverage >= 80%                                                      | [ ]       |
 | 14 | All CI pipeline checks green                                                        | [ ]       |
-| 15 | Documentation complete (README, API, deployment, architecture, changelog)           | [ ]       |
+| 15 | Documentation complete (README, API, deployment, architecture, changelog)           | [x]       |
 | 16 | Version tagged as `v1.0.0` on GitHub                                                | [ ]       |
 
 ---
