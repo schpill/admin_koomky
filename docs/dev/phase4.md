@@ -12,51 +12,51 @@
 
 | ID | Task | Status | Owner |
 |----|------|--------|-------|
-| P4-FE-001 | Audit all pages/components for dark mode class coverage | todo | |
-| P4-FE-002 | Implement dark mode color system in Tailwind config | todo | |
-| P4-FE-003 | Add dark: variants to all base components | todo | |
-| P4-FE-004 | Dark mode for charts (Recharts) | todo | |
-| P4-FE-005 | Dark mode for TipTap editor | todo | |
-| P4-FE-006 | Dark mode for PDF preview iframe | todo | |
-| P4-FE-007 | Implement system preference detection + manual toggle | todo | |
-| P4-FE-008 | Persist theme preference (next-themes) | todo | |
+| P4-FE-001 | Audit all pages/components for dark mode class coverage | wip | codex |
+| P4-FE-002 | Implement dark mode color system in Tailwind config | wip | codex |
+| P4-FE-003 | Add dark: variants to all base components | wip | codex |
+| P4-FE-004 | Dark mode for charts (Recharts) | wip | codex |
+| P4-FE-005 | Dark mode for TipTap editor | wip | codex |
+| P4-FE-006 | Dark mode for PDF preview iframe | wip | codex |
+| P4-FE-007 | Implement system preference detection + manual toggle | wip | codex |
+| P4-FE-008 | Persist theme preference (next-themes) | wip | codex |
 
 ### Responsive Design
 
 | ID | Task | Status | Owner |
 |----|------|--------|-------|
-| P4-FE-010 | Audit all pages at all breakpoints (375px-2560px) | todo | |
-| P4-FE-011 | Sidebar: collapsible on tablet, hamburger on mobile | todo | |
-| P4-FE-012 | Data tables: horizontal scroll on mobile, hide secondary cols | todo | |
-| P4-FE-013 | Dashboard: 1/2/3 column responsive grid | todo | |
-| P4-FE-014 | Forms: full-width mobile, 2-column desktop | todo | |
-| P4-FE-015 | Modals/drawers: full-screen on mobile | todo | |
-| P4-FE-016 | Kanban board: horizontal scroll on mobile | todo | |
-| P4-FE-017 | Campaign wizard: vertical stepper on mobile | todo | |
+| P4-FE-010 | Audit all pages at all breakpoints (375px-2560px) | wip | codex |
+| P4-FE-011 | Sidebar: collapsible on tablet, hamburger on mobile | wip | codex |
+| P4-FE-012 | Data tables: horizontal scroll on mobile, hide secondary cols | wip | codex |
+| P4-FE-013 | Dashboard: 1/2/3 column responsive grid | wip | codex |
+| P4-FE-014 | Forms: full-width mobile, 2-column desktop | wip | codex |
+| P4-FE-015 | Modals/drawers: full-screen on mobile | wip | codex |
+| P4-FE-016 | Kanban board: horizontal scroll on mobile | wip | codex |
+| P4-FE-017 | Campaign wizard: vertical stepper on mobile | wip | codex |
 
 ### Accessibility
 
 | ID | Task | Status | Owner |
 |----|------|--------|-------|
-| P4-FE-020 | Run axe-core automated audit on all pages | todo | |
-| P4-FE-021 | Ensure all elements keyboard-accessible | todo | |
-| P4-FE-022 | Add aria-label/alt text to all icons and images | todo | |
-| P4-FE-023 | Verify color contrast ratios (AA minimums) | todo | |
-| P4-FE-024 | Associate all form labels/errors (for/id, aria-describedby) | todo | |
-| P4-FE-025 | Implement aria-live regions (toasts, search, validation, progress) | todo | |
-| P4-FE-026 | Implement focus management (trap in modals, return on close, skip-to-content) | todo | |
-| P4-FE-027 | Screen reader testing on key flows | todo | |
+| P4-FE-020 | Run axe-core automated audit on all pages | wip | codex |
+| P4-FE-021 | Ensure all elements keyboard-accessible | wip | codex |
+| P4-FE-022 | Add aria-label/alt text to all icons and images | wip | codex |
+| P4-FE-023 | Verify color contrast ratios (AA minimums) | wip | codex |
+| P4-FE-024 | Associate all form labels/errors (for/id, aria-describedby) | wip | codex |
+| P4-FE-025 | Implement aria-live regions (toasts, search, validation, progress) | wip | codex |
+| P4-FE-026 | Implement focus management (trap in modals, return on close, skip-to-content) | wip | codex |
+| P4-FE-027 | Screen reader testing on key flows | wip | codex |
 
 ### UI Polish
 
 | ID | Task | Status | Owner |
 |----|------|--------|-------|
-| P4-FE-030 | Add skeleton loaders for all data-fetching states | todo | |
-| P4-FE-031 | Add CSS transitions (hover, expand, open/close, slide, appear) | todo | |
-| P4-FE-032 | Design and implement empty states for all list pages | todo | |
-| P4-FE-033 | Add breadcrumbs to all detail/edit pages | todo | |
-| P4-FE-034 | Add keyboard shortcuts documentation (? key) | todo | |
-| P4-FE-035 | Add confirmation dialog for all destructive actions | todo | |
+| P4-FE-030 | Add skeleton loaders for all data-fetching states | wip | codex |
+| P4-FE-031 | Add CSS transitions (hover, expand, open/close, slide, appear) | wip | codex |
+| P4-FE-032 | Design and implement empty states for all list pages | wip | codex |
+| P4-FE-033 | Add breadcrumbs to all detail/edit pages | wip | codex |
+| P4-FE-034 | Add keyboard shortcuts documentation (? key) | wip | codex |
+| P4-FE-035 | Add confirmation dialog for all destructive actions | wip | codex |
 
 ---
 
