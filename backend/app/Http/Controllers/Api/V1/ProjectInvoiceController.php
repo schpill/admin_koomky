@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\V1\Invoices\InvoiceResource;
+use App\Models\Expense;
 use App\Models\Invoice;
 use App\Models\Project;
 use App\Models\TimeEntry;
@@ -26,6 +27,7 @@ class ProjectInvoiceController extends Controller
 
         /** @var User $user */
         $user = $request->user();
+        $includeBillableExpenses = $request->boolean('include_billable_expenses');
 
         $unbilledEntries = TimeEntry::query()
             ->whereHas('task', function ($query) use ($project): void {
@@ -35,13 +37,24 @@ class ProjectInvoiceController extends Controller
             ->with('task')
             ->get();
 
-        if ($unbilledEntries->isEmpty()) {
-            return $this->error('No unbilled time entries found', 422);
+        $billableExpenses = collect();
+        if ($includeBillableExpenses) {
+            $billableExpenses = Expense::query()
+                ->where('user_id', $user->id)
+                ->where('project_id', $project->id)
+                ->where('is_billable', true)
+                ->where('status', 'approved')
+                ->orderBy('date')
+                ->get();
+        }
+
+        if ($unbilledEntries->isEmpty() && $billableExpenses->isEmpty()) {
+            return $this->error('No unbilled time entries or billable expenses found', 422);
         }
 
         $hourlyRate = (float) ($project->hourly_rate ?? 0);
 
-        $lineItems = $unbilledEntries
+        $timeLineItems = $unbilledEntries
             ->groupBy('task_id')
             ->map(function ($entries) use ($hourlyRate): array {
                 $first = $entries->first();
@@ -58,6 +71,21 @@ class ProjectInvoiceController extends Controller
             })
             ->values()
             ->all();
+
+        $expenseLineItems = $billableExpenses
+            ->values()
+            ->map(function (Expense $expense): array {
+                return [
+                    'description' => 'Billable expense - '.$expense->description,
+                    'quantity' => 1,
+                    'unit_price' => (float) $expense->amount,
+                    'vat_rate' => (float) ($expense->tax_rate ?? 0),
+                ];
+            })
+            ->all();
+
+        /** @var array<int, array<string, mixed>> $lineItems */
+        $lineItems = [...$timeLineItems, ...$expenseLineItems];
 
         /** @var Invoice $invoice */
         $invoice = DB::transaction(function () use ($project, $user, $lineItems, $unbilledEntries, $calculationService): Invoice {
@@ -92,12 +120,14 @@ class ProjectInvoiceController extends Controller
                 ]);
             }
 
-            TimeEntry::query()
-                ->whereIn('id', $unbilledEntries->pluck('id'))
-                ->update([
-                    'is_billed' => true,
-                    'billed_at' => now(),
-                ]);
+            if ($unbilledEntries->isNotEmpty()) {
+                TimeEntry::query()
+                    ->whereIn('id', $unbilledEntries->pluck('id'))
+                    ->update([
+                        'is_billed' => true,
+                        'billed_at' => now(),
+                    ]);
+            }
 
             return $invoice;
         });

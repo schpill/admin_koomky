@@ -18,6 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'two-factor' => \App\Http\Middleware\RequireTwoFactorAuthentication::class,
+            'portal-auth' => \App\Http\Middleware\PortalAuthMiddleware::class,
         ]);
 
         $middleware->api(append: [

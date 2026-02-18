@@ -20,6 +20,8 @@ class DashboardService
         protected FinancialSummaryService $financialSummaryService,
         protected CampaignAnalyticsService $campaignAnalyticsService,
         protected CurrencyConversionService $currencyConversionService,
+        protected ProfitLossReportService $profitLossReportService,
+        protected ExpenseReportService $expenseReportService,
     ) {}
 
     /**
@@ -143,6 +145,30 @@ class DashboardService
                 ? round($campaignRates->avg('click_rate') ?? 0, 2)
                 : 0.0;
 
+            $monthDateFrom = now()->startOfMonth()->toDateString();
+            $monthDateTo = now()->endOfMonth()->toDateString();
+
+            $profitLossSummary = $this->profitLossReportService->build($user, [
+                'date_from' => $monthDateFrom,
+                'date_to' => $monthDateTo,
+            ]);
+
+            $expenseSummary = $this->expenseReportService->build($user, [
+                'date_from' => $monthDateFrom,
+                'date_to' => $monthDateTo,
+            ]);
+
+            $rawExpenseCategories = $expenseSummary['by_category'] ?? [];
+            if (! is_array($rawExpenseCategories)) {
+                $rawExpenseCategories = [];
+            }
+
+            $topExpenseCategories = collect($rawExpenseCategories)
+                ->sortByDesc('total')
+                ->take(3)
+                ->values()
+                ->all();
+
             return [
                 'total_clients' => Client::where('user_id', $userId)->count(),
                 'active_projects' => Project::query()
@@ -169,6 +195,20 @@ class DashboardService
                 'active_campaigns_count' => $activeCampaignsCount,
                 'average_campaign_open_rate' => $averageOpenRate,
                 'average_campaign_click_rate' => $averageClickRate,
+                'profit_loss_summary' => [
+                    'revenue' => (float) ($profitLossSummary['revenue'] ?? 0),
+                    'expenses' => (float) ($profitLossSummary['expenses'] ?? 0),
+                    'profit' => (float) ($profitLossSummary['profit'] ?? 0),
+                    'margin' => (float) ($profitLossSummary['margin'] ?? 0),
+                    'base_currency' => $baseCurrency,
+                ],
+                'expense_overview' => [
+                    'month_total' => (float) ($expenseSummary['total_expenses'] ?? 0),
+                    'billable_total' => (float) ($expenseSummary['billable_split']['billable'] ?? 0),
+                    'non_billable_total' => (float) ($expenseSummary['billable_split']['non_billable'] ?? 0),
+                    'top_categories' => $topExpenseCategories,
+                    'base_currency' => $baseCurrency,
+                ],
             ];
         });
     }

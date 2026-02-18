@@ -15,17 +15,31 @@ use App\Http\Controllers\Api\V1\CurrencyController;
 use App\Http\Controllers\Api\V1\DashboardController;
 use App\Http\Controllers\Api\V1\DataExportController;
 use App\Http\Controllers\Api\V1\DataImportController;
+use App\Http\Controllers\Api\V1\ExpenseCategoryController;
+use App\Http\Controllers\Api\V1\ExpenseController;
+use App\Http\Controllers\Api\V1\ExpenseReportController;
 use App\Http\Controllers\Api\V1\HealthController;
 use App\Http\Controllers\Api\V1\InvoiceController;
 use App\Http\Controllers\Api\V1\InvoicingSettingsController;
 use App\Http\Controllers\Api\V1\PaymentController;
+use App\Http\Controllers\Api\V1\PortalAccessTokenController;
+use App\Http\Controllers\Api\V1\PortalAuthController;
+use App\Http\Controllers\Api\V1\PortalDashboardController;
+use App\Http\Controllers\Api\V1\PortalInvoiceController;
+use App\Http\Controllers\Api\V1\PortalPaymentController;
+use App\Http\Controllers\Api\V1\PortalQuoteController;
+use App\Http\Controllers\Api\V1\PortalSettingsController;
+use App\Http\Controllers\Api\V1\ProfitLossController;
 use App\Http\Controllers\Api\V1\ProjectController;
+use App\Http\Controllers\Api\V1\ProjectExpenseController;
 use App\Http\Controllers\Api\V1\ProjectInvoiceController;
+use App\Http\Controllers\Api\V1\ProjectProfitabilityController;
 use App\Http\Controllers\Api\V1\QuoteController;
 use App\Http\Controllers\Api\V1\RecurringInvoiceProfileController;
 use App\Http\Controllers\Api\V1\ReportController;
 use App\Http\Controllers\Api\V1\SearchController;
 use App\Http\Controllers\Api\V1\SegmentController;
+use App\Http\Controllers\Api\V1\StripeWebhookController;
 use App\Http\Controllers\Api\V1\TagController;
 use App\Http\Controllers\Api\V1\TaskController;
 use App\Http\Controllers\Api\V1\TimeEntryController;
@@ -45,6 +59,31 @@ RateLimiter::for('webhooks', function (Request $request) {
 
 Route::prefix('v1')->group(function () {
     Route::get('/health', HealthController::class);
+
+    // Portal Routes
+    Route::prefix('portal')->group(function () {
+        Route::post('/auth/request', [PortalAuthController::class, 'requestMagicLink']);
+        Route::get('/auth/verify/{token}', [PortalAuthController::class, 'verify']);
+
+        Route::middleware('portal-auth')->group(function () {
+            Route::post('/auth/logout', [PortalAuthController::class, 'logout']);
+            Route::get('/dashboard', PortalDashboardController::class);
+
+            Route::get('/invoices', [PortalInvoiceController::class, 'index']);
+            Route::get('/invoices/{invoice}', [PortalInvoiceController::class, 'show']);
+            Route::get('/invoices/{invoice}/pdf', [PortalInvoiceController::class, 'pdf']);
+            Route::post('/invoices/{invoice}/pay', [PortalPaymentController::class, 'pay']);
+            Route::get('/invoices/{invoice}/payment-status', [PortalPaymentController::class, 'paymentStatus']);
+
+            Route::get('/quotes', [PortalQuoteController::class, 'index']);
+            Route::get('/quotes/{quote}', [PortalQuoteController::class, 'show']);
+            Route::get('/quotes/{quote}/pdf', [PortalQuoteController::class, 'pdf']);
+            Route::post('/quotes/{quote}/accept', [PortalQuoteController::class, 'accept']);
+            Route::post('/quotes/{quote}/reject', [PortalQuoteController::class, 'reject']);
+        });
+    });
+
+    Route::post('/webhooks/stripe', StripeWebhookController::class)->middleware('throttle:webhooks');
 
     // Auth Routes
     Route::prefix('auth')->middleware('throttle:api_auth')->group(function () {
@@ -71,6 +110,8 @@ Route::prefix('v1')->group(function () {
             Route::put('/business', [UserSettingsController::class, 'updateBusiness']);
             Route::get('/invoicing', [InvoicingSettingsController::class, 'show']);
             Route::put('/invoicing', [InvoicingSettingsController::class, 'update']);
+            Route::get('/portal', [PortalSettingsController::class, 'show']);
+            Route::put('/portal', [PortalSettingsController::class, 'update']);
             Route::put('/currency', [UserSettingsController::class, 'updateCurrencySettings']);
             Route::put('/email', [UserSettingsController::class, 'updateEmailSettings']);
             Route::put('/sms', [UserSettingsController::class, 'updateSmsSettings']);
@@ -89,6 +130,10 @@ Route::prefix('v1')->group(function () {
         Route::delete('account', AccountDeletionController::class);
 
         // Clients
+        Route::get('clients/{client}/portal-access', [PortalAccessTokenController::class, 'index']);
+        Route::post('clients/{client}/portal-access', [PortalAccessTokenController::class, 'store']);
+        Route::delete('clients/{client}/portal-access/{portalAccessToken}', [PortalAccessTokenController::class, 'destroy']);
+        Route::get('clients/{client}/portal-activity', [PortalAccessTokenController::class, 'logs']);
         Route::get('clients/export/csv', [ClientController::class, 'exportCsv']);
         Route::post('clients/import/csv', [ClientController::class, 'importCsv']);
         Route::post('clients/{client}/restore', [ClientController::class, 'restore']);
@@ -98,6 +143,7 @@ Route::prefix('v1')->group(function () {
         Route::apiResource('projects', ProjectController::class);
         Route::prefix('projects/{project}')->group(function () {
             Route::post('generate-invoice', [ProjectInvoiceController::class, 'generate']);
+            Route::get('expenses', [ProjectExpenseController::class, 'index']);
 
             // Tasks
             Route::get('tasks', [TaskController::class, 'index']);
@@ -118,6 +164,14 @@ Route::prefix('v1')->group(function () {
             Route::put('tasks/{task}/time-entries/{timeEntry}', [TimeEntryController::class, 'update']);
             Route::delete('tasks/{task}/time-entries/{timeEntry}', [TimeEntryController::class, 'destroy']);
         });
+
+        // Expenses
+        Route::apiResource('expense-categories', ExpenseCategoryController::class)->except(['show']);
+        Route::get('expenses/report', [ExpenseReportController::class, 'report']);
+        Route::get('expenses/report/export', [ExpenseReportController::class, 'export']);
+        Route::post('expenses/{expense}/receipt', [ExpenseController::class, 'uploadReceipt']);
+        Route::get('expenses/{expense}/receipt', [ExpenseController::class, 'downloadReceipt']);
+        Route::apiResource('expenses', ExpenseController::class);
 
         // Client Contacts
         Route::apiResource('clients.contacts', ContactController::class)
@@ -179,6 +233,8 @@ Route::prefix('v1')->group(function () {
             Route::get('revenue', [ReportController::class, 'revenue']);
             Route::get('outstanding', [ReportController::class, 'outstanding']);
             Route::get('vat-summary', [ReportController::class, 'vatSummary']);
+            Route::get('profit-loss', ProfitLossController::class);
+            Route::get('project-profitability', ProjectProfitabilityController::class);
             Route::get('export', [ReportController::class, 'export']);
         });
 

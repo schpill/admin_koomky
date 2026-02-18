@@ -17,6 +17,7 @@ interface ProjectInvoicesProps {
 export function ProjectInvoices({ projectId }: ProjectInvoicesProps) {
   const { invoices, isLoading, fetchInvoices } = useInvoiceStore();
   const [isGenerating, setGenerating] = useState(false);
+  const [isGeneratingBillable, setGeneratingBillable] = useState(false);
 
   useEffect(() => {
     fetchInvoices({ project_id: projectId, per_page: 50 });
@@ -35,9 +36,24 @@ export function ProjectInvoices({ projectId }: ProjectInvoicesProps) {
     }
   };
 
+  const generateInvoiceWithBillableExpenses = async () => {
+    setGeneratingBillable(true);
+    try {
+      await apiClient.post(`/projects/${projectId}/generate-invoice`, {
+        include_billable_expenses: true,
+      });
+      await fetchInvoices({ project_id: projectId, per_page: 50 });
+      toast.success("Invoice generated with billable expenses");
+    } catch (error) {
+      toast.error((error as Error).message || "Unable to generate invoice");
+    } finally {
+      setGeneratingBillable(false);
+    }
+  };
+
   return (
     <div className="space-y-3">
-      <div className="flex justify-end">
+      <div className="flex flex-wrap justify-end gap-2">
         <Button
           type="button"
           variant="outline"
@@ -48,6 +64,15 @@ export function ProjectInvoices({ projectId }: ProjectInvoicesProps) {
           {isGenerating
             ? "Generating..."
             : "Generate invoice from unbilled time"}
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={generateInvoiceWithBillableExpenses}
+          disabled={isGeneratingBillable}
+        >
+          <FilePlus2 className="mr-2 h-4 w-4" />
+          {isGeneratingBillable ? "Generating..." : "Invoice billable expenses"}
         </Button>
       </div>
 

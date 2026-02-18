@@ -103,11 +103,43 @@ class Client extends Model
     }
 
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\PaymentIntent, \App\Models\Client>
+     */
+    public function paymentIntents(): HasMany
+    {
+        return $this->hasMany(PaymentIntent::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\Expense, \App\Models\Client>
+     */
+    public function expenses(): HasMany
+    {
+        return $this->hasMany(Expense::class);
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\RecurringInvoiceProfile, \App\Models\Client>
      */
     public function recurringInvoiceProfiles(): HasMany
     {
         return $this->hasMany(RecurringInvoiceProfile::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\PortalAccessToken, \App\Models\Client>
+     */
+    public function portalAccessTokens(): HasMany
+    {
+        return $this->hasMany(PortalAccessToken::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\PortalActivityLog, \App\Models\Client>
+     */
+    public function portalActivityLogs(): HasMany
+    {
+        return $this->hasMany(PortalActivityLog::class);
     }
 
     /**

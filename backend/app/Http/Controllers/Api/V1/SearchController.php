@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\V1\Clients\ClientResource;
 use App\Models\Client;
+use App\Models\Expense;
 use App\Models\Invoice;
 use App\Models\Project;
 use App\Models\Quote;
@@ -89,12 +90,26 @@ class SearchController extends Controller
             ->take(5)
             ->get();
 
+        $expenses = Expense::query()
+            ->where('user_id', $user->id)
+            ->where(function ($builder) use ($searchTerm): void {
+                $builder
+                    ->where('description', 'like', '%'.$searchTerm.'%')
+                    ->orWhere('vendor', 'like', '%'.$searchTerm.'%')
+                    ->orWhere('reference', 'like', '%'.$searchTerm.'%')
+                    ->orWhere('notes', 'like', '%'.$searchTerm.'%');
+            })
+            ->with('category')
+            ->take(5)
+            ->get();
+
         return $this->success([
             'clients' => ClientResource::collection($clients),
             'projects' => $projects,
             'tasks' => $tasks,
             'invoices' => $invoices,
             'quotes' => $quotes,
+            'expenses' => $expenses,
         ], 'Search results');
     }
 

@@ -34,6 +34,8 @@ export default defineConfig({
         "app/(dashboard)/settings/currency/page.tsx",
         "app/(dashboard)/settings/calendar/page.tsx",
         "app/(dashboard)/calendar/page.tsx",
+        "components/expenses/receipt-upload.tsx",
+        "components/portal/payment-form.tsx",
       ],
       thresholds: {
         lines: 80,

@@ -222,6 +222,27 @@ return [
                     'created_at',
                 ],
             ],
+            'expenses' => [
+                'searchableAttributes' => [
+                    'description',
+                    'vendor',
+                    'reference',
+                    'notes',
+                ],
+                'filterableAttributes' => [
+                    'user_id',
+                    'expense_category_id',
+                    'project_id',
+                    'client_id',
+                    'status',
+                    'is_billable',
+                ],
+                'sortableAttributes' => [
+                    'date',
+                    'amount',
+                    'created_at',
+                ],
+            ],
         ],
     ],
 

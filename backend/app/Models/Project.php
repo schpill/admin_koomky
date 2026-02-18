@@ -119,6 +119,14 @@ class Project extends Model
     }
 
     /**
+     * @return HasMany<Expense, Project>
+     */
+    public function expenses(): HasMany
+    {
+        return $this->hasMany(Expense::class);
+    }
+
+    /**
      * @return HasManyThrough<TimeEntry, Task, Project>
      */
     public function timeEntries(): HasManyThrough
