@@ -31,8 +31,9 @@ export default function PortalLayout({
   const isAuthRoute = pathname.startsWith("/portal/auth");
 
   const [session, setSession] = useState<PortalSession | null>(null);
-  const [branding, setBranding] =
-    useState<PortalDashboardBrandingPayload["branding"] | null>(null);
+  const [branding, setBranding] = useState<
+    PortalDashboardBrandingPayload["branding"] | null
+  >(null);
 
   useEffect(() => {
     const currentSession = getPortalSession();
