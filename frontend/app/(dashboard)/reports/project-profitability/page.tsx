@@ -128,24 +128,40 @@ export default function ProjectProfitabilityReportPage() {
                       </td>
                       <td className="py-2">{row.client_name || "-"}</td>
                       <td className="py-2">
-                        <CurrencyAmount amount={row.revenue} currency={currency} />
+                        <CurrencyAmount
+                          amount={row.revenue}
+                          currency={currency}
+                        />
                       </td>
                       <td className="py-2">
-                        <CurrencyAmount amount={row.time_cost} currency={currency} />
+                        <CurrencyAmount
+                          amount={row.time_cost}
+                          currency={currency}
+                        />
                       </td>
                       <td className="py-2">
-                        <CurrencyAmount amount={row.expenses} currency={currency} />
+                        <CurrencyAmount
+                          amount={row.expenses}
+                          currency={currency}
+                        />
                       </td>
                       <td
                         className={`py-2 font-medium ${
-                          row.profit >= 0 ? "text-emerald-600" : "text-destructive"
+                          row.profit >= 0
+                            ? "text-emerald-600"
+                            : "text-destructive"
                         }`}
                       >
-                        <CurrencyAmount amount={row.profit} currency={currency} />
+                        <CurrencyAmount
+                          amount={row.profit}
+                          currency={currency}
+                        />
                       </td>
                       <td
                         className={`py-2 font-medium ${
-                          row.margin >= 0 ? "text-emerald-600" : "text-destructive"
+                          row.margin >= 0
+                            ? "text-emerald-600"
+                            : "text-destructive"
                         }`}
                       >
                         {Number(row.margin || 0).toFixed(2)}%

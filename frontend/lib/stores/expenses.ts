@@ -131,7 +131,9 @@ export const useExpenseStore = create<ExpenseState>((set, get) => ({
       const expense = response.data;
       set({
         currentExpense: expense,
-        expenses: get().expenses.map((item) => (item.id === id ? expense : item)),
+        expenses: get().expenses.map((item) =>
+          item.id === id ? expense : item
+        ),
         isLoading: false,
       });
       return expense;
@@ -160,8 +162,11 @@ export const useExpenseStore = create<ExpenseState>((set, get) => ({
       const response = await apiClient.put<Expense>(`/expenses/${id}`, payload);
       const updated = response.data;
       set({
-        expenses: get().expenses.map((item) => (item.id === id ? updated : item)),
-        currentExpense: get().currentExpense?.id === id ? updated : get().currentExpense,
+        expenses: get().expenses.map((item) =>
+          item.id === id ? updated : item
+        ),
+        currentExpense:
+          get().currentExpense?.id === id ? updated : get().currentExpense,
         isLoading: false,
       });
       return updated;
@@ -177,7 +182,8 @@ export const useExpenseStore = create<ExpenseState>((set, get) => ({
       await apiClient.delete(`/expenses/${id}`);
       set({
         expenses: get().expenses.filter((item) => item.id !== id),
-        currentExpense: get().currentExpense?.id === id ? null : get().currentExpense,
+        currentExpense:
+          get().currentExpense?.id === id ? null : get().currentExpense,
         isLoading: false,
       });
     } catch (error) {
@@ -220,8 +226,11 @@ export const useExpenseStore = create<ExpenseState>((set, get) => ({
 
       const expense = payload.data;
       set({
-        expenses: get().expenses.map((item) => (item.id === id ? expense : item)),
-        currentExpense: get().currentExpense?.id === id ? expense : get().currentExpense,
+        expenses: get().expenses.map((item) =>
+          item.id === id ? expense : item
+        ),
+        currentExpense:
+          get().currentExpense?.id === id ? expense : get().currentExpense,
         isLoading: false,
       });
 
@@ -248,7 +257,9 @@ export const useExpenseStore = create<ExpenseState>((set, get) => ({
   exportReport: async (params = {}) => {
     const query = new URLSearchParams(
       Object.entries(params)
-        .filter(([, value]) => value !== undefined && value !== null && value !== "")
+        .filter(
+          ([, value]) => value !== undefined && value !== null && value !== ""
+        )
         .map(([key, value]) => [key, String(value)])
     );
 

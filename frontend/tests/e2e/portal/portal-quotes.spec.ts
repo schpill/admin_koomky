@@ -71,7 +71,13 @@ test.describe("Portal quotes", () => {
             total: 300,
             currency: "EUR",
             line_items: [
-              { description: "Discovery", quantity: 1, unit_price: 250, vat_rate: 20, total: 300 },
+              {
+                description: "Discovery",
+                quantity: 1,
+                unit_price: 250,
+                vat_rate: 20,
+                total: 300,
+              },
             ],
           }),
         });
@@ -111,6 +117,8 @@ test.describe("Portal quotes", () => {
     await expect(
       page.locator("main").getByText("QUO-001", { exact: true })
     ).toBeVisible();
-    await expect(page.getByRole("button", { name: "Accept quote" })).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Accept quote" })
+    ).toBeVisible();
   });
 });

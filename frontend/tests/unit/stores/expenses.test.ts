@@ -136,7 +136,9 @@ describe("useExpenseStore", () => {
 
     const file = new File(["abc"], "receipt.jpg", { type: "image/jpeg" });
 
-    const expense = await useExpenseStore.getState().uploadReceipt("exp_1", file);
+    const expense = await useExpenseStore
+      .getState()
+      .uploadReceipt("exp_1", file);
 
     expect(fetchMock).toHaveBeenCalledTimes(1);
     expect(expense?.receipt_path).toBe("receipts/file.jpg");

@@ -68,7 +68,9 @@ export default function ExpensesPage() {
       setSelectedIds([]);
       toast.success("Selected expenses deleted");
     } catch (error) {
-      toast.error((error as Error).message || "Unable to delete selected expenses");
+      toast.error(
+        (error as Error).message || "Unable to delete selected expenses"
+      );
     }
   };
 
@@ -97,7 +99,9 @@ export default function ExpensesPage() {
       setBulkCategoryId("");
       await fetchExpenses({ ...filters, per_page: 50 });
     } catch (error) {
-      toast.error((error as Error).message || "Unable to recategorize expenses");
+      toast.error(
+        (error as Error).message || "Unable to recategorize expenses"
+      );
     }
   };
 
@@ -107,7 +111,9 @@ export default function ExpensesPage() {
         <div>
           <h1 className="text-3xl font-bold">Expenses</h1>
           <p className="text-sm text-muted-foreground">
-            {pagination ? `${pagination.total} expense records` : "Expense tracking"}
+            {pagination
+              ? `${pagination.total} expense records`
+              : "Expense tracking"}
           </p>
         </div>
         <Button asChild>
@@ -311,7 +317,9 @@ export default function ExpensesPage() {
                           aria-label={`Select expense ${expense.description}`}
                         />
                       </td>
-                      <td className="py-3 text-muted-foreground">{expense.date}</td>
+                      <td className="py-3 text-muted-foreground">
+                        {expense.date}
+                      </td>
                       <td className="py-3">
                         <Link
                           href={`/expenses/${expense.id}`}
@@ -341,7 +349,9 @@ export default function ExpensesPage() {
                         {expense.receipt_path ? (
                           <ReceiptText className="h-4 w-4 text-primary" />
                         ) : (
-                          <span className="text-xs text-muted-foreground">-</span>
+                          <span className="text-xs text-muted-foreground">
+                            -
+                          </span>
                         )}
                       </td>
                       <td className="py-3">

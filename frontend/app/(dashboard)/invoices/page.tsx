@@ -72,7 +72,9 @@ export default function InvoicesPage() {
   useEffect(() => {
     apiClient
       .get<any>("/settings/portal")
-      .then((response) => setPortalPaymentEnabled(Boolean(response.data?.payment_enabled)))
+      .then((response) =>
+        setPortalPaymentEnabled(Boolean(response.data?.payment_enabled))
+      )
       .catch(() => setPortalPaymentEnabled(false));
   }, []);
 
@@ -177,7 +179,12 @@ export default function InvoicesPage() {
                             </Badge>
                           )}
                           {portalPaymentEnabled &&
-                          ["sent", "viewed", "partially_paid", "overdue"].includes(invoice.status) ? (
+                          [
+                            "sent",
+                            "viewed",
+                            "partially_paid",
+                            "overdue",
+                          ].includes(invoice.status) ? (
                             <Badge
                               variant="outline"
                               className="ml-2 align-middle text-[10px] uppercase"

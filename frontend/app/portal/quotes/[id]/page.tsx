@@ -124,7 +124,9 @@ export default function PortalQuoteDetailPage() {
   }
 
   if (!quote || error) {
-    return <p className="text-sm text-destructive">{error || "Quote not found."}</p>;
+    return (
+      <p className="text-sm text-destructive">{error || "Quote not found."}</p>
+    );
   }
 
   const actionable = ["sent"].includes(quote.status);
@@ -196,15 +198,22 @@ export default function PortalQuoteDetailPage() {
                 </thead>
                 <tbody>
                   {quote.line_items?.map((line, index) => (
-                    <tr key={`${line.description}-${index}`} className="border-b">
+                    <tr
+                      key={`${line.description}-${index}`}
+                      className="border-b"
+                    >
                       <td className="py-2">{line.description}</td>
-                      <td className="py-2">{Number(line.quantity).toFixed(2)}</td>
-                      <td className="py-2">{Number(line.unit_price).toFixed(2)}</td>
+                      <td className="py-2">
+                        {Number(line.quantity).toFixed(2)}
+                      </td>
+                      <td className="py-2">
+                        {Number(line.unit_price).toFixed(2)}
+                      </td>
                       <td className="py-2">
                         <CurrencyAmount
-                          amount={
-                            Number(line.total ?? line.quantity * line.unit_price)
-                          }
+                          amount={Number(
+                            line.total ?? line.quantity * line.unit_price
+                          )}
                           currency={quote.currency || "EUR"}
                         />
                       </td>

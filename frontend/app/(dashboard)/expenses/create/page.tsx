@@ -155,7 +155,10 @@ export default function CreateExpensePage() {
               min="0"
               value={form.amount}
               onChange={(event) =>
-                setForm((current) => ({ ...current, amount: event.target.value }))
+                setForm((current) => ({
+                  ...current,
+                  amount: event.target.value,
+                }))
               }
               required
             />
@@ -284,7 +287,10 @@ export default function CreateExpensePage() {
               className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
               value={form.status}
               onChange={(event) =>
-                setForm((current) => ({ ...current, status: event.target.value }))
+                setForm((current) => ({
+                  ...current,
+                  status: event.target.value,
+                }))
               }
             >
               <option value="pending">Pending</option>
@@ -319,7 +325,10 @@ export default function CreateExpensePage() {
               min="0"
               value={form.tax_rate}
               onChange={(event) =>
-                setForm((current) => ({ ...current, tax_rate: event.target.value }))
+                setForm((current) => ({
+                  ...current,
+                  tax_rate: event.target.value,
+                }))
               }
             />
           </div>
@@ -330,7 +339,10 @@ export default function CreateExpensePage() {
               id="expense-vendor"
               value={form.vendor}
               onChange={(event) =>
-                setForm((current) => ({ ...current, vendor: event.target.value }))
+                setForm((current) => ({
+                  ...current,
+                  vendor: event.target.value,
+                }))
               }
             />
           </div>
@@ -341,7 +353,10 @@ export default function CreateExpensePage() {
               id="expense-reference"
               value={form.reference}
               onChange={(event) =>
-                setForm((current) => ({ ...current, reference: event.target.value }))
+                setForm((current) => ({
+                  ...current,
+                  reference: event.target.value,
+                }))
               }
             />
           </div>
@@ -353,7 +368,10 @@ export default function CreateExpensePage() {
               rows={3}
               value={form.notes}
               onChange={(event) =>
-                setForm((current) => ({ ...current, notes: event.target.value }))
+                setForm((current) => ({
+                  ...current,
+                  notes: event.target.value,
+                }))
               }
             />
           </div>
@@ -399,7 +417,11 @@ export default function CreateExpensePage() {
       </Card>
 
       <div className="flex justify-end gap-2">
-        <Button type="button" variant="outline" onClick={() => router.push("/expenses")}>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => router.push("/expenses")}
+        >
           Cancel
         </Button>
         <Button type="submit" disabled={isLoading}>

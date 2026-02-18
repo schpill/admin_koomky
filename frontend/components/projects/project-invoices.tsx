@@ -72,9 +72,7 @@ export function ProjectInvoices({ projectId }: ProjectInvoicesProps) {
           disabled={isGeneratingBillable}
         >
           <FilePlus2 className="mr-2 h-4 w-4" />
-          {isGeneratingBillable
-            ? "Generating..."
-            : "Invoice billable expenses"}
+          {isGeneratingBillable ? "Generating..." : "Invoice billable expenses"}
         </Button>
       </div>
 

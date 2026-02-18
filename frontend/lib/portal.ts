@@ -111,7 +111,9 @@ export async function portalApi<T>(
     headers,
   });
 
-  const data = (await response.json().catch(() => ({}))) as PortalApiResponse<T>;
+  const data = (await response
+    .json()
+    .catch(() => ({}))) as PortalApiResponse<T>;
 
   if (!response.ok) {
     throw new Error(data?.message || `Portal API error (${response.status})`);

@@ -210,13 +210,19 @@ function CategoryRow({
 
       {editing ? (
         <div className="mt-3 grid gap-3 md:grid-cols-3">
-          <Input value={name} onChange={(event) => setName(event.target.value)} />
+          <Input
+            value={name}
+            onChange={(event) => setName(event.target.value)}
+          />
           <Input
             type="color"
             value={color}
             onChange={(event) => setColor(event.target.value)}
           />
-          <Input value={icon} onChange={(event) => setIcon(event.target.value)} />
+          <Input
+            value={icon}
+            onChange={(event) => setIcon(event.target.value)}
+          />
           <div className="md:col-span-3 flex gap-2">
             <Button
               size="sm"

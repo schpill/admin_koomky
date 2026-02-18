@@ -14,7 +14,12 @@ interface ProfitLossReport {
   profit: number;
   margin: number;
   base_currency: string;
-  by_month: Array<{ month: string; revenue: number; expenses: number; profit: number }>;
+  by_month: Array<{
+    month: string;
+    revenue: number;
+    expenses: number;
+    profit: number;
+  }>;
   by_project: Array<{
     project_id: string;
     project_name?: string | null;
@@ -59,7 +64,10 @@ export default function ProfitLossReportPage() {
       .finally(() => setLoading(false));
   }, [dateFrom, dateTo]);
 
-  const currency = useMemo(() => report?.base_currency || "EUR", [report?.base_currency]);
+  const currency = useMemo(
+    () => report?.base_currency || "EUR",
+    [report?.base_currency]
+  );
 
   return (
     <div className="space-y-6">
@@ -103,7 +111,10 @@ export default function ProfitLossReportPage() {
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-semibold">
-              <CurrencyAmount amount={Number(report?.revenue || 0)} currency={currency} />
+              <CurrencyAmount
+                amount={Number(report?.revenue || 0)}
+                currency={currency}
+              />
             </p>
           </CardContent>
         </Card>
@@ -113,7 +124,10 @@ export default function ProfitLossReportPage() {
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-semibold">
-              <CurrencyAmount amount={Number(report?.expenses || 0)} currency={currency} />
+              <CurrencyAmount
+                amount={Number(report?.expenses || 0)}
+                currency={currency}
+              />
             </p>
           </CardContent>
         </Card>
@@ -123,7 +137,10 @@ export default function ProfitLossReportPage() {
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-semibold">
-              <CurrencyAmount amount={Number(report?.profit || 0)} currency={currency} />
+              <CurrencyAmount
+                amount={Number(report?.profit || 0)}
+                currency={currency}
+              />
             </p>
           </CardContent>
         </Card>
@@ -132,7 +149,9 @@ export default function ProfitLossReportPage() {
             <CardTitle className="text-sm">Margin</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-semibold">{Number(report?.margin || 0).toFixed(2)}%</p>
+            <p className="text-2xl font-semibold">
+              {Number(report?.margin || 0).toFixed(2)}%
+            </p>
           </CardContent>
         </Card>
       </div>
@@ -143,7 +162,9 @@ export default function ProfitLossReportPage() {
         </CardHeader>
         <CardContent className="space-y-2">
           {(report?.by_month || []).length === 0 ? (
-            <p className="text-sm text-muted-foreground">No monthly trend data.</p>
+            <p className="text-sm text-muted-foreground">
+              No monthly trend data.
+            </p>
           ) : (
             report?.by_month?.map((item) => (
               <div
@@ -152,13 +173,16 @@ export default function ProfitLossReportPage() {
               >
                 <span className="font-medium">{item.month}</span>
                 <span>
-                  Revenue: <CurrencyAmount amount={item.revenue} currency={currency} />
+                  Revenue:{" "}
+                  <CurrencyAmount amount={item.revenue} currency={currency} />
                 </span>
                 <span>
-                  Expenses: <CurrencyAmount amount={item.expenses} currency={currency} />
+                  Expenses:{" "}
+                  <CurrencyAmount amount={item.expenses} currency={currency} />
                 </span>
                 <span>
-                  Profit: <CurrencyAmount amount={item.profit} currency={currency} />
+                  Profit:{" "}
+                  <CurrencyAmount amount={item.profit} currency={currency} />
                 </span>
               </div>
             ))
@@ -176,12 +200,21 @@ export default function ProfitLossReportPage() {
               <p className="text-sm text-muted-foreground">No project data.</p>
             ) : (
               report?.by_project?.map((project) => (
-                <div key={project.project_id} className="rounded border p-3 text-sm">
+                <div
+                  key={project.project_id}
+                  className="rounded border p-3 text-sm"
+                >
                   <p className="font-medium">
-                    {project.project_name || project.project_reference || "Project"}
+                    {project.project_name ||
+                      project.project_reference ||
+                      "Project"}
                   </p>
                   <p>
-                    Profit: <CurrencyAmount amount={project.profit} currency={currency} />
+                    Profit:{" "}
+                    <CurrencyAmount
+                      amount={project.profit}
+                      currency={currency}
+                    />
                   </p>
                 </div>
               ))
@@ -198,10 +231,19 @@ export default function ProfitLossReportPage() {
               <p className="text-sm text-muted-foreground">No client data.</p>
             ) : (
               report?.by_client?.map((client) => (
-                <div key={client.client_id} className="rounded border p-3 text-sm">
-                  <p className="font-medium">{client.client_name || "Client"}</p>
+                <div
+                  key={client.client_id}
+                  className="rounded border p-3 text-sm"
+                >
+                  <p className="font-medium">
+                    {client.client_name || "Client"}
+                  </p>
                   <p>
-                    Profit: <CurrencyAmount amount={client.profit} currency={currency} />
+                    Profit:{" "}
+                    <CurrencyAmount
+                      amount={client.profit}
+                      currency={currency}
+                    />
                   </p>
                 </div>
               ))
@@ -210,7 +252,9 @@ export default function ProfitLossReportPage() {
         </Card>
       </div>
 
-      {isLoading ? <p className="text-sm text-muted-foreground">Refreshing report...</p> : null}
+      {isLoading ? (
+        <p className="text-sm text-muted-foreground">Refreshing report...</p>
+      ) : null}
     </div>
   );
 }

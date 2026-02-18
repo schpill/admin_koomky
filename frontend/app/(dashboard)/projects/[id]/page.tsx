@@ -182,7 +182,9 @@ export default function ProjectDetailPage() {
       );
       setProjectExpenses(response.data || []);
     } catch (error) {
-      toast.error((error as Error).message || "Unable to load project expenses");
+      toast.error(
+        (error as Error).message || "Unable to load project expenses"
+      );
     } finally {
       setExpensesLoading(false);
     }

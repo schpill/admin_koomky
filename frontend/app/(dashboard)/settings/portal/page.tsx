@@ -53,12 +53,15 @@ export default function PortalSettingsPage() {
           stripe_publishable_key: response.data.stripe_publishable_key || "",
           stripe_secret_key: response.data.stripe_secret_key || "",
           stripe_webhook_secret: response.data.stripe_webhook_secret || "",
-          payment_methods_enabled:
-            response.data.payment_methods_enabled || ["card"],
+          payment_methods_enabled: response.data.payment_methods_enabled || [
+            "card",
+          ],
         });
       })
       .catch((error) => {
-        toast.error((error as Error).message || "Unable to load portal settings");
+        toast.error(
+          (error as Error).message || "Unable to load portal settings"
+        );
       })
       .finally(() => setLoading(false));
   }, []);
@@ -75,7 +78,9 @@ export default function PortalSettingsPage() {
       setSettings({ ...settings, ...response.data });
       toast.success("Portal settings updated");
     } catch (error) {
-      toast.error((error as Error).message || "Unable to update portal settings");
+      toast.error(
+        (error as Error).message || "Unable to update portal settings"
+      );
     } finally {
       setSaving(false);
     }

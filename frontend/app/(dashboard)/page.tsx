@@ -157,7 +157,9 @@ export default function DashboardPage() {
           value={
             <CurrencyAmount
               amount={Number(stats?.profit_loss_summary?.profit || 0)}
-              currency={stats?.profit_loss_summary?.base_currency || baseCurrency}
+              currency={
+                stats?.profit_loss_summary?.base_currency || baseCurrency
+              }
             />
           }
           isLoading={isLoading}
@@ -197,7 +199,9 @@ export default function DashboardPage() {
                   <p className="text-lg font-semibold">
                     <CurrencyAmount
                       amount={Number(item.total || 0)}
-                      currency={stats?.expense_overview?.base_currency || baseCurrency}
+                      currency={
+                        stats?.expense_overview?.base_currency || baseCurrency
+                      }
                     />
                   </p>
                 </div>

@@ -367,7 +367,10 @@ export async function mockProtectedApi(page: Page): Promise<void> {
       ]);
     }
 
-    if (/\/projects\/[^/]+\/generate-invoice$/.test(path) && method === "POST") {
+    if (
+      /\/projects\/[^/]+\/generate-invoice$/.test(path) &&
+      method === "POST"
+    ) {
       return fulfillJson(route, {
         id: "inv_2",
         number: "FAC-2026-0002",
@@ -507,7 +510,11 @@ export async function mockProtectedApi(page: Page): Promise<void> {
             is_reimbursable: false,
             status: "approved",
             category: { id: "cat_1", name: "Travel" },
-            project: { id: "prj_1", name: "Website", reference: "PRJ-2026-0001" },
+            project: {
+              id: "prj_1",
+              name: "Website",
+              reference: "PRJ-2026-0001",
+            },
             client: { id: "cli_1", name: "Acme" },
             receipt_path: "receipts/exp_1.pdf",
             receipt_mime_type: "application/pdf",
@@ -1085,7 +1092,10 @@ export async function mockProtectedApi(page: Page): Promise<void> {
       });
     }
 
-    if (/\/clients\/[^/]+\/portal-access\/[^/]+$/.test(path) && method === "DELETE") {
+    if (
+      /\/clients\/[^/]+\/portal-access\/[^/]+$/.test(path) &&
+      method === "DELETE"
+    ) {
       return fulfillJson(route, {});
     }
 

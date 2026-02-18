@@ -10,7 +10,11 @@ import { Label } from "@/components/ui/label";
 import { CurrencyAmount } from "@/components/shared/currency-amount";
 import { useExpenseStore } from "@/lib/stores/expenses";
 
-const startOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1)
+const startOfMonth = new Date(
+  new Date().getFullYear(),
+  new Date().getMonth(),
+  1
+)
   .toISOString()
   .slice(0, 10);
 const endOfMonth = new Date().toISOString().slice(0, 10);
@@ -170,7 +174,8 @@ export default function ExpenseReportPage() {
                       className="h-2 rounded bg-primary"
                       style={{
                         width: `${
-                          (item.total / Math.max(1, Number(report?.total_expenses || 1))) *
+                          (item.total /
+                            Math.max(1, Number(report?.total_expenses || 1))) *
                           100
                         }%`,
                       }}
@@ -212,7 +217,9 @@ export default function ExpenseReportPage() {
         </CardHeader>
         <CardContent>
           {(report?.by_project || []).length === 0 ? (
-            <p className="text-sm text-muted-foreground">No project allocation data.</p>
+            <p className="text-sm text-muted-foreground">
+              No project allocation data.
+            </p>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
@@ -227,11 +234,16 @@ export default function ExpenseReportPage() {
                   {report?.by_project?.map((item) => (
                     <tr key={item.project_reference} className="border-b">
                       <td className="py-2">
-                        {item.project_name || item.project_reference || "Unassigned"}
+                        {item.project_name ||
+                          item.project_reference ||
+                          "Unassigned"}
                       </td>
                       <td className="py-2">{item.count}</td>
                       <td className="py-2">
-                        <CurrencyAmount amount={item.total} currency={currency} />
+                        <CurrencyAmount
+                          amount={item.total}
+                          currency={currency}
+                        />
                       </td>
                     </tr>
                   ))}

@@ -27,7 +27,10 @@ export function PaymentForm({
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
   const [message, setMessage] = useState<string | null>(null);
 
-  const isReady = useMemo(() => Boolean(stripe && elements), [stripe, elements]);
+  const isReady = useMemo(
+    () => Boolean(stripe && elements),
+    [stripe, elements]
+  );
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -78,7 +81,10 @@ export function PaymentForm({
       <div className="rounded-lg border bg-muted/20 p-3 text-sm">
         <p className="font-medium">Amount to pay</p>
         <p className="text-lg font-semibold">
-          <CurrencyAmount amount={Number(amount || 0)} currency={currency || "EUR"} />
+          <CurrencyAmount
+            amount={Number(amount || 0)}
+            currency={currency || "EUR"}
+          />
         </p>
       </div>
 
@@ -99,7 +105,11 @@ export function PaymentForm({
         />
       </div>
 
-      <Button type="submit" className="w-full" disabled={!isReady || isProcessing}>
+      <Button
+        type="submit"
+        className="w-full"
+        disabled={!isReady || isProcessing}
+      >
         {isProcessing ? "Processing payment..." : "Pay now"}
       </Button>
 

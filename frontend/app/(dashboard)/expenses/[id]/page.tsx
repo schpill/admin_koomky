@@ -78,7 +78,8 @@ export default function ExpenseDetailPage() {
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = expense.receipt_filename || `expense-${expense.id}-receipt`;
+      link.download =
+        expense.receipt_filename || `expense-${expense.id}-receipt`;
       document.body.appendChild(link);
       link.click();
       link.remove();
@@ -166,7 +167,9 @@ export default function ExpenseDetailPage() {
           <CardTitle>Notes</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground">{expense.notes || "No notes"}</p>
+          <p className="text-sm text-muted-foreground">
+            {expense.notes || "No notes"}
+          </p>
         </CardContent>
       </Card>
 
@@ -182,7 +185,9 @@ export default function ExpenseDetailPage() {
         </CardHeader>
         <CardContent>
           {!expense.receipt_path ? (
-            <p className="text-sm text-muted-foreground">No receipt uploaded.</p>
+            <p className="text-sm text-muted-foreground">
+              No receipt uploaded.
+            </p>
           ) : expense.receipt_mime_type?.startsWith("image/") ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img

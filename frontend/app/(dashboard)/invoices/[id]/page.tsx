@@ -83,7 +83,9 @@ export default function InvoiceDetailPage() {
   useEffect(() => {
     apiClient
       .get<any>("/settings/portal")
-      .then((response) => setPortalPaymentEnabled(Boolean(response.data?.payment_enabled)))
+      .then((response) =>
+        setPortalPaymentEnabled(Boolean(response.data?.payment_enabled))
+      )
       .catch(() => setPortalPaymentEnabled(false));
   }, []);
 

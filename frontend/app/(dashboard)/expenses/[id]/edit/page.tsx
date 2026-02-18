@@ -19,8 +19,13 @@ export default function EditExpensePage() {
   const router = useRouter();
   const expenseId = params.id;
 
-  const { currentExpense, fetchExpense, updateExpense, uploadReceipt, isLoading } =
-    useExpenseStore();
+  const {
+    currentExpense,
+    fetchExpense,
+    updateExpense,
+    uploadReceipt,
+    isLoading,
+  } = useExpenseStore();
   const { categories, fetchCategories } = useExpenseCategoryStore();
   const { projects, fetchProjects } = useProjectStore();
   const { clients, fetchClients } = useClientStore();
@@ -171,7 +176,10 @@ export default function EditExpensePage() {
               min="0"
               value={form.amount}
               onChange={(event) =>
-                setForm((current) => ({ ...current, amount: event.target.value }))
+                setForm((current) => ({
+                  ...current,
+                  amount: event.target.value,
+                }))
               }
               required
             />
@@ -298,7 +306,10 @@ export default function EditExpensePage() {
               className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
               value={form.status}
               onChange={(event) =>
-                setForm((current) => ({ ...current, status: event.target.value }))
+                setForm((current) => ({
+                  ...current,
+                  status: event.target.value,
+                }))
               }
             >
               <option value="pending">Pending</option>
@@ -333,7 +344,10 @@ export default function EditExpensePage() {
               min="0"
               value={form.tax_rate}
               onChange={(event) =>
-                setForm((current) => ({ ...current, tax_rate: event.target.value }))
+                setForm((current) => ({
+                  ...current,
+                  tax_rate: event.target.value,
+                }))
               }
             />
           </div>
@@ -344,7 +358,10 @@ export default function EditExpensePage() {
               id="expense-vendor"
               value={form.vendor}
               onChange={(event) =>
-                setForm((current) => ({ ...current, vendor: event.target.value }))
+                setForm((current) => ({
+                  ...current,
+                  vendor: event.target.value,
+                }))
               }
             />
           </div>
@@ -355,7 +372,10 @@ export default function EditExpensePage() {
               id="expense-reference"
               value={form.reference}
               onChange={(event) =>
-                setForm((current) => ({ ...current, reference: event.target.value }))
+                setForm((current) => ({
+                  ...current,
+                  reference: event.target.value,
+                }))
               }
             />
           </div>
@@ -367,7 +387,10 @@ export default function EditExpensePage() {
               rows={3}
               value={form.notes}
               onChange={(event) =>
-                setForm((current) => ({ ...current, notes: event.target.value }))
+                setForm((current) => ({
+                  ...current,
+                  notes: event.target.value,
+                }))
               }
             />
           </div>
@@ -418,7 +441,11 @@ export default function EditExpensePage() {
       </Card>
 
       <div className="flex justify-end gap-2">
-        <Button type="button" variant="outline" onClick={() => router.push(`/expenses/${expenseId}`)}>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => router.push(`/expenses/${expenseId}`)}
+        >
           Cancel
         </Button>
         <Button type="submit" disabled={isLoading}>

@@ -54,8 +54,12 @@ export default function ClientPortalAccessPage() {
     setLoading(true);
     try {
       const [tokensResponse, logsResponse] = await Promise.all([
-        apiClient.get<PortalAccessToken[]>(`/clients/${clientId}/portal-access`),
-        apiClient.get<PortalLogsResponse>(`/clients/${clientId}/portal-activity`),
+        apiClient.get<PortalAccessToken[]>(
+          `/clients/${clientId}/portal-access`
+        ),
+        apiClient.get<PortalLogsResponse>(
+          `/clients/${clientId}/portal-activity`
+        ),
       ]);
 
       setTokens(tokensResponse.data || []);
@@ -171,8 +175,11 @@ export default function ClientPortalAccessPage() {
                   <div>
                     <p className="font-medium">{token.email}</p>
                     <p className="text-xs text-muted-foreground">
-                      Expires {new Date(token.expires_at).toLocaleString()} · Last
-                      used {token.last_used_at ? new Date(token.last_used_at).toLocaleString() : "never"}
+                      Expires {new Date(token.expires_at).toLocaleString()} ·
+                      Last used{" "}
+                      {token.last_used_at
+                        ? new Date(token.last_used_at).toLocaleString()
+                        : "never"}
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
@@ -205,14 +212,17 @@ export default function ClientPortalAccessPage() {
           {isLoading ? (
             <p className="text-sm text-muted-foreground">Loading activity...</p>
           ) : logs.length === 0 ? (
-            <p className="text-sm text-muted-foreground">No activity logged yet.</p>
+            <p className="text-sm text-muted-foreground">
+              No activity logged yet.
+            </p>
           ) : (
             <div className="space-y-2">
               {logs.map((log) => (
                 <div key={log.id} className="rounded-md border p-3 text-sm">
                   <p className="font-medium">{log.action}</p>
                   <p className="text-xs text-muted-foreground">
-                    {new Date(log.created_at).toLocaleString()} · {log.ip_address || "unknown IP"}
+                    {new Date(log.created_at).toLocaleString()} ·{" "}
+                    {log.ip_address || "unknown IP"}
                   </p>
                 </div>
               ))}

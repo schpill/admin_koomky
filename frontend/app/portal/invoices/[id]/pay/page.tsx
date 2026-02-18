@@ -58,8 +58,12 @@ export default function PortalInvoicePayPage() {
     const load = async () => {
       try {
         const [invoiceResponse, intentResponse] = await Promise.all([
-          portalApiClient.get<PortalInvoiceSummary>(`/portal/invoices/${invoiceId}`),
-          portalApiClient.post<PayIntentResponse>(`/portal/invoices/${invoiceId}/pay`),
+          portalApiClient.get<PortalInvoiceSummary>(
+            `/portal/invoices/${invoiceId}`
+          ),
+          portalApiClient.post<PayIntentResponse>(
+            `/portal/invoices/${invoiceId}/pay`
+          ),
         ]);
 
         setInvoice(invoiceResponse.data);
@@ -75,7 +79,9 @@ export default function PortalInvoicePayPage() {
   }, [invoiceId]);
 
   if (isLoading) {
-    return <p className="text-sm text-muted-foreground">Preparing payment...</p>;
+    return (
+      <p className="text-sm text-muted-foreground">Preparing payment...</p>
+    );
   }
 
   if (error || !invoice || !intent) {
@@ -96,17 +102,23 @@ export default function PortalInvoicePayPage() {
           <CardTitle>Pay invoice {invoice.number}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
-          <p className="text-sm text-muted-foreground">Due date: {invoice.due_date}</p>
+          <p className="text-sm text-muted-foreground">
+            Due date: {invoice.due_date}
+          </p>
           <p className="text-sm text-muted-foreground">
             Balance due:{" "}
             <span className="font-medium text-foreground">
-              <CurrencyAmount amount={Number(invoice.balance_due || 0)} currency={invoice.currency || "EUR"} />
+              <CurrencyAmount
+                amount={Number(invoice.balance_due || 0)}
+                currency={invoice.currency || "EUR"}
+              />
             </span>
           </p>
 
           {!stripePromise ? (
             <div className="rounded-md border border-amber-300 bg-amber-50 p-3 text-sm text-amber-700">
-              Stripe publishable key is missing (`NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`).
+              Stripe publishable key is missing
+              (`NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`).
             </div>
           ) : (
             <Elements stripe={stripePromise}>

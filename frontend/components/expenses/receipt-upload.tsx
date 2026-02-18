@@ -90,7 +90,12 @@ export function ReceiptUpload({
             <Upload className="mr-2 h-4 w-4" />
             Upload receipt
           </Button>
-          <Button type="button" variant="outline" size="sm" onClick={pickCamera}>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={pickCamera}
+          >
             <Camera className="mr-2 h-4 w-4" />
             Capture photo
           </Button>

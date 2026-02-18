@@ -98,7 +98,11 @@ export default function PortalInvoiceDetailPage() {
   }
 
   if (!invoice || error) {
-    return <p className="text-sm text-destructive">{error || "Invoice not found."}</p>;
+    return (
+      <p className="text-sm text-destructive">
+        {error || "Invoice not found."}
+      </p>
+    );
   }
 
   return (
@@ -177,16 +181,25 @@ export default function PortalInvoiceDetailPage() {
                 </thead>
                 <tbody>
                   {invoice.line_items?.map((line, index) => (
-                    <tr key={`${line.description}-${index}`} className="border-b">
+                    <tr
+                      key={`${line.description}-${index}`}
+                      className="border-b"
+                    >
                       <td className="py-2">{line.description}</td>
-                      <td className="py-2">{Number(line.quantity).toFixed(2)}</td>
-                      <td className="py-2">{Number(line.unit_price).toFixed(2)}</td>
-                      <td className="py-2">{Number(line.vat_rate).toFixed(2)}%</td>
+                      <td className="py-2">
+                        {Number(line.quantity).toFixed(2)}
+                      </td>
+                      <td className="py-2">
+                        {Number(line.unit_price).toFixed(2)}
+                      </td>
+                      <td className="py-2">
+                        {Number(line.vat_rate).toFixed(2)}%
+                      </td>
                       <td className="py-2">
                         <CurrencyAmount
-                          amount={
-                            Number(line.total ?? line.quantity * line.unit_price)
-                          }
+                          amount={Number(
+                            line.total ?? line.quantity * line.unit_price
+                          )}
                           currency={invoice.currency || "EUR"}
                         />
                       </td>
