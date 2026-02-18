@@ -68,6 +68,9 @@ class PortalAuthController extends Controller
             return $this->error('Portal token is invalid or expired', 401);
         }
 
+        /** @var Client $client */
+        $client = $portalAccessToken->client;
+
         $portalAccessToken->forceFill([
             'last_used_at' => now(),
         ])->save();
@@ -76,7 +79,7 @@ class PortalAuthController extends Controller
 
         $this->portalActivityLogger->log(
             $request,
-            $portalAccessToken->client,
+            $client,
             'login',
             $portalAccessToken
         );
@@ -85,9 +88,9 @@ class PortalAuthController extends Controller
             'portal_token' => $portalToken,
             'expires_in' => Carbon::now()->addHours(8)->diffInSeconds(now()),
             'client' => [
-                'id' => $portalAccessToken->client->id,
-                'name' => $portalAccessToken->client->name,
-                'email' => $portalAccessToken->client->email,
+                'id' => $client->id,
+                'name' => $client->name,
+                'email' => $client->email,
             ],
         ], 'Portal access granted');
     }

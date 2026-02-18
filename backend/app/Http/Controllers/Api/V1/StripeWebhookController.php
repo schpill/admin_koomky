@@ -20,10 +20,6 @@ class StripeWebhookController extends Controller
     public function __invoke(Request $request): JsonResponse
     {
         $payload = $request->json()->all();
-        if (! is_array($payload)) {
-            return $this->error('Invalid payload', 400);
-        }
-
         $eventType = (string) ($payload['type'] ?? '');
         $object = is_array($payload['data']['object'] ?? null) ? $payload['data']['object'] : [];
         $stripeIntentId = $this->resolveStripeIntentId($eventType, $object);

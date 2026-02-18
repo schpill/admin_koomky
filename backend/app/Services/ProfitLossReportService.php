@@ -117,7 +117,12 @@ class ProfitLossReportService
                     fn (Expense $expense): float => $this->expenseAmountInBaseCurrency($expense, $baseCurrency)
                 ), 2);
 
-                $project = $projectInvoices->first()?->project ?? $projectExpenses->first()?->project;
+                $project = null;
+                if ($projectInvoices->isNotEmpty()) {
+                    $project = $projectInvoices->first()->project;
+                } elseif ($projectExpenses->isNotEmpty()) {
+                    $project = $projectExpenses->first()->project;
+                }
 
                 return [
                     'project_id' => $projectId,
@@ -157,7 +162,12 @@ class ProfitLossReportService
                     fn (Expense $expense): float => $this->expenseAmountInBaseCurrency($expense, $baseCurrency)
                 ), 2);
 
-                $client = $clientInvoices->first()?->client ?? $clientExpenses->first()?->client;
+                $client = null;
+                if ($clientInvoices->isNotEmpty()) {
+                    $client = $clientInvoices->first()->client;
+                } elseif ($clientExpenses->isNotEmpty()) {
+                    $client = $clientExpenses->first()->client;
+                }
 
                 return [
                     'client_id' => $clientId,

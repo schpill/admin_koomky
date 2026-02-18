@@ -14,7 +14,7 @@ class ExpenseReceiptService
      */
     public function upload(Expense $expense, UploadedFile $receipt): array
     {
-        $mimeType = (string) ($receipt->getClientMimeType() ?? '');
+        $mimeType = (string) $receipt->getClientMimeType();
         $isImage = str_starts_with($mimeType, 'image/');
         $isPdf = $mimeType === 'application/pdf';
 

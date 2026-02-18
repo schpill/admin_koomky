@@ -29,7 +29,7 @@ class ExpenseReportService
         $taxTotal = round((float) $expenses->sum(fn (Expense $expense): float => (float) $expense->tax_amount), 2);
 
         $byCategory = $expenses
-            ->groupBy(fn (Expense $expense): string => $expense->category?->name ?? 'Uncategorized')
+            ->groupBy(fn (Expense $expense): string => (string) data_get($expense, 'category.name', 'Uncategorized'))
             ->map(fn (Collection $items, string $name): array => [
                 'category' => $name,
                 'total' => round((float) $items->sum(fn (Expense $expense): float => (float) $expense->amount), 2),
@@ -39,7 +39,7 @@ class ExpenseReportService
             ->all();
 
         $byProject = $expenses
-            ->groupBy(fn (Expense $expense): string => $expense->project?->reference ?? 'unassigned')
+            ->groupBy(fn (Expense $expense): string => (string) data_get($expense, 'project.reference', 'unassigned'))
             ->map(fn (Collection $items, string $reference): array => [
                 'project_reference' => $reference,
                 'project_name' => $items->first()?->project?->name,

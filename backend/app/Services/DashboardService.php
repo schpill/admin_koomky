@@ -158,7 +158,12 @@ class DashboardService
                 'date_to' => $monthDateTo,
             ]);
 
-            $topExpenseCategories = collect($expenseSummary['by_category'] ?? [])
+            $rawExpenseCategories = $expenseSummary['by_category'] ?? [];
+            if (! is_array($rawExpenseCategories)) {
+                $rawExpenseCategories = [];
+            }
+
+            $topExpenseCategories = collect($rawExpenseCategories)
                 ->sortByDesc('total')
                 ->take(3)
                 ->values()

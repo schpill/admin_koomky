@@ -75,6 +75,7 @@ class PortalDashboardController extends Controller
         $outstandingTotal = round((float) $outstandingInvoices->sum(
             fn (Invoice $invoice): float => (float) $invoice->balance_due
         ), 2);
+        $firstInvoice = $recentInvoices->first();
 
         $settings = $request->attributes->get('portal_settings');
         $welcomeMessage = $settings instanceof PortalSettings
@@ -107,7 +108,7 @@ class PortalDashboardController extends Controller
             'outstanding_invoices' => [
                 'count' => $outstandingInvoices->count(),
                 'total' => $outstandingTotal,
-                'currency' => $recentInvoices->first()?->currency ?? 'EUR',
+                'currency' => $firstInvoice instanceof Invoice ? $firstInvoice->currency : 'EUR',
             ],
             'recent_invoices' => InvoiceResource::collection($recentInvoices)->resolve(),
             'recent_quotes' => QuoteResource::collection($recentQuotes)->resolve(),
