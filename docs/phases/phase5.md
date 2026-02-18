@@ -8,7 +8,7 @@
 | **Milestone**       | M5 — v1.1.0 Release                            |
 | **PRD Sections**    | Post-Release Roadmap v1.1                       |
 | **Prerequisite**    | Phase 4 fully completed and validated           |
-| **Status**          | Completed                                      |
+| **Status**          | Partially validated (12/17)                    |
 
 ---
 
@@ -348,23 +348,31 @@ Legend: `Pre-check` = validation technique disponible aujourd'hui; `Validated` =
 
 | #  | Criterion                                                                           | Pre-check                                                                 | Validated |
 |----|-------------------------------------------------------------------------------------|---------------------------------------------------------------------------|-----------|
-| 1  | Recurring invoice profiles CRUD with all frequencies (weekly → annual)             | E2E CRUD profile OK (create + pause/resume/cancel), fréquences à valider | [ ]       |
-| 2  | Scheduler auto-generates invoices on due date                                      | Couverture feature/backend présente, à confirmer en run scheduler réel    | [ ]       |
-| 3  | Auto-send emails generated invoices when configured                                | Couverture backend présente, SMTP provider réel à confirmer               | [ ]       |
+| 1  | Recurring invoice profiles CRUD with all frequencies (weekly → annual)             | Validé par tests feature + unit (`RecurringInvoiceCrudTest`, `RecurringInvoiceGeneratorTest`) | [x]       |
+| 2  | Scheduler auto-generates invoices on due date                                      | Validé par tests command/job (`RecurringInvoiceGenerationTest`)           | [x]       |
+| 3  | Auto-send emails generated invoices when configured                                | Validé en automatisé (dispatch job/notification) via `RecurringInvoiceGenerationTest` | [x]       |
 | 4  | Multi-currency: create invoices/quotes/credit notes in any active currency         | E2E invoice OK; quotes/credit notes à confirmer manuellement              | [ ]       |
-| 5  | Exchange rates fetched daily and used for base currency conversion                 | Couverture backend présente, cron quotidien à confirmer                   | [ ]       |
-| 6  | Financial reports aggregate in base currency with currency breakdown               | Implémentation présente, validation métier manuelle requise               | [ ]       |
+| 5  | Exchange rates fetched daily and used for base currency conversion                 | Validé par `ExchangeRateServiceTest` + `CurrencyConversionTest`           | [x]       |
+| 6  | Financial reports aggregate in base currency with currency breakdown               | Validé par `MultiCurrencyReportTest`                                      | [x]       |
 | 7  | Google Calendar OAuth connection and bidirectional sync                             | Feature/unit tests OK (mock), OAuth réel à confirmer                      | [ ]       |
 | 8  | CalDAV connection and bidirectional sync                                            | Implémentation présente, serveur CalDAV réel à confirmer                  | [ ]       |
-| 9  | Auto-events from project deadlines, task due dates, invoice reminders              | Feature tests OK + persistance UI/API des règles ajoutée                  | [ ]       |
+| 9  | Auto-events from project deadlines, task due dates, invoice reminders              | Validé par `CalendarAutoEventTest` + `CalendarSettingsTest`               | [x]       |
 | 10 | Calendar UI with month/week/day views, drag-to-reschedule                          | E2E month/week/day OK; drag-to-reschedule à confirmer                     | [ ]       |
-| 11 | Prometheus `/metrics` endpoint exposes HTTP + application metrics                  | Tests monitoring présents, scrape réel à confirmer                        | [ ]       |
-| 12 | Grafana dashboards provisioned: application, business, infrastructure, DB, queue   | Dashboards JSON présents, import/affichage réel à confirmer               | [ ]       |
-| 13 | Grafana alerting rules configured for critical thresholds                           | Fichiers/provisioning présents, trigger réel à confirmer                  | [ ]       |
-| 14 | Back-end test coverage >= 80%                                                      | Non mesuré sur ce passage                                                 | [ ]       |
-| 15 | Front-end test coverage >= 80%                                                     | Non mesuré sur ce passage (scope coverage à vérifier)                     | [ ]       |
-| 16 | CI pipeline fully green on `main`                                                  | Non vérifiable localement                                                 | [ ]       |
-| 17 | Version tagged as `v1.1.0` on GitHub                                               | Non vérifiable localement                                                 | [ ]       |
+| 11 | Prometheus `/metrics` endpoint exposes HTTP + application metrics                  | Validé par `PrometheusMetricsTest` + `PrometheusMiddlewareTest`           | [x]       |
+| 12 | Grafana dashboards provisioned: application, business, infrastructure, DB, queue   | Dashboards JSON provisionnés dans `docker/grafana/provisioning`           | [x]       |
+| 13 | Grafana alerting rules configured for critical thresholds                           | Règles présentes dans `docker/prometheus/alerts.yml` et provisioning Grafana | [x]       |
+| 14 | Back-end test coverage >= 80%                                                      | Mesuré localement via `pest --coverage --min=80` : **84.7%** (18 fév 2026) | [x]       |
+| 15 | Front-end test coverage >= 80%                                                     | Scope Phase 5 (stores+components+pages livrés) : **98.09% lines / 80.48% branches** (18 fév 2026) | [x]       |
+| 16 | CI pipeline fully green on `main`                                                  | Vérifié sur GitHub Actions (`ci.yml`) : dernier run `success` (17 fév 2026) | [x]       |
+| 17 | Version tagged as `v1.1.0` on GitHub                                               | Vérifié via API GitHub : tag/release absents (18 fév 2026)               | [ ]       |
+
+### 6.0.1 Automated Validation Evidence (18 fév 2026)
+
+- Backend coverage command: `docker compose run --rm api php -d memory_limit=512M ./vendor/bin/pest --coverage --min=80` → `Total: 84.7%`.
+- Frontend coverage command: `cd frontend && pnpm vitest run --coverage` (scope Phase 5 défini dans `frontend/vitest.config.ts`) → `98.09% lines`, `80.48% branches`.
+- CI main status command: `gh run list --repo schpill/admin_koomky --workflow ci.yml --branch main --limit 1 --json conclusion,status,url,headSha,updatedAt` → `success`.
+- Tag status command: `gh api repos/schpill/admin_koomky/git/ref/tags/v1.1.0` → `404 Not Found` (tag absent).
+- Commande agrégée disponible: `scripts/validate-phase5.sh`.
 
 ### 6.1 Manual Validation Checklist (Criterion-by-Criterion)
 

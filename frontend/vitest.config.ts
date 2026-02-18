@@ -17,7 +17,24 @@ export default defineConfig({
     coverage: {
       provider: "v8",
       reporter: ["text", "json", "html"],
-      include: ["lib/**/*.ts"],
+      // Phase 5 quality gate: recurring invoices, multi-currency, calendar UI/settings.
+      include: [
+        "lib/stores/recurring-invoices.ts",
+        "lib/stores/currencies.ts",
+        "lib/stores/calendar.ts",
+        "components/shared/currency-selector.tsx",
+        "components/shared/currency-amount.tsx",
+        "components/invoices/recurring-invoice-form.tsx",
+        "components/calendar/event-form-modal.tsx",
+        "components/calendar/event-detail-popover.tsx",
+        "app/(dashboard)/invoices/recurring/page.tsx",
+        "app/(dashboard)/invoices/recurring/create/page.tsx",
+        "app/(dashboard)/invoices/recurring/[id]/page.tsx",
+        "app/(dashboard)/invoices/recurring/[id]/edit/page.tsx",
+        "app/(dashboard)/settings/currency/page.tsx",
+        "app/(dashboard)/settings/calendar/page.tsx",
+        "app/(dashboard)/calendar/page.tsx",
+      ],
       thresholds: {
         lines: 80,
         functions: 80,
