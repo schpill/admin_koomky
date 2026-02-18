@@ -32,7 +32,7 @@ export default function PortalLayout({
 
   const [session, setSession] = useState<PortalSession | null>(null);
   const [branding, setBranding] =
-    useState<PortalDashboardBrandingPayload["branding"]>(null);
+    useState<PortalDashboardBrandingPayload["branding"] | null>(null);
 
   useEffect(() => {
     const currentSession = getPortalSession();
