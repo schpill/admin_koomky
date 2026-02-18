@@ -12,7 +12,13 @@ Koomky is a self-hosted Freelance CRM built as a monorepo:
 
 ## Current Implementation Snapshot
 
-- **Phase 5 is fully implemented, merged to `main`, and released as `v1.1.0`** (tag + GitHub release).
+- **Phase 6 is fully implemented and merged to `main`** (Client Portal & Expense Tracking roadmap scope).
+- **Phase 6 scope delivered**:
+  - Client portal (magic link auth, dashboard, invoice/quote viewing, quote accept/reject flows)
+  - Online Stripe payments from portal (payment intents, webhook sync, notifications)
+  - Expense tracking (categories, CRUD, receipt upload/download, reporting, CSV export, import/export integration)
+  - Financial integration (profit/loss, project profitability, dashboard widgets, billable expense invoicing)
+- **Phase 5 is implemented, merged to `main`, and released as `v1.1.0`** (tag + GitHub release).
 - **Phase 5 scope delivered**:
   - Recurring invoices (profiles, generator jobs, scheduling, notifications, UI, tests)
   - Multi-currency support (currencies/rates services, conversion in documents/reports/dashboard, UI, tests)
@@ -21,6 +27,8 @@ Koomky is a self-hosted Freelance CRM built as a monorepo:
 - **Coverage gate policy**: backend and frontend thresholds remain **>= 80%**.
 - **Phase 5 validation automation is available** via:
   - `scripts/validate-phase5.sh` (backend coverage, frontend coverage, CI status check, tag check)
+- **No dedicated Phase 6 validation script exists yet**:
+  - Use phase-specific suites documented in `docs/dev/phase6.md`.
 - **Public signup is disabled**:
   - Backend route `POST /api/v1/auth/register` is removed.
   - Frontend `/auth/register` page and middleware exposure are removed.
@@ -38,7 +46,7 @@ Koomky is a self-hosted Freelance CRM built as a monorepo:
 
 ## Task Tracking
 
-Task tracking files live in `docs/dev/phase{1,2,3,4,5}.md`. These are the **source of truth** for task progress across all contributors (humans and AI agents).
+Task tracking files live in `docs/dev/phase{1,2,3,4,5,6}.md`. These are the **source of truth** for task progress across all contributors (humans and AI agents).
 
 ### Status values
 
@@ -124,7 +132,7 @@ cd backend && php artisan users:create   # Create a private CRM user account
 
 ## Reference Documents
 
-- `PRD.md` — Full product requirements (v1.1.0)
-- `docs/phases/phase{1,2,3,4,5}.md` — Detailed specs per phase
-- `docs/dev/phase{1,2,3,4,5}.md` — Task tracking per phase
+- `PRD.md` — Full product requirements (v1.1.0 baseline + v1.2 roadmap)
+- `docs/phases/phase{1,2,3,4,5,6}.md` — Detailed specs per phase
+- `docs/dev/phase{1,2,3,4,5,6}.md` — Task tracking per phase
 - `scripts/validate-phase5.sh` — Automated local validation for Phase 5 gates
