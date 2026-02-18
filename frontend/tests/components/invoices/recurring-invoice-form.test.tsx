@@ -72,14 +72,18 @@ describe("RecurringInvoiceForm", () => {
     );
 
     fireEvent.submit(screen.getByRole("button", { name: "Save" }));
-    expect(await screen.findByText("Please select a client")).toBeInTheDocument();
+    expect(
+      await screen.findByText("Please select a client")
+    ).toBeInTheDocument();
 
     fireEvent.change(screen.getByLabelText("Client"), {
       target: { value: "cli_1" },
     });
     fireEvent.submit(screen.getByRole("button", { name: "Save" }));
 
-    expect(await screen.findByText("Profile name is required")).toBeInTheDocument();
+    expect(
+      await screen.findByText("Profile name is required")
+    ).toBeInTheDocument();
   });
 
   it("requires at least one non-empty line item", async () => {

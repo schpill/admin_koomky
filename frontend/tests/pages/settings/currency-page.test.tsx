@@ -46,7 +46,13 @@ vi.mock("@/components/shared/currency-selector", () => ({
 }));
 
 vi.mock("@/components/shared/currency-amount", () => ({
-  CurrencyAmount: ({ amount, currency }: { amount: number; currency: string }) => (
+  CurrencyAmount: ({
+    amount,
+    currency,
+  }: {
+    amount: number;
+    currency: string;
+  }) => (
     <span>
       {amount} {currency}
     </span>
@@ -151,7 +157,9 @@ describe("CurrencySettingsPage", () => {
     render(<CurrencySettingsPage />);
 
     expect(
-      screen.getByText("No rates available yet. Save settings to fetch latest values.")
+      screen.getByText(
+        "No rates available yet. Save settings to fetch latest values."
+      )
     ).toBeInTheDocument();
 
     fireEvent.click(

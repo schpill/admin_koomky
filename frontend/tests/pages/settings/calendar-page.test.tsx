@@ -158,7 +158,9 @@ describe("CalendarSettingsPage", () => {
     render(<CalendarSettingsPage />);
 
     await waitFor(() => {
-      expect(toastError).toHaveBeenCalledWith("Unable to load calendar settings");
+      expect(toastError).toHaveBeenCalledWith(
+        "Unable to load calendar settings"
+      );
     });
   });
 });

@@ -108,7 +108,9 @@ describe("EditRecurringInvoicePage", () => {
 
     render(<EditRecurringInvoicePage />);
 
-    expect(screen.queryByText("Edit recurring profile")).not.toBeInTheDocument();
+    expect(
+      screen.queryByText("Edit recurring profile")
+    ).not.toBeInTheDocument();
   });
 
   it("updates profile and redirects", async () => {
@@ -135,7 +137,9 @@ describe("EditRecurringInvoicePage", () => {
       expect(fetchProfile).toHaveBeenCalledWith("rip_1");
     });
 
-    expect(screen.getByText("Initial profile: Current profile")).toBeInTheDocument();
+    expect(
+      screen.getByText("Initial profile: Current profile")
+    ).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: "Save changes" }));
 
