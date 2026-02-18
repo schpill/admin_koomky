@@ -12,13 +12,15 @@ Koomky is a self-hosted Freelance CRM built as a monorepo:
 
 ## Current Implementation Snapshot
 
-- **Phase 5 is fully implemented and merged to `main`**.
+- **Phase 5 is fully implemented, merged to `main`, and released as `v1.1.0`** (tag + GitHub release).
 - **Phase 5 scope delivered**:
   - Recurring invoices (profiles, generator jobs, scheduling, notifications, UI, tests)
   - Multi-currency support (currencies/rates services, conversion in documents/reports/dashboard, UI, tests)
   - Calendar integration (connections/events, sync drivers/jobs, auto-events, UI, tests)
   - Prometheus + Grafana monitoring stack (metrics endpoint/middleware/service, exporters, dashboards, docs)
 - **Coverage gate policy**: backend and frontend thresholds remain **>= 80%**.
+- **Phase 5 validation automation is available** via:
+  - `scripts/validate-phase5.sh` (backend coverage, frontend coverage, CI status check, tag check)
 - **Public signup is disabled**:
   - Backend route `POST /api/v1/auth/register` is removed.
   - Frontend `/auth/register` page and middleware exposure are removed.
@@ -125,3 +127,4 @@ cd backend && php artisan users:create   # Create a private CRM user account
 - `PRD.md` — Full product requirements (v1.1.0)
 - `docs/phases/phase{1,2,3,4,5}.md` — Detailed specs per phase
 - `docs/dev/phase{1,2,3,4,5}.md` — Task tracking per phase
+- `scripts/validate-phase5.sh` — Automated local validation for Phase 5 gates
