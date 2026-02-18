@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Models\Client;
 use App\Models\Contact;
+use App\Models\Expense;
+use App\Models\ExpenseCategory;
 use App\Models\Invoice;
 use App\Models\LineItem;
 use App\Models\Project;
@@ -25,6 +27,7 @@ class DataImportService
             'projects' => $this->importProjects($user, $headers, $rows),
             'contacts' => $this->importContacts($user, $headers, $rows),
             'invoices' => $this->importInvoices($user, $headers, $rows),
+            'expenses' => $this->importExpenses($user, $headers, $rows),
             default => throw new InvalidArgumentException("Unsupported import entity [{$entity}]"),
         };
     }
@@ -239,6 +242,95 @@ class DataImportService
     }
 
     /**
+     * @param  array<int, string>  $headers
+     * @param  array<int, array<int, string>>  $rows
+     * @return array{entity:string, imported:int, errors:array<int, array<string, mixed>>}
+     */
+    private function importExpenses(User $user, array $headers, array $rows): array
+    {
+        $imported = 0;
+        $errors = [];
+
+        foreach ($rows as $index => $row) {
+            $rowNumber = $index + 2;
+            $payload = $this->rowToPayload($headers, $row);
+
+            $description = $this->nullableString($payload['description'] ?? null);
+            if ($description === null) {
+                $errors[] = $this->error($rowNumber, 'description', 'Description is required');
+
+                continue;
+            }
+
+            $amount = $this->nullableFloat($payload['amount'] ?? null);
+            if ($amount === null || $amount <= 0) {
+                $errors[] = $this->error($rowNumber, 'amount', 'Amount must be greater than zero');
+
+                continue;
+            }
+
+            $date = $this->nullableDate($payload['date'] ?? null);
+            if ($date === null) {
+                $errors[] = $this->error($rowNumber, 'date', 'Date is required');
+
+                continue;
+            }
+
+            $categoryName = $this->nullableString($payload['category_name'] ?? null) ?? 'Other';
+            $category = ExpenseCategory::query()->firstOrCreate(
+                [
+                    'user_id' => $user->id,
+                    'name' => $categoryName,
+                ],
+                [
+                    'color' => '#6B7280',
+                    'icon' => 'briefcase',
+                    'is_default' => false,
+                ]
+            );
+
+            $isBillable = $this->nullableBoolean($payload['is_billable'] ?? null) ?? false;
+            $isReimbursable = $this->nullableBoolean($payload['is_reimbursable'] ?? null) ?? false;
+
+            $status = (string) ($payload['status'] ?? 'pending');
+            if (! in_array($status, ['pending', 'approved', 'rejected'], true)) {
+                $status = 'pending';
+            }
+
+            Expense::query()->create([
+                'user_id' => $user->id,
+                'expense_category_id' => $category->id,
+                'project_id' => null,
+                'client_id' => null,
+                'description' => $description,
+                'amount' => $amount,
+                'currency' => strtoupper((string) ($payload['currency'] ?? $user->base_currency ?? 'EUR')),
+                'base_currency_amount' => $amount,
+                'tax_amount' => $this->nullableFloat($payload['tax_amount'] ?? null) ?? 0,
+                'tax_rate' => $this->nullableFloat($payload['tax_rate'] ?? null),
+                'date' => $date,
+                'payment_method' => in_array((string) ($payload['payment_method'] ?? ''), ['cash', 'card', 'bank_transfer', 'other'], true)
+                    ? (string) $payload['payment_method']
+                    : 'card',
+                'is_billable' => $isBillable,
+                'is_reimbursable' => $isReimbursable,
+                'vendor' => $this->nullableString($payload['vendor'] ?? null),
+                'reference' => $this->nullableString($payload['reference'] ?? null),
+                'notes' => $this->nullableString($payload['notes'] ?? null),
+                'status' => $status,
+            ]);
+
+            $imported++;
+        }
+
+        return [
+            'entity' => 'expenses',
+            'imported' => $imported,
+            'errors' => $errors,
+        ];
+    }
+
+    /**
      * @return array{0: array<int, string>, 1: array<int, array<int, string>>}
      */
     private function parseCsv(UploadedFile $file): array
@@ -327,6 +419,24 @@ class DataImportService
         } catch (\Throwable) {
             return null;
         }
+    }
+
+    private function nullableBoolean(mixed $value): ?bool
+    {
+        $stringValue = $this->nullableString($value);
+        if ($stringValue === null) {
+            return null;
+        }
+
+        if (in_array(strtolower($stringValue), ['1', 'true', 'yes'], true)) {
+            return true;
+        }
+
+        if (in_array(strtolower($stringValue), ['0', 'false', 'no'], true)) {
+            return false;
+        }
+
+        return null;
     }
 
     /**

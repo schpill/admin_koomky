@@ -7,6 +7,8 @@ use App\Models\CampaignTemplate;
 use App\Models\Client;
 use App\Models\Contact;
 use App\Models\CreditNote;
+use App\Models\Expense;
+use App\Models\ExpenseCategory;
 use App\Models\Invoice;
 use App\Models\Project;
 use App\Models\Quote;
@@ -53,6 +55,15 @@ class DataExportService
             ->with(['recipients'])
             ->get();
 
+        $expenseCategories = ExpenseCategory::query()
+            ->where('user_id', $user->id)
+            ->get();
+
+        $expenses = Expense::query()
+            ->where('user_id', $user->id)
+            ->with(['category', 'project', 'client'])
+            ->get();
+
         return [
             'exported_at' => now()->toIso8601String(),
             'user' => [
@@ -91,6 +102,8 @@ class DataExportService
                 ->where('user_id', $user->id)
                 ->get()
                 ->toArray(),
+            'expense_categories' => $expenseCategories->toArray(),
+            'expenses' => $expenses->toArray(),
         ];
     }
 

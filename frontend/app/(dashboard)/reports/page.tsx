@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
+import Link from "next/link";
 import { Download } from "lucide-react";
 import { toast } from "sonner";
 import { apiClient } from "@/lib/api";
@@ -169,6 +170,16 @@ export default function ReportsPage() {
         <p className="text-sm text-muted-foreground">
           Revenue, outstanding amounts and VAT summary with exports.
         </p>
+        <div className="flex flex-wrap gap-2">
+          <Button asChild variant="outline" size="sm">
+            <Link href="/reports/profit-loss">Profit & loss</Link>
+          </Button>
+          <Button asChild variant="outline" size="sm">
+            <Link href="/reports/project-profitability">
+              Project profitability
+            </Link>
+          </Button>
+        </div>
       </div>
 
       <Card>

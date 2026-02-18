@@ -45,6 +45,24 @@ interface DashboardStats {
   active_campaigns_count: number;
   average_campaign_open_rate: number;
   average_campaign_click_rate: number;
+  profit_loss_summary?: {
+    revenue: number;
+    expenses: number;
+    profit: number;
+    margin: number;
+    base_currency: string;
+  };
+  expense_overview?: {
+    month_total: number;
+    billable_total: number;
+    non_billable_total: number;
+    top_categories: Array<{
+      category: string;
+      total: number;
+      count: number;
+    }>;
+    base_currency: string;
+  };
 }
 
 interface DashboardState {

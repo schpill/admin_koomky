@@ -8,7 +8,7 @@
 | **Milestone**       | M6 — v1.2.0 Release                            |
 | **PRD Sections**    | Post-Release Roadmap v1.2                       |
 | **Prerequisite**    | Phase 5 fully completed and validated           |
-| **Status**          | Not started                                    |
+| **Status**          | Implemented on feature branch                  |
 
 ---
 
@@ -428,24 +428,24 @@
 
 | #  | Criterion                                                                           | Validated |
 |----|-------------------------------------------------------------------------------------|-----------|
-| 1  | Client portal: magic link authentication functional                                 | [ ]       |
-| 2  | Client portal: clients can view their invoices and download PDFs                    | [ ]       |
-| 3  | Client portal: clients can view, accept, and reject quotes                          | [ ]       |
-| 4  | Client portal: branded layout with custom logo and colors                           | [ ]       |
-| 5  | Stripe payment integration: clients can pay invoices online                         | [ ]       |
-| 6  | Stripe webhooks: payment status synced automatically                                | [ ]       |
-| 7  | Admin: manage portal access tokens per client                                       | [ ]       |
-| 8  | Admin: portal activity logging operational                                          | [ ]       |
-| 9  | Expense CRUD with categories, project allocation, and receipt upload                | [ ]       |
-| 10 | Expense reports: totals, category breakdown, project breakdown, CSV export          | [ ]       |
-| 11 | Multi-currency expenses using exchange rates from Phase 5                           | [ ]       |
-| 12 | Profit/loss report: revenue vs expenses with monthly trend                          | [ ]       |
-| 13 | Project profitability: per-project revenue, costs, margin                           | [ ]       |
-| 14 | Billable expenses convertible to invoice line items                                 | [ ]       |
-| 15 | Dashboard updated with expense and P&L widgets                                      | [ ]       |
-| 16 | Expenses included in data import/export                                             | [ ]       |
-| 17 | Back-end test coverage >= 80%                                                       | [ ]       |
-| 18 | Front-end test coverage >= 80%                                                      | [ ]       |
+| 1  | Client portal: magic link authentication functional                                 | [x]       |
+| 2  | Client portal: clients can view their invoices and download PDFs                    | [x]       |
+| 3  | Client portal: clients can view, accept, and reject quotes                          | [x]       |
+| 4  | Client portal: branded layout with custom logo and colors                           | [x]       |
+| 5  | Stripe payment integration: clients can pay invoices online                         | [x]       |
+| 6  | Stripe webhooks: payment status synced automatically                                | [x]       |
+| 7  | Admin: manage portal access tokens per client                                       | [x]       |
+| 8  | Admin: portal activity logging operational                                          | [x]       |
+| 9  | Expense CRUD with categories, project allocation, and receipt upload                | [x]       |
+| 10 | Expense reports: totals, category breakdown, project breakdown, CSV export          | [x]       |
+| 11 | Multi-currency expenses using exchange rates from Phase 5                           | [x]       |
+| 12 | Profit/loss report: revenue vs expenses with monthly trend                          | [x]       |
+| 13 | Project profitability: per-project revenue, costs, margin                           | [x]       |
+| 14 | Billable expenses convertible to invoice line items                                 | [x]       |
+| 15 | Dashboard updated with expense and P&L widgets                                      | [x]       |
+| 16 | Expenses included in data import/export                                             | [x]       |
+| 17 | Back-end test coverage >= 80%                                                       | [x]       |
+| 18 | Front-end test coverage >= 80%                                                      | [x]       |
 | 19 | CI pipeline fully green on `main`                                                   | [ ]       |
 | 20 | Version tagged as `v1.2.0` on GitHub                                                | [ ]       |
 

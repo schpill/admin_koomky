@@ -14,6 +14,7 @@ import { useDashboardStore } from "@/lib/stores/dashboard";
 import { useCalendarStore } from "@/lib/stores/calendar";
 import { useI18n } from "@/components/providers/i18n-provider";
 import { useNotificationStore } from "@/lib/stores/notifications";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const RevenueChart = dynamic(
   () =>
@@ -151,7 +152,60 @@ export default function DashboardPage() {
           icon={<FileText className="h-4 w-4" />}
           description="Need follow-up"
         />
+        <MetricCard
+          title="Profit (month)"
+          value={
+            <CurrencyAmount
+              amount={Number(stats?.profit_loss_summary?.profit || 0)}
+              currency={stats?.profit_loss_summary?.base_currency || baseCurrency}
+            />
+          }
+          isLoading={isLoading}
+          icon={<CreditCard className="h-4 w-4" />}
+          description={`${Number(stats?.profit_loss_summary?.margin || 0).toFixed(2)}% margin`}
+        />
+        <MetricCard
+          title="Expenses (month)"
+          value={
+            <CurrencyAmount
+              amount={Number(stats?.expense_overview?.month_total || 0)}
+              currency={stats?.expense_overview?.base_currency || baseCurrency}
+            />
+          }
+          isLoading={isLoading}
+          icon={<FileText className="h-4 w-4" />}
+          description="Spend overview"
+        />
       </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Top expense categories</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {(stats?.expense_overview?.top_categories || []).length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              No expense category data for current month.
+            </p>
+          ) : (
+            <div className="grid gap-2 md:grid-cols-3">
+              {stats?.expense_overview?.top_categories?.map((item) => (
+                <div key={item.category} className="rounded-md border p-3">
+                  <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                    {item.category}
+                  </p>
+                  <p className="text-lg font-semibold">
+                    <CurrencyAmount
+                      amount={Number(item.total || 0)}
+                      currency={stats?.expense_overview?.base_currency || baseCurrency}
+                    />
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       <RevenueChart
         title="Revenue trend (12 months)"

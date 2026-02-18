@@ -31,6 +31,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ProjectOverview } from "@/components/projects/project-overview";
 import { TaskListView } from "@/components/projects/task-list-view";
 import { ProjectTimeline } from "@/components/projects/project-timeline";
+import { CurrencyAmount } from "@/components/shared/currency-amount";
 import {
   TimeEntryForm,
   type TimeEntryFormValues,
@@ -42,6 +43,17 @@ import {
   type TaskPriority,
   type TaskStatus,
 } from "@/lib/stores/projects";
+import { apiClient } from "@/lib/api";
+
+interface ProjectExpense {
+  id: string;
+  description: string;
+  date: string;
+  amount: number;
+  currency: string;
+  status: string;
+  is_billable: boolean;
+}
 
 const TaskKanbanBoard = dynamic(
   () =>
@@ -81,6 +93,8 @@ export default function ProjectDetailPage() {
   const [taskDueDate, setTaskDueDate] = useState("");
   const [viewMode, setViewMode] = useState<"kanban" | "list">("kanban");
   const [selectedTask, setSelectedTask] = useState<ProjectTask | null>(null);
+  const [projectExpenses, setProjectExpenses] = useState<ProjectExpense[]>([]);
+  const [isExpensesLoading, setExpensesLoading] = useState(false);
 
   useEffect(() => {
     if (!projectId) {
@@ -159,6 +173,29 @@ export default function ProjectDetailPage() {
       toast.error((error as Error).message || "Unable to log time");
     }
   };
+
+  const loadProjectExpenses = async () => {
+    setExpensesLoading(true);
+    try {
+      const response = await apiClient.get<ProjectExpense[]>(
+        `/projects/${projectId}/expenses`
+      );
+      setProjectExpenses(response.data || []);
+    } catch (error) {
+      toast.error((error as Error).message || "Unable to load project expenses");
+    } finally {
+      setExpensesLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!projectId) {
+      return;
+    }
+
+    loadProjectExpenses();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [projectId]);
 
   if (isLoading && !currentProject) {
     return (
@@ -269,11 +306,12 @@ export default function ProjectDetailPage() {
       <ProjectOverview project={currentProject} />
 
       <Tabs defaultValue="tasks" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="tasks">Tasks</TabsTrigger>
           <TabsTrigger value="time">Time</TabsTrigger>
           <TabsTrigger value="files">Files</TabsTrigger>
+          <TabsTrigger value="expenses">Expenses</TabsTrigger>
           <TabsTrigger value="invoices">Invoices</TabsTrigger>
         </TabsList>
 
@@ -366,6 +404,72 @@ export default function ProjectDetailPage() {
             title="Files"
             description="Task attachments are managed from each task detail panel."
           />
+        </TabsContent>
+
+        <TabsContent value="expenses">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle>Project expenses</CardTitle>
+              <Button asChild size="sm" variant="outline">
+                <Link href={`/expenses/create?project_id=${projectId}`}>
+                  <Plus className="mr-2 h-4 w-4" />
+                  Quick-add expense
+                </Link>
+              </Button>
+            </CardHeader>
+            <CardContent>
+              {isExpensesLoading ? (
+                <p className="text-sm text-muted-foreground">
+                  Loading project expenses...
+                </p>
+              ) : projectExpenses.length === 0 ? (
+                <p className="text-sm text-muted-foreground">
+                  No expenses allocated to this project yet.
+                </p>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b text-left">
+                        <th className="pb-3">Date</th>
+                        <th className="pb-3">Description</th>
+                        <th className="pb-3">Amount</th>
+                        <th className="pb-3">Billable</th>
+                        <th className="pb-3">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {projectExpenses.map((expense) => (
+                        <tr key={expense.id} className="border-b">
+                          <td className="py-2 text-muted-foreground">
+                            {expense.date}
+                          </td>
+                          <td className="py-2">
+                            <Link
+                              href={`/expenses/${expense.id}`}
+                              className="font-medium text-primary hover:underline"
+                            >
+                              {expense.description}
+                            </Link>
+                          </td>
+                          <td className="py-2">
+                            <CurrencyAmount
+                              amount={Number(expense.amount || 0)}
+                              currency={expense.currency || "EUR"}
+                            />
+                          </td>
+                          <td className="py-2">
+                            {expense.is_billable ? "Yes" : "No"}
+                          </td>
+                          <td className="py-2">{expense.status}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </CardContent>
+          </Card>
         </TabsContent>
 
         <TabsContent value="invoices">

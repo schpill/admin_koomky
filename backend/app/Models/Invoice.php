@@ -155,6 +155,14 @@ class Invoice extends Model
     }
 
     /**
+     * @return HasMany<PaymentIntent, Invoice>
+     */
+    public function paymentIntents(): HasMany
+    {
+        return $this->hasMany(PaymentIntent::class);
+    }
+
+    /**
      * @param  Builder<Invoice>  $query
      * @return Builder<Invoice>
      */

@@ -15,6 +15,7 @@ import { SendInvoiceModal } from "@/components/invoices/send-invoice-modal";
 import { InvoicePdfPreview } from "@/components/invoices/invoice-pdf-preview";
 import { CurrencyAmount } from "@/components/shared/currency-amount";
 import { useInvoiceStore } from "@/lib/stores/invoices";
+import { apiClient } from "@/lib/api";
 
 function buildPreviewHtml(invoice: any): string {
   if (!invoice) {
@@ -66,6 +67,7 @@ export default function InvoiceDetailPage() {
 
   const [paymentModalOpen, setPaymentModalOpen] = useState(false);
   const [sendModalOpen, setSendModalOpen] = useState(false);
+  const [portalPaymentEnabled, setPortalPaymentEnabled] = useState(false);
 
   useEffect(() => {
     if (!invoiceId) {
@@ -77,6 +79,13 @@ export default function InvoiceDetailPage() {
       router.push("/invoices");
     });
   }, [fetchInvoice, invoiceId, router]);
+
+  useEffect(() => {
+    apiClient
+      .get<any>("/settings/portal")
+      .then((response) => setPortalPaymentEnabled(Boolean(response.data?.payment_enabled)))
+      .catch(() => setPortalPaymentEnabled(false));
+  }, []);
 
   const payments = useMemo(
     () => currentInvoice?.payments || [],
@@ -147,6 +156,14 @@ export default function InvoiceDetailPage() {
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <InvoiceStatusBadge status={currentInvoice.status} />
+            {portalPaymentEnabled &&
+            ["sent", "viewed", "partially_paid", "overdue"].includes(
+              currentInvoice.status
+            ) ? (
+              <span className="rounded-full border px-2 py-0.5 text-xs font-medium">
+                Portal payment available
+              </span>
+            ) : null}
             <Button
               type="button"
               variant="outline"

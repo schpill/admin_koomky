@@ -11,6 +11,7 @@ const publicRoutes = [
   "/auth/login",
   "/auth/forgot-password",
   "/auth/reset-password",
+  "/portal",
 ];
 
 // Public static assets served from /public

@@ -10,6 +10,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useInvoiceStore, type Invoice } from "@/lib/stores/invoices";
 import { useClientStore } from "@/lib/stores/clients";
+import { apiClient } from "@/lib/api";
 import { InvoiceFilterBar } from "@/components/invoices/invoice-filter-bar";
 import { InvoiceStatusBadge } from "@/components/invoices/invoice-status-badge";
 import { InvoicePdfPreview } from "@/components/invoices/invoice-pdf-preview";
@@ -55,6 +56,7 @@ function buildPreviewHtml(invoice?: Invoice | null): string {
 export default function InvoicesPage() {
   const { invoices, isLoading, pagination, fetchInvoices } = useInvoiceStore();
   const { clients, fetchClients } = useClientStore();
+  const [portalPaymentEnabled, setPortalPaymentEnabled] = useState(false);
   const [filters, setFilters] = useState<Record<string, string>>({
     sort_by: "issue_date",
     sort_order: "desc",
@@ -66,6 +68,13 @@ export default function InvoicesPage() {
   useEffect(() => {
     fetchClients();
   }, [fetchClients]);
+
+  useEffect(() => {
+    apiClient
+      .get<any>("/settings/portal")
+      .then((response) => setPortalPaymentEnabled(Boolean(response.data?.payment_enabled)))
+      .catch(() => setPortalPaymentEnabled(false));
+  }, []);
 
   useEffect(() => {
     fetchInvoices(filters);
@@ -167,6 +176,15 @@ export default function InvoicesPage() {
                               Recurring
                             </Badge>
                           )}
+                          {portalPaymentEnabled &&
+                          ["sent", "viewed", "partially_paid", "overdue"].includes(invoice.status) ? (
+                            <Badge
+                              variant="outline"
+                              className="ml-2 align-middle text-[10px] uppercase"
+                            >
+                              Portal pay
+                            </Badge>
+                          ) : null}
                         </td>
                         <td className="py-4 text-muted-foreground">
                           {invoice.client?.name || invoice.client_id}
