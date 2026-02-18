@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\RecurringInvoices\StoreRecurringInvoiceProfileRequest;
+use App\Http\Requests\Api\V1\RecurringInvoices\UpdateRecurringInvoiceProfileRequest;
 use App\Http\Resources\Api\V1\RecurringInvoices\RecurringInvoiceProfileResource;
 use App\Models\RecurringInvoiceProfile;
 use App\Models\User;
@@ -89,7 +90,7 @@ class RecurringInvoiceProfileController extends Controller
         return $this->success(new RecurringInvoiceProfileResource($recurring_invoice), 'Recurring invoice profile retrieved successfully');
     }
 
-    public function update(StoreRecurringInvoiceProfileRequest $request, RecurringInvoiceProfile $recurring_invoice): JsonResponse
+    public function update(UpdateRecurringInvoiceProfileRequest $request, RecurringInvoiceProfile $recurring_invoice): JsonResponse
     {
         Gate::authorize('update', $recurring_invoice);
 
