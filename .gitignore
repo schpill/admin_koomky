@@ -12,6 +12,7 @@ dist/
 backend/vendor/
 backend/.env
 backend/storage/*.key
+backend/storage/debugbar/
 backend/public/storage
 backend/public/hot
 backend/public/build
@@ -40,3 +41,4 @@ pnpm-debug.log*
 lerna-debug.log*
 .husky/_/
 frontend/next-env.d.ts
+frontend/tsconfig.tsbuildinfo
