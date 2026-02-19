@@ -11,7 +11,9 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
+use Stripe\Charge;
 use Stripe\Exception\SignatureVerificationException;
+use Stripe\PaymentIntent as StripePaymentIntent;
 use Stripe\StripeObject;
 use Stripe\Webhook;
 
@@ -41,7 +43,7 @@ class StripeWebhookController extends Controller
 
             return $this->error('Invalid Stripe signature', 400);
         } catch (\UnexpectedValueException $e) {
-            Log - ›warning('Invalid Stripe webhook payload.', ['exception' => $e->getMessage()]);
+            Log::warning('Invalid Stripe webhook payload.', ['exception' => $e->getMessage()]);
 
             return $this->error('Invalid payload', 400);
         }
@@ -73,17 +75,48 @@ class StripeWebhookController extends Controller
             return $this->success(null, 'Event already handled');
         }
 
-        return match ($event->type) {
-            'payment_intent.succeeded' => $this->handleSucceeded($paymentIntent, $stripeObject),
-            'payment_intent.payment_failed' => $this->handleFailed($paymentIntent, $stripeObject),
-            'charge.refunded' => $this->handleRefunded($paymentIntent, $stripeObject),
-            default => $this->success(null, 'Event ignored'),
-        };
+        if ($event->type === 'payment_intent.succeeded') {
+            if (! ($stripeObject instanceof StripePaymentIntent)) {
+                Log::warning('Unexpected Stripe object for payment_intent.succeeded.', ['object_type' => get_class($stripeObject)]);
+
+                return $this->success(null, 'Event ignored');
+            }
+
+            return $this->handleSucceeded($paymentIntent, $stripeObject);
+        }
+
+        if ($event->type === 'payment_intent.payment_failed') {
+            if (! ($stripeObject instanceof StripePaymentIntent)) {
+                Log::warning('Unexpected Stripe object for payment_intent.payment_failed.', ['object_type' => get_class($stripeObject)]);
+
+                return $this->success(null, 'Event ignored');
+            }
+
+            return $this->handleFailed($paymentIntent, $stripeObject);
+        }
+
+        if ($event->type === 'charge.refunded') {
+            if (! ($stripeObject instanceof Charge)) {
+                Log::warning('Unexpected Stripe object for charge.refunded.', ['object_type' => get_class($stripeObject)]);
+
+                return $this->success(null, 'Event ignored');
+            }
+
+            return $this->handleRefunded($paymentIntent, $stripeObject);
+        }
+
+        return $this->success(null, 'Event ignored');
     }
 
-    private function handleSucceeded(PaymentIntent $paymentIntent, \Stripe\PaymentIntent $stripeObject): JsonResponse
+    private function handleSucceeded(PaymentIntent $paymentIntent, StripePaymentIntent $stripeObject): JsonResponse
     {
         $invoice = $paymentIntent->invoice;
+        if (! $invoice) {
+            Log::warning('Stripe succeeded event received without linked invoice.', ['payment_intent_id' => $paymentIntent->id]);
+
+            return $this->success(null, 'Event ignored');
+        }
+
         $amountReceivedInMajorUnit = (float) ($stripeObject->amount_received / 100);
 
         if (abs($amountReceivedInMajorUnit - $paymentIntent->amount) > 0.01) {
@@ -117,27 +150,47 @@ class StripeWebhookController extends Controller
         return $this->success(null, 'Stripe event processed');
     }
 
-    private function handleFailed(PaymentIntent $paymentIntent, \Stripe\PaymentIntent $stripeObject): JsonResponse
+    private function handleFailed(PaymentIntent $paymentIntent, StripePaymentIntent $stripeObject): JsonResponse
     {
-        $reason = $stripeObject->last_payment_error ? $stripeObject->last_payment_error->message : 'Payment failed';
+        $invoice = $paymentIntent->invoice;
+        if (! $invoice) {
+            Log::warning('Stripe failed event received without linked invoice.', ['payment_intent_id' => $paymentIntent->id]);
+
+            return $this->success(null, 'Event ignored');
+        }
+
+        $reason = 'Payment failed';
+        $lastPaymentError = $stripeObject->last_payment_error;
+        if (is_object($lastPaymentError) && isset($lastPaymentError->message)) {
+            $reason = (string) $lastPaymentError->message;
+        }
+
         $paymentIntent->update(['status' => 'failed', 'failure_reason' => $reason]);
 
-        if ($paymentIntent->invoice->client?->email) {
-            Notification::route('mail', $paymentIntent->invoice->client->email)
-                ->notify(new PaymentFailedNotification($paymentIntent->invoice, $paymentIntent));
+        $clientEmail = $invoice->client?->email;
+        if (is_string($clientEmail) && $clientEmail !== '') {
+            Notification::route('mail', $clientEmail)
+                ->notify(new PaymentFailedNotification($invoice, $paymentIntent));
         }
 
         return $this->success(null, 'Stripe event processed');
     }
 
-    private function handleRefunded(PaymentIntent $paymentIntent, \Stripe\Charge $stripeObject): JsonResponse
+    private function handleRefunded(PaymentIntent $paymentIntent, Charge $stripeObject): JsonResponse
     {
+        $invoice = $paymentIntent->invoice;
+        if (! $invoice) {
+            Log::warning('Stripe refunded event received without linked invoice.', ['payment_intent_id' => $paymentIntent->id]);
+
+            return $this->success(null, 'Event ignored');
+        }
+
         $paymentIntent->update(['status' => 'refunded', 'refunded_at' => now()]);
 
         $amountRefundedInMajorUnit = (float) (($stripeObject->amount_refunded ?? 0) / 100);
 
-        if ($amountRefundedInMajorUnit >= (float) $paymentIntent->invoice->total) {
-            $paymentIntent->invoice->update(['status' => 'sent', 'paid_at' => null]);
+        if ($amountRefundedInMajorUnit >= (float) $invoice->total) {
+            $invoice->update(['status' => 'sent', 'paid_at' => null]);
         }
 
         return $this->success(null, 'Stripe event processed');
@@ -145,10 +198,27 @@ class StripeWebhookController extends Controller
 
     private function resolveStripeIntentId(string $eventType, StripeObject $object): ?string
     {
-        return match ($eventType) {
-            'charge.refunded' => $object->payment_intent,
-            default => $object->id ?? null,
-        };
+        $objectData = $object->toArray();
+
+        if ($eventType === 'charge.refunded') {
+            $paymentIntent = $objectData['payment_intent'] ?? null;
+
+            if (is_string($paymentIntent)) {
+                return $paymentIntent;
+            }
+
+            if (is_array($paymentIntent)) {
+                $paymentIntentId = $paymentIntent['id'] ?? null;
+
+                return is_string($paymentIntentId) ? $paymentIntentId : null;
+            }
+
+            return null;
+        }
+
+        $objectId = $objectData['id'] ?? null;
+
+        return is_string($objectId) ? $objectId : null;
     }
 
     private function getEquivalentStatus(string $eventType): ?string

@@ -15,7 +15,12 @@ class StripePaymentService
     {
         $this->assertStripeConfigured($settings);
 
-        return new StripeClient($settings->stripe_secret_key);
+        $secretKey = $settings->stripe_secret_key;
+        if (! is_string($secretKey) || $secretKey === '') {
+            throw new RuntimeException('Stripe is not configured for this account');
+        }
+
+        return new StripeClient($secretKey);
     }
 
     /**
@@ -36,6 +41,7 @@ class StripePaymentService
      * @return array<string, mixed>
      *
      * @throws ApiErrorException
+     * @throws RuntimeException
      */
     public function createPaymentIntent(PaymentIntent $paymentIntent, PortalSettings $settings): array
     {
@@ -77,15 +83,20 @@ class StripePaymentService
      * @return array<string, mixed>
      *
      * @throws ApiErrorException
+     * @throws RuntimeException
      */
     public function refundPayment(PaymentIntent $paymentIntent, float $amount, PortalSettings $settings): array
     {
         $stripe = $this->getStripeClient($settings);
 
         $amountInCents = (int) round($amount * 100);
+        $stripePaymentIntentId = $paymentIntent->stripe_payment_intent_id;
+        if (! is_string($stripePaymentIntentId) || $stripePaymentIntentId === '') {
+            throw new RuntimeException('Missing Stripe payment intent id');
+        }
 
         $refund = $stripe->refunds->create([
-            'payment_intent' => $paymentIntent->stripe_payment_intent_id,
+            'payment_intent' => $stripePaymentIntentId,
             'amount' => $amountInCents,
         ]);
 
