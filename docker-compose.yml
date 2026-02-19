@@ -44,6 +44,7 @@ services:
     build:
       context: .
       dockerfile: backend/docker/node/Dockerfile
+    command: start-frontend
     user: "${UID:-1000}:${GID:-1000}"
     volumes:
       - ./frontend:/app

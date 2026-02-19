@@ -34,7 +34,7 @@ async function refreshAccessToken(): Promise<boolean> {
 
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL || "http://localhost/api/v1"}/auth/refresh`,
+      `${process.env.NEXT_PUBLIC_API_URL || "/api/v1"}/auth/refresh`,
       {
         method: "POST",
         headers: {
@@ -76,7 +76,7 @@ export async function api<T>(
       `Bearer ${accessToken}`;
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost/api/v1";
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "/api/v1";
 
   let url = `${baseUrl}${endpoint}`;
 
