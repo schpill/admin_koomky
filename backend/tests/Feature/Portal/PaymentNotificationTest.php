@@ -40,6 +40,7 @@ test('freelancer is notified when payment succeeds', function () {
         'invoice_id' => $invoice->id,
         'client_id' => $client->id,
         'stripe_payment_intent_id' => 'pi_notify_success',
+        'status' => 'processing',
     ]);
 
     postNotificationWebhook([
@@ -65,6 +66,7 @@ test('client is notified by email when payment fails', function () {
         'invoice_id' => $invoice->id,
         'client_id' => $client->id,
         'stripe_payment_intent_id' => 'pi_notify_failed',
+        'status' => 'processing',
     ]);
 
     postNotificationWebhook([
