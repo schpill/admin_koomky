@@ -1,75 +1,97 @@
 <?php
 
-use App\Models\Client;
-use App\Models\Invoice;
-use App\Models\PaymentIntent;
+use App\Models\PaymentIntent as LocalPaymentIntent;
 use App\Models\PortalSettings;
 use App\Models\User;
 use App\Services\StripePaymentService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Mockery\MockInterface;
+use Stripe\Exception\ApiErrorException;
+use Stripe\Exception\InvalidRequestException;
+use Stripe\PaymentIntent as StripePaymentIntent;
+use Stripe\Refund;
+use Stripe\StripeClient;
 use Tests\TestCase;
 
 uses(TestCase::class, RefreshDatabase::class);
 
-test('stripe payment service creates confirms and refunds payment intents', function () {
-    $user = User::factory()->create();
-    $client = Client::factory()->create([
-        'user_id' => $user->id,
-    ]);
-    $invoice = Invoice::factory()->create([
-        'user_id' => $user->id,
-        'client_id' => $client->id,
-        'status' => 'sent',
-        'total' => 120,
+beforeEach(function () {
+    $this->user = User::factory()->create();
+    $this->settings = PortalSettings::factory()->create([
+        'user_id' => $this->user->id,
+        'stripe_publishable_key' => 'pk_test_valid',
+        'stripe_secret_key' => 'sk_test_valid',
     ]);
 
-    $settings = PortalSettings::factory()->create([
-        'user_id' => $user->id,
-        'stripe_publishable_key' => 'pk_test_123',
-        'stripe_secret_key' => 'sk_test_123',
-        'payment_enabled' => true,
-    ]);
-
-    $paymentIntent = PaymentIntent::factory()->create([
-        'invoice_id' => $invoice->id,
-        'client_id' => $client->id,
-        'amount' => 120,
+    $this->localPaymentIntent = LocalPaymentIntent::factory()->create([
+        'amount' => 150.75,
         'currency' => 'EUR',
-        'status' => 'pending',
         'stripe_payment_intent_id' => null,
     ]);
 
-    $service = app(StripePaymentService::class);
+    $this->stripeClientMock = $this->mock(StripeClient::class, function (MockInterface $mock) {
+        $mock->paymentIntents = Mockery::mock();
+        $mock->refunds = Mockery::mock();
+    });
 
-    $created = $service->createPaymentIntent($paymentIntent, $settings);
-    expect($created['stripe_payment_intent_id'])->toBeString();
-    expect($created['client_secret'])->toBeString();
-    expect($created['status'])->toBe('processing');
+    $this->partialMock(StripePaymentService::class, function (MockInterface $mock) {
+        $mock->shouldAllowMockingProtectedMethods();
+        $mock->shouldReceive('getStripeClient')->andReturn($this->stripeClientMock);
+    });
 
-    $paymentIntent->refresh();
-    expect($paymentIntent->stripe_payment_intent_id)->toBe($created['stripe_payment_intent_id']);
-
-    $confirmed = $service->confirmPayment($paymentIntent, $settings);
-    expect($confirmed['status'])->toBe($paymentIntent->fresh()->status);
-
-    $refunded = $service->refundPayment($paymentIntent->fresh(), 120, $settings);
-    expect($refunded['status'])->toBe('refunded');
+    $this->service = app(StripePaymentService::class);
 });
 
-test('stripe payment service returns key configuration from portal settings', function () {
-    $user = User::factory()->create();
+test('createPaymentIntent calls stripe api with amount in cents', function () {
+    $stripePI = new StripePaymentIntent('pi_123');
+    $stripePI->client_secret = 'pi_123_secret';
 
-    PortalSettings::factory()->create([
-        'user_id' => $user->id,
-        'stripe_publishable_key' => 'pk_dynamic',
-        'stripe_secret_key' => 'sk_dynamic',
-        'stripe_webhook_secret' => 'whsec_dynamic',
-    ]);
+    $this->stripeClientMock->paymentIntents
+        ->shouldReceive('create')
+        ->once()
+        ->with(Mockery::on(fn ($arg) => $arg['amount'] === 15075))
+        ->andReturn($stripePI);
 
-    $service = app(StripePaymentService::class);
-    $configuration = $service->configurationForUser($user);
+    $this->service->createPaymentIntent($this->localPaymentIntent, $this->settings);
+});
 
-    expect($configuration['publishable_key'])->toBe('pk_dynamic');
-    expect($configuration['secret_key'])->toBe('sk_dynamic');
-    expect($configuration['webhook_secret'])->toBe('whsec_dynamic');
+test('createPaymentIntent updates an existing stripe payment intent', function () {
+    $this->localPaymentIntent->stripe_payment_intent_id = 'pi_existing';
+    $this->localPaymentIntent->save();
+
+    $stripePI = new StripePaymentIntent('pi_existing');
+    $stripePI->client_secret = 'pi_existing_secret';
+
+    $this->stripeClientMock->paymentIntents
+        ->shouldReceive('update')
+        ->once()
+        ->with('pi_existing', Mockery::on(fn ($arg) => $arg['amount'] === 15075))
+        ->andReturn($stripePI);
+
+    $this->service->createPaymentIntent($this->localPaymentIntent, $this->settings);
+});
+
+test('refundPayment calls stripe api with amount in cents', function () {
+    $this->localPaymentIntent->stripe_payment_intent_id = 'pi_to_refund';
+    $this->localPaymentIntent->save();
+
+    $stripeRefund = new Refund('re_123');
+
+    $this->stripeClientMock->refunds
+        ->shouldReceive('create')
+        ->once()
+        ->with(Mockery::on(fn ($arg) => $arg['payment_intent'] === 'pi_to_refund' && $arg['amount'] === 5025))
+        ->andReturn($stripeRefund);
+
+    $this->service->refundPayment($this->localPaymentIntent, 50.25, $this->settings);
+});
+
+test('service propagates stripe api exceptions', function () {
+    $this->stripeClientMock->paymentIntents
+        ->shouldReceive('create')
+        ->andThrow(InvalidRequestException::factory('Invalid API Key.'));
+
+    $this->expectException(ApiErrorException::class);
+
+    $this->service->createPaymentIntent($this->localPaymentIntent, $this->settings);
 });

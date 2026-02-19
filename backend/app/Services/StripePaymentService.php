@@ -5,11 +5,24 @@ namespace App\Services;
 use App\Models\PaymentIntent;
 use App\Models\PortalSettings;
 use App\Models\User;
-use Illuminate\Support\Str;
 use RuntimeException;
+use Stripe\Exception\ApiErrorException;
+use Stripe\StripeClient;
 
 class StripePaymentService
 {
+    protected function getStripeClient(PortalSettings $settings): StripeClient
+    {
+        $this->assertStripeConfigured($settings);
+
+        $secretKey = $settings->stripe_secret_key;
+        if (! is_string($secretKey) || $secretKey === '') {
+            throw new RuntimeException('Stripe is not configured for this account');
+        }
+
+        return new StripeClient($secretKey);
+    }
+
     /**
      * @return array<string, string|null>
      */
@@ -26,63 +39,79 @@ class StripePaymentService
 
     /**
      * @return array<string, mixed>
+     *
+     * @throws ApiErrorException
+     * @throws RuntimeException
      */
     public function createPaymentIntent(PaymentIntent $paymentIntent, PortalSettings $settings): array
     {
-        $this->assertStripeConfigured($settings);
+        $stripe = $this->getStripeClient($settings);
 
-        $stripePaymentIntentId = $paymentIntent->stripe_payment_intent_id ?: 'pi_'.strtolower(Str::random(24));
-        $clientSecret = hash('sha256', $stripePaymentIntentId.'|'.$paymentIntent->id.'|'.$settings->stripe_secret_key);
+        // Stripe expects the amount in the smallest currency unit (cents)
+        $amountInCents = (int) round($paymentIntent->amount * 100);
 
-        $metadata = $paymentIntent->metadata ?? [];
-        $metadata['client_secret'] = $clientSecret;
+        $params = [
+            'amount' => $amountInCents,
+            'currency' => strtolower($paymentIntent->currency),
+            'automatic_payment_methods' => ['enabled' => true],
+            'metadata' => [
+                'internal_payment_intent_id' => $paymentIntent->id,
+                'invoice_id' => $paymentIntent->invoice_id,
+                'client_id' => $paymentIntent->client_id,
+            ],
+        ];
+
+        if ($paymentIntent->stripe_payment_intent_id) {
+            $stripePaymentIntent = $stripe->paymentIntents->update($paymentIntent->stripe_payment_intent_id, $params);
+        } else {
+            $stripePaymentIntent = $stripe->paymentIntents->create($params);
+        }
 
         $paymentIntent->forceFill([
-            'stripe_payment_intent_id' => $stripePaymentIntentId,
+            'stripe_payment_intent_id' => $stripePaymentIntent->id,
             'status' => 'processing',
-            'metadata' => $metadata,
         ])->save();
 
         return [
-            'stripe_payment_intent_id' => $stripePaymentIntentId,
-            'client_secret' => $clientSecret,
+            'stripe_payment_intent_id' => $stripePaymentIntent->id,
+            'client_secret' => $stripePaymentIntent->client_secret,
             'status' => 'processing',
         ];
     }
 
     /**
      * @return array<string, mixed>
-     */
-    public function confirmPayment(PaymentIntent $paymentIntent, PortalSettings $settings): array
-    {
-        $this->assertStripeConfigured($settings);
-
-        return [
-            'stripe_payment_intent_id' => $paymentIntent->stripe_payment_intent_id,
-            'status' => $paymentIntent->status,
-        ];
-    }
-
-    /**
-     * @return array<string, mixed>
+     *
+     * @throws ApiErrorException
+     * @throws RuntimeException
      */
     public function refundPayment(PaymentIntent $paymentIntent, float $amount, PortalSettings $settings): array
     {
-        $this->assertStripeConfigured($settings);
+        $stripe = $this->getStripeClient($settings);
 
-        $metadata = $paymentIntent->metadata ?? [];
-        $metadata['refunded_amount'] = round($amount, 2);
-        $metadata['refund_id'] = 're_'.strtolower(Str::random(20));
+        $amountInCents = (int) round($amount * 100);
+        $stripePaymentIntentId = $paymentIntent->stripe_payment_intent_id;
+        if (! is_string($stripePaymentIntentId) || $stripePaymentIntentId === '') {
+            throw new RuntimeException('Missing Stripe payment intent id');
+        }
+
+        $refund = $stripe->refunds->create([
+            'payment_intent' => $stripePaymentIntentId,
+            'amount' => $amountInCents,
+        ]);
 
         $paymentIntent->forceFill([
             'status' => 'refunded',
             'refunded_at' => now(),
-            'metadata' => $metadata,
+            'metadata' => array_merge($paymentIntent->metadata ?? [], [
+                'refund_id' => $refund->id,
+                'refunded_amount' => $amount,
+            ]),
         ])->save();
 
         return [
             'status' => 'refunded',
-            'refund_id' => $metadata['refund_id'],
+            'refund_id' => $refund->id,
         ];
     }
 

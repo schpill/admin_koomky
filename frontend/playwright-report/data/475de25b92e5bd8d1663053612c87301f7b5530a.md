@@ -1,0 +1,55 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+    - generic [active]:
+        - generic [ref=e4]:
+            - generic [ref=e5]:
+                - generic [ref=e6]:
+                    - navigation [ref=e7]:
+                        - button "previous" [disabled] [ref=e8]:
+                            - img "previous" [ref=e9]
+                        - generic [ref=e11]:
+                            - generic [ref=e12]: 1/
+                            - text: "1"
+                        - button "next" [disabled] [ref=e13]:
+                            - img "next" [ref=e14]
+                    - img
+                - generic [ref=e16]:
+                    - link "Next.js 15.5.12 (outdated) Webpack" [ref=e17]:
+                        - /url: https://nextjs.org/docs/messages/version-staleness
+                        - img [ref=e18]
+                        - generic "An outdated version detected (latest is 16.1.6), upgrade is highly recommended!" [ref=e20]: Next.js 15.5.12 (outdated)
+                        - generic [ref=e21]: Webpack
+                    - img
+            - dialog "Runtime TypeError" [ref=e23]:
+                - generic [ref=e27]:
+                    - generic [ref=e28]:
+                        - generic [ref=e30]: Runtime TypeError
+                        - generic [ref=e31]:
+                            - button "Copy Error Info" [ref=e32] [cursor=pointer]:
+                                - img [ref=e33]
+                            - button "No related documentation found" [disabled] [ref=e35]:
+                                - img [ref=e36]
+                            - link "Learn more about enabling Node.js inspector for server code with Chrome DevTools" [ref=e38]:
+                                - /url: https://nextjs.org/docs/app/building-your-application/configuring/debugging#server-side-code
+                                - img [ref=e39]
+                    - generic [ref=e50]:
+                        - paragraph [ref=e51]: 'categories.map is not a function. (In ''categories.map((category)=>/*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("option", { value: category.id, children: category.name }, category.id, false, { fileName: "/home/gerald/admin_koomky/frontend/app/(dashboard)/expenses/page.tsx", lineNumber: 175, columnNumber: 17 }, this))'', ''categories.map'' is undefined)'
+                        - button "Show More" [ref=e53] [cursor=pointer]
+                - generic [ref=e55]:
+                    - generic [ref=e56]: "1"
+                    - generic [ref=e57]: "2"
+        - generic [ref=e62] [cursor=pointer]:
+            - button "Open Next.js Dev Tools" [ref=e63]:
+                - img [ref=e64]
+            - generic [ref=e69]:
+                - button "Open issues overlay" [ref=e70]:
+                    - generic [ref=e71]:
+                        - generic [ref=e72]: "0"
+                        - generic [ref=e73]: "1"
+                    - generic [ref=e74]: Issue
+                - button "Collapse issues badge" [ref=e75]:
+                    - img [ref=e76]
+    - 'heading "Application error: a client-side exception has occurred while loading localhost (see the browser console for more information)." [level=2] [ref=e80]'
+```

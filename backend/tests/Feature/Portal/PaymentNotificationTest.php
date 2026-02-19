@@ -3,111 +3,83 @@
 use App\Models\Client;
 use App\Models\Invoice;
 use App\Models\PaymentIntent;
-use App\Models\PortalSettings;
 use App\Models\User;
 use App\Notifications\PaymentFailedNotification;
 use App\Notifications\PaymentReceivedNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Notification;
 
 uses(RefreshDatabase::class);
 
-function paymentWebhookHeaders(array $payload, string $secret): array
-{
-    $json = json_encode($payload, JSON_THROW_ON_ERROR);
+const NOTIFICATION_WEBHOOK_SECRET = 'whsec_notifications_secret';
 
-    return [
-        'Stripe-Signature' => hash_hmac('sha256', $json, $secret),
-        'Content-Type' => 'application/json',
-        'Accept' => 'application/json',
-    ];
+function postNotificationWebhook(array $data, ?string $signature = null): \Illuminate\Testing\TestResponse
+{
+    $timestamp = time();
+    $payload = json_encode($data, JSON_UNESCAPED_SLASHES);
+
+    if (! $signature) {
+        $stringToSign = $timestamp.'.'.$payload;
+        $signature = hash_hmac('sha256', $stringToSign, NOTIFICATION_WEBHOOK_SECRET);
+    }
+
+    $headers = ['Stripe-Signature' => "t={$timestamp},v1={$signature}"];
+
+    return test()->postJson('/api/v1/webhooks/stripe', $data, $headers);
 }
 
 test('freelancer is notified when payment succeeds', function () {
     Notification::fake();
+    Config::set('services.stripe.webhook_secret', NOTIFICATION_WEBHOOK_SECRET);
 
     $user = User::factory()->create();
     $client = Client::factory()->create(['user_id' => $user->id]);
-
-    PortalSettings::factory()->create([
-        'user_id' => $user->id,
-        'stripe_webhook_secret' => 'whsec_notifications',
-    ]);
-
-    $invoice = Invoice::factory()->create([
-        'user_id' => $user->id,
-        'client_id' => $client->id,
-        'status' => 'sent',
-        'total' => 180,
-    ]);
-
+    $invoice = Invoice::factory()->create(['user_id' => $user->id, 'client_id' => $client->id]);
     PaymentIntent::factory()->create([
         'invoice_id' => $invoice->id,
         'client_id' => $client->id,
         'stripe_payment_intent_id' => 'pi_notify_success',
-        'amount' => 180,
         'status' => 'processing',
     ]);
 
-    $payload = [
+    postNotificationWebhook([
         'type' => 'payment_intent.succeeded',
-        'data' => [
-            'object' => [
-                'id' => 'pi_notify_success',
-                'amount_received' => 18000,
-            ],
-        ],
-    ];
-
-    $this->postJson('/api/v1/webhooks/stripe', $payload, paymentWebhookHeaders($payload, 'whsec_notifications'))
-        ->assertStatus(200);
+        'data' => ['object' => [
+            'id' => 'pi_notify_success',
+            'object' => 'payment_intent',
+            'amount_received' => 18000,
+        ]],
+    ])->assertOk();
 
     Notification::assertSentTo($user, PaymentReceivedNotification::class);
 });
 
 test('client is notified by email when payment fails', function () {
     Notification::fake();
+    Config::set('services.stripe.webhook_secret', NOTIFICATION_WEBHOOK_SECRET);
 
     $user = User::factory()->create();
-    $client = Client::factory()->create([
-        'user_id' => $user->id,
-        'email' => 'billing-client@example.test',
-    ]);
-
-    PortalSettings::factory()->create([
-        'user_id' => $user->id,
-        'stripe_webhook_secret' => 'whsec_notifications',
-    ]);
-
-    $invoice = Invoice::factory()->create([
-        'user_id' => $user->id,
-        'client_id' => $client->id,
-        'status' => 'sent',
-        'total' => 95,
-    ]);
-
+    $client = Client::factory()->create(['user_id' => $user->id, 'email' => 'billing@example.com']);
+    $invoice = Invoice::factory()->create(['user_id' => $user->id, 'client_id' => $client->id]);
     PaymentIntent::factory()->create([
         'invoice_id' => $invoice->id,
         'client_id' => $client->id,
         'stripe_payment_intent_id' => 'pi_notify_failed',
-        'amount' => 95,
         'status' => 'processing',
     ]);
 
-    $payload = [
+    postNotificationWebhook([
         'type' => 'payment_intent.payment_failed',
-        'data' => [
-            'object' => [
-                'id' => 'pi_notify_failed',
-                'last_payment_error' => [
-                    'message' => 'Insufficient funds',
-                ],
-            ],
-        ],
-    ];
+        'data' => ['object' => [
+            'id' => 'pi_notify_failed',
+            'object' => 'payment_intent',
+            'last_payment_error' => ['message' => 'Insufficient funds'],
+        ]],
+    ])->assertOk();
 
-    $this->postJson('/api/v1/webhooks/stripe', $payload, paymentWebhookHeaders($payload, 'whsec_notifications'))
-        ->assertStatus(200);
-
-    Notification::assertSentOnDemand(PaymentFailedNotification::class);
+    Notification::assertSentTo(
+        new \Illuminate\Notifications\AnonymousNotifiable,
+        PaymentFailedNotification::class
+    );
 });
