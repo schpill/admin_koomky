@@ -60,3 +60,6 @@ shell-frontend:
 
 tinker:
 	docker compose run --rm api php artisan tinker
+
+user:
+	docker compose run --rm api php artisan users:create
