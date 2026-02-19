@@ -637,7 +637,6 @@ export const messages: Record<Locale, MessageTree> = {
     campaigns: {
       title: "Campagnes",
       totalCount: "{count} campagnes au total",
-      segments: "Segments",
       newCampaign: "Nouvelle campagne",
       campaignList: "Liste des campagnes",
       empty: {
@@ -2046,7 +2045,6 @@ export const messages: Record<Locale, MessageTree> = {
     campaigns: {
       title: "Campaigns",
       totalCount: "{count} campaigns total",
-      segments: "Segments",
       newCampaign: "New campaign",
       campaignList: "Campaign list",
       empty: {
