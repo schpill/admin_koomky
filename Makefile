@@ -1,7 +1,15 @@
-.PHONY: up down restart build install test lint fresh seed shell-api shell-frontend deploy tinker
+.PHONY: up upwc down restart build install test lint fresh seed shell-api shell-frontend deploy tinker
 
 up:
 	docker compose up -d
+
+upwc:
+	docker compose stop frontend
+	docker compose rm -f frontend
+	docker volume rm -f $$(docker volume ls -q | grep frontend-next) 2>/dev/null || true
+	docker compose up -d frontend
+	docker compose run --rm --user root frontend chown -R 1000:1000 /app/.next
+	docker compose restart frontend
 
 down:
 	docker compose down
