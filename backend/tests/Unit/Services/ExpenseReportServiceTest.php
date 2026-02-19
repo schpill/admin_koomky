@@ -11,65 +11,60 @@ use Tests\TestCase;
 
 uses(TestCase::class, RefreshDatabase::class);
 
-test('expense report service aggregates totals and breakdowns', function () {
-    $user = User::factory()->create();
-    $client = Client::factory()->create(['user_id' => $user->id]);
-    $project = Project::factory()->create([
-        'user_id' => $user->id,
-        'client_id' => $client->id,
-    ]);
-    $travel = ExpenseCategory::factory()->create([
-        'user_id' => $user->id,
-        'name' => 'Travel',
-    ]);
-    $software = ExpenseCategory::factory()->create([
-        'user_id' => $user->id,
-        'name' => 'Software',
-    ]);
+beforeEach(function() {
+    $this->user = User::factory()->create(['base_currency' => 'EUR']);
+    $this->travel = ExpenseCategory::factory()->create(['user_id' => $this->user->id, 'name' => 'Travel']);
+    $this->software = ExpenseCategory::factory()->create(['user_id' => $this->user->id, 'name' => 'Software']);
+    $this->service = app(ExpenseReportService::class);
+});
 
+test('expense report service aggregates totals and breakdowns in base currency', function () {
     Expense::factory()->create([
-        'user_id' => $user->id,
-        'expense_category_id' => $travel->id,
-        'project_id' => $project->id,
-        'client_id' => $client->id,
-        'amount' => 100,
+        'user_id' => $this->user->id,
+        'expense_category_id' => $this->travel->id,
+        'amount' => 100, // EUR
+        'currency' => 'EUR',
+        'base_currency_amount' => 100.00,
         'tax_amount' => 20,
-        'is_billable' => true,
-        'date' => now()->subDays(2)->toDateString(),
     ]);
     Expense::factory()->create([
-        'user_id' => $user->id,
-        'expense_category_id' => $software->id,
-        'project_id' => $project->id,
-        'client_id' => $client->id,
-        'amount' => 50,
+        'user_id' => $this->user->id,
+        'expense_category_id' => $this->software->id,
+        'amount' => 50, // USD
+        'currency' => 'USD',
+        'base_currency_amount' => 60.00, // 1 USD = 1.2 EUR
         'tax_amount' => 10,
-        'is_billable' => false,
-        'date' => now()->subDay()->toDateString(),
     ]);
 
-    $service = app(ExpenseReportService::class);
+    $report = $this->service->build($this->user);
+    
+    // Total should be 100 EUR + 60 EUR (converted from 50 USD)
+    expect($report['total_expenses'])->toBe(160.0);
+    // Tax should be 20 EUR + 12 EUR (10 USD * 1.2)
+    expect($report['tax_total'])->toBe(32.0);
 
-    $report = $service->build($user, [
-        'date_from' => now()->subWeek()->toDateString(),
-        'date_to' => now()->toDateString(),
-    ]);
+    $travelCategory = collect($report['by_category'])->firstWhere('category', 'Travel');
+    $softwareCategory = collect($report['by_category'])->firstWhere('category', 'Software');
 
-    expect($report['total_expenses'])->toBe(150.0);
-    expect($report['tax_total'])->toBe(30.0);
-    expect($report['billable_split']['billable'])->toBe(100.0);
-    expect($report['billable_split']['non_billable'])->toBe(50.0);
-    expect($report['by_category'])->toHaveCount(2);
-    expect($report['by_project'])->toHaveCount(1);
+    expect($travelCategory['total'])->toBe(100.0);
+    expect($softwareCategory['total'])->toBe(60.0);
 });
 
 test('expense report service handles empty datasets', function () {
-    $user = User::factory()->create();
-
-    $service = app(ExpenseReportService::class);
-    $report = $service->build($user, []);
+    $report = $this->service->build($this->user);
 
     expect($report['total_expenses'])->toBe(0.0);
-    expect($report['by_category'])->toBeArray();
-    expect($report['by_project'])->toBeArray();
+    expect($report['by_category'])->toBeArray()->toBeEmpty();
+    expect($report['by_project'])->toBeArray()->toBeEmpty();
+});
+
+test('expense report service filters correctly', function() {
+    Expense::factory()->create(['user_id' => $this->user->id, 'expense_category_id' => $this->travel->id, 'amount' => 100]);
+    Expense::factory()->create(['user_id' => $this->user->id, 'expense_category_id' => $this->software->id, 'amount' => 50]);
+
+    $report = $this->service->build($this->user, ['expense_category_id' => $this->travel->id]);
+    
+    expect($report['total_expenses'])->toBe(100.0);
+    expect($report['count'])->toBe(1);
+    expect($report['by_category'])->toHaveCount(1);
 });

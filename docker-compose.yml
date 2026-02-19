@@ -6,7 +6,7 @@ services:
       - "6680:80"
       - "6443:443"
     volumes:
-      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./backend/docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
       - ./backend:/var/www/html:ro
     depends_on:
       - api
@@ -18,7 +18,9 @@ services:
   api:
     build:
       context: .
-      dockerfile: docker/php/Dockerfile
+      dockerfile: backend/docker/php/Dockerfile
+    entrypoint: /var/www/html/docker/php/entrypoint.sh
+    command: php-fpm
     volumes:
       - ./backend:/var/www/html
     environment: &php-env
@@ -41,9 +43,8 @@ services:
   frontend:
     build:
       context: .
-      dockerfile: docker/node/Dockerfile
+      dockerfile: backend/docker/node/Dockerfile
     user: "${UID:-1000}:${GID:-1000}"
-    command: sh /app/scripts/start-dev.sh
     volumes:
       - ./frontend:/app
       - frontend-node-modules:/app/node_modules
@@ -60,7 +61,7 @@ services:
       - POSTGRES_PASSWORD=secret
     volumes:
       - postgres-data:/var/lib/postgresql/data
-      - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./backend/docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - koomky-network
 
@@ -86,11 +87,12 @@ services:
   queue-worker:
     build:
       context: .
-      dockerfile: docker/php/Dockerfile
+      dockerfile: backend/docker/php/Dockerfile
+    entrypoint: /var/www/html/docker/php/entrypoint.sh
+    command: php artisan queue:work
     volumes:
       - ./backend:/var/www/html
     environment: *php-env
-    command: php artisan queue:work
     depends_on:
       - redis
       - postgres
@@ -101,11 +103,12 @@ services:
   scheduler:
     build:
       context: .
-      dockerfile: docker/php/Dockerfile
+      dockerfile: backend/docker/php/Dockerfile
+    entrypoint: /var/www/html/docker/php/entrypoint.sh
+    command: php artisan schedule:work
     volumes:
       - ./backend:/var/www/html
     environment: *php-env
-    command: php artisan schedule:work
     depends_on:
       - postgres
     networks:
@@ -117,7 +120,7 @@ services:
     ports:
       - "9090:9090"
     volumes:
-      - ./docker/prometheus:/etc/prometheus:ro
+      - ./backend/docker/prometheus:/etc/prometheus:ro
     depends_on:
       - nginx
       - postgres-exporter
@@ -133,8 +136,8 @@ services:
       - "3001:3000"
     volumes:
       - grafana-data:/var/lib/grafana
-      - ./docker/grafana/provisioning:/etc/grafana/provisioning:ro
-      - ./docker/grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - ./backend/docker/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./backend/docker/grafana/dashboards:/var/lib/grafana/dashboards:ro
     depends_on:
       - prometheus
     networks:

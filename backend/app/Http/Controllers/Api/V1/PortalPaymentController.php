@@ -14,6 +14,7 @@ use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use RuntimeException;
+use Stripe\Exception\ApiErrorException;
 
 class PortalPaymentController extends Controller
 {
@@ -50,6 +51,13 @@ class PortalPaymentController extends Controller
 
         try {
             $stripePayload = $this->stripePaymentService->createPaymentIntent($paymentIntent, $settings);
+        } catch (ApiErrorException $exception) {
+            // Log the error for debugging
+            logs()->error('Stripe API error on payment intent creation', [
+                'error' => $exception->getMessage(),
+                'invoice_id' => $invoice->id,
+            ]);
+            return $this->error('Could not initiate payment. Please try again later.', 500);
         } catch (RuntimeException $exception) {
             return $this->error($exception->getMessage(), 422);
         }
@@ -95,22 +103,11 @@ class PortalPaymentController extends Controller
             return $this->error('No payment intent found for invoice', 404);
         }
 
-        $settings = $request->attributes->get('portal_settings');
-        if (! $settings instanceof PortalSettings) {
-            return $this->error('Portal payment settings are missing', 422);
-        }
-
-        try {
-            $status = $this->stripePaymentService->confirmPayment($paymentIntent, $settings);
-        } catch (RuntimeException $exception) {
-            return $this->error($exception->getMessage(), 422);
-        }
-
         return $this->success([
             'id' => $paymentIntent->id,
             'invoice_id' => $paymentIntent->invoice_id,
-            'status' => $status['status'],
-            'stripe_payment_intent_id' => $status['stripe_payment_intent_id'],
+            'status' => $paymentIntent->status,
+            'stripe_payment_intent_id' => $paymentIntent->stripe_payment_intent_id,
             'failure_reason' => $paymentIntent->failure_reason,
         ], 'Payment status retrieved successfully');
     }
