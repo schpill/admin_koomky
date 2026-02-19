@@ -7,8 +7,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useCampaignStore } from "@/lib/stores/campaigns";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 export default function SmsSettingsPage() {
+  const { t } = useI18n();
   const { updateSmsSettings, isLoading } = useCampaignStore();
 
   const [provider, setProvider] = useState("twilio");
@@ -28,42 +30,42 @@ export default function SmsSettingsPage() {
         api_key: apiKey || null,
         api_secret: apiSecret || null,
       });
-      toast.success("SMS settings updated");
+      toast.success(t("settings.sms.toasts.success"));
     } catch (error) {
-      toast.error((error as Error).message || "Unable to update SMS settings");
+      toast.error((error as Error).message || t("settings.sms.toasts.failed"));
     }
   };
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">SMS settings</h1>
+        <h1 className="text-3xl font-bold">{t("settings.sms.title")}</h1>
         <p className="text-sm text-muted-foreground">
-          Configure provider credentials for SMS campaigns.
+          {t("settings.sms.description")}
         </p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Provider configuration</CardTitle>
+          <CardTitle>{t("settings.sms.providerConfig")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="sms-provider">Provider</Label>
+            <Label htmlFor="sms-provider">{t("settings.sms.provider")}</Label>
             <select
               id="sms-provider"
               value={provider}
               onChange={(event) => setProvider(event.target.value)}
               className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
             >
-              <option value="twilio">Twilio</option>
-              <option value="vonage">Vonage</option>
+              <option value="twilio">{t("settings.sms.twilio")}</option>
+              <option value="vonage">{t("settings.sms.vonage")}</option>
             </select>
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="sms-from">Sender</Label>
+              <Label htmlFor="sms-from">{t("settings.sms.sender")}</Label>
               <Input
                 id="sms-from"
                 value={from}
@@ -72,7 +74,9 @@ export default function SmsSettingsPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="account-sid">Account SID</Label>
+              <Label htmlFor="account-sid">
+                {t("settings.sms.accountSid")}
+              </Label>
               <Input
                 id="account-sid"
                 value={accountSid}
@@ -80,7 +84,7 @@ export default function SmsSettingsPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="auth-token">Auth token</Label>
+              <Label htmlFor="auth-token">{t("settings.sms.authToken")}</Label>
               <Input
                 id="auth-token"
                 type="password"
@@ -89,7 +93,7 @@ export default function SmsSettingsPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="sms-api-key">API key</Label>
+              <Label htmlFor="sms-api-key">{t("settings.sms.apiKey")}</Label>
               <Input
                 id="sms-api-key"
                 value={apiKey}
@@ -99,7 +103,9 @@ export default function SmsSettingsPage() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="sms-api-secret">API secret</Label>
+            <Label htmlFor="sms-api-secret">
+              {t("settings.sms.apiSecret")}
+            </Label>
             <Input
               id="sms-api-secret"
               type="password"
@@ -110,7 +116,9 @@ export default function SmsSettingsPage() {
 
           <div className="flex justify-end">
             <Button onClick={save} disabled={isLoading}>
-              {isLoading ? "Saving..." : "Save changes"}
+              {isLoading
+                ? t("settings.sms.saving")
+                : t("settings.sms.saveChanges")}
             </Button>
           </div>
         </CardContent>

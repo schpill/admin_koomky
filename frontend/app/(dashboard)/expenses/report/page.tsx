@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { CurrencyAmount } from "@/components/shared/currency-amount";
 import { useExpenseStore } from "@/lib/stores/expenses";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 const startOfMonth = new Date(
   new Date().getFullYear(),
@@ -20,13 +21,16 @@ const startOfMonth = new Date(
 const endOfMonth = new Date().toISOString().slice(0, 10);
 
 export default function ExpenseReportPage() {
+  const { t } = useI18n();
   const { report, isLoading, fetchReport, exportReport } = useExpenseStore();
   const [dateFrom, setDateFrom] = useState(startOfMonth);
   const [dateTo, setDateTo] = useState(endOfMonth);
 
   useEffect(() => {
     fetchReport({ date_from: dateFrom, date_to: dateTo }).catch((error) => {
-      toast.error((error as Error).message || "Unable to load expense report");
+      toast.error(
+        (error as Error).message || t("expenses.report.toasts.loadFailed")
+      );
     });
   }, [dateFrom, dateTo, fetchReport]);
 
@@ -47,7 +51,9 @@ export default function ExpenseReportPage() {
       link.remove();
       URL.revokeObjectURL(url);
     } catch (error) {
-      toast.error((error as Error).message || "Unable to export report");
+      toast.error(
+        (error as Error).message || t("expenses.report.toasts.loadFailed")
+      );
     }
   };
 
@@ -57,24 +63,26 @@ export default function ExpenseReportPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-3xl font-bold">Expense report</h1>
+          <h1 className="text-3xl font-bold">{t("expenses.report.title")}</h1>
           <p className="text-sm text-muted-foreground">
-            Review spending by category, month and project allocation.
+            {t("expenses.report.description")}
           </p>
         </div>
         <Button variant="outline" onClick={exportCsv}>
           <Download className="mr-2 h-4 w-4" />
-          Export CSV
+          {t("expenses.report.exportCsv")}
         </Button>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Filters</CardTitle>
+          <CardTitle>{t("expenses.filters.heading")}</CardTitle>
         </CardHeader>
         <CardContent className="grid gap-3 md:grid-cols-2">
           <div className="space-y-2">
-            <Label htmlFor="expense-report-from">From</Label>
+            <Label htmlFor="expense-report-from">
+              {t("expenses.report.filters.from")}
+            </Label>
             <Input
               id="expense-report-from"
               type="date"
@@ -83,7 +91,9 @@ export default function ExpenseReportPage() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="expense-report-to">To</Label>
+            <Label htmlFor="expense-report-to">
+              {t("expenses.report.filters.to")}
+            </Label>
             <Input
               id="expense-report-to"
               type="date"
@@ -97,7 +107,9 @@ export default function ExpenseReportPage() {
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <Card>
           <CardHeader>
-            <CardTitle className="text-sm">Total expenses</CardTitle>
+            <CardTitle className="text-sm">
+              {t("expenses.report.stats.total")}
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-semibold">
@@ -110,7 +122,9 @@ export default function ExpenseReportPage() {
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle className="text-sm">Average/month</CardTitle>
+            <CardTitle className="text-sm">
+              {t("expenses.report.stats.avgPerMonth")}
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-semibold">
@@ -126,7 +140,9 @@ export default function ExpenseReportPage() {
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle className="text-sm">Billable total</CardTitle>
+            <CardTitle className="text-sm">
+              {t("expenses.report.stats.billableTotal")}
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-semibold">
@@ -139,7 +155,9 @@ export default function ExpenseReportPage() {
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle className="text-sm">Tax total</CardTitle>
+            <CardTitle className="text-sm">
+              {t("expenses.report.stats.taxTotal")}
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-semibold">
@@ -155,11 +173,13 @@ export default function ExpenseReportPage() {
       <div className="grid gap-6 lg:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle>Category breakdown</CardTitle>
+            <CardTitle>{t("expenses.report.categoryBreakdown")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             {topCategories.length === 0 ? (
-              <p className="text-sm text-muted-foreground">No data</p>
+              <p className="text-sm text-muted-foreground">
+                {t("expenses.report.noData")}
+              </p>
             ) : (
               topCategories.map((item) => (
                 <div key={item.category}>
@@ -189,11 +209,13 @@ export default function ExpenseReportPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Monthly trend</CardTitle>
+            <CardTitle>{t("expenses.report.monthlyTrend")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
             {(report?.by_month || []).length === 0 ? (
-              <p className="text-sm text-muted-foreground">No data</p>
+              <p className="text-sm text-muted-foreground">
+                {t("expenses.report.noData")}
+              </p>
             ) : (
               report?.by_month?.map((item) => (
                 <div
@@ -213,21 +235,23 @@ export default function ExpenseReportPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Project allocation</CardTitle>
+          <CardTitle>{t("expenses.report.projectAllocation")}</CardTitle>
         </CardHeader>
         <CardContent>
           {(report?.by_project || []).length === 0 ? (
             <p className="text-sm text-muted-foreground">
-              No project allocation data.
+              {t("expenses.report.noProjectAllocation")}
             </p>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b text-left">
-                    <th className="pb-3">Project</th>
-                    <th className="pb-3">Expense count</th>
-                    <th className="pb-3">Total</th>
+                    <th className="pb-3">{t("expenses.filters.project")}</th>
+                    <th className="pb-3">
+                      {t("expenses.report.expenseCount")}
+                    </th>
+                    <th className="pb-3">{t("expenses.report.total")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -236,7 +260,7 @@ export default function ExpenseReportPage() {
                       <td className="py-2">
                         {item.project_name ||
                           item.project_reference ||
-                          "Unassigned"}
+                          t("expenses.report.unassigned")}
                       </td>
                       <td className="py-2">{item.count}</td>
                       <td className="py-2">
@@ -255,7 +279,9 @@ export default function ExpenseReportPage() {
       </Card>
 
       {isLoading ? (
-        <p className="text-sm text-muted-foreground">Refreshing report...</p>
+        <p className="text-sm text-muted-foreground">
+          {t("expenses.report.refreshing")}
+        </p>
       ) : null}
     </div>
   );

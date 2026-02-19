@@ -19,6 +19,7 @@ import { CurrencySelector } from "@/components/shared/currency-selector";
 import { useClientStore } from "@/lib/stores/clients";
 import { useCurrencyStore } from "@/lib/stores/currencies";
 import { useInvoiceStore } from "@/lib/stores/invoices";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 const today = new Date().toISOString().slice(0, 10);
 const inThirtyDays = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
@@ -26,6 +27,7 @@ const inThirtyDays = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
   .slice(0, 10);
 
 export default function CreateInvoicePage() {
+  const { t } = useI18n();
   const router = useRouter();
   const { clients, fetchClients } = useClientStore();
   const { currencies, rates, baseCurrency, fetchCurrencies, fetchRates } =
@@ -110,7 +112,7 @@ export default function CreateInvoicePage() {
 
   const handleSubmit = async () => {
     if (!clientId) {
-      toast.error("Please select a client");
+      toast.error(t("invoices.create.selectClientRequired"));
       return;
     }
 
@@ -122,7 +124,7 @@ export default function CreateInvoicePage() {
       .filter((line) => line.description.length > 0);
 
     if (sanitizedItems.length === 0) {
-      toast.error("At least one line item is required");
+      toast.error(t("invoices.create.lineItemRequired"));
       return;
     }
 
@@ -138,7 +140,7 @@ export default function CreateInvoicePage() {
         line_items: sanitizedItems,
       });
 
-      toast.success("Invoice created");
+      toast.success(t("invoices.create.toasts.success"));
 
       if (created?.id) {
         router.push(`/invoices/${created.id}`);
@@ -146,7 +148,9 @@ export default function CreateInvoicePage() {
         router.push("/invoices");
       }
     } catch (error) {
-      toast.error((error as Error).message || "Unable to create invoice");
+      toast.error(
+        (error as Error).message || t("invoices.create.toasts.failed")
+      );
     }
   };
 
@@ -156,27 +160,29 @@ export default function CreateInvoicePage() {
         <Button variant="ghost" asChild className="-ml-2">
           <Link href="/invoices">
             <ChevronLeft className="mr-2 h-4 w-4" />
-            Back to invoices
+            {t("invoices.create.backToInvoices")}
           </Link>
         </Button>
-        <h1 className="text-3xl font-bold">Create invoice</h1>
+        <h1 className="text-3xl font-bold">{t("invoices.create.title")}</h1>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Invoice information</CardTitle>
+          <CardTitle>{t("invoices.create.invoiceInfo")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid gap-3 md:grid-cols-3">
             <div className="space-y-2">
-              <Label htmlFor="invoice-client">Client</Label>
+              <Label htmlFor="invoice-client">
+                {t("invoices.create.client")}
+              </Label>
               <select
                 id="invoice-client"
                 className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
                 value={clientId}
                 onChange={(event) => setClientId(event.target.value)}
               >
-                <option value="">Select client</option>
+                <option value="">{t("invoices.create.selectClient")}</option>
                 {clients.map((client) => (
                   <option key={client.id} value={client.id}>
                     {client.name}
@@ -185,7 +191,9 @@ export default function CreateInvoicePage() {
               </select>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="invoice-issue-date">Issue date</Label>
+              <Label htmlFor="invoice-issue-date">
+                {t("invoices.create.issueDate")}
+              </Label>
               <Input
                 id="invoice-issue-date"
                 type="date"
@@ -194,7 +202,9 @@ export default function CreateInvoicePage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="invoice-due-date">Due date</Label>
+              <Label htmlFor="invoice-due-date">
+                {t("invoices.create.dueDate")}
+              </Label>
               <Input
                 id="invoice-due-date"
                 type="date"
@@ -207,13 +217,13 @@ export default function CreateInvoicePage() {
           <div className="space-y-2 rounded-md border bg-muted/20 p-3">
             <CurrencySelector
               id="invoice-currency"
-              label="Currency"
+              label={t("invoices.create.currency")}
               value={currency}
               currencies={currencies}
               onValueChange={setCurrency}
             />
             <p className="text-xs text-muted-foreground">
-              Estimated in{" "}
+              {t("invoices.create.estimatedIn")}{" "}
               <span className="font-medium">{baseCurrency || "EUR"}:</span>{" "}
               <CurrencyAmount
                 amount={estimatedBaseTotal}
@@ -222,7 +232,7 @@ export default function CreateInvoicePage() {
               />
             </p>
             <p className="text-xs text-muted-foreground">
-              Document total:{" "}
+              {t("invoices.create.documentTotal")}:{" "}
               <CurrencyAmount
                 amount={estimatedDocumentTotal}
                 currency={currency}
@@ -241,7 +251,7 @@ export default function CreateInvoicePage() {
           />
 
           <div className="space-y-2">
-            <Label htmlFor="invoice-notes">Notes</Label>
+            <Label htmlFor="invoice-notes">{t("invoices.create.notes")}</Label>
             <Textarea
               id="invoice-notes"
               rows={4}
@@ -252,7 +262,9 @@ export default function CreateInvoicePage() {
 
           <div className="flex justify-end">
             <Button type="button" onClick={handleSubmit} disabled={isLoading}>
-              {isLoading ? "Saving..." : "Save draft"}
+              {isLoading
+                ? t("invoices.create.saving")
+                : t("invoices.create.saveDraft")}
             </Button>
           </div>
         </CardContent>

@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { Download, Upload, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import { useI18n } from "@/components/providers/i18n-provider";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -25,12 +26,6 @@ import { useAuthStore } from "@/lib/stores/auth";
 
 type ImportEntity = "projects" | "invoices" | "contacts";
 
-const entityLabels: Record<ImportEntity, string> = {
-  projects: "Projects",
-  invoices: "Invoices",
-  contacts: "Contacts",
-};
-
 const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost/api/v1";
 
 function sleep(ms: number): Promise<void> {
@@ -40,6 +35,14 @@ function sleep(ms: number): Promise<void> {
 }
 
 export default function DataSettingsPage() {
+  const { t } = useI18n();
+
+  const entityLabels: Record<ImportEntity, string> = {
+    projects: t("settings.data.projects"),
+    invoices: t("settings.data.invoices"),
+    contacts: t("settings.data.contacts"),
+  };
+
   const [entity, setEntity] = useState<ImportEntity>("projects");
   const [file, setFile] = useState<File | null>(null);
   const [stage, setStage] = useState<ImportStage>("idle");
@@ -83,9 +86,11 @@ export default function DataSettingsPage() {
       link.click();
       link.remove();
       URL.revokeObjectURL(url);
-      toast.success("Export started");
+      toast.success(t("settings.data.toasts.exportStarted"));
     } catch (error) {
-      toast.error((error as Error).message || "Export failed");
+      toast.error(
+        (error as Error).message || t("settings.data.toasts.exportFailed")
+      );
     }
   };
 
@@ -96,7 +101,7 @@ export default function DataSettingsPage() {
     }
 
     if (!file) {
-      toast.error("Select a CSV file first");
+      toast.error(t("settings.data.toasts.selectCsvFirst"));
       return;
     }
 
@@ -138,13 +143,20 @@ export default function DataSettingsPage() {
       setStage("completed");
 
       if (rowErrors.length > 0) {
-        toast.warning(`Import completed with ${rowErrors.length} error(s)`);
+        toast.warning(
+          t("settings.data.toasts.importWithErrors").replace(
+            "{errors}",
+            String(rowErrors.length)
+          )
+        );
       } else {
-        toast.success("Import completed successfully");
+        toast.success(t("settings.data.toasts.importSuccess"));
       }
     } catch (error) {
       setStage("error");
-      toast.error((error as Error).message || "Import failed");
+      toast.error(
+        (error as Error).message || t("settings.data.toasts.importFailed")
+      );
     }
   };
 
@@ -171,10 +183,12 @@ export default function DataSettingsPage() {
         );
       }
 
-      toast.success("Account deletion scheduled (30-day grace period)");
+      toast.success(t("settings.data.toasts.deletionScheduled"));
       setDeleteDialogOpen(false);
     } catch (error) {
-      toast.error((error as Error).message || "Account deletion failed");
+      toast.error(
+        (error as Error).message || t("settings.data.toasts.deletionFailed")
+      );
     } finally {
       setIsDeletingAccount(false);
     }
@@ -183,16 +197,15 @@ export default function DataSettingsPage() {
   return (
     <div className="space-y-6">
       <div className="space-y-1">
-        <h1 className="text-3xl font-bold">Data management</h1>
+        <h1 className="text-3xl font-bold">{t("settings.data.title")}</h1>
         <p className="text-sm text-muted-foreground">
-          Import CSV files, export your full archive, and schedule account
-          deletion.
+          {t("settings.data.description")}
         </p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Import data</CardTitle>
+          <CardTitle>{t("settings.data.importData")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid gap-3 md:grid-cols-[220px_1fr]">
@@ -222,14 +235,14 @@ export default function DataSettingsPage() {
 
           <Button onClick={runImport} disabled={!canRunImport}>
             <Upload className="mr-2 h-4 w-4" />
-            Import CSV
+            {t("settings.data.importCsv")}
           </Button>
 
           <ImportProgressIndicator stage={stage} />
 
           {importedCount !== null && (
             <div className="rounded-md border border-border bg-muted/30 px-3 py-2 text-sm">
-              Imported records:{" "}
+              {t("settings.data.importedRecords")}{" "}
               <span className="font-semibold">{importedCount}</span>
             </div>
           )}
@@ -240,34 +253,33 @@ export default function DataSettingsPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Export data</CardTitle>
+          <CardTitle>{t("settings.data.exportData")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           <p className="text-sm text-muted-foreground">
-            Download a full JSON archive in ZIP format for GDPR portability.
+            {t("settings.data.exportDescription")}
           </p>
           <Button variant="outline" onClick={downloadFullExport}>
             <Download className="mr-2 h-4 w-4" />
-            Download full export
+            {t("settings.data.downloadExport")}
           </Button>
         </CardContent>
       </Card>
 
       <Card>
         <CardHeader>
-          <CardTitle>Account deletion</CardTitle>
+          <CardTitle>{t("settings.data.accountDeletion")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           <p className="text-sm text-muted-foreground">
-            This action soft-deletes your account immediately and schedules
-            permanent removal after 30 days.
+            {t("settings.data.accountDeletionDescription")}
           </p>
           <Button
             variant="destructive"
             onClick={() => setDeleteDialogOpen(true)}
           >
             <Trash2 className="mr-2 h-4 w-4" />
-            Delete account
+            {t("settings.data.deleteAccount")}
           </Button>
         </CardContent>
       </Card>
@@ -276,9 +288,13 @@ export default function DataSettingsPage() {
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
         onConfirm={deleteAccount}
-        title="Delete account"
-        description="Are you sure you want to schedule account deletion? You can recover during the next 30 days."
-        confirmText={isDeletingAccount ? "Deleting..." : "Confirm deletion"}
+        title={t("settings.data.accountDeletion")}
+        description={t("settings.data.deleteConfirm")}
+        confirmText={
+          isDeletingAccount
+            ? t("settings.data.deleting")
+            : t("settings.data.confirmDeletion")
+        }
         variant="destructive"
       />
     </div>

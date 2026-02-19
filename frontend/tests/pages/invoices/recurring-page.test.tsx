@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { I18nProvider } from "@/components/providers/i18n-provider";
 
 const toastSuccess = vi.fn();
 const toastError = vi.fn();
@@ -37,7 +38,11 @@ describe("RecurringInvoicesPage", () => {
       cancelProfile: vi.fn(),
     });
 
-    render(<RecurringInvoicesPage />);
+    render(
+      <I18nProvider initialLocale="en">
+        <RecurringInvoicesPage />
+      </I18nProvider>
+    );
 
     await waitFor(() => {
       expect(fetchProfiles).toHaveBeenCalledTimes(1);
@@ -73,7 +78,11 @@ describe("RecurringInvoicesPage", () => {
       cancelProfile,
     });
 
-    render(<RecurringInvoicesPage />);
+    render(
+      <I18nProvider initialLocale="en">
+        <RecurringInvoicesPage />
+      </I18nProvider>
+    );
 
     fireEvent.click(screen.getByRole("button", { name: "Pause" }));
     await waitFor(() => {
@@ -113,7 +122,11 @@ describe("RecurringInvoicesPage", () => {
       cancelProfile: vi.fn(),
     });
 
-    render(<RecurringInvoicesPage />);
+    render(
+      <I18nProvider initialLocale="en">
+        <RecurringInvoicesPage />
+      </I18nProvider>
+    );
 
     fireEvent.click(screen.getByRole("button", { name: "Resume" }));
 

@@ -7,8 +7,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useCampaignStore } from "@/lib/stores/campaigns";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 export default function EmailSettingsPage() {
+  const { t } = useI18n();
   const { updateEmailSettings, isLoading } = useCampaignStore();
 
   const [provider, setProvider] = useState("smtp");
@@ -41,10 +43,10 @@ export default function EmailSettingsPage() {
         api_secret: provider === "ses" ? apiSecret || null : null,
         api_region: provider === "ses" ? apiRegion || null : null,
       });
-      toast.success("Email settings updated");
+      toast.success(t("settings.email.toasts.success"));
     } catch (error) {
       toast.error(
-        (error as Error).message || "Unable to update email settings"
+        (error as Error).message || t("settings.email.toasts.failed")
       );
     }
   };
@@ -52,36 +54,40 @@ export default function EmailSettingsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Email settings</h1>
+        <h1 className="text-3xl font-bold">{t("settings.email.title")}</h1>
         <p className="text-sm text-muted-foreground">
-          Configure sender identity and delivery provider.
+          {t("settings.email.description")}
         </p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Delivery configuration</CardTitle>
+          <CardTitle>{t("settings.email.deliveryConfig")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="email-provider">Provider</Label>
+            <Label htmlFor="email-provider">
+              {t("settings.email.provider")}
+            </Label>
             <select
               id="email-provider"
               value={provider}
               onChange={(event) => setProvider(event.target.value)}
               className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
             >
-              <option value="smtp">SMTP</option>
-              <option value="mailgun">Mailgun</option>
-              <option value="ses">Amazon SES</option>
-              <option value="postmark">Postmark</option>
-              <option value="sendmail">Sendmail</option>
+              <option value="smtp">{t("settings.email.smtp")}</option>
+              <option value="mailgun">{t("settings.email.mailgun")}</option>
+              <option value="ses">{t("settings.email.ses")}</option>
+              <option value="postmark">{t("settings.email.postmark")}</option>
+              <option value="sendmail">{t("settings.email.sendmail")}</option>
             </select>
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="from-email">From email</Label>
+              <Label htmlFor="from-email">
+                {t("settings.email.fromEmail")}
+              </Label>
               <Input
                 id="from-email"
                 value={fromEmail}
@@ -89,7 +95,7 @@ export default function EmailSettingsPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="from-name">From name</Label>
+              <Label htmlFor="from-name">{t("settings.email.fromName")}</Label>
               <Input
                 id="from-name"
                 value={fromName}
@@ -99,7 +105,7 @@ export default function EmailSettingsPage() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="reply-to">Reply-to</Label>
+            <Label htmlFor="reply-to">{t("settings.email.replyTo")}</Label>
             <Input
               id="reply-to"
               value={replyTo}
@@ -110,7 +116,9 @@ export default function EmailSettingsPage() {
           {provider === "smtp" && (
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="smtp-host">SMTP host</Label>
+                <Label htmlFor="smtp-host">
+                  {t("settings.email.smtpHost")}
+                </Label>
                 <Input
                   id="smtp-host"
                   value={smtpHost}
@@ -118,7 +126,9 @@ export default function EmailSettingsPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="smtp-port">SMTP port</Label>
+                <Label htmlFor="smtp-port">
+                  {t("settings.email.smtpPort")}
+                </Label>
                 <Input
                   id="smtp-port"
                   value={smtpPort}
@@ -126,7 +136,9 @@ export default function EmailSettingsPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="smtp-user">SMTP username</Label>
+                <Label htmlFor="smtp-user">
+                  {t("settings.email.smtpUsername")}
+                </Label>
                 <Input
                   id="smtp-user"
                   value={smtpUsername}
@@ -134,7 +146,9 @@ export default function EmailSettingsPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="smtp-password">SMTP password</Label>
+                <Label htmlFor="smtp-password">
+                  {t("settings.email.smtpPassword")}
+                </Label>
                 <Input
                   id="smtp-password"
                   type="password"
@@ -148,7 +162,7 @@ export default function EmailSettingsPage() {
           {isApiProvider && (
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="api-key">API key</Label>
+                <Label htmlFor="api-key">{t("settings.email.apiKey")}</Label>
                 <Input
                   id="api-key"
                   value={apiKey}
@@ -158,7 +172,9 @@ export default function EmailSettingsPage() {
 
               {provider === "ses" && (
                 <div className="space-y-2">
-                  <Label htmlFor="api-secret">API secret</Label>
+                  <Label htmlFor="api-secret">
+                    {t("settings.email.apiSecret")}
+                  </Label>
                   <Input
                     id="api-secret"
                     type="password"
@@ -170,7 +186,9 @@ export default function EmailSettingsPage() {
 
               {provider === "ses" && (
                 <div className="space-y-2">
-                  <Label htmlFor="api-region">AWS region</Label>
+                  <Label htmlFor="api-region">
+                    {t("settings.email.awsRegion")}
+                  </Label>
                   <Input
                     id="api-region"
                     value={apiRegion}
@@ -183,7 +201,9 @@ export default function EmailSettingsPage() {
 
           <div className="flex justify-end">
             <Button onClick={save} disabled={isLoading}>
-              {isLoading ? "Saving..." : "Save changes"}
+              {isLoading
+                ? t("settings.email.saving")
+                : t("settings.email.saveChanges")}
             </Button>
           </div>
         </CardContent>

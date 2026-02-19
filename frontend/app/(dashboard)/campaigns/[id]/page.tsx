@@ -11,8 +11,10 @@ import { CampaignPreview } from "@/components/campaigns/campaign-preview";
 import { RecipientStatusTable } from "@/components/campaigns/recipient-status-table";
 import { TestSendModal } from "@/components/campaigns/test-send-modal";
 import { useCampaignStore } from "@/lib/stores/campaigns";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 export default function CampaignDetailPage() {
+  const { t } = useI18n();
   const params = useParams<{ id: string }>();
   const campaignId = params.id;
   const {
@@ -36,7 +38,11 @@ export default function CampaignDetailPage() {
   }, [campaignId, fetchCampaign]);
 
   if (!currentCampaign || currentCampaign.id !== campaignId) {
-    return <p className="text-sm text-muted-foreground">Loading campaign...</p>;
+    return (
+      <p className="text-sm text-muted-foreground">
+        {t("campaigns.detail.loading")}
+      </p>
+    );
   }
 
   const recipients = Array.isArray(currentCampaign.recipients)
@@ -59,28 +65,30 @@ export default function CampaignDetailPage() {
         <div className="flex flex-wrap gap-2">
           <Button variant="outline" asChild>
             <Link href={`/campaigns/${currentCampaign.id}/analytics`}>
-              Analytics
+              {t("campaigns.detail.analytics")}
             </Link>
           </Button>
           <Button
             variant="outline"
             onClick={() => duplicateCampaign(currentCampaign.id)}
           >
-            Duplicate
+            {t("campaigns.detail.duplicate")}
           </Button>
           <Button
             variant="outline"
             onClick={() => pauseCampaign(currentCampaign.id)}
           >
-            Pause
+            {t("campaigns.detail.pause")}
           </Button>
-          <Button onClick={() => sendCampaign(currentCampaign.id)}>Send</Button>
+          <Button onClick={() => sendCampaign(currentCampaign.id)}>
+            {t("campaigns.detail.send")}
+          </Button>
         </div>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Message preview</CardTitle>
+          <CardTitle>{t("campaigns.detail.messagePreview")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <CampaignPreview
@@ -107,7 +115,7 @@ export default function CampaignDetailPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Recipients</CardTitle>
+          <CardTitle>{t("campaigns.detail.recipients")}</CardTitle>
         </CardHeader>
         <CardContent>
           <RecipientStatusTable recipients={recipients as any[]} />

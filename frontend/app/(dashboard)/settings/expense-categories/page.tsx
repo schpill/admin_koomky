@@ -7,8 +7,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useExpenseCategoryStore } from "@/lib/stores/expense-categories";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 export default function ExpenseCategoriesSettingsPage() {
+  const { t } = useI18n();
   const {
     categories,
     isLoading,
@@ -41,9 +43,12 @@ export default function ExpenseCategoriesSettingsPage() {
       });
       setNewName("");
       setNewIcon("tag");
-      toast.success("Category added");
+      toast.success(t("settings.expenseCategories.toasts.added"));
     } catch (error) {
-      toast.error((error as Error).message || "Unable to add category");
+      toast.error(
+        (error as Error).message ||
+          t("settings.expenseCategories.toasts.addFailed")
+      );
     }
   };
 
@@ -54,38 +59,48 @@ export default function ExpenseCategoriesSettingsPage() {
     try {
       await updateCategory(id, payload);
       setEditingId(null);
-      toast.success("Category updated");
+      toast.success(t("settings.expenseCategories.toasts.updated"));
     } catch (error) {
-      toast.error((error as Error).message || "Unable to update category");
+      toast.error(
+        (error as Error).message ||
+          t("settings.expenseCategories.toasts.updateFailed")
+      );
     }
   };
 
   const removeCategory = async (id: string) => {
     try {
       await deleteCategory(id);
-      toast.success("Category deleted");
+      toast.success(t("settings.expenseCategories.toasts.deleted"));
     } catch (error) {
-      toast.error((error as Error).message || "Unable to delete category");
+      toast.error(
+        (error as Error).message ||
+          t("settings.expenseCategories.toasts.deleteFailed")
+      );
     }
   };
 
   return (
     <div className="space-y-6">
       <div className="space-y-1">
-        <h1 className="text-3xl font-bold">Expense categories</h1>
+        <h1 className="text-3xl font-bold">
+          {t("settings.expenseCategories.title")}
+        </h1>
         <p className="text-sm text-muted-foreground">
-          Manage color-coded expense categories for faster classification.
+          {t("settings.expenseCategories.description")}
         </p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Add category</CardTitle>
+          <CardTitle>{t("settings.expenseCategories.addCategory")}</CardTitle>
         </CardHeader>
         <CardContent>
           <form className="grid gap-3 md:grid-cols-4" onSubmit={addCategory}>
             <div className="space-y-2 md:col-span-2">
-              <Label htmlFor="expense-category-name">Name</Label>
+              <Label htmlFor="expense-category-name">
+                {t("settings.expenseCategories.name")}
+              </Label>
               <Input
                 id="expense-category-name"
                 value={newName}
@@ -95,7 +110,9 @@ export default function ExpenseCategoriesSettingsPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="expense-category-color">Color</Label>
+              <Label htmlFor="expense-category-color">
+                {t("settings.expenseCategories.color")}
+              </Label>
               <Input
                 id="expense-category-color"
                 type="color"
@@ -104,7 +121,9 @@ export default function ExpenseCategoriesSettingsPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="expense-category-icon">Icon</Label>
+              <Label htmlFor="expense-category-icon">
+                {t("settings.expenseCategories.icon")}
+              </Label>
               <Input
                 id="expense-category-icon"
                 value={newIcon}
@@ -114,7 +133,7 @@ export default function ExpenseCategoriesSettingsPage() {
             </div>
             <div className="md:col-span-4">
               <Button type="submit" disabled={isLoading}>
-                Add category
+                {t("settings.expenseCategories.addCategory")}
               </Button>
             </div>
           </form>
@@ -123,7 +142,7 @@ export default function ExpenseCategoriesSettingsPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Categories</CardTitle>
+          <CardTitle>{t("settings.expenseCategories.categories")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           {categories.map((category) => (
@@ -167,6 +186,7 @@ function CategoryRow({
   ) => void;
   onDelete: (id: string) => void;
 }) {
+  const { t } = useI18n();
   const [name, setName] = useState(category.name);
   const [color, setColor] = useState(category.color || "#2459ff");
   const [icon, setIcon] = useState(category.icon || "tag");
@@ -184,7 +204,9 @@ function CategoryRow({
             <span className="text-xs text-muted-foreground">{icon}</span>
           ) : null}
           {category.is_default ? (
-            <span className="rounded border px-2 py-0.5 text-xs">Default</span>
+            <span className="rounded border px-2 py-0.5 text-xs">
+              {t("settings.expenseCategories.default")}
+            </span>
           ) : null}
         </div>
 
@@ -192,7 +214,7 @@ function CategoryRow({
           <div className="flex gap-2">
             {!category.is_default ? (
               <Button variant="outline" size="sm" onClick={onEdit}>
-                Edit
+                {t("settings.expenseCategories.edit")}
               </Button>
             ) : null}
             {!category.is_default ? (
@@ -201,7 +223,7 @@ function CategoryRow({
                 size="sm"
                 onClick={() => onDelete(category.id)}
               >
-                Delete
+                {t("settings.expenseCategories.delete")}
               </Button>
             ) : null}
           </div>
@@ -234,10 +256,10 @@ function CategoryRow({
                 })
               }
             >
-              Save
+              {t("settings.expenseCategories.save")}
             </Button>
             <Button size="sm" variant="outline" onClick={onCancel}>
-              Cancel
+              {t("settings.expenseCategories.cancel")}
             </Button>
           </div>
         </div>

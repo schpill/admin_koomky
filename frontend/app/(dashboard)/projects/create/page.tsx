@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/select";
 import { useProjectStore } from "@/lib/stores/projects";
 import { useClientStore } from "@/lib/stores/clients";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 const schema = z
   .object({
@@ -61,6 +62,7 @@ const schema = z
 type FormValues = z.infer<typeof schema>;
 
 export default function CreateProjectPage() {
+  const { t } = useI18n();
   const router = useRouter();
   const { createProject } = useProjectStore();
   const { clients, fetchClients } = useClientStore();
@@ -95,34 +97,36 @@ export default function CreateProjectPage() {
           values.billing_type === "fixed" ? values.fixed_price : undefined,
       });
 
-      toast.success("Project created successfully");
+      toast.success(t("projects.create.toasts.success"));
       if (project?.id) {
         router.push(`/projects/${project.id}`);
         return;
       }
       router.push("/projects");
     } catch (error) {
-      toast.error((error as Error).message || "Unable to create project");
+      toast.error(
+        (error as Error).message || t("projects.create.toasts.failed")
+      );
     }
   };
 
   return (
     <div className="mx-auto w-full max-w-4xl space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Create project</h1>
+        <h1 className="text-3xl font-bold">{t("projects.create.title")}</h1>
         <Button variant="outline" asChild>
-          <Link href="/projects">Back to projects</Link>
+          <Link href="/projects">{t("projects.create.backToProjects")}</Link>
         </Button>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Project details</CardTitle>
+          <CardTitle>{t("projects.create.projectDetails")}</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="name">Project name</Label>
+              <Label htmlFor="name">{t("projects.create.projectName")}</Label>
               <Input id="name" {...register("name")} />
               {errors.name && (
                 <p className="text-sm text-destructive">
@@ -132,10 +136,14 @@ export default function CreateProjectPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="client">Client</Label>
+              <Label htmlFor="client">
+                {t("projects.create.selectClient")}
+              </Label>
               <Select onValueChange={(value) => setValue("client_id", value)}>
                 <SelectTrigger id="client">
-                  <SelectValue placeholder="Select a client" />
+                  <SelectValue
+                    placeholder={t("projects.create.selectClient")}
+                  />
                 </SelectTrigger>
                 <SelectContent>
                   {clients.map((client) => (
@@ -153,7 +161,9 @@ export default function CreateProjectPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="description">Description</Label>
+              <Label htmlFor="description">
+                {t("projects.create.description")}
+              </Label>
               <Textarea
                 id="description"
                 rows={4}
@@ -163,7 +173,7 @@ export default function CreateProjectPage() {
 
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
-                <Label>Billing type</Label>
+                <Label>{t("projects.create.billingType")}</Label>
                 <Select
                   defaultValue="hourly"
                   onValueChange={(value) =>
@@ -174,15 +184,21 @@ export default function CreateProjectPage() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="hourly">Hourly</SelectItem>
-                    <SelectItem value="fixed">Fixed</SelectItem>
+                    <SelectItem value="hourly">
+                      {t("projects.create.hourly")}
+                    </SelectItem>
+                    <SelectItem value="fixed">
+                      {t("projects.create.fixed")}
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               {billingType === "hourly" ? (
                 <div className="space-y-2">
-                  <Label htmlFor="hourly_rate">Hourly rate (EUR)</Label>
+                  <Label htmlFor="hourly_rate">
+                    {t("projects.create.hourlyRate")}
+                  </Label>
                   <Input
                     id="hourly_rate"
                     type="number"
@@ -197,7 +213,9 @@ export default function CreateProjectPage() {
                 </div>
               ) : (
                 <div className="space-y-2">
-                  <Label htmlFor="fixed_price">Fixed price (EUR)</Label>
+                  <Label htmlFor="fixed_price">
+                    {t("projects.create.fixedPrice")}
+                  </Label>
                   <Input
                     id="fixed_price"
                     type="number"
@@ -215,7 +233,9 @@ export default function CreateProjectPage() {
 
             <div className="grid gap-4 md:grid-cols-3">
               <div className="space-y-2">
-                <Label htmlFor="estimated_hours">Estimated hours</Label>
+                <Label htmlFor="estimated_hours">
+                  {t("projects.create.estimatedHours")}
+                </Label>
                 <Input
                   id="estimated_hours"
                   type="number"
@@ -224,7 +244,9 @@ export default function CreateProjectPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="start_date">Start date</Label>
+                <Label htmlFor="start_date">
+                  {t("projects.create.startDate")}
+                </Label>
                 <Input
                   id="start_date"
                   type="date"
@@ -232,14 +254,18 @@ export default function CreateProjectPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="deadline">Deadline</Label>
+                <Label htmlFor="deadline">
+                  {t("projects.create.deadline")}
+                </Label>
                 <Input id="deadline" type="date" {...register("deadline")} />
               </div>
             </div>
 
             <div className="flex justify-end">
               <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? "Creating..." : "Create project"}
+                {isSubmitting
+                  ? t("projects.create.creating")
+                  : t("projects.create.title")}
               </Button>
             </div>
           </form>

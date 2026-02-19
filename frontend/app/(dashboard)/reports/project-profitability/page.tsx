@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { CurrencyAmount } from "@/components/shared/currency-amount";
 import { apiClient } from "@/lib/api";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 interface ProjectProfitabilityRow {
   project_id: string;
@@ -27,6 +28,7 @@ const startOfYear = new Date(new Date().getFullYear(), 0, 1)
 const today = new Date().toISOString().slice(0, 10);
 
 export default function ProjectProfitabilityReportPage() {
+  const { t } = useI18n();
   const [dateFrom, setDateFrom] = useState(startOfYear);
   const [dateTo, setDateTo] = useState(today);
   const [rows, setRows] = useState<ProjectProfitabilityRow[]>([]);
@@ -44,7 +46,8 @@ export default function ProjectProfitabilityReportPage() {
       .then((response) => setRows(response.data || []))
       .catch((error) => {
         toast.error(
-          (error as Error).message || "Unable to load profitability report"
+          (error as Error).message ||
+            t("reports.projectProfitabilityReport.toasts.loadFailed")
         );
       })
       .finally(() => setLoading(false));
@@ -60,9 +63,11 @@ export default function ProjectProfitabilityReportPage() {
   return (
     <div className="space-y-6">
       <div className="space-y-1">
-        <h1 className="text-3xl font-bold">Project profitability</h1>
+        <h1 className="text-3xl font-bold">
+          {t("reports.projectProfitabilityReport.title")}
+        </h1>
         <p className="text-sm text-muted-foreground">
-          Compare revenue, time cost and expenses per project.
+          {t("reports.projectProfitabilityReport.description")}
         </p>
       </div>
 
@@ -72,7 +77,9 @@ export default function ProjectProfitabilityReportPage() {
         </CardHeader>
         <CardContent className="grid gap-3 md:grid-cols-2">
           <div className="space-y-2">
-            <Label htmlFor="project-profit-from">From</Label>
+            <Label htmlFor="project-profit-from">
+              {t("reports.filters.from")}
+            </Label>
             <Input
               id="project-profit-from"
               type="date"
@@ -81,7 +88,7 @@ export default function ProjectProfitabilityReportPage() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="project-profit-to">To</Label>
+            <Label htmlFor="project-profit-to">{t("reports.filters.to")}</Label>
             <Input
               id="project-profit-to"
               type="date"
@@ -94,27 +101,43 @@ export default function ProjectProfitabilityReportPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Profitability table</CardTitle>
+          <CardTitle>
+            {t("reports.projectProfitabilityReport.table.title")}
+          </CardTitle>
         </CardHeader>
         <CardContent>
           {sortedRows.length === 0 ? (
             <p className="text-sm text-muted-foreground">
               {isLoading
-                ? "Loading project profitability..."
-                : "No project data for selected period."}
+                ? t("reports.projectProfitabilityReport.table.loading")
+                : t("reports.projectProfitabilityReport.table.empty")}
             </p>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b text-left">
-                    <th className="pb-3">Project</th>
-                    <th className="pb-3">Client</th>
-                    <th className="pb-3">Revenue</th>
-                    <th className="pb-3">Time cost</th>
-                    <th className="pb-3">Expenses</th>
-                    <th className="pb-3">Profit</th>
-                    <th className="pb-3">Margin</th>
+                    <th className="pb-3">
+                      {t("reports.projectProfitabilityReport.table.project")}
+                    </th>
+                    <th className="pb-3">
+                      {t("reports.projectProfitabilityReport.table.client")}
+                    </th>
+                    <th className="pb-3">
+                      {t("reports.projectProfitabilityReport.table.revenue")}
+                    </th>
+                    <th className="pb-3">
+                      {t("reports.projectProfitabilityReport.table.timeCost")}
+                    </th>
+                    <th className="pb-3">
+                      {t("reports.projectProfitabilityReport.table.expenses")}
+                    </th>
+                    <th className="pb-3">
+                      {t("reports.projectProfitabilityReport.table.profit")}
+                    </th>
+                    <th className="pb-3">
+                      {t("reports.projectProfitabilityReport.table.margin")}
+                    </th>
                   </tr>
                 </thead>
                 <tbody>

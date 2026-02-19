@@ -9,8 +9,10 @@ import { AnalyticsSummaryCards } from "@/components/campaigns/analytics-summary-
 import { EngagementChart } from "@/components/campaigns/engagement-chart";
 import { useCampaignStore } from "@/lib/stores/campaigns";
 import { useAuthStore } from "@/lib/stores/auth";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 export default function CampaignAnalyticsPage() {
+  const { t } = useI18n();
   const params = useParams<{ id: string }>();
   const campaignId = params.id;
   const { analytics, fetchCampaignAnalytics } = useCampaignStore();
@@ -63,7 +65,9 @@ export default function CampaignAnalyticsPage() {
 
   if (!analytics) {
     return (
-      <p className="text-sm text-muted-foreground">Loading analytics...</p>
+      <p className="text-sm text-muted-foreground">
+        {t("campaigns.analyticsPage.loading")}
+      </p>
     );
   }
 
@@ -71,14 +75,16 @@ export default function CampaignAnalyticsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Campaign analytics</h1>
+          <h1 className="text-3xl font-bold">
+            {t("campaigns.analyticsPage.title")}
+          </h1>
           <p className="text-sm text-muted-foreground">
             {analytics.campaign_name}
           </p>
         </div>
 
         <Button variant="outline" onClick={exportCsv}>
-          Export CSV
+          {t("campaigns.analyticsPage.exportCsv")}
         </Button>
       </div>
 
@@ -86,7 +92,7 @@ export default function CampaignAnalyticsPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Engagement chart</CardTitle>
+          <CardTitle>{t("campaigns.analyticsPage.chart")}</CardTitle>
         </CardHeader>
         <CardContent>
           <EngagementChart data={analytics.time_series || []} />

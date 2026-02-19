@@ -11,6 +11,9 @@ groups:
         condition: A
         data:
           - refId: A
+            relativeTimeRange:
+              from: 600
+              to: 0
             datasourceUid: prometheus
             model:
               expr: (sum(rate(http_requests_total{status=~"5.."}[5m])) / clamp_min(sum(rate(http_requests_total[5m])), 0.0001)) > 0.05
@@ -30,6 +33,9 @@ groups:
         condition: A
         data:
           - refId: A
+            relativeTimeRange:
+              from: 600
+              to: 0
             datasourceUid: prometheus
             model:
               expr: histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le)) > 0.5
@@ -49,6 +55,9 @@ groups:
         condition: A
         data:
           - refId: A
+            relativeTimeRange:
+              from: 600
+              to: 0
             datasourceUid: prometheus
             model:
               expr: sum(koomky_queue_jobs_waiting) > 1000
@@ -68,6 +77,9 @@ groups:
         condition: A
         data:
           - refId: A
+            relativeTimeRange:
+              from: 1200
+              to: 0
             datasourceUid: prometheus
             model:
               expr: (100 - ((node_filesystem_avail_bytes{fstype!~"tmpfs|overlay"} / clamp_min(node_filesystem_size_bytes{fstype!~"tmpfs|overlay"}, 1)) * 100)) > 80
@@ -87,6 +99,9 @@ groups:
         condition: A
         data:
           - refId: A
+            relativeTimeRange:
+              from: 600
+              to: 0
             datasourceUid: prometheus
             model:
               expr: sum(pg_stat_database_numbackends) > 80

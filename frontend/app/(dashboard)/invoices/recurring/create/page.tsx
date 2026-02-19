@@ -13,8 +13,10 @@ import {
   type RecurringInvoiceProfilePayload,
 } from "@/lib/stores/recurring-invoices";
 import { useClientStore } from "@/lib/stores/clients";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 export default function CreateRecurringInvoicePage() {
+  const { t } = useI18n();
   const router = useRouter();
   const { clients, fetchClients } = useClientStore();
   const { createProfile, isLoading } = useRecurringInvoiceStore();
@@ -26,7 +28,7 @@ export default function CreateRecurringInvoicePage() {
   const handleSubmit = async (payload: RecurringInvoiceProfilePayload) => {
     try {
       const created = await createProfile(payload);
-      toast.success("Recurring profile created");
+      toast.success(t("invoices.recurring.create.toasts.success"));
 
       if (created?.id) {
         router.push(`/invoices/recurring/${created.id}`);
@@ -35,7 +37,7 @@ export default function CreateRecurringInvoicePage() {
       }
     } catch (error) {
       toast.error(
-        (error as Error).message || "Unable to create recurring profile"
+        (error as Error).message || t("invoices.recurring.create.toasts.failed")
       );
     }
   };
@@ -46,15 +48,17 @@ export default function CreateRecurringInvoicePage() {
         <Button asChild className="-ml-2" variant="ghost">
           <Link href="/invoices/recurring">
             <ChevronLeft className="mr-2 h-4 w-4" />
-            Back to recurring invoices
+            {t("invoices.recurring.create.backToRecurring")}
           </Link>
         </Button>
-        <h1 className="text-3xl font-bold">Create recurring profile</h1>
+        <h1 className="text-3xl font-bold">
+          {t("invoices.recurring.create.title")}
+        </h1>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Profile details</CardTitle>
+          <CardTitle>{t("invoices.recurring.create.profileDetails")}</CardTitle>
         </CardHeader>
         <CardContent>
           <RecurringInvoiceForm
@@ -64,7 +68,7 @@ export default function CreateRecurringInvoicePage() {
             }))}
             onSubmit={handleSubmit}
             isSubmitting={isLoading}
-            submitLabel="Create profile"
+            submitLabel={t("invoices.recurring.create.createProfile")}
             onCancel={() => router.push("/invoices/recurring")}
           />
         </CardContent>

@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useCampaignStore } from "@/lib/stores/campaigns";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 interface NotificationRow {
   key: "invoice_paid" | "campaign_completed" | "task_overdue";
@@ -14,23 +15,24 @@ interface NotificationRow {
 }
 
 export default function NotificationSettingsPage() {
+  const { t } = useI18n();
   const { updateNotificationPreferences, isLoading } = useCampaignStore();
   const [rows, setRows] = useState<NotificationRow[]>([
     {
       key: "invoice_paid",
-      label: "Invoice paid",
+      label: t("settings.notifications.invoicePaid"),
       email: true,
       in_app: true,
     },
     {
       key: "campaign_completed",
-      label: "Campaign completed",
+      label: t("settings.notifications.campaignCompleted"),
       email: true,
       in_app: true,
     },
     {
       key: "task_overdue",
-      label: "Task overdue",
+      label: t("settings.notifications.taskOverdue"),
       email: false,
       in_app: true,
     },
@@ -68,10 +70,10 @@ export default function NotificationSettingsPage() {
 
     try {
       await updateNotificationPreferences(payload);
-      toast.success("Notification preferences updated");
+      toast.success(t("settings.notifications.toasts.success"));
     } catch (error) {
       toast.error(
-        (error as Error).message || "Unable to update notification preferences"
+        (error as Error).message || t("settings.notifications.toasts.failed")
       );
     }
   };
@@ -79,15 +81,17 @@ export default function NotificationSettingsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Notification preferences</h1>
+        <h1 className="text-3xl font-bold">
+          {t("settings.notifications.title")}
+        </h1>
         <p className="text-sm text-muted-foreground">
-          Choose where each alert should be delivered.
+          {t("settings.notifications.description")}
         </p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Channels</CardTitle>
+          <CardTitle>{t("settings.notifications.channels")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           {rows.map((row) => (
@@ -105,7 +109,7 @@ export default function NotificationSettingsPage() {
                       updateRow(row.key, "email", event.target.checked)
                     }
                   />
-                  Email
+                  {t("settings.notifications.emailChannel")}
                 </label>
                 <label className="flex items-center gap-2">
                   <input
@@ -115,7 +119,7 @@ export default function NotificationSettingsPage() {
                       updateRow(row.key, "in_app", event.target.checked)
                     }
                   />
-                  In app
+                  {t("settings.notifications.inApp")}
                 </label>
               </div>
             </div>
@@ -123,7 +127,9 @@ export default function NotificationSettingsPage() {
 
           <div className="flex justify-end">
             <Button onClick={save} disabled={isLoading}>
-              {isLoading ? "Saving..." : "Save changes"}
+              {isLoading
+                ? t("settings.notifications.saving")
+                : t("settings.notifications.saveChanges")}
             </Button>
           </div>
         </CardContent>

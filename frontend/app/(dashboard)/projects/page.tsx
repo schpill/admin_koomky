@@ -11,6 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ProjectFilterBar } from "@/components/projects/project-filter-bar";
 import { useProjectStore } from "@/lib/stores/projects";
 import { useClientStore } from "@/lib/stores/clients";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 function statusVariant(
   status: string
@@ -27,6 +28,7 @@ function statusVariant(
 }
 
 export default function ProjectsPage() {
+  const { t } = useI18n();
   const { projects, isLoading, fetchProjects, pagination } = useProjectStore();
   const { clients, fetchClients } = useClientStore();
   const [filters, setFilters] = useState<Record<string, unknown>>({
@@ -47,20 +49,20 @@ export default function ProjectsPage() {
       return "";
     }
 
-    return `${pagination.total} total projects`;
-  }, [pagination]);
+    return t("projects.totalCount", { count: pagination.total });
+  }, [pagination, t]);
 
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-3xl font-bold">Projects</h1>
+          <h1 className="text-3xl font-bold">{t("projects.title")}</h1>
           <p className="text-sm text-muted-foreground">{totalLabel}</p>
         </div>
         <Button asChild>
           <Link href="/projects/create">
             <Plus className="mr-2 h-4 w-4" />
-            New project
+            {t("projects.newProject")}
           </Link>
         </Button>
       </div>
@@ -80,7 +82,7 @@ export default function ProjectsPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Project list</CardTitle>
+          <CardTitle>{t("projects.projectList")}</CardTitle>
         </CardHeader>
         <CardContent>
           {isLoading && projects.length === 0 ? (
@@ -92,11 +94,13 @@ export default function ProjectsPage() {
           ) : projects.length === 0 ? (
             <EmptyState
               icon={<FolderKanban className="h-12 w-12" />}
-              title="No projects found"
-              description="Create your first project to start planning and tracking tasks."
+              title={t("projects.empty.title")}
+              description={t("projects.empty.description")}
               action={
                 <Button asChild>
-                  <Link href="/projects/create">Create project</Link>
+                  <Link href="/projects/create">
+                    {t("projects.empty.action")}
+                  </Link>
                 </Button>
               }
             />
@@ -106,22 +110,22 @@ export default function ProjectsPage() {
                 <thead>
                   <tr className="border-b text-left">
                     <th className="pb-3 font-medium text-muted-foreground">
-                      Reference
+                      {t("projects.table.reference")}
                     </th>
                     <th className="pb-3 font-medium text-muted-foreground">
-                      Project
+                      {t("projects.table.project")}
                     </th>
                     <th className="pb-3 font-medium text-muted-foreground">
-                      Client
+                      {t("projects.table.client")}
                     </th>
                     <th className="pb-3 font-medium text-muted-foreground">
-                      Status
+                      {t("projects.table.status")}
                     </th>
                     <th className="pb-3 font-medium text-muted-foreground">
-                      Deadline
+                      {t("projects.table.deadline")}
                     </th>
                     <th className="pb-3 font-medium text-muted-foreground">
-                      Progress
+                      {t("projects.table.progress")}
                     </th>
                   </tr>
                 </thead>

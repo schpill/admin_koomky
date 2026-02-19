@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { I18nProvider } from "@/components/providers/i18n-provider";
 
 const toastSuccess = vi.fn();
 const toastError = vi.fn();
@@ -57,7 +58,11 @@ describe("RecurringInvoiceDetailPage", () => {
       cancelProfile: vi.fn(),
     });
 
-    render(<RecurringInvoiceDetailPage />);
+    render(
+      <I18nProvider initialLocale="en">
+        <RecurringInvoiceDetailPage />
+      </I18nProvider>
+    );
 
     expect(screen.queryByText("Profile not found")).not.toBeInTheDocument();
     expect(screen.queryByText("Profile information")).not.toBeInTheDocument();
@@ -73,7 +78,11 @@ describe("RecurringInvoiceDetailPage", () => {
       cancelProfile: vi.fn(),
     });
 
-    render(<RecurringInvoiceDetailPage />);
+    render(
+      <I18nProvider initialLocale="en">
+        <RecurringInvoiceDetailPage />
+      </I18nProvider>
+    );
 
     expect(screen.getByText("Profile not found")).toBeInTheDocument();
   });
@@ -94,7 +103,11 @@ describe("RecurringInvoiceDetailPage", () => {
       cancelProfile: vi.fn().mockResolvedValue({}),
     });
 
-    render(<RecurringInvoiceDetailPage />);
+    render(
+      <I18nProvider initialLocale="en">
+        <RecurringInvoiceDetailPage />
+      </I18nProvider>
+    );
 
     await waitFor(() => {
       expect(fetchProfile).toHaveBeenCalledWith("rip_1");
@@ -124,7 +137,11 @@ describe("RecurringInvoiceDetailPage", () => {
       cancelProfile: vi.fn(),
     });
 
-    render(<RecurringInvoiceDetailPage />);
+    render(
+      <I18nProvider initialLocale="en">
+        <RecurringInvoiceDetailPage />
+      </I18nProvider>
+    );
 
     await waitFor(() => {
       expect(toastError).toHaveBeenCalledWith("load failed");

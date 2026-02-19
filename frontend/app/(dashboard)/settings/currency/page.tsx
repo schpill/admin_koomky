@@ -9,8 +9,10 @@ import { Label } from "@/components/ui/label";
 import { CurrencyAmount } from "@/components/shared/currency-amount";
 import { CurrencySelector } from "@/components/shared/currency-selector";
 import { useCurrencyStore } from "@/lib/stores/currencies";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 export default function CurrencySettingsPage() {
+  const { t } = useI18n();
   const {
     currencies,
     rates,
@@ -56,30 +58,31 @@ export default function CurrencySettingsPage() {
     try {
       await updateCurrencySettings(selectedBaseCurrency, selectedProvider);
       await fetchRates(selectedBaseCurrency);
-      toast.success("Currency settings updated");
+      toast.success(t("settings.currency.toasts.success"));
     } catch (error) {
-      toast.error((error as Error).message || "Unable to save settings");
+      toast.error(
+        (error as Error).message || t("settings.currency.toasts.failed")
+      );
     }
   };
 
   return (
     <div className="space-y-6">
       <div className="space-y-2">
-        <h1 className="text-3xl font-bold">Currency settings</h1>
+        <h1 className="text-3xl font-bold">{t("settings.currency.title")}</h1>
         <p className="text-sm text-muted-foreground">
-          Configure base currency, exchange-rate provider and optional manual
-          overrides for review.
+          {t("settings.currency.description")}
         </p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Base configuration</CardTitle>
+          <CardTitle>{t("settings.currency.baseConfig")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <CurrencySelector
             id="settings-base-currency"
-            label="Base currency"
+            label={t("settings.currency.baseCurrency")}
             value={selectedBaseCurrency}
             currencies={currencies}
             onValueChange={setSelectedBaseCurrency}
@@ -87,7 +90,9 @@ export default function CurrencySettingsPage() {
           />
 
           <div className="space-y-2">
-            <Label htmlFor="exchange-rate-provider">Rate provider</Label>
+            <Label htmlFor="exchange-rate-provider">
+              {t("settings.currency.rateProvider")}
+            </Label>
             <select
               id="exchange-rate-provider"
               className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
@@ -95,14 +100,18 @@ export default function CurrencySettingsPage() {
               onChange={(event) => setSelectedProvider(event.target.value)}
               disabled={isLoading}
             >
-              <option value="open_exchange_rates">Open Exchange Rates</option>
-              <option value="ecb">European Central Bank</option>
+              <option value="open_exchange_rates">
+                {t("settings.currency.openExchangeRates")}
+              </option>
+              <option value="ecb">{t("settings.currency.ecb")}</option>
             </select>
           </div>
 
           <div className="flex justify-end">
             <Button onClick={handleSave} disabled={isLoading}>
-              {isLoading ? "Saving..." : "Save currency settings"}
+              {isLoading
+                ? t("settings.currency.saving")
+                : t("settings.currency.saveSettings")}
             </Button>
           </div>
         </CardContent>
@@ -110,12 +119,12 @@ export default function CurrencySettingsPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Manual rate overrides (preview)</CardTitle>
+          <CardTitle>{t("settings.currency.manualOverrides")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           {previewRates.length === 0 ? (
             <p className="text-sm text-muted-foreground">
-              No rates available yet. Save settings to fetch latest values.
+              {t("settings.currency.noRates")}
             </p>
           ) : (
             previewRates.map(({ currency, rate, overridden }) => (
@@ -148,7 +157,7 @@ export default function CurrencySettingsPage() {
                   />{" "}
                   {overridden && (
                     <span className="font-medium text-amber-600">
-                      (overridden locally)
+                      {t("settings.currency.overriddenLocally")}
                     </span>
                   )}
                 </p>

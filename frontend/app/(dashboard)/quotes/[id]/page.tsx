@@ -20,6 +20,7 @@ import { QuotePdfPreview } from "@/components/quotes/quote-pdf-preview";
 import { CurrencyAmount } from "@/components/shared/currency-amount";
 import { ConfirmationDialog } from "@/components/common/confirmation-dialog";
 import { useQuoteStore } from "@/lib/stores/quotes";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 function buildPreviewHtml(quote: any): string {
   if (!quote) {
@@ -57,6 +58,7 @@ function buildPreviewHtml(quote: any): string {
 }
 
 export default function QuoteDetailPage() {
+  const { t } = useI18n();
   const params = useParams<{ id: string }>();
   const router = useRouter();
   const quoteId = params.id;
@@ -101,11 +103,11 @@ export default function QuoteDetailPage() {
   if (!currentQuote) {
     return (
       <EmptyState
-        title="Quote not found"
-        description="This quote may have been deleted or you no longer have access."
+        title={t("quotes.detail.notFound")}
+        description={t("quotes.detail.notFoundDescription")}
         action={
           <Button asChild>
-            <Link href="/quotes">Back to quotes</Link>
+            <Link href="/quotes">{t("quotes.detail.backToQuotes")}</Link>
           </Button>
         }
       />
@@ -115,40 +117,48 @@ export default function QuoteDetailPage() {
   const onSend = async () => {
     try {
       await sendQuote(currentQuote.id);
-      toast.success("Quote sent");
+      toast.success(t("quotes.detail.toasts.sent"));
     } catch (error) {
-      toast.error((error as Error).message || "Unable to send quote");
+      toast.error(
+        (error as Error).message || t("quotes.detail.toasts.sendFailed")
+      );
     }
   };
 
   const onAccept = async () => {
     try {
       await acceptQuote(currentQuote.id);
-      toast.success("Quote accepted");
+      toast.success(t("quotes.detail.toasts.accepted"));
     } catch (error) {
-      toast.error((error as Error).message || "Unable to accept quote");
+      toast.error(
+        (error as Error).message || t("quotes.detail.toasts.acceptFailed")
+      );
     }
   };
 
   const onReject = async () => {
     try {
       await rejectQuote(currentQuote.id);
-      toast.success("Quote rejected");
+      toast.success(t("quotes.detail.toasts.rejected"));
     } catch (error) {
-      toast.error((error as Error).message || "Unable to reject quote");
+      toast.error(
+        (error as Error).message || t("quotes.detail.toasts.rejectFailed")
+      );
     }
   };
 
   const onConvert = async () => {
     try {
       const invoice = await convertQuote(currentQuote.id);
-      toast.success("Quote converted to invoice");
+      toast.success(t("quotes.detail.toasts.converted"));
       setConvertDialogOpen(false);
       if (invoice?.id) {
         router.push(`/invoices/${invoice.id}`);
       }
     } catch (error) {
-      toast.error((error as Error).message || "Unable to convert quote");
+      toast.error(
+        (error as Error).message || t("quotes.detail.toasts.convertFailed")
+      );
     }
   };
 
@@ -158,7 +168,7 @@ export default function QuoteDetailPage() {
         <Button variant="ghost" className="-ml-2" asChild>
           <Link href="/quotes">
             <ChevronLeft className="mr-2 h-4 w-4" />
-            Back to quotes
+            {t("quotes.detail.backToQuotes")}
           </Link>
         </Button>
 
@@ -173,15 +183,15 @@ export default function QuoteDetailPage() {
             <QuoteStatusBadge status={currentQuote.status} />
             <Button type="button" variant="outline" onClick={onSend}>
               <Mail className="mr-2 h-4 w-4" />
-              Send
+              {t("quotes.detail.send")}
             </Button>
             <Button type="button" variant="outline" onClick={onAccept}>
               <CheckCircle2 className="mr-2 h-4 w-4" />
-              Accept
+              {t("quotes.detail.accept")}
             </Button>
             <Button type="button" variant="outline" onClick={onReject}>
               <XCircle className="mr-2 h-4 w-4" />
-              Reject
+              {t("quotes.detail.reject")}
             </Button>
             <Button
               type="button"
@@ -189,7 +199,7 @@ export default function QuoteDetailPage() {
               onClick={() => setConvertDialogOpen(true)}
             >
               <ArrowRightLeft className="mr-2 h-4 w-4" />
-              Convert to invoice
+              {t("quotes.detail.convertToInvoice")}
             </Button>
           </div>
         </div>
@@ -198,18 +208,22 @@ export default function QuoteDetailPage() {
       <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
         <Card>
           <CardHeader>
-            <CardTitle>Quote details</CardTitle>
+            <CardTitle>{t("quotes.detail.quoteDetails")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid gap-3 md:grid-cols-3">
               <div>
-                <p className="text-xs text-muted-foreground">Client</p>
+                <p className="text-xs text-muted-foreground">
+                  {t("quotes.detail.client")}
+                </p>
                 <p className="font-medium">
                   {currentQuote.client?.name || currentQuote.client_id}
                 </p>
               </div>
               <div>
-                <p className="text-xs text-muted-foreground">Total</p>
+                <p className="text-xs text-muted-foreground">
+                  {t("quotes.detail.total")}
+                </p>
                 <p className="font-medium">
                   <CurrencyAmount
                     amount={Number(currentQuote.total)}
@@ -219,7 +233,7 @@ export default function QuoteDetailPage() {
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">
-                  Converted invoice
+                  {t("quotes.detail.convertedInvoice")}
                 </p>
                 {currentQuote.converted_invoice_id ? (
                   <Link
@@ -230,23 +244,25 @@ export default function QuoteDetailPage() {
                   </Link>
                 ) : (
                   <p className="font-medium text-muted-foreground">
-                    Not converted
+                    {t("quotes.detail.notConverted")}
                   </p>
                 )}
               </div>
             </div>
 
             <div>
-              <h2 className="mb-2 text-sm font-semibold">Line items</h2>
+              <h2 className="mb-2 text-sm font-semibold">
+                {t("quotes.detail.lineItems")}
+              </h2>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b text-left">
-                      <th className="pb-2">Description</th>
-                      <th className="pb-2">Qty</th>
-                      <th className="pb-2">Unit</th>
-                      <th className="pb-2">VAT</th>
-                      <th className="pb-2">Total</th>
+                      <th className="pb-2">{t("quotes.detail.description")}</th>
+                      <th className="pb-2">{t("quotes.detail.qty")}</th>
+                      <th className="pb-2">{t("quotes.detail.unit")}</th>
+                      <th className="pb-2">{t("quotes.detail.vat")}</th>
+                      <th className="pb-2">{t("quotes.detail.total")}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -289,9 +305,9 @@ export default function QuoteDetailPage() {
         open={convertDialogOpen}
         onOpenChange={setConvertDialogOpen}
         onConfirm={onConvert}
-        title="Convert quote to invoice"
-        description="This will generate a draft invoice from this quote and redirect you to the invoice detail page."
-        confirmText="Convert"
+        title={t("quotes.detail.convertDialog.title")}
+        description={t("quotes.detail.convertDialog.description")}
+        confirmText={t("quotes.detail.convertDialog.confirm")}
       />
     </div>
   );

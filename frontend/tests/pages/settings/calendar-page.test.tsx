@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { I18nProvider } from "@/components/providers/i18n-provider";
 
 const toastSuccess = vi.fn();
 const toastError = vi.fn();
@@ -49,7 +50,11 @@ describe("CalendarSettingsPage", () => {
       updateAutoEventRules,
     });
 
-    render(<CalendarSettingsPage />);
+    render(
+      <I18nProvider initialLocale="en">
+        <CalendarSettingsPage />
+      </I18nProvider>
+    );
 
     await waitFor(() => {
       expect(fetchConnections).toHaveBeenCalledTimes(1);
@@ -120,7 +125,11 @@ describe("CalendarSettingsPage", () => {
       updateAutoEventRules: vi.fn().mockResolvedValue(undefined),
     });
 
-    render(<CalendarSettingsPage />);
+    render(
+      <I18nProvider initialLocale="en">
+        <CalendarSettingsPage />
+      </I18nProvider>
+    );
 
     fireEvent.click(screen.getByRole("button", { name: "Disable" }));
 
@@ -155,7 +164,11 @@ describe("CalendarSettingsPage", () => {
       updateAutoEventRules: vi.fn().mockResolvedValue(undefined),
     });
 
-    render(<CalendarSettingsPage />);
+    render(
+      <I18nProvider initialLocale="en">
+        <CalendarSettingsPage />
+      </I18nProvider>
+    );
 
     await waitFor(() => {
       expect(toastError).toHaveBeenCalledWith(

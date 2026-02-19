@@ -15,6 +15,7 @@ import { InvoiceFilterBar } from "@/components/invoices/invoice-filter-bar";
 import { InvoiceStatusBadge } from "@/components/invoices/invoice-status-badge";
 import { InvoicePdfPreview } from "@/components/invoices/invoice-pdf-preview";
 import { CurrencyAmount } from "@/components/shared/currency-amount";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 function buildPreviewHtml(invoice?: Invoice | null): string {
   if (!invoice) {
@@ -54,6 +55,7 @@ function buildPreviewHtml(invoice?: Invoice | null): string {
 }
 
 export default function InvoicesPage() {
+  const { t } = useI18n();
   const { invoices, isLoading, pagination, fetchInvoices } = useInvoiceStore();
   const { clients, fetchClients } = useClientStore();
   const [portalPaymentEnabled, setPortalPaymentEnabled] = useState(false);
@@ -94,7 +96,7 @@ export default function InvoicesPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-3xl font-bold">Invoices</h1>
+          <h1 className="text-3xl font-bold">{t("invoices.title")}</h1>
           <p className="text-sm text-muted-foreground">
             {pagination ? `${pagination.total} invoices` : ""}
           </p>
@@ -102,7 +104,7 @@ export default function InvoicesPage() {
         <Button asChild>
           <Link href="/invoices/create">
             <Plus className="mr-2 h-4 w-4" />
-            New invoice
+            {t("invoices.newInvoice")}
           </Link>
         </Button>
       </div>
@@ -118,7 +120,7 @@ export default function InvoicesPage() {
       <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
         <Card>
           <CardHeader>
-            <CardTitle>Invoice list</CardTitle>
+            <CardTitle>{t("invoices.invoiceList")}</CardTitle>
           </CardHeader>
           <CardContent>
             {isLoading && invoices.length === 0 ? (
@@ -128,8 +130,8 @@ export default function InvoicesPage() {
               </div>
             ) : invoices.length === 0 ? (
               <EmptyState
-                title="No invoices"
-                description="Create your first invoice to start tracking payments."
+                title={t("invoices.empty.title")}
+                description={t("invoices.empty.description")}
               />
             ) : (
               <div className="overflow-x-auto">
@@ -137,22 +139,22 @@ export default function InvoicesPage() {
                   <thead>
                     <tr className="border-b text-left">
                       <th className="pb-3 font-medium text-muted-foreground">
-                        Number
+                        {t("invoices.table.number")}
                       </th>
                       <th className="pb-3 font-medium text-muted-foreground">
-                        Client
+                        {t("invoices.table.client")}
                       </th>
                       <th className="pb-3 font-medium text-muted-foreground">
-                        Issue date
+                        {t("invoices.table.issueDate")}
                       </th>
                       <th className="pb-3 font-medium text-muted-foreground">
-                        Due date
+                        {t("invoices.table.dueDate")}
                       </th>
                       <th className="pb-3 font-medium text-muted-foreground">
-                        Total
+                        {t("invoices.table.total")}
                       </th>
                       <th className="pb-3 font-medium text-muted-foreground">
-                        Status
+                        {t("invoices.table.status")}
                       </th>
                     </tr>
                   </thead>
@@ -175,7 +177,7 @@ export default function InvoicesPage() {
                               variant="outline"
                               className="ml-2 align-middle text-[10px] uppercase"
                             >
-                              Recurring
+                              {t("invoices.table.recurring")}
                             </Badge>
                           )}
                           {portalPaymentEnabled &&
@@ -189,7 +191,7 @@ export default function InvoicesPage() {
                               variant="outline"
                               className="ml-2 align-middle text-[10px] uppercase"
                             >
-                              Portal pay
+                              {t("invoices.table.portalPay")}
                             </Badge>
                           ) : null}
                         </td>

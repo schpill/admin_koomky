@@ -19,6 +19,7 @@ import { CurrencySelector } from "@/components/shared/currency-selector";
 import { useClientStore } from "@/lib/stores/clients";
 import { useCurrencyStore } from "@/lib/stores/currencies";
 import { useQuoteStore } from "@/lib/stores/quotes";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 const today = new Date().toISOString().slice(0, 10);
 const inThirtyDays = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
@@ -26,6 +27,7 @@ const inThirtyDays = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
   .slice(0, 10);
 
 export default function CreateQuotePage() {
+  const { t } = useI18n();
   const router = useRouter();
   const { clients, fetchClients } = useClientStore();
   const { currencies, rates, baseCurrency, fetchCurrencies, fetchRates } =
@@ -110,7 +112,7 @@ export default function CreateQuotePage() {
 
   const handleSubmit = async () => {
     if (!clientId) {
-      toast.error("Please select a client");
+      toast.error(t("quotes.create.selectClientRequired"));
       return;
     }
 
@@ -122,7 +124,7 @@ export default function CreateQuotePage() {
       .filter((line) => line.description.length > 0);
 
     if (sanitizedItems.length === 0) {
-      toast.error("At least one line item is required");
+      toast.error(t("quotes.create.lineItemRequired"));
       return;
     }
 
@@ -138,7 +140,7 @@ export default function CreateQuotePage() {
         line_items: sanitizedItems,
       });
 
-      toast.success("Quote created");
+      toast.success(t("quotes.create.toasts.success"));
 
       if (created?.id) {
         router.push(`/quotes/${created.id}`);
@@ -146,7 +148,7 @@ export default function CreateQuotePage() {
         router.push("/quotes");
       }
     } catch (error) {
-      toast.error((error as Error).message || "Unable to create quote");
+      toast.error((error as Error).message || t("quotes.create.toasts.failed"));
     }
   };
 
@@ -156,27 +158,27 @@ export default function CreateQuotePage() {
         <Button variant="ghost" asChild className="-ml-2">
           <Link href="/quotes">
             <ChevronLeft className="mr-2 h-4 w-4" />
-            Back to quotes
+            {t("quotes.create.backToQuotes")}
           </Link>
         </Button>
-        <h1 className="text-3xl font-bold">Create quote</h1>
+        <h1 className="text-3xl font-bold">{t("quotes.create.title")}</h1>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Quote information</CardTitle>
+          <CardTitle>{t("quotes.create.quoteInfo")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid gap-3 md:grid-cols-3">
             <div className="space-y-2">
-              <Label htmlFor="quote-client">Client</Label>
+              <Label htmlFor="quote-client">{t("quotes.create.client")}</Label>
               <select
                 id="quote-client"
                 className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
                 value={clientId}
                 onChange={(event) => setClientId(event.target.value)}
               >
-                <option value="">Select client</option>
+                <option value="">{t("quotes.create.selectClient")}</option>
                 {clients.map((client) => (
                   <option key={client.id} value={client.id}>
                     {client.name}
@@ -185,7 +187,9 @@ export default function CreateQuotePage() {
               </select>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="quote-issue-date">Issue date</Label>
+              <Label htmlFor="quote-issue-date">
+                {t("quotes.create.issueDate")}
+              </Label>
               <Input
                 id="quote-issue-date"
                 type="date"
@@ -194,7 +198,9 @@ export default function CreateQuotePage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="quote-valid-until">Valid until</Label>
+              <Label htmlFor="quote-valid-until">
+                {t("quotes.create.validUntil")}
+              </Label>
               <Input
                 id="quote-valid-until"
                 type="date"
@@ -207,13 +213,13 @@ export default function CreateQuotePage() {
           <div className="space-y-2 rounded-md border bg-muted/20 p-3">
             <CurrencySelector
               id="quote-currency"
-              label="Currency"
+              label={t("quotes.create.currency")}
               value={currency}
               currencies={currencies}
               onValueChange={setCurrency}
             />
             <p className="text-xs text-muted-foreground">
-              Estimated in{" "}
+              {t("quotes.create.estimatedIn")}{" "}
               <span className="font-medium">{baseCurrency || "EUR"}:</span>{" "}
               <CurrencyAmount
                 amount={estimatedBaseTotal}
@@ -222,7 +228,7 @@ export default function CreateQuotePage() {
               />
             </p>
             <p className="text-xs text-muted-foreground">
-              Document total:{" "}
+              {t("quotes.create.documentTotal")}:{" "}
               <CurrencyAmount
                 amount={estimatedDocumentTotal}
                 currency={currency}
@@ -241,7 +247,7 @@ export default function CreateQuotePage() {
           />
 
           <div className="space-y-2">
-            <Label htmlFor="quote-notes">Notes</Label>
+            <Label htmlFor="quote-notes">{t("quotes.create.notes")}</Label>
             <Textarea
               id="quote-notes"
               rows={4}
@@ -252,7 +258,9 @@ export default function CreateQuotePage() {
 
           <div className="flex justify-end">
             <Button type="button" onClick={handleSubmit} disabled={isLoading}>
-              {isLoading ? "Saving..." : "Save draft"}
+              {isLoading
+                ? t("quotes.create.saving")
+                : t("quotes.create.saveDraft")}
             </Button>
           </div>
         </CardContent>

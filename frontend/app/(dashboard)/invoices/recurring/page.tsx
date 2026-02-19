@@ -9,8 +9,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EmptyState } from "@/components/ui/empty-state";
 import { useRecurringInvoiceStore } from "@/lib/stores/recurring-invoices";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 export default function RecurringInvoicesPage() {
+  const { t } = useI18n();
   const {
     profiles,
     isLoading,
@@ -30,7 +32,10 @@ export default function RecurringInvoicesPage() {
       await action();
       toast.success(message);
     } catch (error) {
-      toast.error((error as Error).message || "Action failed");
+      toast.error(
+        (error as Error).message ||
+          t("invoices.recurring.detail.toasts.actionFailed")
+      );
     }
   };
 
@@ -38,7 +43,9 @@ export default function RecurringInvoicesPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between gap-3">
         <div>
-          <h1 className="text-3xl font-bold">Recurring invoices</h1>
+          <h1 className="text-3xl font-bold">
+            {t("invoices.recurring.title")}
+          </h1>
           <p className="text-sm text-muted-foreground">
             {pagination ? `${pagination.total} profiles` : ""}
           </p>
@@ -46,14 +53,14 @@ export default function RecurringInvoicesPage() {
         <Button asChild>
           <Link href="/invoices/recurring/create">
             <Plus className="mr-2 h-4 w-4" />
-            New profile
+            {t("invoices.recurring.newProfile")}
           </Link>
         </Button>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Profiles</CardTitle>
+          <CardTitle>{t("invoices.recurring.profileList")}</CardTitle>
         </CardHeader>
         <CardContent>
           {isLoading && profiles.length === 0 ? (
@@ -63,21 +70,35 @@ export default function RecurringInvoicesPage() {
             </div>
           ) : profiles.length === 0 ? (
             <EmptyState
-              title="No recurring profile"
-              description="Create a profile to automate invoice generation."
+              title={t("invoices.recurring.empty.title")}
+              description={t("invoices.recurring.empty.description")}
             />
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b text-left">
-                    <th className="pb-2">Name</th>
-                    <th className="pb-2">Client</th>
-                    <th className="pb-2">Frequency</th>
-                    <th className="pb-2">Next due</th>
-                    <th className="pb-2">Status</th>
-                    <th className="pb-2">Occurrences</th>
-                    <th className="pb-2 text-right">Actions</th>
+                    <th className="pb-2">
+                      {t("invoices.recurring.table.name")}
+                    </th>
+                    <th className="pb-2">
+                      {t("invoices.recurring.table.client")}
+                    </th>
+                    <th className="pb-2">
+                      {t("invoices.recurring.table.frequency")}
+                    </th>
+                    <th className="pb-2">
+                      {t("invoices.recurring.table.nextDue")}
+                    </th>
+                    <th className="pb-2">
+                      {t("invoices.recurring.table.status")}
+                    </th>
+                    <th className="pb-2">
+                      {t("invoices.recurring.table.occurrences")}
+                    </th>
+                    <th className="pb-2 text-right">
+                      {t("invoices.recurring.table.actions")}
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -107,11 +128,11 @@ export default function RecurringInvoicesPage() {
                               onClick={() =>
                                 runAction(
                                   () => pauseProfile(profile.id),
-                                  "Profile paused"
+                                  t("invoices.recurring.detail.toasts.paused")
                                 )
                               }
                             >
-                              Pause
+                              {t("invoices.recurring.table.pause")}
                             </Button>
                           )}
                           {profile.status === "paused" && (
@@ -121,11 +142,11 @@ export default function RecurringInvoicesPage() {
                               onClick={() =>
                                 runAction(
                                   () => resumeProfile(profile.id),
-                                  "Profile resumed"
+                                  t("invoices.recurring.detail.toasts.resumed")
                                 )
                               }
                             >
-                              Resume
+                              {t("invoices.recurring.table.resume")}
                             </Button>
                           )}
                           {profile.status !== "cancelled" && (
@@ -135,11 +156,13 @@ export default function RecurringInvoicesPage() {
                               onClick={() =>
                                 runAction(
                                   () => cancelProfile(profile.id),
-                                  "Profile cancelled"
+                                  t(
+                                    "invoices.recurring.detail.toasts.cancelled"
+                                  )
                                 )
                               }
                             >
-                              Cancel
+                              {t("invoices.recurring.table.cancel")}
                             </Button>
                           )}
                         </div>

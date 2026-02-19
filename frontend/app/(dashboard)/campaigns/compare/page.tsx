@@ -4,8 +4,10 @@ import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useCampaignStore } from "@/lib/stores/campaigns";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 export default function CampaignComparePage() {
+  const { t } = useI18n();
   const { campaigns, comparison, fetchCampaigns, compareCampaigns, isLoading } =
     useCampaignStore();
   const [selected, setSelected] = useState<string[]>([]);
@@ -31,15 +33,15 @@ export default function CampaignComparePage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Compare campaigns</h1>
+        <h1 className="text-3xl font-bold">{t("campaigns.compare.title")}</h1>
         <p className="text-sm text-muted-foreground">
-          Pick at least two campaigns to compare performance.
+          {t("campaigns.compare.description")}
         </p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Select campaigns</CardTitle>
+          <CardTitle>{t("campaigns.compare.select")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           {campaigns.map((campaign) => (
@@ -60,29 +62,39 @@ export default function CampaignComparePage() {
             onClick={() => compareCampaigns(selected)}
             disabled={!canCompare || isLoading}
           >
-            {isLoading ? "Comparing..." : "Compare"}
+            {isLoading
+              ? t("campaigns.compare.comparing")
+              : t("campaigns.compare.compare")}
           </Button>
         </CardContent>
       </Card>
 
       <Card>
         <CardHeader>
-          <CardTitle>Comparison result</CardTitle>
+          <CardTitle>{t("campaigns.compare.result")}</CardTitle>
         </CardHeader>
         <CardContent>
           {comparison.length === 0 ? (
             <p className="text-sm text-muted-foreground">
-              No comparison data yet.
+              {t("campaigns.compare.noData")}
             </p>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b text-left text-muted-foreground">
-                    <th className="pb-2 font-medium">Campaign</th>
-                    <th className="pb-2 font-medium">Recipients</th>
-                    <th className="pb-2 font-medium">Open rate</th>
-                    <th className="pb-2 font-medium">Click rate</th>
+                    <th className="pb-2 font-medium">
+                      {t("campaigns.compare.campaign")}
+                    </th>
+                    <th className="pb-2 font-medium">
+                      {t("campaigns.compare.recipients")}
+                    </th>
+                    <th className="pb-2 font-medium">
+                      {t("campaigns.compare.openRate")}
+                    </th>
+                    <th className="pb-2 font-medium">
+                      {t("campaigns.compare.clickRate")}
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
