@@ -1,7 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-TARGET_URL="${UPTIME_TARGET_URL:-https://localhost/api/v1/health}"
+TARGET_URL="${UPTIME_TARGET_URL:-}"
+
+if [[ -z "${TARGET_URL}" ]]; then
+  echo "UPTIME_TARGET_URL not set, skipping uptime check."
+  exit 0
+fi
 PING_URL="${HEALTHCHECKS_PING_URL:-}"
 TIMEOUT_SECONDS="${UPTIME_TIMEOUT_SECONDS:-10}"
 
