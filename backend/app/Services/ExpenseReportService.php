@@ -24,14 +24,15 @@ class ExpenseReportService
 
         /** @var Collection<int, Expense> $expenses */
         $expenses = $query->get();
-        
+
         $baseCurrency = strtoupper((string) ($user->base_currency ?? 'EUR'));
 
         $total = round((float) $expenses->sum(fn (Expense $expense): float => $this->getAmountInBaseCurrency($expense, $baseCurrency)), 2);
-        
+
         // Assuming tax is in the same currency as the amount, so we convert it too if needed.
         $taxTotal = round((float) $expenses->sum(function (Expense $expense) use ($baseCurrency) {
             $rate = $this->getConversionRate($expense, $baseCurrency);
+
             return (float) $expense->tax_amount * $rate;
         }), 2);
 
@@ -103,23 +104,24 @@ class ExpenseReportService
             ])->values()->all(),
         ];
     }
-    
+
     private function getAmountInBaseCurrency(Expense $expense, string $baseCurrency): float
     {
         if (strtoupper($expense->currency) === $baseCurrency) {
             return (float) $expense->amount;
         }
-        
+
         // base_currency_amount should have been calculated on creation.
         // If not, we log an error and return the raw amount to avoid breaking the report.
         if ($expense->base_currency_amount === null) {
             logs()->error('Expense missing base_currency_amount', ['expense_id' => $expense->id]);
+
             return (float) $expense->amount;
         }
-        
+
         return (float) $expense->base_currency_amount;
     }
-    
+
     private function getConversionRate(Expense $expense, string $baseCurrency): float
     {
         if (strtoupper($expense->currency) === $baseCurrency) {
@@ -131,7 +133,7 @@ class ExpenseReportService
         if ($expense->base_currency_amount === null) {
             return 1.0; // Cannot determine rate
         }
-        
+
         return (float) $expense->base_currency_amount / (float) $expense->amount;
     }
 

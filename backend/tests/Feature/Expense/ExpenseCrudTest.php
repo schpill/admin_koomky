@@ -32,19 +32,19 @@ function validExpensePayload(string $categoryId, ?string $projectId = null, ?str
     ];
 }
 
-beforeEach(function() {
+beforeEach(function () {
     Storage::fake('receipts');
     $this->user = User::factory()->create(['base_currency' => 'EUR']);
     $this->client = Client::factory()->create(['user_id' => $this->user->id]);
     $this->project = Project::factory()->create(['user_id' => $this->user->id, 'client_id' => $this->client->id]);
     $this->category = ExpenseCategory::factory()->create(['user_id' => $this->user->id]);
-    
+
     $this->actingAs($this->user, 'sanctum');
 });
 
 test('can create an expense with a receipt', function () {
     $payload = validExpensePayload($this->category->id, $this->project->id, $this->client->id);
-    
+
     $response = $this->postJson('/api/v1/expenses', [
         ...$payload,
         'receipt' => UploadedFile::fake()->create('receipt.jpg', 50, 'image/jpeg'),
@@ -55,14 +55,14 @@ test('can create an expense with a receipt', function () {
         ->assertJsonPath('data.receipt_filename', 'receipt.jpg');
 
     $this->assertDatabaseHas('expenses', ['description' => 'Train ticket']);
-    
+
     $expense = Expense::first();
     Storage::disk('receipts')->assertExists($expense->receipt_path);
 });
 
 test('can view a single expense', function () {
     $expense = Expense::factory()->create(['user_id' => $this->user->id]);
-    
+
     $this->getJson('/api/v1/expenses/'.$expense->id)
         ->assertStatus(200)
         ->assertJsonPath('data.id', $expense->id);
@@ -77,18 +77,18 @@ test('can update an expense', function () {
         'description' => 'New description',
         'is_billable' => false,
     ])
-    ->assertStatus(200)
-    ->assertJsonPath('data.description', 'New description')
-    ->assertJsonPath('data.is_billable', false);
+        ->assertStatus(200)
+        ->assertJsonPath('data.description', 'New description')
+        ->assertJsonPath('data.is_billable', false);
 
     $this->assertDatabaseHas('expenses', ['id' => $expense->id, 'description' => 'New description']);
 });
 
 test('can delete an expense and its receipt', function () {
     $expense = Expense::factory()->create(['user_id' => $this->user->id]);
-    
+
     // Simulate a receipt file
-    $path = 'receipts/' . uniqid() . '.jpg';
+    $path = 'receipts/'.uniqid().'.jpg';
     Storage::disk('receipts')->put($path, 'dummy content');
     $expense->update(['receipt_path' => $path]);
 
@@ -112,28 +112,28 @@ test('can filter expenses by category and billable status', function () {
         'is_billable' => false,
         'description' => 'Non-billable Expense',
     ]);
-     Expense::factory()->create([
+    Expense::factory()->create([
         'user_id' => $this->user->id,
         'is_billable' => true,
         'description' => 'Other Category Billable',
     ]);
 
     $response = $this->getJson('/api/v1/expenses?expense_category_id='.$this->category->id.'&billable=1');
-    
+
     $response->assertStatus(200)
         ->assertJsonCount(1, 'data.data')
         ->assertJsonPath('data.data.0.description', 'Billable Expense');
 });
 
-test('receipt upload fails if file is too large', function() {
+test('receipt upload fails if file is too large', function () {
     $expense = Expense::factory()->create(['user_id' => $this->user->id]);
-    
+
     // 11MB file, where limit is 10MB (10240 KB)
     $largeFile = UploadedFile::fake()->create('large-file.pdf', 11 * 1024);
 
     $this->postJson('/api/v1/expenses/'.$expense->id.'/receipt', [
         'receipt' => $largeFile,
     ])
-    ->assertStatus(422)
-    ->assertJsonValidationErrors('receipt');
+        ->assertStatus(422)
+        ->assertJsonValidationErrors('receipt');
 });

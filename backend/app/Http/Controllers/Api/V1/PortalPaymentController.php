@@ -57,6 +57,7 @@ class PortalPaymentController extends Controller
                 'error' => $exception->getMessage(),
                 'invoice_id' => $invoice->id,
             ]);
+
             return $this->error('Could not initiate payment. Please try again later.', 500);
         } catch (RuntimeException $exception) {
             return $this->error($exception->getMessage(), 422);

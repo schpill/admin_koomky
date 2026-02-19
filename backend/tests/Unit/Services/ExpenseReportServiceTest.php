@@ -1,9 +1,7 @@
 <?php
 
-use App\Models\Client;
 use App\Models\Expense;
 use App\Models\ExpenseCategory;
-use App\Models\Project;
 use App\Models\User;
 use App\Services\ExpenseReportService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -11,7 +9,7 @@ use Tests\TestCase;
 
 uses(TestCase::class, RefreshDatabase::class);
 
-beforeEach(function() {
+beforeEach(function () {
     $this->user = User::factory()->create(['base_currency' => 'EUR']);
     $this->travel = ExpenseCategory::factory()->create(['user_id' => $this->user->id, 'name' => 'Travel']);
     $this->software = ExpenseCategory::factory()->create(['user_id' => $this->user->id, 'name' => 'Software']);
@@ -37,7 +35,7 @@ test('expense report service aggregates totals and breakdowns in base currency',
     ]);
 
     $report = $this->service->build($this->user);
-    
+
     // Total should be 100 EUR + 60 EUR (converted from 50 USD)
     expect($report['total_expenses'])->toBe(160.0);
     // Tax should be 20 EUR + 12 EUR (10 USD * 1.2)
@@ -58,12 +56,12 @@ test('expense report service handles empty datasets', function () {
     expect($report['by_project'])->toBeArray()->toBeEmpty();
 });
 
-test('expense report service filters correctly', function() {
+test('expense report service filters correctly', function () {
     Expense::factory()->create(['user_id' => $this->user->id, 'expense_category_id' => $this->travel->id, 'amount' => 100]);
     Expense::factory()->create(['user_id' => $this->user->id, 'expense_category_id' => $this->software->id, 'amount' => 50]);
 
     $report = $this->service->build($this->user, ['expense_category_id' => $this->travel->id]);
-    
+
     expect($report['total_expenses'])->toBe(100.0);
     expect($report['count'])->toBe(1);
     expect($report['by_category'])->toHaveCount(1);

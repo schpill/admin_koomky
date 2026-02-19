@@ -6,14 +6,15 @@ use App\Models\PaymentIntent;
 use App\Models\PortalSettings;
 use App\Models\User;
 use RuntimeException;
-use Stripe\StripeClient;
 use Stripe\Exception\ApiErrorException;
+use Stripe\StripeClient;
 
 class StripePaymentService
 {
     protected function getStripeClient(PortalSettings $settings): StripeClient
     {
         $this->assertStripeConfigured($settings);
+
         return new StripeClient($settings->stripe_secret_key);
     }
 
@@ -33,6 +34,7 @@ class StripePaymentService
 
     /**
      * @return array<string, mixed>
+     *
      * @throws ApiErrorException
      */
     public function createPaymentIntent(PaymentIntent $paymentIntent, PortalSettings $settings): array
@@ -73,6 +75,7 @@ class StripePaymentService
 
     /**
      * @return array<string, mixed>
+     *
      * @throws ApiErrorException
      */
     public function refundPayment(PaymentIntent $paymentIntent, float $amount, PortalSettings $settings): array

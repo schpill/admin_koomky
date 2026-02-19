@@ -8,7 +8,6 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Notification;
-use Stripe\Event as StripeEvent;
 
 uses(RefreshDatabase::class);
 
@@ -35,16 +34,16 @@ beforeEach(function () {
     ]);
 });
 
-function postWebhook(array $data, string $signature = null): \Illuminate\Testing\TestResponse
+function postWebhook(array $data, ?string $signature = null): \Illuminate\Testing\TestResponse
 {
     $timestamp = time();
     $payload = json_encode($data, JSON_UNESCAPED_SLASHES);
-    
-    if (!$signature) {
-        $stringToSign = $timestamp . '.' . $payload;
+
+    if (! $signature) {
+        $stringToSign = $timestamp.'.'.$payload;
         $signature = hash_hmac('sha256', $stringToSign, WEBHOOK_SECRET);
     }
-    
+
     $headers = ['Stripe-Signature' => "t={$timestamp},v1={$signature}"];
 
     return test()->postJson('/api/v1/webhooks/stripe', $data, $headers);
@@ -79,7 +78,7 @@ test('idempotency: receiving the same succeeded webhook twice creates only one p
             'currency' => 'eur',
         ]],
     ];
-    
+
     postWebhook($payload)->assertOk();
     expect(Payment::where('invoice_id', $this->invoice->id)->count())->toBe(1);
 
@@ -97,7 +96,7 @@ test('webhook handles partial payment correctly', function () {
             'currency' => 'eur',
         ]],
     ])->assertOk();
-    
+
     $this->invoice->refresh();
     expect($this->invoice->status)->toBe('partially_paid');
     $this->assertDatabaseHas('payments', ['invoice_id' => $this->invoice->id, 'amount' => 50.00]);
@@ -109,7 +108,7 @@ test('webhook with invalid signature is rejected', function () {
 
 test('payment_intent.payment_failed webhook updates status and notifies client', function () {
     $this->paymentIntent->update(['stripe_payment_intent_id' => 'pi_failed_123']);
-    
+
     postWebhook([
         'type' => 'payment_intent.payment_failed',
         'data' => ['object' => [

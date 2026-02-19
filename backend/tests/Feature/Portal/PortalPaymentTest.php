@@ -11,7 +11,7 @@ use Mockery\MockInterface;
 
 uses(RefreshDatabase::class);
 
-beforeEach(function() {
+beforeEach(function () {
     $this->user = User::factory()->create();
     $this->client = Client::factory()->create(['user_id' => $this->user->id]);
 
@@ -22,7 +22,7 @@ beforeEach(function() {
         'stripe_publishable_key' => 'pk_test',
         'stripe_secret_key' => 'sk_test',
     ]);
-    
+
     $this->invoice = Invoice::factory()->create([
         'user_id' => $this->user->id,
         'client_id' => $this->client->id,
@@ -35,7 +35,7 @@ beforeEach(function() {
             'client_secret' => 'pi_mock_123_secret_xyz',
         ]);
     });
-    
+
     // Authenticate as the user who owns the data
     $this->actingAs($this->user, 'sanctum');
 
@@ -54,7 +54,7 @@ test('portal client can create payment intent for an unpaid invoice', function (
 
 test('portal client can check payment status', function () {
     $this->postJson('/api/v1/portal/invoices/'.$this->invoice->id.'/pay');
-    
+
     $this->getJson('/api/v1/portal/invoices/'.$this->invoice->id.'/payment-status')
         ->assertStatus(200)
         ->assertJsonPath('data.status', 'processing');

@@ -3,7 +3,6 @@
 use App\Models\Client;
 use App\Models\Invoice;
 use App\Models\PaymentIntent;
-use App\Models\PortalSettings;
 use App\Models\User;
 use App\Notifications\PaymentFailedNotification;
 use App\Notifications\PaymentReceivedNotification;
@@ -15,16 +14,16 @@ uses(RefreshDatabase::class);
 
 const NOTIFICATION_WEBHOOK_SECRET = 'whsec_notifications_secret';
 
-function postNotificationWebhook(array $data, string $signature = null): \Illuminate\Testing\TestResponse
+function postNotificationWebhook(array $data, ?string $signature = null): \Illuminate\Testing\TestResponse
 {
     $timestamp = time();
     $payload = json_encode($data, JSON_UNESCAPED_SLASHES);
-    
-    if (!$signature) {
-        $stringToSign = $timestamp . '.' . $payload;
+
+    if (! $signature) {
+        $stringToSign = $timestamp.'.'.$payload;
         $signature = hash_hmac('sha256', $stringToSign, NOTIFICATION_WEBHOOK_SECRET);
     }
-    
+
     $headers = ['Stripe-Signature' => "t={$timestamp},v1={$signature}"];
 
     return test()->postJson('/api/v1/webhooks/stripe', $data, $headers);
@@ -67,7 +66,7 @@ test('client is notified by email when payment fails', function () {
         'client_id' => $client->id,
         'stripe_payment_intent_id' => 'pi_notify_failed',
     ]);
-    
+
     postNotificationWebhook([
         'type' => 'payment_intent.payment_failed',
         'data' => ['object' => [
