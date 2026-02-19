@@ -26,6 +26,7 @@ beforeEach(function () {
     $this->localPaymentIntent = LocalPaymentIntent::factory()->create([
         'amount' => 150.75,
         'currency' => 'EUR',
+        'stripe_payment_intent_id' => null,
     ]);
 
     $this->stripeClientMock = $this->mock(StripeClient::class, function (MockInterface $mock) {
