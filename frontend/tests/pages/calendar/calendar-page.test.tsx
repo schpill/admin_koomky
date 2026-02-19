@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { I18nProvider } from "@/components/providers/i18n-provider";
 
 const toastSuccess = vi.fn();
 const toastError = vi.fn();
@@ -88,7 +89,11 @@ describe("CalendarPage", () => {
       deleteEvent: vi.fn(),
     });
 
-    render(<CalendarPage />);
+    render(
+      <I18nProvider initialLocale="en">
+        <CalendarPage />
+      </I18nProvider>
+    );
 
     await waitFor(() => {
       expect(fetchEvents).toHaveBeenCalledTimes(1);
@@ -118,7 +123,11 @@ describe("CalendarPage", () => {
       deleteEvent: vi.fn(),
     });
 
-    render(<CalendarPage />);
+    render(
+      <I18nProvider initialLocale="en">
+        <CalendarPage />
+      </I18nProvider>
+    );
 
     fireEvent.click(screen.getByRole("button", { name: "Create event" }));
     expect(screen.getByText("Save event")).toBeInTheDocument();
@@ -156,7 +165,11 @@ describe("CalendarPage", () => {
       deleteEvent,
     });
 
-    render(<CalendarPage />);
+    render(
+      <I18nProvider initialLocale="en">
+        <CalendarPage />
+      </I18nProvider>
+    );
 
     fireEvent.click(screen.getByRole("button", { name: "Edit evt_1" }));
     expect(screen.getByText("Update event")).toBeInTheDocument();

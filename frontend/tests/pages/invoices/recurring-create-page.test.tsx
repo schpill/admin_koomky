@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { I18nProvider } from "@/components/providers/i18n-provider";
 
 const toastSuccess = vi.fn();
 const toastError = vi.fn();
@@ -84,7 +85,11 @@ describe("CreateRecurringInvoicePage", () => {
       isLoading: false,
     });
 
-    render(<CreateRecurringInvoicePage />);
+    render(
+      <I18nProvider initialLocale="en">
+        <CreateRecurringInvoicePage />
+      </I18nProvider>
+    );
 
     await waitFor(() => {
       expect(fetchClients).toHaveBeenCalledTimes(1);
@@ -112,7 +117,11 @@ describe("CreateRecurringInvoicePage", () => {
       isLoading: false,
     });
 
-    render(<CreateRecurringInvoicePage />);
+    render(
+      <I18nProvider initialLocale="en">
+        <CreateRecurringInvoicePage />
+      </I18nProvider>
+    );
 
     fireEvent.click(screen.getByRole("button", { name: "Create profile" }));
 
@@ -132,7 +141,11 @@ describe("CreateRecurringInvoicePage", () => {
       isLoading: false,
     });
 
-    render(<CreateRecurringInvoicePage />);
+    render(
+      <I18nProvider initialLocale="en">
+        <CreateRecurringInvoicePage />
+      </I18nProvider>
+    );
 
     fireEvent.click(screen.getByRole("button", { name: "Create profile" }));
 

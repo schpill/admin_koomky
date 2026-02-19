@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { I18nProvider } from "@/components/providers/i18n-provider";
 
 const toastSuccess = vi.fn();
 const toastError = vi.fn();
@@ -106,7 +107,11 @@ describe("EditRecurringInvoicePage", () => {
       isLoading: false,
     });
 
-    render(<EditRecurringInvoicePage />);
+    render(
+      <I18nProvider initialLocale="en">
+        <EditRecurringInvoicePage />
+      </I18nProvider>
+    );
 
     expect(
       screen.queryByText("Edit recurring profile")
@@ -130,7 +135,11 @@ describe("EditRecurringInvoicePage", () => {
       isLoading: false,
     });
 
-    render(<EditRecurringInvoicePage />);
+    render(
+      <I18nProvider initialLocale="en">
+        <EditRecurringInvoicePage />
+      </I18nProvider>
+    );
 
     await waitFor(() => {
       expect(fetchClients).toHaveBeenCalledTimes(1);
@@ -163,7 +172,11 @@ describe("EditRecurringInvoicePage", () => {
       isLoading: false,
     });
 
-    render(<EditRecurringInvoicePage />);
+    render(
+      <I18nProvider initialLocale="en">
+        <EditRecurringInvoicePage />
+      </I18nProvider>
+    );
 
     await waitFor(() => {
       expect(toastError).toHaveBeenCalledWith("load failed");

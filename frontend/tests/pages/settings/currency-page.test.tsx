@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { I18nProvider } from "@/components/providers/i18n-provider";
 
 const toastSuccess = vi.fn();
 const toastError = vi.fn();
@@ -97,7 +98,11 @@ describe("CurrencySettingsPage", () => {
       updateCurrencySettings,
     });
 
-    render(<CurrencySettingsPage />);
+    render(
+      <I18nProvider initialLocale="en">
+        <CurrencySettingsPage />
+      </I18nProvider>
+    );
 
     await waitFor(() => {
       expect(fetchCurrencies).toHaveBeenCalledTimes(1);
@@ -154,7 +159,11 @@ describe("CurrencySettingsPage", () => {
         .mockRejectedValue(new Error("settings failed")),
     });
 
-    render(<CurrencySettingsPage />);
+    render(
+      <I18nProvider initialLocale="en">
+        <CurrencySettingsPage />
+      </I18nProvider>
+    );
 
     expect(
       screen.getByText(
