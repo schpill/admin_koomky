@@ -18,6 +18,10 @@ Koomky is a self-hosted Freelance CRM built as a monorepo:
   - Online Stripe payments from portal (payment intents, webhook sync, notifications)
   - Expense tracking (categories, CRUD, receipt upload/download, reporting, CSV export, import/export integration)
   - Financial integration (profit/loss, project profitability, dashboard widgets, billable expense invoicing)
+- **Post-merge hardening from PR #15 (`fix/phase6-code-review`) is now on `main`**:
+  - Stripe webhook and payment service typing/null-safety fixes (PHPStan-compatible)
+  - Deterministic backend tests for portal payments and payment notifications
+  - Stripe service test fixtures aligned with `create`/`update` payment intent code paths
 - **Phase 5 is implemented, merged to `main`, and released as `v1.1.0`** (tag + GitHub release).
 - **Phase 5 scope delivered**:
   - Recurring invoices (profiles, generator jobs, scheduling, notifications, UI, tests)
