@@ -44,6 +44,7 @@ import {
   type TaskStatus,
 } from "@/lib/stores/projects";
 import { apiClient } from "@/lib/api";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 interface ProjectExpense {
   id: string;
@@ -73,6 +74,7 @@ const TaskDetailDrawer = dynamic(() =>
 );
 
 export default function ProjectDetailPage() {
+  const { t } = useI18n();
   const params = useParams<{ id: string }>();
   const projectId = params.id;
 
@@ -118,7 +120,7 @@ export default function ProjectDetailPage() {
 
   const handleCreateTask = async () => {
     if (!taskTitle.trim()) {
-      toast.error("Task title is required");
+      toast.error(t("projects.detail.taskTitleRequired"));
       return;
     }
 
@@ -131,14 +133,16 @@ export default function ProjectDetailPage() {
         status: "todo",
       });
 
-      toast.success("Task created");
+      toast.success(t("projects.detail.toasts.taskCreated"));
       setTaskDialogOpen(false);
       setTaskTitle("");
       setTaskDescription("");
       setTaskPriority("medium");
       setTaskDueDate("");
     } catch (error) {
-      toast.error((error as Error).message || "Unable to create task");
+      toast.error(
+        (error as Error).message || t("projects.detail.toasts.taskCreateFailed")
+      );
     }
   };
 
@@ -157,7 +161,9 @@ export default function ProjectDetailPage() {
         status: targetStatus,
       });
     } catch (error) {
-      toast.error((error as Error).message || "Unable to move task");
+      toast.error(
+        (error as Error).message || t("projects.detail.toasts.taskMoveFailed")
+      );
     }
   };
 
@@ -168,9 +174,11 @@ export default function ProjectDetailPage() {
     try {
       await createTimeEntry(projectId, taskId, values);
       await fetchProject(projectId);
-      toast.success("Time entry saved");
+      toast.success(t("projects.detail.toasts.timeSaved"));
     } catch (error) {
-      toast.error((error as Error).message || "Unable to log time");
+      toast.error(
+        (error as Error).message || t("projects.detail.toasts.timeLogFailed")
+      );
     }
   };
 
@@ -183,7 +191,8 @@ export default function ProjectDetailPage() {
       setProjectExpenses(response.data || []);
     } catch (error) {
       toast.error(
-        (error as Error).message || "Unable to load project expenses"
+        (error as Error).message ||
+          t("projects.detail.toasts.expenseLoadFailed")
       );
     } finally {
       setExpensesLoading(false);
@@ -211,11 +220,11 @@ export default function ProjectDetailPage() {
   if (!currentProject) {
     return (
       <EmptyState
-        title="Project not found"
-        description="This project may have been deleted or you no longer have access to it."
+        title={t("projects.detail.notFound")}
+        description={t("projects.detail.notFoundDescription")}
         action={
           <Button asChild>
-            <Link href="/projects">Back to projects</Link>
+            <Link href="/projects">{t("projects.detail.backToProjects")}</Link>
           </Button>
         }
       />
@@ -229,7 +238,7 @@ export default function ProjectDetailPage() {
           <Button variant="ghost" className="-ml-2" asChild>
             <Link href="/projects">
               <ChevronLeft className="mr-2 h-4 w-4" />
-              Back to projects
+              {t("projects.detail.backToProjects")}
             </Link>
           </Button>
           <h1 className="text-3xl font-bold">{currentProject.name}</h1>
@@ -242,16 +251,18 @@ export default function ProjectDetailPage() {
           <DialogTrigger asChild>
             <Button>
               <Plus className="mr-2 h-4 w-4" />
-              Add task
+              {t("projects.detail.addTask")}
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Create task</DialogTitle>
+              <DialogTitle>{t("projects.detail.createTask")}</DialogTitle>
             </DialogHeader>
             <div className="space-y-3">
               <div className="space-y-2">
-                <Label htmlFor="task-title">Title</Label>
+                <Label htmlFor="task-title">
+                  {t("projects.detail.taskTitle")}
+                </Label>
                 <Input
                   id="task-title"
                   value={taskTitle}
@@ -259,7 +270,9 @@ export default function ProjectDetailPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="task-description">Description</Label>
+                <Label htmlFor="task-description">
+                  {t("projects.detail.description")}
+                </Label>
                 <Textarea
                   id="task-description"
                   rows={3}
@@ -269,7 +282,7 @@ export default function ProjectDetailPage() {
               </div>
               <div className="grid gap-3 sm:grid-cols-2">
                 <div className="space-y-2">
-                  <Label>Priority</Label>
+                  <Label>{t("projects.detail.priority")}</Label>
                   <Select
                     value={taskPriority}
                     onValueChange={(value) =>
@@ -280,15 +293,25 @@ export default function ProjectDetailPage() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="low">Low</SelectItem>
-                      <SelectItem value="medium">Medium</SelectItem>
-                      <SelectItem value="high">High</SelectItem>
-                      <SelectItem value="urgent">Urgent</SelectItem>
+                      <SelectItem value="low">
+                        {t("projects.detail.low")}
+                      </SelectItem>
+                      <SelectItem value="medium">
+                        {t("projects.detail.medium")}
+                      </SelectItem>
+                      <SelectItem value="high">
+                        {t("projects.detail.high")}
+                      </SelectItem>
+                      <SelectItem value="urgent">
+                        {t("projects.detail.urgent")}
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="task-due">Due date</Label>
+                  <Label htmlFor="task-due">
+                    {t("projects.detail.dueDate")}
+                  </Label>
                   <Input
                     id="task-due"
                     type="date"
@@ -298,7 +321,9 @@ export default function ProjectDetailPage() {
                 </div>
               </div>
               <div className="flex justify-end">
-                <Button onClick={handleCreateTask}>Create task</Button>
+                <Button onClick={handleCreateTask}>
+                  {t("projects.detail.createTask")}
+                </Button>
               </div>
             </div>
           </DialogContent>
@@ -309,12 +334,24 @@ export default function ProjectDetailPage() {
 
       <Tabs defaultValue="tasks" className="space-y-4">
         <TabsList className="grid w-full grid-cols-6">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="tasks">Tasks</TabsTrigger>
-          <TabsTrigger value="time">Time</TabsTrigger>
-          <TabsTrigger value="files">Files</TabsTrigger>
-          <TabsTrigger value="expenses">Expenses</TabsTrigger>
-          <TabsTrigger value="invoices">Invoices</TabsTrigger>
+          <TabsTrigger value="overview">
+            {t("projects.detail.tabs.overview")}
+          </TabsTrigger>
+          <TabsTrigger value="tasks">
+            {t("projects.detail.tabs.tasks")}
+          </TabsTrigger>
+          <TabsTrigger value="time">
+            {t("projects.detail.tabs.time")}
+          </TabsTrigger>
+          <TabsTrigger value="files">
+            {t("projects.detail.tabs.files")}
+          </TabsTrigger>
+          <TabsTrigger value="expenses">
+            {t("projects.detail.tabs.expenses")}
+          </TabsTrigger>
+          <TabsTrigger value="invoices">
+            {t("projects.detail.tabs.invoices")}
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview">
@@ -324,7 +361,9 @@ export default function ProjectDetailPage() {
         <TabsContent value="tasks" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle className="text-base">Task board</CardTitle>
+              <CardTitle className="text-base">
+                {t("projects.detail.taskBoard")}
+              </CardTitle>
               <p className="text-xs text-muted-foreground">
                 {tasksByStatus.todo} todo, {tasksByStatus.in_progress} in
                 progress, {tasksByStatus.done} done
@@ -335,14 +374,14 @@ export default function ProjectDetailPage() {
                   size="sm"
                   onClick={() => setViewMode("kanban")}
                 >
-                  Kanban
+                  {t("projects.detail.kanban")}
                 </Button>
                 <Button
                   variant={viewMode === "list" ? "default" : "outline"}
                   size="sm"
                   onClick={() => setViewMode("list")}
                 >
-                  List
+                  {t("projects.detail.list")}
                 </Button>
               </div>
             </CardHeader>
@@ -372,12 +411,12 @@ export default function ProjectDetailPage() {
         <TabsContent value="time">
           <Card>
             <CardHeader>
-              <CardTitle>Time tracking</CardTitle>
+              <CardTitle>{t("projects.detail.timeTracking")}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               {tasks.length === 0 ? (
                 <p className="text-sm text-muted-foreground">
-                  Create a task before logging time.
+                  {t("projects.detail.noTaskBeforeTime")}
                 </p>
               ) : (
                 <div className="grid gap-4 md:grid-cols-2">
@@ -403,41 +442,45 @@ export default function ProjectDetailPage() {
 
         <TabsContent value="files">
           <EmptyState
-            title="Files"
-            description="Task attachments are managed from each task detail panel."
+            title={t("projects.detail.tabs.files")}
+            description={t("projects.detail.filesNote")}
           />
         </TabsContent>
 
         <TabsContent value="expenses">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle>Project expenses</CardTitle>
+              <CardTitle>{t("projects.detail.projectExpenses")}</CardTitle>
               <Button asChild size="sm" variant="outline">
                 <Link href={`/expenses/create?project_id=${projectId}`}>
                   <Plus className="mr-2 h-4 w-4" />
-                  Quick-add expense
+                  {t("projects.detail.quickAddExpense")}
                 </Link>
               </Button>
             </CardHeader>
             <CardContent>
               {isExpensesLoading ? (
                 <p className="text-sm text-muted-foreground">
-                  Loading project expenses...
+                  {t("projects.detail.loadingExpenses")}
                 </p>
               ) : projectExpenses.length === 0 ? (
                 <p className="text-sm text-muted-foreground">
-                  No expenses allocated to this project yet.
+                  {t("projects.detail.noExpenses")}
                 </p>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="border-b text-left">
-                        <th className="pb-3">Date</th>
-                        <th className="pb-3">Description</th>
-                        <th className="pb-3">Amount</th>
-                        <th className="pb-3">Billable</th>
-                        <th className="pb-3">Status</th>
+                        <th className="pb-3">{t("projects.detail.date")}</th>
+                        <th className="pb-3">
+                          {t("projects.detail.description")}
+                        </th>
+                        <th className="pb-3">{t("projects.detail.amount")}</th>
+                        <th className="pb-3">
+                          {t("projects.detail.billable")}
+                        </th>
+                        <th className="pb-3">{t("projects.table.status")}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -461,7 +504,9 @@ export default function ProjectDetailPage() {
                             />
                           </td>
                           <td className="py-2">
-                            {expense.is_billable ? "Yes" : "No"}
+                            {expense.is_billable
+                              ? t("projects.detail.yes")
+                              : t("projects.detail.no")}
                           </td>
                           <td className="py-2">{expense.status}</td>
                         </tr>

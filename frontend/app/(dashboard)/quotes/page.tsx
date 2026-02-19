@@ -14,6 +14,7 @@ import { useClientStore } from "@/lib/stores/clients";
 import { CurrencyAmount } from "@/components/shared/currency-amount";
 import { QuoteStatusBadge } from "@/components/quotes/quote-status-badge";
 import { QuotePdfPreview } from "@/components/quotes/quote-pdf-preview";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 function buildPreviewHtml(quote?: Quote | null): string {
   if (!quote) {
@@ -53,6 +54,7 @@ function buildPreviewHtml(quote?: Quote | null): string {
 }
 
 export default function QuotesPage() {
+  const { t } = useI18n();
   const { quotes, isLoading, pagination, fetchQuotes } = useQuoteStore();
   const { clients, fetchClients } = useClientStore();
   const [selectedQuoteId, setSelectedQuoteId] = useState<string | null>(null);
@@ -87,7 +89,7 @@ export default function QuotesPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-3xl font-bold">Quotes</h1>
+          <h1 className="text-3xl font-bold">{t("quotes.title")}</h1>
           <p className="text-sm text-muted-foreground">
             {pagination ? `${pagination.total} quotes` : ""}
           </p>
@@ -95,7 +97,7 @@ export default function QuotesPage() {
         <Button asChild>
           <Link href="/quotes/create">
             <Plus className="mr-2 h-4 w-4" />
-            New quote
+            {t("quotes.newQuote")}
           </Link>
         </Button>
       </div>
@@ -103,31 +105,35 @@ export default function QuotesPage() {
       <div className="rounded-lg border p-4">
         <div className="grid gap-3 md:grid-cols-4">
           <div className="space-y-2">
-            <Label htmlFor="quote-filter-status">Status</Label>
+            <Label htmlFor="quote-filter-status">
+              {t("quotes.filters.status")}
+            </Label>
             <select
               id="quote-filter-status"
               className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
               value={status}
               onChange={(event) => setStatus(event.target.value)}
             >
-              <option value="">All statuses</option>
-              <option value="draft">Draft</option>
-              <option value="sent">Sent</option>
-              <option value="accepted">Accepted</option>
-              <option value="rejected">Rejected</option>
-              <option value="expired">Expired</option>
+              <option value="">{t("quotes.filters.allStatuses")}</option>
+              <option value="draft">{t("quotes.filters.draft")}</option>
+              <option value="sent">{t("quotes.filters.sent")}</option>
+              <option value="accepted">{t("quotes.filters.accepted")}</option>
+              <option value="rejected">{t("quotes.filters.rejected")}</option>
+              <option value="expired">{t("quotes.filters.expired")}</option>
             </select>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="quote-filter-client">Client</Label>
+            <Label htmlFor="quote-filter-client">
+              {t("quotes.filters.client")}
+            </Label>
             <select
               id="quote-filter-client"
               className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
               value={clientId}
               onChange={(event) => setClientId(event.target.value)}
             >
-              <option value="">All clients</option>
+              <option value="">{t("quotes.filters.allClients")}</option>
               {clients.map((client) => (
                 <option key={client.id} value={client.id}>
                   {client.name}
@@ -137,7 +143,9 @@ export default function QuotesPage() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="quote-filter-from">From</Label>
+            <Label htmlFor="quote-filter-from">
+              {t("quotes.filters.from")}
+            </Label>
             <Input
               id="quote-filter-from"
               type="date"
@@ -147,7 +155,7 @@ export default function QuotesPage() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="quote-filter-to">To</Label>
+            <Label htmlFor="quote-filter-to">{t("quotes.filters.to")}</Label>
             <Input
               id="quote-filter-to"
               type="date"
@@ -161,7 +169,7 @@ export default function QuotesPage() {
       <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
         <Card>
           <CardHeader>
-            <CardTitle>Quote list</CardTitle>
+            <CardTitle>{t("quotes.quoteList")}</CardTitle>
           </CardHeader>
           <CardContent>
             {isLoading && quotes.length === 0 ? (
@@ -171,8 +179,8 @@ export default function QuotesPage() {
               </div>
             ) : quotes.length === 0 ? (
               <EmptyState
-                title="No quotes"
-                description="Create your first quote to start your sales pipeline."
+                title={t("quotes.empty.title")}
+                description={t("quotes.empty.description")}
               />
             ) : (
               <div className="overflow-x-auto">
@@ -180,22 +188,22 @@ export default function QuotesPage() {
                   <thead>
                     <tr className="border-b text-left">
                       <th className="pb-3 font-medium text-muted-foreground">
-                        Number
+                        {t("quotes.table.number")}
                       </th>
                       <th className="pb-3 font-medium text-muted-foreground">
-                        Client
+                        {t("quotes.table.client")}
                       </th>
                       <th className="pb-3 font-medium text-muted-foreground">
-                        Issue date
+                        {t("quotes.table.issueDate")}
                       </th>
                       <th className="pb-3 font-medium text-muted-foreground">
-                        Valid until
+                        {t("quotes.table.validUntil")}
                       </th>
                       <th className="pb-3 font-medium text-muted-foreground">
-                        Total
+                        {t("quotes.table.total")}
                       </th>
                       <th className="pb-3 font-medium text-muted-foreground">
-                        Status
+                        {t("quotes.table.status")}
                       </th>
                     </tr>
                   </thead>

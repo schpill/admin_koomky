@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { CurrencyAmount } from "@/components/shared/currency-amount";
 import { apiClient } from "@/lib/api";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 interface ProfitLossReport {
   revenue: number;
@@ -43,6 +44,7 @@ const startOfYear = new Date(new Date().getFullYear(), 0, 1)
 const today = new Date().toISOString().slice(0, 10);
 
 export default function ProfitLossReportPage() {
+  const { t } = useI18n();
   const [dateFrom, setDateFrom] = useState(startOfYear);
   const [dateTo, setDateTo] = useState(today);
   const [report, setReport] = useState<ProfitLossReport | null>(null);
@@ -59,7 +61,10 @@ export default function ProfitLossReportPage() {
       })
       .then((response) => setReport(response.data))
       .catch((error) => {
-        toast.error((error as Error).message || "Unable to load P&L report");
+        toast.error(
+          (error as Error).message ||
+            t("reports.profitLossReport.toasts.loadFailed")
+        );
       })
       .finally(() => setLoading(false));
   }, [dateFrom, dateTo]);
@@ -72,9 +77,11 @@ export default function ProfitLossReportPage() {
   return (
     <div className="space-y-6">
       <div className="space-y-1">
-        <h1 className="text-3xl font-bold">Profit & loss report</h1>
+        <h1 className="text-3xl font-bold">
+          {t("reports.profitLossReport.title")}
+        </h1>
         <p className="text-sm text-muted-foreground">
-          Revenue versus expenses with monthly trend and margin.
+          {t("reports.profitLossReport.description")}
         </p>
       </div>
 
@@ -84,7 +91,7 @@ export default function ProfitLossReportPage() {
         </CardHeader>
         <CardContent className="grid gap-3 md:grid-cols-2">
           <div className="space-y-2">
-            <Label htmlFor="pl-date-from">From</Label>
+            <Label htmlFor="pl-date-from">{t("reports.filters.from")}</Label>
             <Input
               id="pl-date-from"
               type="date"
@@ -93,7 +100,7 @@ export default function ProfitLossReportPage() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="pl-date-to">To</Label>
+            <Label htmlFor="pl-date-to">{t("reports.filters.to")}</Label>
             <Input
               id="pl-date-to"
               type="date"
@@ -107,7 +114,9 @@ export default function ProfitLossReportPage() {
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <Card>
           <CardHeader>
-            <CardTitle className="text-sm">Revenue</CardTitle>
+            <CardTitle className="text-sm">
+              {t("reports.profitLossReport.stats.revenue")}
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-semibold">
@@ -120,7 +129,9 @@ export default function ProfitLossReportPage() {
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle className="text-sm">Expenses</CardTitle>
+            <CardTitle className="text-sm">
+              {t("reports.profitLossReport.stats.expenses")}
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-semibold">
@@ -133,7 +144,9 @@ export default function ProfitLossReportPage() {
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle className="text-sm">Profit</CardTitle>
+            <CardTitle className="text-sm">
+              {t("reports.profitLossReport.stats.profit")}
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-semibold">
@@ -146,7 +159,9 @@ export default function ProfitLossReportPage() {
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle className="text-sm">Margin</CardTitle>
+            <CardTitle className="text-sm">
+              {t("reports.profitLossReport.stats.margin")}
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-semibold">
@@ -158,12 +173,12 @@ export default function ProfitLossReportPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Monthly trend</CardTitle>
+          <CardTitle>{t("reports.profitLossReport.monthlyTrend")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2">
           {(report?.by_month || []).length === 0 ? (
             <p className="text-sm text-muted-foreground">
-              No monthly trend data.
+              {t("reports.profitLossReport.noMonthlyData")}
             </p>
           ) : (
             report?.by_month?.map((item) => (
@@ -173,15 +188,15 @@ export default function ProfitLossReportPage() {
               >
                 <span className="font-medium">{item.month}</span>
                 <span>
-                  Revenue:{" "}
+                  {t("reports.profitLossReport.stats.revenue")}:{" "}
                   <CurrencyAmount amount={item.revenue} currency={currency} />
                 </span>
                 <span>
-                  Expenses:{" "}
+                  {t("reports.profitLossReport.stats.expenses")}:{" "}
                   <CurrencyAmount amount={item.expenses} currency={currency} />
                 </span>
                 <span>
-                  Profit:{" "}
+                  {t("reports.profitLossReport.stats.profit")}:{" "}
                   <CurrencyAmount amount={item.profit} currency={currency} />
                 </span>
               </div>
@@ -193,11 +208,15 @@ export default function ProfitLossReportPage() {
       <div className="grid gap-6 lg:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle>Project breakdown</CardTitle>
+            <CardTitle>
+              {t("reports.profitLossReport.projectBreakdown")}
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
             {(report?.by_project || []).length === 0 ? (
-              <p className="text-sm text-muted-foreground">No project data.</p>
+              <p className="text-sm text-muted-foreground">
+                {t("reports.profitLossReport.noProjectData")}
+              </p>
             ) : (
               report?.by_project?.map((project) => (
                 <div
@@ -210,7 +229,7 @@ export default function ProfitLossReportPage() {
                       "Project"}
                   </p>
                   <p>
-                    Profit:{" "}
+                    {t("reports.profitLossReport.stats.profit")}:{" "}
                     <CurrencyAmount
                       amount={project.profit}
                       currency={currency}
@@ -224,11 +243,15 @@ export default function ProfitLossReportPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Client breakdown</CardTitle>
+            <CardTitle>
+              {t("reports.profitLossReport.clientBreakdown")}
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
             {(report?.by_client || []).length === 0 ? (
-              <p className="text-sm text-muted-foreground">No client data.</p>
+              <p className="text-sm text-muted-foreground">
+                {t("reports.profitLossReport.noClientData")}
+              </p>
             ) : (
               report?.by_client?.map((client) => (
                 <div
@@ -239,7 +262,7 @@ export default function ProfitLossReportPage() {
                     {client.client_name || "Client"}
                   </p>
                   <p>
-                    Profit:{" "}
+                    {t("reports.profitLossReport.stats.profit")}:{" "}
                     <CurrencyAmount
                       amount={client.profit}
                       currency={currency}
@@ -253,7 +276,9 @@ export default function ProfitLossReportPage() {
       </div>
 
       {isLoading ? (
-        <p className="text-sm text-muted-foreground">Refreshing report...</p>
+        <p className="text-sm text-muted-foreground">
+          {t("reports.profitLossReport.refreshing")}
+        </p>
       ) : null}
     </div>
   );

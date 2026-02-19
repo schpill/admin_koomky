@@ -13,6 +13,7 @@ import { CampaignPreview } from "@/components/campaigns/campaign-preview";
 import { TestSendModal } from "@/components/campaigns/test-send-modal";
 import { useCampaignStore } from "@/lib/stores/campaigns";
 import { useSegmentStore } from "@/lib/stores/segments";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 const EmailEditor = dynamic(
   () =>
@@ -58,6 +59,7 @@ const sampleRecipients = [
 ];
 
 export default function CreateCampaignPage() {
+  const { t } = useI18n();
   const router = useRouter();
 
   const {
@@ -167,9 +169,9 @@ export default function CreateCampaignPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Create campaign</h1>
+        <h1 className="text-3xl font-bold">{t("campaigns.create.title")}</h1>
         <p className="text-sm text-muted-foreground">
-          Multi-step builder for email and SMS campaigns.
+          {t("campaigns.create.description")}
         </p>
       </div>
 
@@ -182,7 +184,7 @@ export default function CreateCampaignPage() {
             onClick={() => setStep(number)}
             className="justify-start sm:justify-center"
           >
-            Step {number}
+            {t(`campaigns.create.step${number}`)}
           </Button>
         ))}
       </div>
@@ -190,22 +192,26 @@ export default function CreateCampaignPage() {
       {step === 1 && (
         <Card>
           <CardHeader>
-            <CardTitle>Audience and channel</CardTitle>
+            <CardTitle>{t("campaigns.create.audience")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="campaign-name">Campaign name</Label>
+              <Label htmlFor="campaign-name">
+                {t("campaigns.create.campaignName")}
+              </Label>
               <Input
                 id="campaign-name"
                 value={name}
                 onChange={(event) => setName(event.target.value)}
-                placeholder="Spring newsletter"
+                placeholder={t("campaigns.create.campaignNamePlaceholder")}
               />
             </div>
 
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="campaign-type">Type</Label>
+                <Label htmlFor="campaign-type">
+                  {t("campaigns.create.type")}
+                </Label>
                 <select
                   id="campaign-type"
                   value={type}
@@ -214,20 +220,22 @@ export default function CreateCampaignPage() {
                   }
                   className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
                 >
-                  <option value="email">Email</option>
-                  <option value="sms">SMS</option>
+                  <option value="email">{t("campaigns.create.email")}</option>
+                  <option value="sms">{t("campaigns.create.sms")}</option>
                 </select>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="campaign-segment">Segment</Label>
+                <Label htmlFor="campaign-segment">
+                  {t("campaigns.create.segment")}
+                </Label>
                 <select
                   id="campaign-segment"
                   value={segmentId}
                   onChange={(event) => setSegmentId(event.target.value)}
                   className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
                 >
-                  <option value="">All contacts</option>
+                  <option value="">{t("campaigns.create.allContacts")}</option>
                   {segments.map((segment) => (
                     <option key={segment.id} value={segment.id}>
                       {segment.name}
@@ -243,7 +251,7 @@ export default function CreateCampaignPage() {
       {step === 2 && (
         <Card>
           <CardHeader>
-            <CardTitle>Compose message</CardTitle>
+            <CardTitle>{t("campaigns.create.compose")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <TemplateSelector
@@ -254,12 +262,14 @@ export default function CreateCampaignPage() {
 
             {type === "email" && (
               <div className="space-y-2">
-                <Label htmlFor="campaign-subject">Subject</Label>
+                <Label htmlFor="campaign-subject">
+                  {t("campaigns.create.subject")}
+                </Label>
                 <Input
                   id="campaign-subject"
                   value={subject}
                   onChange={(event) => setSubject(event.target.value)}
-                  placeholder="Your April updates"
+                  placeholder={t("campaigns.create.subjectPlaceholder")}
                 />
               </div>
             )}
@@ -284,7 +294,7 @@ export default function CreateCampaignPage() {
           ) : (
             <Card>
               <CardHeader>
-                <CardTitle>SMS preview</CardTitle>
+                <CardTitle>{t("campaigns.create.smsPreview")}</CardTitle>
               </CardHeader>
               <CardContent>
                 <SmsPreview content={content} recipient={sampleRecipients[0]} />
@@ -303,11 +313,13 @@ export default function CreateCampaignPage() {
       {step === 4 && (
         <Card>
           <CardHeader>
-            <CardTitle>Schedule</CardTitle>
+            <CardTitle>{t("campaigns.create.schedule")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="scheduled-at">Schedule at (optional)</Label>
+              <Label htmlFor="scheduled-at">
+                {t("campaigns.create.scheduleAt")}
+              </Label>
               <Input
                 id="scheduled-at"
                 type="datetime-local"
@@ -322,10 +334,10 @@ export default function CreateCampaignPage() {
                 onClick={saveDraft}
                 disabled={isLoading}
               >
-                Save draft
+                {t("campaigns.create.saveDraft")}
               </Button>
               <Button onClick={saveAndSendNow} disabled={isLoading}>
-                Send now
+                {t("campaigns.create.sendNow")}
               </Button>
             </div>
           </CardContent>
@@ -338,13 +350,13 @@ export default function CreateCampaignPage() {
           onClick={() => setStep((current) => Math.max(1, current - 1))}
           disabled={step === 1}
         >
-          Back
+          {t("campaigns.create.back")}
         </Button>
         <Button
           onClick={() => setStep((current) => Math.min(4, current + 1))}
           disabled={step === 4}
         >
-          Next
+          {t("campaigns.create.next")}
         </Button>
       </div>
     </div>

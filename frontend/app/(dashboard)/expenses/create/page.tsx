@@ -13,8 +13,10 @@ import { useExpenseStore } from "@/lib/stores/expenses";
 import { useExpenseCategoryStore } from "@/lib/stores/expense-categories";
 import { useProjectStore } from "@/lib/stores/projects";
 import { useClientStore } from "@/lib/stores/clients";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 export default function CreateExpensePage() {
+  const { t } = useI18n();
   const router = useRouter();
   const searchParams = useSearchParams();
   const { createExpense, uploadReceipt, isLoading } = useExpenseStore();
@@ -110,29 +112,33 @@ export default function CreateExpensePage() {
         await uploadReceipt(created.id, receiptFile);
       }
 
-      toast.success("Expense created");
+      toast.success(t("expenses.create.toasts.success"));
       router.push(`/expenses/${created.id}`);
     } catch (error) {
-      toast.error((error as Error).message || "Unable to create expense");
+      toast.error(
+        (error as Error).message || t("expenses.create.toasts.failed")
+      );
     }
   };
 
   return (
     <form className="space-y-6" onSubmit={submit}>
       <div className="space-y-1">
-        <h1 className="text-3xl font-bold">Create expense</h1>
+        <h1 className="text-3xl font-bold">{t("expenses.create.title")}</h1>
         <p className="text-sm text-muted-foreground">
-          Track billable and non-billable costs with optional receipt upload.
+          {t("expenses.create.description")}
         </p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Expense details</CardTitle>
+          <CardTitle>{t("expenses.create.expenseDetails")}</CardTitle>
         </CardHeader>
         <CardContent className="grid gap-4 md:grid-cols-2">
           <div className="space-y-2 md:col-span-2">
-            <Label htmlFor="expense-description">Description</Label>
+            <Label htmlFor="expense-description">
+              {t("expenses.create.descriptionLabel")}
+            </Label>
             <Input
               id="expense-description"
               value={form.description}
@@ -147,7 +153,9 @@ export default function CreateExpensePage() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="expense-amount">Amount</Label>
+            <Label htmlFor="expense-amount">
+              {t("expenses.create.amount")}
+            </Label>
             <Input
               id="expense-amount"
               type="number"
@@ -165,7 +173,9 @@ export default function CreateExpensePage() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="expense-currency">Currency</Label>
+            <Label htmlFor="expense-currency">
+              {t("expenses.create.currency")}
+            </Label>
             <Input
               id="expense-currency"
               value={form.currency}
@@ -181,7 +191,9 @@ export default function CreateExpensePage() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="expense-category">Category</Label>
+            <Label htmlFor="expense-category">
+              {t("expenses.create.category")}
+            </Label>
             <select
               id="expense-category"
               className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
@@ -194,7 +206,7 @@ export default function CreateExpensePage() {
               }
               required
             >
-              <option value="">Select category</option>
+              <option value="">{t("expenses.create.selectCategory")}</option>
               {categories.map((category) => (
                 <option key={category.id} value={category.id}>
                   {category.name}
@@ -204,7 +216,7 @@ export default function CreateExpensePage() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="expense-date">Date</Label>
+            <Label htmlFor="expense-date">{t("expenses.create.date")}</Label>
             <Input
               id="expense-date"
               type="date"
@@ -217,7 +229,9 @@ export default function CreateExpensePage() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="expense-project">Project (optional)</Label>
+            <Label htmlFor="expense-project">
+              {t("expenses.create.project")}
+            </Label>
             <select
               id="expense-project"
               className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
@@ -229,7 +243,7 @@ export default function CreateExpensePage() {
                 }))
               }
             >
-              <option value="">No project</option>
+              <option value="">{t("expenses.create.noProject")}</option>
               {projects.map((project) => (
                 <option key={project.id} value={project.id}>
                   {project.name}
@@ -239,7 +253,9 @@ export default function CreateExpensePage() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="expense-client">Client (optional)</Label>
+            <Label htmlFor="expense-client">
+              {t("expenses.create.client")}
+            </Label>
             <select
               id="expense-client"
               className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
@@ -251,7 +267,7 @@ export default function CreateExpensePage() {
                 }))
               }
             >
-              <option value="">No client</option>
+              <option value="">{t("expenses.create.noClient")}</option>
               {clients.map((client) => (
                 <option key={client.id} value={client.id}>
                   {client.name}
@@ -261,7 +277,9 @@ export default function CreateExpensePage() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="expense-payment-method">Payment method</Label>
+            <Label htmlFor="expense-payment-method">
+              {t("expenses.create.paymentMethod")}
+            </Label>
             <select
               id="expense-payment-method"
               className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
@@ -273,15 +291,19 @@ export default function CreateExpensePage() {
                 }))
               }
             >
-              <option value="cash">Cash</option>
-              <option value="card">Card</option>
-              <option value="bank_transfer">Bank transfer</option>
-              <option value="other">Other</option>
+              <option value="cash">{t("expenses.create.cash")}</option>
+              <option value="card">{t("expenses.create.card")}</option>
+              <option value="bank_transfer">
+                {t("expenses.create.bankTransfer")}
+              </option>
+              <option value="other">{t("expenses.create.other")}</option>
             </select>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="expense-status">Status</Label>
+            <Label htmlFor="expense-status">
+              {t("expenses.create.status")}
+            </Label>
             <select
               id="expense-status"
               className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
@@ -293,14 +315,16 @@ export default function CreateExpensePage() {
                 }))
               }
             >
-              <option value="pending">Pending</option>
-              <option value="approved">Approved</option>
-              <option value="rejected">Rejected</option>
+              <option value="pending">{t("expenses.filters.pending")}</option>
+              <option value="approved">{t("expenses.filters.approved")}</option>
+              <option value="rejected">{t("expenses.filters.rejected")}</option>
             </select>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="expense-tax-amount">Tax amount</Label>
+            <Label htmlFor="expense-tax-amount">
+              {t("expenses.create.taxAmount")}
+            </Label>
             <Input
               id="expense-tax-amount"
               type="number"
@@ -317,7 +341,9 @@ export default function CreateExpensePage() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="expense-tax-rate">Tax rate (%)</Label>
+            <Label htmlFor="expense-tax-rate">
+              {t("expenses.create.taxRate")}
+            </Label>
             <Input
               id="expense-tax-rate"
               type="number"
@@ -334,7 +360,9 @@ export default function CreateExpensePage() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="expense-vendor">Vendor</Label>
+            <Label htmlFor="expense-vendor">
+              {t("expenses.create.vendor")}
+            </Label>
             <Input
               id="expense-vendor"
               value={form.vendor}
@@ -348,7 +376,9 @@ export default function CreateExpensePage() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="expense-reference">Reference</Label>
+            <Label htmlFor="expense-reference">
+              {t("expenses.create.reference")}
+            </Label>
             <Input
               id="expense-reference"
               value={form.reference}
@@ -362,7 +392,7 @@ export default function CreateExpensePage() {
           </div>
 
           <div className="space-y-2 md:col-span-2">
-            <Label htmlFor="expense-notes">Notes</Label>
+            <Label htmlFor="expense-notes">{t("expenses.create.notes")}</Label>
             <Textarea
               id="expense-notes"
               rows={3}
@@ -388,7 +418,7 @@ export default function CreateExpensePage() {
                   }))
                 }
               />
-              Billable
+              {t("expenses.create.billable")}
             </label>
             <label className="flex items-center gap-2 text-sm">
               <input
@@ -401,7 +431,7 @@ export default function CreateExpensePage() {
                   }))
                 }
               />
-              Reimbursable
+              {t("expenses.create.reimbursable")}
             </label>
           </div>
         </CardContent>
@@ -409,7 +439,7 @@ export default function CreateExpensePage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Receipt</CardTitle>
+          <CardTitle>{t("expenses.create.receipt")}</CardTitle>
         </CardHeader>
         <CardContent>
           <ReceiptUpload file={receiptFile} onChange={setReceiptFile} />
@@ -422,10 +452,10 @@ export default function CreateExpensePage() {
           variant="outline"
           onClick={() => router.push("/expenses")}
         >
-          Cancel
+          {t("expenses.create.cancel")}
         </Button>
         <Button type="submit" disabled={isLoading}>
-          {isLoading ? "Saving..." : "Create expense"}
+          {isLoading ? t("expenses.create.saving") : t("expenses.create.title")}
         </Button>
       </div>
     </form>

@@ -16,6 +16,7 @@ import { OutstandingTable } from "@/components/reports/outstanding-table";
 import { VatSummaryTable } from "@/components/reports/vat-summary-table";
 import { useAuthStore } from "@/lib/stores/auth";
 import { useCurrencyStore } from "@/lib/stores/currencies";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 const RevenueChart = dynamic(
   () =>
@@ -68,6 +69,7 @@ const endOfYear = new Date(new Date().getFullYear(), 11, 31)
   .slice(0, 10);
 
 export default function ReportsPage() {
+  const { t } = useI18n();
   const { currencies, fetchCurrencies } = useCurrencyStore();
   const [activeTab, setActiveTab] = useState("revenue");
   const [showCurrencyBreakdown, setShowCurrencyBreakdown] = useState(false);
@@ -108,7 +110,7 @@ export default function ReportsPage() {
         setOutstanding(outstandingRes.data);
         setVatSummary(vatRes.data);
       } catch (error) {
-        toast.error((error as Error).message || "Unable to load reports");
+        toast.error((error as Error).message || t("reports.toasts.loadFailed"));
       } finally {
         setIsLoading(false);
       }
@@ -127,7 +129,7 @@ export default function ReportsPage() {
 
     const token = useAuthStore.getState().accessToken;
     if (!token) {
-      toast.error("You must be authenticated to export reports");
+      toast.error(t("reports.toasts.authRequired"));
       return;
     }
 
@@ -159,24 +161,24 @@ export default function ReportsPage() {
       link.remove();
       URL.revokeObjectURL(url);
     } catch (error) {
-      toast.error((error as Error).message || "Unable to export report");
+      toast.error((error as Error).message || t("reports.toasts.exportFailed"));
     }
   };
 
   return (
     <div className="space-y-6">
       <div className="space-y-2">
-        <h1 className="text-3xl font-bold">Financial reports</h1>
+        <h1 className="text-3xl font-bold">{t("reports.title")}</h1>
         <p className="text-sm text-muted-foreground">
-          Revenue, outstanding amounts and VAT summary with exports.
+          {t("reports.description")}
         </p>
         <div className="flex flex-wrap gap-2">
           <Button asChild variant="outline" size="sm">
-            <Link href="/reports/profit-loss">Profit & loss</Link>
+            <Link href="/reports/profit-loss">{t("reports.profitLoss")}</Link>
           </Button>
           <Button asChild variant="outline" size="sm">
             <Link href="/reports/project-profitability">
-              Project profitability
+              {t("reports.projectProfitability")}
             </Link>
           </Button>
         </div>
@@ -189,7 +191,9 @@ export default function ReportsPage() {
         <CardContent>
           <div className="grid gap-3 md:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="report-date-from">From</Label>
+              <Label htmlFor="report-date-from">
+                {t("reports.filters.from")}
+              </Label>
               <Input
                 id="report-date-from"
                 type="date"
@@ -198,7 +202,7 @@ export default function ReportsPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="report-date-to">To</Label>
+              <Label htmlFor="report-date-to">{t("reports.filters.to")}</Label>
               <Input
                 id="report-date-to"
                 type="date"
@@ -212,9 +216,11 @@ export default function ReportsPage() {
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="revenue">Revenue</TabsTrigger>
-          <TabsTrigger value="outstanding">Outstanding</TabsTrigger>
-          <TabsTrigger value="vat">VAT</TabsTrigger>
+          <TabsTrigger value="revenue">{t("reports.tabs.revenue")}</TabsTrigger>
+          <TabsTrigger value="outstanding">
+            {t("reports.tabs.outstanding")}
+          </TabsTrigger>
+          <TabsTrigger value="vat">{t("reports.tabs.vat")}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="revenue" className="space-y-4 pt-4">
@@ -224,14 +230,14 @@ export default function ReportsPage() {
               onClick={() => exportReport("revenue", "csv")}
             >
               <Download className="mr-2 h-4 w-4" />
-              Export CSV
+              {t("reports.exportCsv")}
             </Button>
             <Button
               variant="outline"
               onClick={() => exportReport("revenue", "pdf")}
             >
               <Download className="mr-2 h-4 w-4" />
-              Export PDF
+              {t("reports.exportPdf")}
             </Button>
           </div>
 
@@ -239,7 +245,9 @@ export default function ReportsPage() {
             <CardContent className="pt-6">
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="rounded-md border p-4">
-                  <p className="text-xs text-muted-foreground">Total revenue</p>
+                  <p className="text-xs text-muted-foreground">
+                    {t("reports.stats.totalRevenue")}
+                  </p>
                   <p className="text-2xl font-bold">
                     <CurrencyAmount
                       amount={Number(revenue?.total_revenue || 0)}
@@ -250,7 +258,7 @@ export default function ReportsPage() {
                 </div>
                 <div className="rounded-md border p-4">
                   <p className="text-xs text-muted-foreground">
-                    Invoices counted
+                    {t("reports.stats.invoicesCount")}
                   </p>
                   <p className="text-2xl font-bold">{revenue?.count || 0}</p>
                 </div>
@@ -265,13 +273,13 @@ export default function ReportsPage() {
                   }
                 >
                   {showCurrencyBreakdown
-                    ? "Hide currency breakdown"
-                    : "Show currency breakdown"}
+                    ? t("reports.hideCurrencyBreakdown")
+                    : t("reports.showCurrencyBreakdown")}
                 </Button>
                 {showCurrencyBreakdown && (
                   <div className="rounded-md border bg-muted/20 p-3">
                     <p className="mb-2 text-xs font-medium text-muted-foreground">
-                      Original currency totals
+                      {t("reports.originalCurrencyTotals")}
                     </p>
                     <div className="grid gap-2 md:grid-cols-2">
                       {Object.entries(revenue?.currency_breakdown || {}).map(
@@ -309,14 +317,14 @@ export default function ReportsPage() {
               onClick={() => exportReport("outstanding", "csv")}
             >
               <Download className="mr-2 h-4 w-4" />
-              Export CSV
+              {t("reports.exportCsv")}
             </Button>
             <Button
               variant="outline"
               onClick={() => exportReport("outstanding", "pdf")}
             >
               <Download className="mr-2 h-4 w-4" />
-              Export PDF
+              {t("reports.exportPdf")}
             </Button>
           </div>
 
@@ -325,7 +333,7 @@ export default function ReportsPage() {
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="rounded-md border p-4">
                   <p className="text-xs text-muted-foreground">
-                    Total outstanding
+                    {t("reports.stats.totalOutstanding")}
                   </p>
                   <p className="text-2xl font-bold">
                     <CurrencyAmount
@@ -337,7 +345,7 @@ export default function ReportsPage() {
                 </div>
                 <div className="rounded-md border p-4">
                   <p className="text-xs text-muted-foreground">
-                    Invoices counted
+                    {t("reports.stats.invoicesCount")}
                   </p>
                   <p className="text-2xl font-bold">
                     {outstanding?.total_invoices || 0}
@@ -361,14 +369,14 @@ export default function ReportsPage() {
               onClick={() => exportReport("vat-summary", "csv")}
             >
               <Download className="mr-2 h-4 w-4" />
-              Export CSV
+              {t("reports.exportCsv")}
             </Button>
             <Button
               variant="outline"
               onClick={() => exportReport("vat-summary", "pdf")}
             >
               <Download className="mr-2 h-4 w-4" />
-              Export PDF
+              {t("reports.exportPdf")}
             </Button>
           </div>
 

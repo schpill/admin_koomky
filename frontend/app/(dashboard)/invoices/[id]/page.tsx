@@ -16,6 +16,7 @@ import { InvoicePdfPreview } from "@/components/invoices/invoice-pdf-preview";
 import { CurrencyAmount } from "@/components/shared/currency-amount";
 import { useInvoiceStore } from "@/lib/stores/invoices";
 import { apiClient } from "@/lib/api";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 function buildPreviewHtml(invoice: any): string {
   if (!invoice) {
@@ -52,6 +53,7 @@ function buildPreviewHtml(invoice: any): string {
 }
 
 export default function InvoiceDetailPage() {
+  const { t } = useI18n();
   const params = useParams<{ id: string }>();
   const router = useRouter();
   const invoiceId = params.id;
@@ -106,11 +108,11 @@ export default function InvoiceDetailPage() {
   if (!currentInvoice) {
     return (
       <EmptyState
-        title="Invoice not found"
-        description="This invoice may have been deleted or you no longer have access."
+        title={t("invoices.detail.notFound")}
+        description={t("invoices.detail.notFoundDescription")}
         action={
           <Button asChild>
-            <Link href="/invoices">Back to invoices</Link>
+            <Link href="/invoices">{t("invoices.detail.backToInvoices")}</Link>
           </Button>
         }
       />
@@ -120,22 +122,26 @@ export default function InvoiceDetailPage() {
   const onSend = async () => {
     try {
       await sendInvoice(currentInvoice.id);
-      toast.success("Invoice sent");
+      toast.success(t("invoices.detail.toasts.sent"));
     } catch (error) {
-      toast.error((error as Error).message || "Unable to send invoice");
+      toast.error(
+        (error as Error).message || t("invoices.detail.toasts.sendFailed")
+      );
     }
   };
 
   const onDuplicate = async () => {
     try {
       const clone = await duplicateInvoice(currentInvoice.id);
-      toast.success("Invoice duplicated");
+      toast.success(t("invoices.detail.toasts.duplicated"));
 
       if (clone?.id) {
         router.push(`/invoices/${clone.id}`);
       }
     } catch (error) {
-      toast.error((error as Error).message || "Unable to duplicate invoice");
+      toast.error(
+        (error as Error).message || t("invoices.detail.toasts.duplicateFailed")
+      );
     }
   };
 
@@ -145,7 +151,7 @@ export default function InvoiceDetailPage() {
         <Button variant="ghost" className="-ml-2" asChild>
           <Link href="/invoices">
             <ChevronLeft className="mr-2 h-4 w-4" />
-            Back to invoices
+            {t("invoices.detail.backToInvoices")}
           </Link>
         </Button>
 
@@ -163,7 +169,7 @@ export default function InvoiceDetailPage() {
               currentInvoice.status
             ) ? (
               <span className="rounded-full border px-2 py-0.5 text-xs font-medium">
-                Portal payment available
+                {t("invoices.detail.portalPayment")}
               </span>
             ) : null}
             <Button
@@ -172,7 +178,7 @@ export default function InvoiceDetailPage() {
               onClick={() => setSendModalOpen(true)}
             >
               <Mail className="mr-2 h-4 w-4" />
-              Send
+              {t("invoices.detail.send")}
             </Button>
             <Button
               type="button"
@@ -180,11 +186,11 @@ export default function InvoiceDetailPage() {
               onClick={() => setPaymentModalOpen(true)}
             >
               <Wallet className="mr-2 h-4 w-4" />
-              Record payment
+              {t("invoices.detail.recordPayment")}
             </Button>
             <Button type="button" variant="outline" onClick={onDuplicate}>
               <Copy className="mr-2 h-4 w-4" />
-              Duplicate
+              {t("invoices.detail.duplicate")}
             </Button>
           </div>
         </div>
@@ -193,18 +199,22 @@ export default function InvoiceDetailPage() {
       <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
         <Card>
           <CardHeader>
-            <CardTitle>Invoice details</CardTitle>
+            <CardTitle>{t("invoices.detail.invoiceDetails")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid gap-3 md:grid-cols-3">
               <div>
-                <p className="text-xs text-muted-foreground">Client</p>
+                <p className="text-xs text-muted-foreground">
+                  {t("invoices.detail.client")}
+                </p>
                 <p className="font-medium">
                   {currentInvoice.client?.name || currentInvoice.client_id}
                 </p>
               </div>
               <div>
-                <p className="text-xs text-muted-foreground">Total</p>
+                <p className="text-xs text-muted-foreground">
+                  {t("invoices.detail.total")}
+                </p>
                 <p className="font-medium">
                   <CurrencyAmount
                     amount={Number(currentInvoice.total)}
@@ -213,7 +223,9 @@ export default function InvoiceDetailPage() {
                 </p>
               </div>
               <div>
-                <p className="text-xs text-muted-foreground">Amount paid</p>
+                <p className="text-xs text-muted-foreground">
+                  {t("invoices.detail.amountPaid")}
+                </p>
                 <p className="font-medium">
                   <CurrencyAmount
                     amount={Number(currentInvoice.amount_paid || 0)}
@@ -224,16 +236,20 @@ export default function InvoiceDetailPage() {
             </div>
 
             <div>
-              <h2 className="mb-2 text-sm font-semibold">Line items</h2>
+              <h2 className="mb-2 text-sm font-semibold">
+                {t("invoices.detail.lineItems")}
+              </h2>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b text-left">
-                      <th className="pb-2">Description</th>
-                      <th className="pb-2">Qty</th>
-                      <th className="pb-2">Unit</th>
-                      <th className="pb-2">VAT</th>
-                      <th className="pb-2">Total</th>
+                      <th className="pb-2">
+                        {t("invoices.detail.description")}
+                      </th>
+                      <th className="pb-2">{t("invoices.detail.qty")}</th>
+                      <th className="pb-2">{t("invoices.detail.unit")}</th>
+                      <th className="pb-2">{t("invoices.detail.vat")}</th>
+                      <th className="pb-2">{t("invoices.detail.total")}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -268,10 +284,12 @@ export default function InvoiceDetailPage() {
             </div>
 
             <div>
-              <h2 className="mb-2 text-sm font-semibold">Payment history</h2>
+              <h2 className="mb-2 text-sm font-semibold">
+                {t("invoices.detail.paymentHistory")}
+              </h2>
               {payments.length === 0 ? (
                 <p className="text-sm text-muted-foreground">
-                  No payment recorded yet.
+                  {t("invoices.detail.noPayment")}
                 </p>
               ) : (
                 <ul className="space-y-2">
@@ -293,11 +311,11 @@ export default function InvoiceDetailPage() {
 
             <div>
               <h2 className="mb-2 text-sm font-semibold">
-                Linked credit notes
+                {t("invoices.detail.linkedCreditNotes")}
               </h2>
               {(currentInvoice.credit_notes || []).length === 0 ? (
                 <p className="text-sm text-muted-foreground">
-                  No credit note linked yet.
+                  {t("invoices.detail.noCreditNote")}
                 </p>
               ) : (
                 <ul className="space-y-2">
@@ -343,7 +361,7 @@ export default function InvoiceDetailPage() {
         amountPaid={Number(currentInvoice.amount_paid || 0)}
         onSubmit={async (payload) => {
           await recordPayment(currentInvoice.id, payload);
-          toast.success("Payment recorded");
+          toast.success(t("invoices.detail.toasts.paymentRecorded"));
         }}
       />
     </div>

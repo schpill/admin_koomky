@@ -12,12 +12,14 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { CreditNoteStatusBadge } from "@/components/credit-notes/credit-note-status-badge";
 import { CurrencyAmount } from "@/components/shared/currency-amount";
 import { useCreditNoteStore } from "@/lib/stores/creditNotes";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 export default function CreditNoteDetailPage() {
   const params = useParams<{ id: string }>();
   const router = useRouter();
   const creditNoteId = params.id;
 
+  const { t } = useI18n();
   const {
     currentCreditNote,
     isLoading,
@@ -49,11 +51,13 @@ export default function CreditNoteDetailPage() {
   if (!currentCreditNote) {
     return (
       <EmptyState
-        title="Credit note not found"
-        description="This credit note may have been deleted or you no longer have access."
+        title={t("creditNotes.detail.notFound")}
+        description={t("creditNotes.detail.notFoundDescription")}
         action={
           <Button asChild>
-            <Link href="/credit-notes">Back to credit notes</Link>
+            <Link href="/credit-notes">
+              {t("creditNotes.detail.backToCreditNotes")}
+            </Link>
           </Button>
         }
       />
@@ -63,18 +67,22 @@ export default function CreditNoteDetailPage() {
   const onSend = async () => {
     try {
       await sendCreditNote(currentCreditNote.id);
-      toast.success("Credit note sent");
+      toast.success(t("creditNotes.detail.toasts.sent"));
     } catch (error) {
-      toast.error((error as Error).message || "Unable to send credit note");
+      toast.error(
+        (error as Error).message || t("creditNotes.detail.toasts.sendFailed")
+      );
     }
   };
 
   const onApply = async () => {
     try {
       await applyCreditNote(currentCreditNote.id);
-      toast.success("Credit note applied");
+      toast.success(t("creditNotes.detail.toasts.applied"));
     } catch (error) {
-      toast.error((error as Error).message || "Unable to apply credit note");
+      toast.error(
+        (error as Error).message || t("creditNotes.detail.toasts.applyFailed")
+      );
     }
   };
 
@@ -84,7 +92,7 @@ export default function CreditNoteDetailPage() {
         <Button variant="ghost" className="-ml-2" asChild>
           <Link href="/credit-notes">
             <ChevronLeft className="mr-2 h-4 w-4" />
-            Back to credit notes
+            {t("creditNotes.detail.backToCreditNotes")}
           </Link>
         </Button>
 
@@ -99,11 +107,11 @@ export default function CreditNoteDetailPage() {
             <CreditNoteStatusBadge status={currentCreditNote.status} />
             <Button type="button" variant="outline" onClick={onSend}>
               <Mail className="mr-2 h-4 w-4" />
-              Send
+              {t("creditNotes.detail.send")}
             </Button>
             <Button type="button" variant="outline" onClick={onApply}>
               <CheckCircle2 className="mr-2 h-4 w-4" />
-              Apply
+              {t("creditNotes.detail.apply")}
             </Button>
           </div>
         </div>
@@ -111,12 +119,14 @@ export default function CreditNoteDetailPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Credit note details</CardTitle>
+          <CardTitle>{t("creditNotes.detail.creditNoteDetails")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid gap-3 md:grid-cols-3">
             <div>
-              <p className="text-xs text-muted-foreground">Invoice</p>
+              <p className="text-xs text-muted-foreground">
+                {t("creditNotes.detail.invoice")}
+              </p>
               {currentCreditNote.invoice?.id ? (
                 <Link
                   href={`/invoices/${currentCreditNote.invoice.id}`}
@@ -129,7 +139,9 @@ export default function CreditNoteDetailPage() {
               )}
             </div>
             <div>
-              <p className="text-xs text-muted-foreground">Total</p>
+              <p className="text-xs text-muted-foreground">
+                {t("creditNotes.detail.total")}
+              </p>
               <p className="font-medium">
                 <CurrencyAmount
                   amount={Number(currentCreditNote.total)}
@@ -138,22 +150,28 @@ export default function CreditNoteDetailPage() {
               </p>
             </div>
             <div>
-              <p className="text-xs text-muted-foreground">Reason</p>
+              <p className="text-xs text-muted-foreground">
+                {t("creditNotes.detail.reason")}
+              </p>
               <p className="font-medium">{currentCreditNote.reason || "-"}</p>
             </div>
           </div>
 
           <div>
-            <h2 className="mb-2 text-sm font-semibold">Line items</h2>
+            <h2 className="mb-2 text-sm font-semibold">
+              {t("creditNotes.detail.lineItems")}
+            </h2>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b text-left">
-                    <th className="pb-2">Description</th>
-                    <th className="pb-2">Qty</th>
-                    <th className="pb-2">Unit</th>
-                    <th className="pb-2">VAT</th>
-                    <th className="pb-2">Total</th>
+                    <th className="pb-2">
+                      {t("creditNotes.detail.description")}
+                    </th>
+                    <th className="pb-2">{t("creditNotes.detail.qty")}</th>
+                    <th className="pb-2">{t("creditNotes.detail.unit")}</th>
+                    <th className="pb-2">{t("creditNotes.detail.vat")}</th>
+                    <th className="pb-2">{t("creditNotes.detail.total")}</th>
                   </tr>
                 </thead>
                 <tbody>

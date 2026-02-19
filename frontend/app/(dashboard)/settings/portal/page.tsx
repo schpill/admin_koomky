@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { apiClient } from "@/lib/api";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 interface PortalSettings {
   portal_enabled: boolean;
@@ -36,6 +37,7 @@ const defaultSettings: PortalSettings = {
 };
 
 export default function PortalSettingsPage() {
+  const { t } = useI18n();
   const [settings, setSettings] = useState<PortalSettings>(defaultSettings);
   const [isLoading, setLoading] = useState(true);
   const [isSaving, setSaving] = useState(false);
@@ -60,7 +62,7 @@ export default function PortalSettingsPage() {
       })
       .catch((error) => {
         toast.error(
-          (error as Error).message || "Unable to load portal settings"
+          (error as Error).message || t("settings.portal.toasts.loadFailed")
         );
       })
       .finally(() => setLoading(false));
@@ -76,10 +78,10 @@ export default function PortalSettingsPage() {
         payment_methods_enabled: settings.payment_methods_enabled || ["card"],
       });
       setSettings({ ...settings, ...response.data });
-      toast.success("Portal settings updated");
+      toast.success(t("settings.portal.toasts.success"));
     } catch (error) {
       toast.error(
-        (error as Error).message || "Unable to update portal settings"
+        (error as Error).message || t("settings.portal.toasts.saveFailed")
       );
     } finally {
       setSaving(false);
@@ -87,21 +89,25 @@ export default function PortalSettingsPage() {
   };
 
   if (isLoading) {
-    return <p className="text-sm text-muted-foreground">Loading settings...</p>;
+    return (
+      <p className="text-sm text-muted-foreground">
+        {t("settings.portal.loading")}
+      </p>
+    );
   }
 
   return (
     <form className="space-y-6" onSubmit={submit}>
       <div className="space-y-1">
-        <h1 className="text-3xl font-bold">Portal settings</h1>
+        <h1 className="text-3xl font-bold">{t("settings.portal.title")}</h1>
         <p className="text-sm text-muted-foreground">
-          Configure branding, portal features and Stripe payment credentials.
+          {t("settings.portal.description")}
         </p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Portal configuration</CardTitle>
+          <CardTitle>{t("settings.portal.config")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <label className="flex items-center gap-2 text-sm">
@@ -115,7 +121,7 @@ export default function PortalSettingsPage() {
                 }))
               }
             />
-            Enable client portal
+            {t("settings.portal.enablePortal")}
           </label>
 
           <label className="flex items-center gap-2 text-sm">
@@ -129,7 +135,7 @@ export default function PortalSettingsPage() {
                 }))
               }
             />
-            Allow quote acceptance from portal
+            {t("settings.portal.allowQuoteAccept")}
           </label>
 
           <label className="flex items-center gap-2 text-sm">
@@ -143,12 +149,14 @@ export default function PortalSettingsPage() {
                 }))
               }
             />
-            Enable online payments in portal
+            {t("settings.portal.enablePayments")}
           </label>
 
           <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="portal-custom-logo">Custom logo URL</Label>
+              <Label htmlFor="portal-custom-logo">
+                {t("settings.portal.customLogoUrl")}
+              </Label>
               <Input
                 id="portal-custom-logo"
                 value={settings.custom_logo || ""}
@@ -162,7 +170,9 @@ export default function PortalSettingsPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="portal-custom-color">Primary color</Label>
+              <Label htmlFor="portal-custom-color">
+                {t("settings.portal.primaryColor")}
+              </Label>
               <Input
                 id="portal-custom-color"
                 type="color"
@@ -178,7 +188,9 @@ export default function PortalSettingsPage() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="portal-welcome-message">Welcome message</Label>
+            <Label htmlFor="portal-welcome-message">
+              {t("settings.portal.welcomeMessage")}
+            </Label>
             <Textarea
               id="portal-welcome-message"
               rows={3}
@@ -196,11 +208,13 @@ export default function PortalSettingsPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Stripe configuration</CardTitle>
+          <CardTitle>{t("settings.portal.stripeConfig")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="stripe-publishable-key">Publishable key</Label>
+            <Label htmlFor="stripe-publishable-key">
+              {t("settings.portal.publishableKey")}
+            </Label>
             <Input
               id="stripe-publishable-key"
               value={settings.stripe_publishable_key || ""}
@@ -213,7 +227,9 @@ export default function PortalSettingsPage() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="stripe-secret-key">Secret key</Label>
+            <Label htmlFor="stripe-secret-key">
+              {t("settings.portal.secretKey")}
+            </Label>
             <Input
               id="stripe-secret-key"
               value={settings.stripe_secret_key || ""}
@@ -226,7 +242,9 @@ export default function PortalSettingsPage() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="stripe-webhook-secret">Webhook secret</Label>
+            <Label htmlFor="stripe-webhook-secret">
+              {t("settings.portal.webhookSecret")}
+            </Label>
             <Input
               id="stripe-webhook-secret"
               value={settings.stripe_webhook_secret || ""}
@@ -243,7 +261,7 @@ export default function PortalSettingsPage() {
 
       <div className="flex justify-end">
         <Button type="submit" disabled={isSaving}>
-          {isSaving ? "Saving..." : "Save portal settings"}
+          {isSaving ? t("settings.portal.saving") : t("settings.portal.save")}
         </Button>
       </div>
     </form>

@@ -13,8 +13,10 @@ import { useExpenseStore } from "@/lib/stores/expenses";
 import { useExpenseCategoryStore } from "@/lib/stores/expense-categories";
 import { useProjectStore } from "@/lib/stores/projects";
 import { useClientStore } from "@/lib/stores/clients";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 export default function EditExpensePage() {
+  const { t } = useI18n();
   const params = useParams<{ id: string }>();
   const router = useRouter();
   const expenseId = params.id;
@@ -91,7 +93,9 @@ export default function EditExpensePage() {
         });
       })
       .catch((error) => {
-        toast.error((error as Error).message || "Unable to load expense");
+        toast.error(
+          (error as Error).message || t("expenses.edit.toasts.failed")
+        );
         router.push("/expenses");
       });
   }, [expenseId, fetchExpense, router]);
@@ -131,29 +135,31 @@ export default function EditExpensePage() {
         await uploadReceipt(expenseId, receiptFile);
       }
 
-      toast.success("Expense updated");
+      toast.success(t("expenses.edit.toasts.success"));
       router.push(`/expenses/${expenseId}`);
     } catch (error) {
-      toast.error((error as Error).message || "Unable to update expense");
+      toast.error((error as Error).message || t("expenses.edit.toasts.failed"));
     }
   };
 
   return (
     <form className="space-y-6" onSubmit={submit}>
       <div className="space-y-1">
-        <h1 className="text-3xl font-bold">Edit expense</h1>
+        <h1 className="text-3xl font-bold">{t("expenses.edit.title")}</h1>
         <p className="text-sm text-muted-foreground">
-          Update cost details, allocation and receipt.
+          {t("expenses.edit.description")}
         </p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Expense details</CardTitle>
+          <CardTitle>{t("expenses.edit.expenseDetails")}</CardTitle>
         </CardHeader>
         <CardContent className="grid gap-4 md:grid-cols-2">
           <div className="space-y-2 md:col-span-2">
-            <Label htmlFor="expense-description">Description</Label>
+            <Label htmlFor="expense-description">
+              {t("expenses.edit.descriptionLabel")}
+            </Label>
             <Input
               id="expense-description"
               value={form.description}
@@ -168,7 +174,7 @@ export default function EditExpensePage() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="expense-amount">Amount</Label>
+            <Label htmlFor="expense-amount">{t("expenses.edit.amount")}</Label>
             <Input
               id="expense-amount"
               type="number"
@@ -186,7 +192,9 @@ export default function EditExpensePage() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="expense-currency">Currency</Label>
+            <Label htmlFor="expense-currency">
+              {t("expenses.edit.currency")}
+            </Label>
             <Input
               id="expense-currency"
               value={form.currency}
@@ -202,7 +210,9 @@ export default function EditExpensePage() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="expense-category">Category</Label>
+            <Label htmlFor="expense-category">
+              {t("expenses.edit.category")}
+            </Label>
             <select
               id="expense-category"
               className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
@@ -223,7 +233,7 @@ export default function EditExpensePage() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="expense-date">Date</Label>
+            <Label htmlFor="expense-date">{t("expenses.edit.date")}</Label>
             <Input
               id="expense-date"
               type="date"
@@ -236,7 +246,9 @@ export default function EditExpensePage() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="expense-project">Project</Label>
+            <Label htmlFor="expense-project">
+              {t("expenses.edit.project")}
+            </Label>
             <select
               id="expense-project"
               className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
@@ -248,7 +260,7 @@ export default function EditExpensePage() {
                 }))
               }
             >
-              <option value="">No project</option>
+              <option value="">{t("expenses.edit.noProject")}</option>
               {projects.map((project) => (
                 <option key={project.id} value={project.id}>
                   {project.name}
@@ -258,7 +270,7 @@ export default function EditExpensePage() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="expense-client">Client</Label>
+            <Label htmlFor="expense-client">{t("expenses.edit.client")}</Label>
             <select
               id="expense-client"
               className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
@@ -270,7 +282,7 @@ export default function EditExpensePage() {
                 }))
               }
             >
-              <option value="">No client</option>
+              <option value="">{t("expenses.edit.noClient")}</option>
               {clients.map((client) => (
                 <option key={client.id} value={client.id}>
                   {client.name}
@@ -280,7 +292,9 @@ export default function EditExpensePage() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="expense-payment-method">Payment method</Label>
+            <Label htmlFor="expense-payment-method">
+              {t("expenses.edit.paymentMethod")}
+            </Label>
             <select
               id="expense-payment-method"
               className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
@@ -292,15 +306,17 @@ export default function EditExpensePage() {
                 }))
               }
             >
-              <option value="cash">Cash</option>
-              <option value="card">Card</option>
-              <option value="bank_transfer">Bank transfer</option>
-              <option value="other">Other</option>
+              <option value="cash">{t("expenses.edit.cash")}</option>
+              <option value="card">{t("expenses.edit.card")}</option>
+              <option value="bank_transfer">
+                {t("expenses.edit.bankTransfer")}
+              </option>
+              <option value="other">{t("expenses.edit.other")}</option>
             </select>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="expense-status">Status</Label>
+            <Label htmlFor="expense-status">{t("expenses.edit.status")}</Label>
             <select
               id="expense-status"
               className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
@@ -312,14 +328,16 @@ export default function EditExpensePage() {
                 }))
               }
             >
-              <option value="pending">Pending</option>
-              <option value="approved">Approved</option>
-              <option value="rejected">Rejected</option>
+              <option value="pending">{t("expenses.edit.pending")}</option>
+              <option value="approved">{t("expenses.edit.approved")}</option>
+              <option value="rejected">{t("expenses.edit.rejected")}</option>
             </select>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="expense-tax-amount">Tax amount</Label>
+            <Label htmlFor="expense-tax-amount">
+              {t("expenses.edit.taxAmount")}
+            </Label>
             <Input
               id="expense-tax-amount"
               type="number"
@@ -336,7 +354,9 @@ export default function EditExpensePage() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="expense-tax-rate">Tax rate (%)</Label>
+            <Label htmlFor="expense-tax-rate">
+              {t("expenses.edit.taxRate")}
+            </Label>
             <Input
               id="expense-tax-rate"
               type="number"
@@ -353,7 +373,7 @@ export default function EditExpensePage() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="expense-vendor">Vendor</Label>
+            <Label htmlFor="expense-vendor">{t("expenses.edit.vendor")}</Label>
             <Input
               id="expense-vendor"
               value={form.vendor}
@@ -367,7 +387,9 @@ export default function EditExpensePage() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="expense-reference">Reference</Label>
+            <Label htmlFor="expense-reference">
+              {t("expenses.edit.reference")}
+            </Label>
             <Input
               id="expense-reference"
               value={form.reference}
@@ -381,7 +403,7 @@ export default function EditExpensePage() {
           </div>
 
           <div className="space-y-2 md:col-span-2">
-            <Label htmlFor="expense-notes">Notes</Label>
+            <Label htmlFor="expense-notes">{t("expenses.edit.notes")}</Label>
             <Textarea
               id="expense-notes"
               rows={3}
@@ -407,7 +429,7 @@ export default function EditExpensePage() {
                   }))
                 }
               />
-              Billable
+              {t("expenses.edit.billable")}
             </label>
             <label className="flex items-center gap-2 text-sm">
               <input
@@ -420,7 +442,7 @@ export default function EditExpensePage() {
                   }))
                 }
               />
-              Reimbursable
+              {t("expenses.edit.reimbursable")}
             </label>
           </div>
         </CardContent>
@@ -428,7 +450,7 @@ export default function EditExpensePage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Receipt</CardTitle>
+          <CardTitle>{t("expenses.edit.receipt")}</CardTitle>
         </CardHeader>
         <CardContent>
           <ReceiptUpload
@@ -446,10 +468,12 @@ export default function EditExpensePage() {
           variant="outline"
           onClick={() => router.push(`/expenses/${expenseId}`)}
         >
-          Cancel
+          {t("expenses.edit.cancel")}
         </Button>
         <Button type="submit" disabled={isLoading}>
-          {isLoading ? "Saving..." : "Save changes"}
+          {isLoading
+            ? t("expenses.edit.saving")
+            : t("expenses.edit.saveChanges")}
         </Button>
       </div>
     </form>

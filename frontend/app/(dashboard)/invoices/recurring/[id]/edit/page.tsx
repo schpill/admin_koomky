@@ -14,8 +14,10 @@ import {
   type RecurringInvoiceProfilePayload,
 } from "@/lib/stores/recurring-invoices";
 import { useClientStore } from "@/lib/stores/clients";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 export default function EditRecurringInvoicePage() {
+  const { t } = useI18n();
   const params = useParams<{ id: string }>();
   const router = useRouter();
   const profileId = params.id;
@@ -34,7 +36,10 @@ export default function EditRecurringInvoicePage() {
     }
 
     fetchProfile(profileId).catch((error) => {
-      toast.error((error as Error).message || "Unable to load profile");
+      toast.error(
+        (error as Error).message ||
+          t("invoices.recurring.detail.toasts.loadFailed")
+      );
       router.push("/invoices/recurring");
     });
   }, [fetchProfile, profileId, router]);
@@ -42,10 +47,12 @@ export default function EditRecurringInvoicePage() {
   const handleSubmit = async (payload: RecurringInvoiceProfilePayload) => {
     try {
       await updateProfile(profileId, payload);
-      toast.success("Recurring profile updated");
+      toast.success(t("invoices.recurring.edit.toasts.success"));
       router.push(`/invoices/recurring/${profileId}`);
     } catch (error) {
-      toast.error((error as Error).message || "Unable to update profile");
+      toast.error(
+        (error as Error).message || t("invoices.recurring.edit.toasts.failed")
+      );
     }
   };
 
@@ -64,15 +71,17 @@ export default function EditRecurringInvoicePage() {
         <Button asChild className="-ml-2" variant="ghost">
           <Link href={`/invoices/recurring/${profileId}`}>
             <ChevronLeft className="mr-2 h-4 w-4" />
-            Back to profile
+            {t("invoices.recurring.edit.backToProfile")}
           </Link>
         </Button>
-        <h1 className="text-3xl font-bold">Edit recurring profile</h1>
+        <h1 className="text-3xl font-bold">
+          {t("invoices.recurring.edit.title")}
+        </h1>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Profile details</CardTitle>
+          <CardTitle>{t("invoices.recurring.edit.profileDetails")}</CardTitle>
         </CardHeader>
         <CardContent>
           <RecurringInvoiceForm
@@ -99,7 +108,7 @@ export default function EditRecurringInvoicePage() {
             }}
             onSubmit={handleSubmit}
             isSubmitting={isLoading}
-            submitLabel="Save changes"
+            submitLabel={t("invoices.recurring.edit.saveChanges")}
             onCancel={() => router.push(`/invoices/recurring/${profileId}`)}
           />
         </CardContent>

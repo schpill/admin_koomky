@@ -7,8 +7,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useCalendarStore } from "@/lib/stores/calendar";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 export default function CalendarSettingsPage() {
+  const { t } = useI18n();
   const {
     connections,
     isLoading,
@@ -33,7 +35,7 @@ export default function CalendarSettingsPage() {
   useEffect(() => {
     fetchConnections();
     fetchAutoEventRules().catch(() => {
-      toast.error("Unable to load calendar settings");
+      toast.error(t("settings.calendarSettings.toasts.loadFailed"));
     });
   }, [fetchConnections, fetchAutoEventRules]);
 
@@ -60,7 +62,7 @@ export default function CalendarSettingsPage() {
 
   const handleCreateConnection = async () => {
     if (!name.trim()) {
-      toast.error("Connection name is required");
+      toast.error(t("settings.calendarSettings.toasts.connectionNameRequired"));
       return;
     }
 
@@ -72,11 +74,14 @@ export default function CalendarSettingsPage() {
         calendar_id: calendarId.trim() || undefined,
         sync_enabled: syncEnabled,
       });
-      toast.success("Calendar connection created");
+      toast.success(t("settings.calendarSettings.toasts.connectionCreated"));
       setName("");
       await fetchConnections();
     } catch (error) {
-      toast.error((error as Error).message || "Unable to create connection");
+      toast.error(
+        (error as Error).message ||
+          t("settings.calendarSettings.toasts.connectionFailed")
+      );
     }
   };
 
@@ -88,10 +93,11 @@ export default function CalendarSettingsPage() {
         task_due_dates: autoTaskDues,
         invoice_reminders: autoInvoiceReminders,
       });
-      toast.success("Auto-event rules saved");
+      toast.success(t("settings.calendarSettings.toasts.autoRulesSaved"));
     } catch (error) {
       toast.error(
-        (error as Error).message || "Unable to save auto-event rules"
+        (error as Error).message ||
+          t("settings.calendarSettings.toasts.autoRulesFailed")
       );
     } finally {
       setIsSavingRules(false);
@@ -101,20 +107,24 @@ export default function CalendarSettingsPage() {
   return (
     <div className="space-y-6">
       <div className="space-y-2">
-        <h1 className="text-3xl font-bold">Calendar settings</h1>
+        <h1 className="text-3xl font-bold">
+          {t("settings.calendarSettings.title")}
+        </h1>
         <p className="text-sm text-muted-foreground">
-          Manage external calendar connections and auto-event rules.
+          {t("settings.calendarSettings.description")}
         </p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Add connection</CardTitle>
+          <CardTitle>{t("settings.calendarSettings.addConnection")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid gap-3 md:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="calendar-connection-name">Connection name</Label>
+              <Label htmlFor="calendar-connection-name">
+                {t("settings.calendarSettings.connectionName")}
+              </Label>
               <Input
                 id="calendar-connection-name"
                 aria-label="Connection name"
@@ -125,7 +135,9 @@ export default function CalendarSettingsPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="calendar-connection-provider">Provider</Label>
+              <Label htmlFor="calendar-connection-provider">
+                {t("settings.calendarSettings.provider")}
+              </Label>
               <select
                 id="calendar-connection-provider"
                 className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
@@ -134,13 +146,19 @@ export default function CalendarSettingsPage() {
                   setProvider(event.target.value as "google" | "caldav")
                 }
               >
-                <option value="google">Google Calendar</option>
-                <option value="caldav">CalDAV</option>
+                <option value="google">
+                  {t("settings.calendarSettings.googleCalendar")}
+                </option>
+                <option value="caldav">
+                  {t("settings.calendarSettings.caldav")}
+                </option>
               </select>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="calendar-connection-id">Calendar ID</Label>
+              <Label htmlFor="calendar-connection-id">
+                {t("settings.calendarSettings.calendarId")}
+              </Label>
               <Input
                 id="calendar-connection-id"
                 value={calendarId}
@@ -155,13 +173,17 @@ export default function CalendarSettingsPage() {
                 checked={syncEnabled}
                 onChange={(event) => setSyncEnabled(event.target.checked)}
               />
-              <Label htmlFor="calendar-sync-enabled">Enable sync</Label>
+              <Label htmlFor="calendar-sync-enabled">
+                {t("settings.calendarSettings.enableSync")}
+              </Label>
             </div>
           </div>
 
           <div className="flex justify-end">
             <Button onClick={handleCreateConnection} disabled={isLoading}>
-              {isLoading ? "Saving..." : "Save connection"}
+              {isLoading
+                ? t("settings.calendarSettings.saving")
+                : t("settings.calendarSettings.saveConnection")}
             </Button>
           </div>
         </CardContent>
@@ -169,7 +191,7 @@ export default function CalendarSettingsPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Auto-event rules</CardTitle>
+          <CardTitle>{t("settings.calendarSettings.autoEventRules")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2 text-sm">
           <label className="flex items-center gap-2">
@@ -180,7 +202,7 @@ export default function CalendarSettingsPage() {
                 setAutoProjectDeadlines(event.target.checked)
               }
             />
-            Project deadlines
+            {t("settings.calendarSettings.projectDeadlines")}
           </label>
           <label className="flex items-center gap-2">
             <input
@@ -188,7 +210,7 @@ export default function CalendarSettingsPage() {
               checked={autoTaskDues}
               onChange={(event) => setAutoTaskDues(event.target.checked)}
             />
-            Task due dates
+            {t("settings.calendarSettings.taskDueDates")}
           </label>
           <label className="flex items-center gap-2">
             <input
@@ -198,7 +220,7 @@ export default function CalendarSettingsPage() {
                 setAutoInvoiceReminders(event.target.checked)
               }
             />
-            Invoice reminders
+            {t("settings.calendarSettings.invoiceReminders")}
           </label>
           <div className="flex justify-end pt-2">
             <Button
@@ -206,7 +228,9 @@ export default function CalendarSettingsPage() {
               onClick={handleSaveAutoEventRules}
               disabled={isSavingRules}
             >
-              {isSavingRules ? "Saving..." : "Save auto-event rules"}
+              {isSavingRules
+                ? t("settings.calendarSettings.saving")
+                : t("settings.calendarSettings.saveAutoRules")}
             </Button>
           </div>
         </CardContent>
@@ -214,12 +238,14 @@ export default function CalendarSettingsPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Existing connections</CardTitle>
+          <CardTitle>
+            {t("settings.calendarSettings.existingConnections")}
+          </CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           {connections.length === 0 ? (
             <p className="text-sm text-muted-foreground">
-              No connection configured yet.
+              {t("settings.calendarSettings.noConnections")}
             </p>
           ) : (
             connections.map((connection) => (
@@ -232,7 +258,9 @@ export default function CalendarSettingsPage() {
                     <p className="text-sm font-semibold">{connection.name}</p>
                     <p className="text-xs text-muted-foreground">
                       {connection.provider} -{" "}
-                      {connection.sync_enabled ? "enabled" : "disabled"}
+                      {connection.sync_enabled
+                        ? t("settings.calendarSettings.enable")
+                        : t("settings.calendarSettings.disable")}
                     </p>
                   </div>
                   <div className="flex gap-2">
@@ -246,7 +274,9 @@ export default function CalendarSettingsPage() {
                         await fetchConnections();
                       }}
                     >
-                      {connection.sync_enabled ? "Disable" : "Enable"}
+                      {connection.sync_enabled
+                        ? t("settings.calendarSettings.disable")
+                        : t("settings.calendarSettings.enable")}
                     </Button>
                     <Button
                       size="sm"
@@ -256,7 +286,7 @@ export default function CalendarSettingsPage() {
                         await fetchConnections();
                       }}
                     >
-                      Delete
+                      {t("settings.calendarSettings.delete")}
                     </Button>
                   </div>
                 </div>

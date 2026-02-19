@@ -13,8 +13,10 @@ import { CurrencyAmount } from "@/components/shared/currency-amount";
 import { useExpenseStore } from "@/lib/stores/expenses";
 import { useExpenseCategoryStore } from "@/lib/stores/expense-categories";
 import { useProjectStore } from "@/lib/stores/projects";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 export default function ExpensesPage() {
+  const { t } = useI18n();
   const {
     expenses,
     isLoading,
@@ -66,10 +68,10 @@ export default function ExpensesPage() {
     try {
       await Promise.all(selectedIds.map((id) => deleteExpense(id)));
       setSelectedIds([]);
-      toast.success("Selected expenses deleted");
+      toast.success(t("expenses.toasts.bulkDeleted"));
     } catch (error) {
       toast.error(
-        (error as Error).message || "Unable to delete selected expenses"
+        (error as Error).message || t("expenses.toasts.bulkDeleteFailed")
       );
     }
   };
@@ -94,13 +96,13 @@ export default function ExpensesPage() {
           });
         })
       );
-      toast.success("Selected expenses recategorized");
+      toast.success(t("expenses.toasts.bulkRecategorized"));
       setSelectedIds([]);
       setBulkCategoryId("");
       await fetchExpenses({ ...filters, per_page: 50 });
     } catch (error) {
       toast.error(
-        (error as Error).message || "Unable to recategorize expenses"
+        (error as Error).message || t("expenses.toasts.bulkRecategorizeFailed")
       );
     }
   };
@@ -109,28 +111,30 @@ export default function ExpensesPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-3xl font-bold">Expenses</h1>
+          <h1 className="text-3xl font-bold">{t("expenses.title")}</h1>
           <p className="text-sm text-muted-foreground">
             {pagination
               ? `${pagination.total} expense records`
-              : "Expense tracking"}
+              : t("expenses.expenseTracking")}
           </p>
         </div>
         <Button asChild>
           <Link href="/expenses/create">
             <Plus className="mr-2 h-4 w-4" />
-            Quick add
+            {t("expenses.quickAdd")}
           </Link>
         </Button>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Filters</CardTitle>
+          <CardTitle>{t("expenses.filters.heading")}</CardTitle>
         </CardHeader>
         <CardContent className="grid gap-3 md:grid-cols-3 lg:grid-cols-6">
           <div className="space-y-1">
-            <Label htmlFor="filter-date-from">From</Label>
+            <Label htmlFor="filter-date-from">
+              {t("expenses.filters.from")}
+            </Label>
             <Input
               id="filter-date-from"
               type="date"
@@ -144,7 +148,7 @@ export default function ExpensesPage() {
             />
           </div>
           <div className="space-y-1">
-            <Label htmlFor="filter-date-to">To</Label>
+            <Label htmlFor="filter-date-to">{t("expenses.filters.to")}</Label>
             <Input
               id="filter-date-to"
               type="date"
@@ -158,7 +162,9 @@ export default function ExpensesPage() {
             />
           </div>
           <div className="space-y-1">
-            <Label htmlFor="filter-category">Category</Label>
+            <Label htmlFor="filter-category">
+              {t("expenses.filters.category")}
+            </Label>
             <select
               id="filter-category"
               className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
@@ -170,7 +176,7 @@ export default function ExpensesPage() {
                 }))
               }
             >
-              <option value="">All categories</option>
+              <option value="">{t("expenses.filters.allCategories")}</option>
               {categories.map((category) => (
                 <option key={category.id} value={category.id}>
                   {category.name}
@@ -179,7 +185,9 @@ export default function ExpensesPage() {
             </select>
           </div>
           <div className="space-y-1">
-            <Label htmlFor="filter-project">Project</Label>
+            <Label htmlFor="filter-project">
+              {t("expenses.filters.project")}
+            </Label>
             <select
               id="filter-project"
               className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
@@ -191,7 +199,7 @@ export default function ExpensesPage() {
                 }))
               }
             >
-              <option value="">All projects</option>
+              <option value="">{t("expenses.filters.allProjects")}</option>
               {projects.map((project) => (
                 <option key={project.id} value={project.id}>
                   {project.name}
@@ -200,7 +208,9 @@ export default function ExpensesPage() {
             </select>
           </div>
           <div className="space-y-1">
-            <Label htmlFor="filter-billable">Billable</Label>
+            <Label htmlFor="filter-billable">
+              {t("expenses.filters.billable")}
+            </Label>
             <select
               id="filter-billable"
               className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
@@ -212,13 +222,15 @@ export default function ExpensesPage() {
                 }))
               }
             >
-              <option value="">All</option>
-              <option value="true">Billable</option>
-              <option value="false">Non-billable</option>
+              <option value="">{t("expenses.filters.all")}</option>
+              <option value="true">{t("expenses.filters.billable")}</option>
+              <option value="false">{t("expenses.filters.nonBillable")}</option>
             </select>
           </div>
           <div className="space-y-1">
-            <Label htmlFor="filter-status">Status</Label>
+            <Label htmlFor="filter-status">
+              {t("expenses.filters.status")}
+            </Label>
             <select
               id="filter-status"
               className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
@@ -230,10 +242,10 @@ export default function ExpensesPage() {
                 }))
               }
             >
-              <option value="">All statuses</option>
-              <option value="pending">Pending</option>
-              <option value="approved">Approved</option>
-              <option value="rejected">Rejected</option>
+              <option value="">{t("expenses.filters.allStatuses")}</option>
+              <option value="pending">{t("expenses.filters.pending")}</option>
+              <option value="approved">{t("expenses.filters.approved")}</option>
+              <option value="rejected">{t("expenses.filters.rejected")}</option>
             </select>
           </div>
         </CardContent>
@@ -241,14 +253,14 @@ export default function ExpensesPage() {
 
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>Expense list</CardTitle>
+          <CardTitle>{t("expenses.expenseList")}</CardTitle>
           <div className="flex flex-wrap items-center gap-2">
             <select
               className="h-9 rounded-md border border-input bg-background px-2 text-xs"
               value={bulkCategoryId}
               onChange={(event) => setBulkCategoryId(event.target.value)}
             >
-              <option value="">Bulk categorize</option>
+              <option value="">{t("expenses.bulkCategorize")}</option>
               {categories.map((category) => (
                 <option key={category.id} value={category.id}>
                   {category.name}
@@ -262,7 +274,7 @@ export default function ExpensesPage() {
               onClick={categorizeSelected}
               disabled={!bulkCategoryId || selectedIds.length === 0}
             >
-              Apply category
+              {t("expenses.applyCategory")}
             </Button>
             <Button
               type="button"
@@ -272,16 +284,18 @@ export default function ExpensesPage() {
               disabled={selectedIds.length === 0}
             >
               <Trash2 className="mr-2 h-4 w-4" />
-              Delete selected
+              {t("expenses.deleteSelected")}
             </Button>
           </div>
         </CardHeader>
         <CardContent>
           {isLoading && expenses.length === 0 ? (
-            <p className="text-sm text-muted-foreground">Loading expenses...</p>
+            <p className="text-sm text-muted-foreground">
+              {t("expenses.loading")}
+            </p>
           ) : expenses.length === 0 ? (
             <p className="text-sm text-muted-foreground">
-              No expenses found for the selected filters.
+              {t("expenses.empty")}
             </p>
           ) : (
             <div className="overflow-x-auto">
@@ -293,17 +307,17 @@ export default function ExpensesPage() {
                         type="checkbox"
                         checked={allSelected}
                         onChange={toggleAll}
-                        aria-label="Select all expenses"
+                        aria-label={t("expenses.table.selectAll")}
                       />
                     </th>
-                    <th className="pb-3">Date</th>
-                    <th className="pb-3">Description</th>
-                    <th className="pb-3">Category</th>
-                    <th className="pb-3">Amount</th>
-                    <th className="pb-3">Project</th>
-                    <th className="pb-3">Billable</th>
-                    <th className="pb-3">Receipt</th>
-                    <th className="pb-3">Status</th>
+                    <th className="pb-3">{t("expenses.table.date")}</th>
+                    <th className="pb-3">{t("expenses.table.description")}</th>
+                    <th className="pb-3">{t("expenses.filters.category")}</th>
+                    <th className="pb-3">{t("expenses.table.amount")}</th>
+                    <th className="pb-3">{t("expenses.filters.project")}</th>
+                    <th className="pb-3">{t("expenses.filters.billable")}</th>
+                    <th className="pb-3">{t("expenses.table.receipt")}</th>
+                    <th className="pb-3">{t("expenses.filters.status")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -340,9 +354,13 @@ export default function ExpensesPage() {
                       </td>
                       <td className="py-3">
                         {expense.is_billable ? (
-                          <Badge variant="outline">Billable</Badge>
+                          <Badge variant="outline">
+                            {t("expenses.table.billableBadge")}
+                          </Badge>
                         ) : (
-                          <Badge variant="secondary">Non-billable</Badge>
+                          <Badge variant="secondary">
+                            {t("expenses.table.nonBillableBadge")}
+                          </Badge>
                         )}
                       </td>
                       <td className="py-3">

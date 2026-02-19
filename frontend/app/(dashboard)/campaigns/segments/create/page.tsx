@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { SegmentBuilder } from "@/components/segments/segment-builder";
 import { SegmentPreviewPanel } from "@/components/segments/segment-preview-panel";
 import { useSegmentStore, type SegmentFilters } from "@/lib/stores/segments";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 const defaultFilters: SegmentFilters = {
   group_boolean: "and",
@@ -22,6 +23,7 @@ const defaultFilters: SegmentFilters = {
 };
 
 export default function CreateSegmentPage() {
+  const { t } = useI18n();
   const router = useRouter();
   const { createSegment, isLoading } = useSegmentStore();
 
@@ -51,30 +53,36 @@ export default function CreateSegmentPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Create segment</h1>
+        <h1 className="text-3xl font-bold">
+          {t("campaigns.segments.create.title")}
+        </h1>
         <p className="text-sm text-muted-foreground">
-          Build your audience with visual filter groups.
+          {t("campaigns.segments.create.description")}
         </p>
       </div>
 
       <div className="space-y-4 rounded-lg border p-4">
         <div className="space-y-2">
-          <Label htmlFor="segment-name">Name</Label>
+          <Label htmlFor="segment-name">
+            {t("campaigns.segments.create.name")}
+          </Label>
           <Input
             id="segment-name"
             value={name}
             onChange={(event) => setName(event.target.value)}
-            placeholder="VIP clients"
+            placeholder={t("campaigns.segments.create.namePlaceholder")}
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="segment-description">Description</Label>
+          <Label htmlFor="segment-description">
+            {t("campaigns.segments.create.descriptionLabel")}
+          </Label>
           <Textarea
             id="segment-description"
             value={description}
             onChange={(event) => setDescription(event.target.value)}
-            placeholder="Contacts with high engagement"
+            placeholder={t("campaigns.segments.create.descriptionPlaceholder")}
           />
         </div>
       </div>
@@ -89,7 +97,9 @@ export default function CreateSegmentPage() {
 
       <div className="flex justify-end">
         <Button type="button" onClick={saveSegment} disabled={isLoading}>
-          {isLoading ? "Saving..." : "Save segment"}
+          {isLoading
+            ? t("campaigns.segments.create.saving")
+            : t("campaigns.segments.create.save")}
         </Button>
       </div>
     </div>

@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { apiClient } from "@/lib/api";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 interface PortalAccessToken {
   id: string;
@@ -35,6 +36,7 @@ interface PortalLogsResponse {
 }
 
 export default function ClientPortalAccessPage() {
+  const { t } = useI18n();
   const params = useParams<{ id: string }>();
   const clientId = params.id;
 
@@ -65,7 +67,9 @@ export default function ClientPortalAccessPage() {
       setTokens(tokensResponse.data || []);
       setLogs(logsResponse.data?.data || []);
     } catch (error) {
-      toast.error((error as Error).message || "Unable to load portal access");
+      toast.error(
+        (error as Error).message || t("clients.portal.toasts.linkFailed")
+      );
     } finally {
       setLoading(false);
     }
@@ -79,7 +83,7 @@ export default function ClientPortalAccessPage() {
   const createToken = async (event: FormEvent) => {
     event.preventDefault();
     if (!email.trim()) {
-      toast.error("Email is required");
+      toast.error(t("clients.portal.toasts.emailRequired"));
       return;
     }
 
@@ -92,9 +96,11 @@ export default function ClientPortalAccessPage() {
       setEmail("");
       setExpiresAt("");
       await load();
-      toast.success("Portal access link generated and sent");
+      toast.success(t("clients.portal.toasts.linkGenerated"));
     } catch (error) {
-      toast.error((error as Error).message || "Unable to create portal token");
+      toast.error(
+        (error as Error).message || t("clients.portal.toasts.linkFailed")
+      );
     } finally {
       setCreating(false);
     }
@@ -104,29 +110,33 @@ export default function ClientPortalAccessPage() {
     try {
       await apiClient.delete(`/clients/${clientId}/portal-access/${tokenId}`);
       await load();
-      toast.success("Portal access revoked");
+      toast.success(t("clients.portal.toasts.revoked"));
     } catch (error) {
-      toast.error((error as Error).message || "Unable to revoke token");
+      toast.error(
+        (error as Error).message || t("clients.portal.toasts.revokeFailed")
+      );
     }
   };
 
   return (
     <div className="space-y-6">
       <div className="space-y-1">
-        <h1 className="text-3xl font-bold">Client portal access</h1>
+        <h1 className="text-3xl font-bold">{t("clients.portal.title")}</h1>
         <p className="text-sm text-muted-foreground">
-          Generate and revoke magic links, then review client portal activity.
+          {t("clients.portal.description")}
         </p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Generate portal access</CardTitle>
+          <CardTitle>{t("clients.portal.generateAccess")}</CardTitle>
         </CardHeader>
         <CardContent>
           <form className="grid gap-3 md:grid-cols-3" onSubmit={createToken}>
             <div className="space-y-2 md:col-span-2">
-              <Label htmlFor="portal-email">Contact email</Label>
+              <Label htmlFor="portal-email">
+                {t("clients.portal.contactEmail")}
+              </Label>
               <Input
                 id="portal-email"
                 type="email"
@@ -137,7 +147,9 @@ export default function ClientPortalAccessPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="portal-expires-at">Expires at (optional)</Label>
+              <Label htmlFor="portal-expires-at">
+                {t("clients.portal.expiresAt")}
+              </Label>
               <Input
                 id="portal-expires-at"
                 type="date"
@@ -147,7 +159,9 @@ export default function ClientPortalAccessPage() {
             </div>
             <div className="md:col-span-3">
               <Button type="submit" disabled={isCreating}>
-                {isCreating ? "Generating..." : "Generate magic link"}
+                {isCreating
+                  ? t("clients.portal.generating")
+                  : t("clients.portal.generateLink")}
               </Button>
             </div>
           </form>
@@ -156,14 +170,16 @@ export default function ClientPortalAccessPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Active tokens</CardTitle>
+          <CardTitle>{t("clients.portal.activeTokens")}</CardTitle>
         </CardHeader>
         <CardContent>
           {isLoading ? (
-            <p className="text-sm text-muted-foreground">Loading tokens...</p>
+            <p className="text-sm text-muted-foreground">
+              {t("clients.portal.loadingTokens")}
+            </p>
           ) : tokens.length === 0 ? (
             <p className="text-sm text-muted-foreground">
-              No portal access token yet.
+              {t("clients.portal.noTokens")}
             </p>
           ) : (
             <div className="space-y-2">
@@ -175,8 +191,9 @@ export default function ClientPortalAccessPage() {
                   <div>
                     <p className="font-medium">{token.email}</p>
                     <p className="text-xs text-muted-foreground">
-                      Expires {new Date(token.expires_at).toLocaleString()} ·
-                      Last used{" "}
+                      {t("clients.portal.expires")}{" "}
+                      {new Date(token.expires_at).toLocaleString()} ·
+                      {t("clients.portal.lastUsed")}{" "}
                       {token.last_used_at
                         ? new Date(token.last_used_at).toLocaleString()
                         : "never"}
@@ -184,7 +201,9 @@ export default function ClientPortalAccessPage() {
                   </div>
                   <div className="flex items-center gap-2">
                     <Badge variant={token.is_active ? "default" : "outline"}>
-                      {token.is_active ? "active" : "revoked"}
+                      {token.is_active
+                        ? t("clients.portal.active")
+                        : t("clients.portal.revoked")}
                     </Badge>
                     {token.is_active ? (
                       <Button
@@ -193,7 +212,7 @@ export default function ClientPortalAccessPage() {
                         size="sm"
                         onClick={() => revoke(token.id)}
                       >
-                        Revoke
+                        {t("clients.portal.revoke")}
                       </Button>
                     ) : null}
                   </div>
@@ -206,14 +225,16 @@ export default function ClientPortalAccessPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Portal activity log</CardTitle>
+          <CardTitle>{t("clients.portal.activityLog")}</CardTitle>
         </CardHeader>
         <CardContent>
           {isLoading ? (
-            <p className="text-sm text-muted-foreground">Loading activity...</p>
+            <p className="text-sm text-muted-foreground">
+              {t("clients.portal.loadingActivity")}
+            </p>
           ) : logs.length === 0 ? (
             <p className="text-sm text-muted-foreground">
-              No activity logged yet.
+              {t("clients.portal.noActivity")}
             </p>
           ) : (
             <div className="space-y-2">

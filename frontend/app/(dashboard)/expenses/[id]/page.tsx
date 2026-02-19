@@ -11,8 +11,10 @@ import { Badge } from "@/components/ui/badge";
 import { CurrencyAmount } from "@/components/shared/currency-amount";
 import { useExpenseStore, type Expense } from "@/lib/stores/expenses";
 import { useAuthStore } from "@/lib/stores/auth";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 export default function ExpenseDetailPage() {
+  const { t } = useI18n();
   const params = useParams<{ id: string }>();
   const router = useRouter();
   const expenseId = params.id;
@@ -26,7 +28,9 @@ export default function ExpenseDetailPage() {
     }
 
     fetchExpense(expenseId).catch((error) => {
-      toast.error((error as Error).message || "Unable to load expense");
+      toast.error(
+        (error as Error).message || t("expenses.detail.toasts.deleteFailed")
+      );
       router.push("/expenses");
     });
   }, [expenseId, fetchExpense, router]);
@@ -41,10 +45,12 @@ export default function ExpenseDetailPage() {
     setDeleting(true);
     try {
       await deleteExpense(expense.id);
-      toast.success("Expense deleted");
+      toast.success(t("expenses.detail.toasts.deleted"));
       router.push("/expenses");
     } catch (error) {
-      toast.error((error as Error).message || "Unable to delete expense");
+      toast.error(
+        (error as Error).message || t("expenses.detail.toasts.deleteFailed")
+      );
     } finally {
       setDeleting(false);
     }
@@ -57,7 +63,7 @@ export default function ExpenseDetailPage() {
 
     const token = useAuthStore.getState().accessToken;
     if (!token) {
-      toast.error("Authentication required");
+      toast.error(t("expenses.detail.toasts.authRequired"));
       return;
     }
 
@@ -85,12 +91,18 @@ export default function ExpenseDetailPage() {
       link.remove();
       URL.revokeObjectURL(url);
     } catch (error) {
-      toast.error((error as Error).message || "Unable to download receipt");
+      toast.error(
+        (error as Error).message || t("expenses.detail.toasts.downloadFailed")
+      );
     }
   };
 
   if (!expense) {
-    return <p className="text-sm text-muted-foreground">Loading expense...</p>;
+    return (
+      <p className="text-sm text-muted-foreground">
+        {t("expenses.detail.loading")}
+      </p>
+    );
   }
 
   return (
@@ -105,23 +117,27 @@ export default function ExpenseDetailPage() {
           <Button asChild variant="outline">
             <Link href={`/expenses/${expense.id}/edit`}>
               <Pencil className="mr-2 h-4 w-4" />
-              Edit
+              {t("expenses.detail.edit")}
             </Link>
           </Button>
           <Button variant="outline" onClick={remove} disabled={isDeleting}>
             <Trash2 className="mr-2 h-4 w-4" />
-            {isDeleting ? "Deleting..." : "Delete"}
+            {isDeleting
+              ? t("expenses.detail.deleting")
+              : t("expenses.detail.delete")}
           </Button>
         </div>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Expense summary</CardTitle>
+          <CardTitle>{t("expenses.detail.summary")}</CardTitle>
         </CardHeader>
         <CardContent className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <div>
-            <p className="text-xs text-muted-foreground">Amount</p>
+            <p className="text-xs text-muted-foreground">
+              {t("expenses.detail.amount")}
+            </p>
             <p className="font-medium">
               <CurrencyAmount
                 amount={Number(expense.amount || 0)}
@@ -130,33 +146,53 @@ export default function ExpenseDetailPage() {
             </p>
           </div>
           <div>
-            <p className="text-xs text-muted-foreground">Category</p>
+            <p className="text-xs text-muted-foreground">
+              {t("expenses.detail.category")}
+            </p>
             <p className="font-medium">{expense.category?.name || "-"}</p>
           </div>
           <div>
-            <p className="text-xs text-muted-foreground">Project</p>
+            <p className="text-xs text-muted-foreground">
+              {t("expenses.detail.project")}
+            </p>
             <p className="font-medium">{expense.project?.name || "-"}</p>
           </div>
           <div>
-            <p className="text-xs text-muted-foreground">Client</p>
+            <p className="text-xs text-muted-foreground">
+              {t("expenses.detail.client")}
+            </p>
             <p className="font-medium">{expense.client?.name || "-"}</p>
           </div>
           <div>
-            <p className="text-xs text-muted-foreground">Billable</p>
-            <p className="font-medium">{expense.is_billable ? "Yes" : "No"}</p>
-          </div>
-          <div>
-            <p className="text-xs text-muted-foreground">Reimbursable</p>
+            <p className="text-xs text-muted-foreground">
+              {t("expenses.detail.billable")}
+            </p>
             <p className="font-medium">
-              {expense.is_reimbursable ? "Yes" : "No"}
+              {expense.is_billable
+                ? t("expenses.detail.yes")
+                : t("expenses.detail.no")}
             </p>
           </div>
           <div>
-            <p className="text-xs text-muted-foreground">Vendor</p>
+            <p className="text-xs text-muted-foreground">
+              {t("expenses.detail.reimbursable")}
+            </p>
+            <p className="font-medium">
+              {expense.is_reimbursable
+                ? t("expenses.detail.yes")
+                : t("expenses.detail.no")}
+            </p>
+          </div>
+          <div>
+            <p className="text-xs text-muted-foreground">
+              {t("expenses.detail.vendor")}
+            </p>
             <p className="font-medium">{expense.vendor || "-"}</p>
           </div>
           <div>
-            <p className="text-xs text-muted-foreground">Reference</p>
+            <p className="text-xs text-muted-foreground">
+              {t("expenses.detail.reference")}
+            </p>
             <p className="font-medium">{expense.reference || "-"}</p>
           </div>
         </CardContent>
@@ -164,29 +200,29 @@ export default function ExpenseDetailPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Notes</CardTitle>
+          <CardTitle>{t("expenses.detail.notes")}</CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground">
-            {expense.notes || "No notes"}
+            {expense.notes || t("expenses.detail.noNotes")}
           </p>
         </CardContent>
       </Card>
 
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>Receipt preview</CardTitle>
+          <CardTitle>{t("expenses.detail.receiptPreview")}</CardTitle>
           {expense.receipt_path ? (
             <Button variant="outline" size="sm" onClick={downloadReceipt}>
               <Download className="mr-2 h-4 w-4" />
-              Download
+              {t("expenses.detail.download")}
             </Button>
           ) : null}
         </CardHeader>
         <CardContent>
           {!expense.receipt_path ? (
             <p className="text-sm text-muted-foreground">
-              No receipt uploaded.
+              {t("expenses.detail.noReceipt")}
             </p>
           ) : expense.receipt_mime_type?.startsWith("image/") ? (
             // eslint-disable-next-line @next/next/no-img-element
@@ -202,7 +238,9 @@ export default function ExpenseDetailPage() {
               className="h-80 w-full rounded border"
             />
           ) : (
-            <p className="text-sm text-muted-foreground">File attached.</p>
+            <p className="text-sm text-muted-foreground">
+              {t("expenses.detail.fileAttached")}
+            </p>
           )}
         </CardContent>
       </Card>

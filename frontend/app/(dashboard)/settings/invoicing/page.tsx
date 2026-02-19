@@ -8,8 +8,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useInvoiceStore } from "@/lib/stores/invoices";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 export default function InvoicingSettingsPage() {
+  const { t } = useI18n();
   const {
     invoicingSettings,
     isLoading,
@@ -25,7 +27,7 @@ export default function InvoicingSettingsPage() {
   useEffect(() => {
     fetchInvoicingSettings().catch((error) => {
       toast.error(
-        (error as Error).message || "Unable to load invoicing settings"
+        (error as Error).message || t("settings.invoicing.toasts.loadFailed")
       );
     });
   }, [fetchInvoicingSettings]);
@@ -55,10 +57,10 @@ export default function InvoicingSettingsPage() {
         invoice_footer: invoiceFooter || null,
         invoice_numbering_pattern: numberingPattern,
       });
-      toast.success("Invoicing settings updated");
+      toast.success(t("settings.invoicing.toasts.success"));
     } catch (error) {
       toast.error(
-        (error as Error).message || "Unable to update invoicing settings"
+        (error as Error).message || t("settings.invoicing.toasts.saveFailed")
       );
     }
   };
@@ -66,20 +68,20 @@ export default function InvoicingSettingsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Invoicing settings</h1>
+        <h1 className="text-3xl font-bold">{t("settings.invoicing.title")}</h1>
         <p className="text-sm text-muted-foreground">
-          Configure default payment terms, bank details and numbering strategy.
+          {t("settings.invoicing.description")}
         </p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Financial defaults</CardTitle>
+          <CardTitle>{t("settings.invoicing.financialDefaults")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="payment-terms-days">
-              Default payment terms (days)
+              {t("settings.invoicing.defaultPaymentTerms")}
             </Label>
             <Input
               id="payment-terms-days"
@@ -94,18 +96,22 @@ export default function InvoicingSettingsPage() {
 
           <div className="space-y-2">
             <Label htmlFor="invoice-numbering-pattern">
-              Invoice numbering pattern
+              {t("settings.invoicing.numberingPattern")}
             </Label>
             <Input
               id="invoice-numbering-pattern"
               value={numberingPattern}
               onChange={(event) => setNumberingPattern(event.target.value)}
             />
-            <p className="text-xs text-muted-foreground">Preview: {preview}</p>
+            <p className="text-xs text-muted-foreground">
+              {t("settings.invoicing.preview")} {preview}
+            </p>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="bank-details">Bank details</Label>
+            <Label htmlFor="bank-details">
+              {t("settings.invoicing.bankDetails")}
+            </Label>
             <Textarea
               id="bank-details"
               rows={4}
@@ -115,7 +121,9 @@ export default function InvoicingSettingsPage() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="invoice-footer">Invoice footer</Label>
+            <Label htmlFor="invoice-footer">
+              {t("settings.invoicing.invoiceFooter")}
+            </Label>
             <Textarea
               id="invoice-footer"
               rows={4}
@@ -126,7 +134,9 @@ export default function InvoicingSettingsPage() {
 
           <div className="flex justify-end">
             <Button type="button" onClick={onSave} disabled={isLoading}>
-              {isLoading ? "Saving..." : "Save changes"}
+              {isLoading
+                ? t("settings.invoicing.saving")
+                : t("settings.invoicing.saveChanges")}
             </Button>
           </div>
         </CardContent>

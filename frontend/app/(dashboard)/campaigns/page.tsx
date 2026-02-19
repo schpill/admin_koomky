@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useCampaignStore } from "@/lib/stores/campaigns";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 function statusVariant(
   status: string
@@ -25,6 +26,7 @@ function statusVariant(
 }
 
 export default function CampaignsPage() {
+  const { t } = useI18n();
   const { campaigns, pagination, isLoading, fetchCampaigns, sendCampaign } =
     useCampaignStore();
 
@@ -36,19 +38,19 @@ export default function CampaignsPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-3xl font-bold">Campaigns</h1>
+          <h1 className="text-3xl font-bold">{t("campaigns.title")}</h1>
           <p className="text-sm text-muted-foreground">
-            {pagination?.total || 0} campaigns total
+            {t("campaigns.totalCount", { count: pagination?.total || 0 })}
           </p>
         </div>
         <div className="flex gap-2">
           <Button asChild variant="outline">
-            <Link href="/campaigns/segments">Segments</Link>
+            <Link href="/campaigns/segments">{t("campaigns.segments")}</Link>
           </Button>
           <Button asChild>
             <Link href="/campaigns/create">
               <Plus className="mr-2 h-4 w-4" />
-              New campaign
+              {t("campaigns.newCampaign")}
             </Link>
           </Button>
         </div>
@@ -56,7 +58,7 @@ export default function CampaignsPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Campaign list</CardTitle>
+          <CardTitle>{t("campaigns.campaignList")}</CardTitle>
         </CardHeader>
         <CardContent>
           {isLoading && campaigns.length === 0 ? (
@@ -68,11 +70,13 @@ export default function CampaignsPage() {
           ) : campaigns.length === 0 ? (
             <EmptyState
               icon={<Megaphone className="h-12 w-12" />}
-              title="No campaigns yet"
-              description="Create your first email or SMS campaign."
+              title={t("campaigns.empty.title")}
+              description={t("campaigns.empty.description")}
               action={
                 <Button asChild>
-                  <Link href="/campaigns/create">Create campaign</Link>
+                  <Link href="/campaigns/create">
+                    {t("campaigns.empty.action")}
+                  </Link>
                 </Button>
               }
             />
@@ -81,11 +85,21 @@ export default function CampaignsPage() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b text-left text-muted-foreground">
-                    <th className="pb-2 font-medium">Name</th>
-                    <th className="pb-2 font-medium">Type</th>
-                    <th className="pb-2 font-medium">Status</th>
-                    <th className="pb-2 font-medium">Recipients</th>
-                    <th className="pb-2 font-medium">Actions</th>
+                    <th className="pb-2 font-medium">
+                      {t("campaigns.table.name")}
+                    </th>
+                    <th className="pb-2 font-medium">
+                      {t("campaigns.table.type")}
+                    </th>
+                    <th className="pb-2 font-medium">
+                      {t("campaigns.table.status")}
+                    </th>
+                    <th className="pb-2 font-medium">
+                      {t("campaigns.table.recipients")}
+                    </th>
+                    <th className="pb-2 font-medium">
+                      {t("campaigns.table.actions")}
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -117,7 +131,7 @@ export default function CampaignsPage() {
                         <div className="flex flex-wrap gap-2">
                           <Button variant="outline" size="sm" asChild>
                             <Link href={`/campaigns/${campaign.id}/analytics`}>
-                              Analytics
+                              {t("campaigns.table.analytics")}
                             </Link>
                           </Button>
                           <Button
@@ -129,7 +143,7 @@ export default function CampaignsPage() {
                               campaign.status === "sent"
                             }
                           >
-                            Send
+                            {t("campaigns.table.send")}
                           </Button>
                         </div>
                       </td>

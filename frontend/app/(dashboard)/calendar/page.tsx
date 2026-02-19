@@ -14,6 +14,7 @@ import {
   type CalendarEvent,
   type CalendarEventPayload,
 } from "@/lib/stores/calendar";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 type CalendarView = "month" | "week" | "day";
 
@@ -28,6 +29,7 @@ function addDays(input: string, days: number): string {
 }
 
 export default function CalendarPage() {
+  const { t } = useI18n();
   const {
     events,
     isLoading,
@@ -87,24 +89,26 @@ export default function CalendarPage() {
     try {
       if (editingEvent) {
         await updateEvent(editingEvent.id, payload);
-        toast.success("Event updated");
+        toast.success(t("calendar.toasts.updated"));
       } else {
         await createEvent(payload);
-        toast.success("Event created");
+        toast.success(t("calendar.toasts.created"));
       }
       setEditingEvent(null);
       await fetchEvents({ date_from: dateFrom, date_to: dateTo });
     } catch (error) {
-      toast.error((error as Error).message || "Unable to save event");
+      toast.error((error as Error).message || t("calendar.toasts.saveFailed"));
     }
   };
 
   const handleDelete = async (eventId: string) => {
     try {
       await deleteEvent(eventId);
-      toast.success("Event deleted");
+      toast.success(t("calendar.toasts.deleted"));
     } catch (error) {
-      toast.error((error as Error).message || "Unable to delete event");
+      toast.error(
+        (error as Error).message || t("calendar.toasts.deleteFailed")
+      );
     }
   };
 
@@ -112,9 +116,9 @@ export default function CalendarPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-3xl font-bold">Calendar</h1>
+          <h1 className="text-3xl font-bold">{t("calendar.title")}</h1>
           <p className="text-sm text-muted-foreground">
-            Plan meetings, deadlines and reminders.
+            {t("calendar.description")}
           </p>
         </div>
         <Button
@@ -123,13 +127,13 @@ export default function CalendarPage() {
             setModalOpen(true);
           }}
         >
-          Create event
+          {t("calendar.createEvent")}
         </Button>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>View</CardTitle>
+          <CardTitle>{t("calendar.view")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex flex-wrap gap-2">
@@ -138,27 +142,27 @@ export default function CalendarPage() {
               variant={view === "month" ? "default" : "outline"}
               onClick={() => handleViewChange("month")}
             >
-              Month
+              {t("calendar.month")}
             </Button>
             <Button
               type="button"
               variant={view === "week" ? "default" : "outline"}
               onClick={() => handleViewChange("week")}
             >
-              Week
+              {t("calendar.week")}
             </Button>
             <Button
               type="button"
               variant={view === "day" ? "default" : "outline"}
               onClick={() => handleViewChange("day")}
             >
-              Day
+              {t("calendar.day")}
             </Button>
           </div>
 
           <div className="grid gap-3 md:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="calendar-date-from">From</Label>
+              <Label htmlFor="calendar-date-from">{t("calendar.from")}</Label>
               <Input
                 id="calendar-date-from"
                 type="date"
@@ -167,7 +171,7 @@ export default function CalendarPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="calendar-date-to">To</Label>
+              <Label htmlFor="calendar-date-to">{t("calendar.to")}</Label>
               <Input
                 id="calendar-date-to"
                 type="date"
@@ -181,15 +185,17 @@ export default function CalendarPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Events</CardTitle>
+          <CardTitle>{t("calendar.events")}</CardTitle>
         </CardHeader>
         <CardContent>
           {isLoading && events.length === 0 ? (
-            <p className="text-sm text-muted-foreground">Loading events...</p>
+            <p className="text-sm text-muted-foreground">
+              {t("calendar.loading")}
+            </p>
           ) : events.length === 0 ? (
             <EmptyState
-              title="No events"
-              description="Create an event to start planning your schedule."
+              title={t("calendar.empty.title")}
+              description={t("calendar.empty.description")}
             />
           ) : (
             <div className="space-y-4">
@@ -236,7 +242,9 @@ export default function CalendarPage() {
           }
         }}
         initialEvent={editingEvent}
-        submitLabel={editingEvent ? "Update event" : "Save event"}
+        submitLabel={
+          editingEvent ? t("calendar.updateEvent") : t("calendar.saveEvent")
+        }
         onSubmit={handleSubmitEvent}
       />
     </div>

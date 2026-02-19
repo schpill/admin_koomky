@@ -10,8 +10,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useCreditNoteStore } from "@/lib/stores/creditNotes";
 import { CurrencyAmount } from "@/components/shared/currency-amount";
 import { CreditNoteStatusBadge } from "@/components/credit-notes/credit-note-status-badge";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 export default function CreditNotesPage() {
+  const { t } = useI18n();
   const { creditNotes, isLoading, pagination, fetchCreditNotes } =
     useCreditNoteStore();
 
@@ -23,7 +25,7 @@ export default function CreditNotesPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-3xl font-bold">Credit notes</h1>
+          <h1 className="text-3xl font-bold">{t("creditNotes.title")}</h1>
           <p className="text-sm text-muted-foreground">
             {pagination ? `${pagination.total} credit notes` : ""}
           </p>
@@ -31,14 +33,14 @@ export default function CreditNotesPage() {
         <Button asChild>
           <Link href="/credit-notes/create">
             <Plus className="mr-2 h-4 w-4" />
-            New credit note
+            {t("creditNotes.newCreditNote")}
           </Link>
         </Button>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Credit note list</CardTitle>
+          <CardTitle>{t("creditNotes.creditNoteList")}</CardTitle>
         </CardHeader>
         <CardContent>
           {isLoading && creditNotes.length === 0 ? (
@@ -48,8 +50,8 @@ export default function CreditNotesPage() {
             </div>
           ) : creditNotes.length === 0 ? (
             <EmptyState
-              title="No credit notes"
-              description="Create your first credit note to track invoice adjustments."
+              title={t("creditNotes.empty.title")}
+              description={t("creditNotes.empty.description")}
             />
           ) : (
             <div className="overflow-x-auto">
@@ -57,19 +59,19 @@ export default function CreditNotesPage() {
                 <thead>
                   <tr className="border-b text-left">
                     <th className="pb-3 font-medium text-muted-foreground">
-                      Number
+                      {t("creditNotes.table.number")}
                     </th>
                     <th className="pb-3 font-medium text-muted-foreground">
-                      Invoice
+                      {t("creditNotes.table.invoice")}
                     </th>
                     <th className="pb-3 font-medium text-muted-foreground">
-                      Issue date
+                      {t("creditNotes.table.issueDate")}
                     </th>
                     <th className="pb-3 font-medium text-muted-foreground">
-                      Total
+                      {t("creditNotes.table.total")}
                     </th>
                     <th className="pb-3 font-medium text-muted-foreground">
-                      Status
+                      {t("creditNotes.table.status")}
                     </th>
                   </tr>
                 </thead>
