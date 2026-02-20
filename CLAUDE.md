@@ -12,23 +12,11 @@ Koomky is a self-hosted Freelance CRM built as a monorepo:
 
 ## Current Implementation Snapshot
 
-- **Phase 7 is in progress** — PR #17 (`feat/phase7-accounting-api-leads`) merged to `main` on 2026-02-20.
-- **Phase 7 scope delivered so far** (~85% complete):
-  - **Sprint 24 — Accounting (100% backend + frontend pages)**: FecExportService, VatDeclarationService, AccountingExportService, FiscalYearSummaryService, AccountingSettingsController + all 5 accounting pages + sidebar entry
-  - **Sprint 25 — Public API & Webhooks (~70%)**: PersonalAccessTokenController, WebhookEndpoint/WebhookDelivery models, WebhookEndpointController, WebhookDispatchService, WebhookDeliveryController + settings pages (api-tokens, webhooks, deliveries) + sidebar entry
-  - **Sprint 26 — Lead Pipeline (~75%)**: Lead/LeadActivity models, LeadController, LeadConversionService, LeadPipelineController, LeadAnalyticsService, LeadActivityController, LeadPolicy, factories + all leads pages + leads Zustand store + sidebar entry
-- **Phase 7 remaining tasks** (see `docs/dev/phase7.md`):
-  - P7-BE-026: `WebhookDispatchJob` (queued delivery with exponential backoff retry) — **missing**
-  - P7-BE-028: Webhook dispatch integration for all 14 application events — **not verified**
-  - P7-BE-029: OpenAPI 3.1 spec via `dedoc/scramble` at `/api/docs` — **not implemented**
-  - P7-BE-030: Scope-guard middleware enforcing PAT abilities — **not verified**
-  - P7-BE-045: `StoreLeadRequest` validation class — **missing**
-  - P7-BE-052/053/054: Lead webhooks, Meilisearch index, GDPR export — **not verified**
-  - P7-FE-023/024: `webhook-form.tsx` and `api-token-form.tsx` components — **missing**
-  - P7-FE-036/037/038: `lead-kanban.tsx`, `lead-activity-form.tsx`, `convert-to-client-dialog.tsx` — **missing**
-  - P7-FE-040: Dashboard pipeline summary widget — **not implemented**
-  - Frontend store for accounting (`stores/accounting.ts`) — **missing**
-  - All Phase 7 frontend and backend tests — **not yet written**
+- **Phase 7 delivered** — PR #18 (`feat/phase7-completion`, commit `0e308484`, merged to `main` on 2026-02-20) closed the Accounting (FEC/VAT/exports), Public API & Webhooks, and Lead Pipeline workstreams.
+- **Delivered artifacts**:
+  - Backend: webhook models/controllers, `WebhookDispatchService`/`WebhookDispatchJob`, PAT scope-guard middleware, `StoreLeadRequest`, webhook delivery logging + OpenAPI UI (`dedoc/scramble` @ `/api/docs`), lead-related observers, and comprehensive unit tests (including WebhookDispatchService/Job and LeadConversion).
+  - Frontend: API tokens/webhook forms, lead Kanban/activities/convert dialog + zustand store, pipeline analytics page, dashboard pipeline widget, and their corresponding Playwright/Vitest specs.
+  - Infrastructure: Meilisearch lead index, GDPR export inclusion, and coverage above the 80% gates for both backend and frontend.
 - **Phase 6 is fully implemented and merged to `main`** (Client Portal & Expense Tracking roadmap scope).
 - **Phase 6 scope delivered**:
   - Client portal (magic link auth, dashboard, invoice/quote viewing, quote accept/reject flows)
