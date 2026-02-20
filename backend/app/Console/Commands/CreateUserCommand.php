@@ -24,7 +24,7 @@ class CreateUserCommand extends Command
 
         $validator = Validator::make(
             ['email' => $email],
-            ['email' => ['required', 'email', 'unique:users,email']]
+            ['email' => ['required', 'email']]
         );
 
         if ($validator->fails()) {
@@ -34,6 +34,20 @@ class CreateUserCommand extends Command
         }
 
         $password = $this->generateStrongPassword();
+
+        /** @var User|null $existing */
+        $existing = User::query()->where('email', $email)->first();
+
+        if ($existing !== null) {
+            $existing->update(['password' => $password]);
+
+            $this->warn('A user with this email already exists. Their password has been reset.');
+            $this->line('Email: '.$existing->email);
+            $this->line('New password: '.$password);
+            $this->warn('Store this password now. It will not be shown again.');
+
+            return self::SUCCESS;
+        }
 
         $user = User::query()->create([
             'name' => $this->resolveNameFromEmail($email),

@@ -45,22 +45,37 @@ test('users:create generates a strong password and stores it hashed', function (
     expect(Hash::check($plainPassword, $user->password))->toBeTrue();
 });
 
-test('users:create fails when email is invalid or already used', function () {
+test('users:create fails when email is invalid', function () {
     $invalidExitCode = Artisan::call('users:create', [
         'email' => 'invalid-email',
     ]);
 
     expect($invalidExitCode)->toBe(1);
     expect(Artisan::output())->toContain('must be a valid email address');
+});
 
-    User::factory()->create([
+test('users:create resets password and warns when user already exists', function () {
+    $user = User::factory()->create([
         'email' => 'existing@example.com',
     ]);
 
-    $duplicateExitCode = Artisan::call('users:create', [
+    $oldPasswordHash = $user->password;
+
+    $exitCode = Artisan::call('users:create', [
         'email' => 'existing@example.com',
     ]);
 
-    expect($duplicateExitCode)->toBe(1);
-    expect(Artisan::output())->toContain('already been taken');
+    $output = Artisan::output();
+
+    expect($exitCode)->toBe(0);
+    expect($output)->toContain('already exists');
+    expect($output)->toContain('New password:');
+
+    preg_match('/New password:\s+([^\r\n]+)/', $output, $matches);
+    $newPlainPassword = trim($matches[1]);
+
+    $user->refresh();
+
+    expect(Hash::check($newPlainPassword, $user->password))->toBeTrue();
+    expect($user->password)->not()->toBe($oldPasswordHash);
 });
