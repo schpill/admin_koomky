@@ -4,11 +4,11 @@
 
 | Field             | Value                                      |
 |-------------------|--------------------------------------------|
-| **Document Version** | 1.1.0                                   |
+| **Document Version** | 1.3.0                                   |
 | **Status**           | Draft                                   |
 | **Author**           | Senior Freelance Developer              |
 | **Date**             | 2026-02-11                              |
-| **Last Updated**     | 2026-02-14                              |
+| **Last Updated**     | 2026-02-20                              |
 | **Confidentiality**  | Internal                                |
 
 ---
@@ -477,6 +477,131 @@ Freelance professionals face a fragmented tooling landscape that forces them to 
 | FR-SET-006  | The system SHALL allow configuring notification preferences (email, in-app).                   |
 | FR-SET-007  | The system SHALL allow importing clients from CSV files.                                       |
 | FR-SET-008  | The system SHALL allow exporting all data in standard formats (CSV, JSON) for data portability. |
+
+---
+
+### 4.9 Accounting & Tax Compliance
+
+#### FR-ACC-001: FEC Export (Fichier des Écritures Comptables)
+
+| ID          | Requirement                                                                                    |
+|-------------|-----------------------------------------------------------------------------------------------|
+| FR-ACC-001  | The system SHALL generate a FEC-compliant export file (semicolon-delimited, UTF-8) covering all transactions in a selected fiscal period. |
+| FR-ACC-002  | The FEC export SHALL include journal entries for: invoices issued, invoice payments received, credit notes issued, and expenses recorded. |
+| FR-ACC-003  | The FEC export SHALL use Plan Comptable Général account numbers (411, 706, 44571, 44566, 401, 512) configurable per user. |
+| FR-ACC-004  | The system SHALL allow selecting the fiscal year (or custom date range) for the FEC export.    |
+| FR-ACC-005  | The FEC file SHALL comply with Article L47 A of the Livre des Procédures Fiscales (LPF), including all mandatory columns (JournalCode, EcritureDate, CompteNum, Debit, Credit, etc.). |
+
+#### FR-ACC-002: VAT Declaration Report
+
+| ID          | Requirement                                                                                    |
+|-------------|-----------------------------------------------------------------------------------------------|
+| FR-ACC-006  | The system SHALL provide a VAT declaration report (CA3-style) showing: TVA collectée by rate (0%, 5.5%, 10%, 20%), TVA déductible from eligible expenses, and net TVA due. |
+| FR-ACC-007  | The VAT report SHALL be filterable by fiscal period (monthly, quarterly).                     |
+| FR-ACC-008  | The system SHALL allow exporting the VAT report as PDF and CSV.                               |
+
+#### FR-ACC-003: Accounting Software Export & Fiscal Year Summary
+
+| ID          | Requirement                                                                                    |
+|-------------|-----------------------------------------------------------------------------------------------|
+| FR-ACC-009  | The system SHALL provide a CSV export compatible with Pennylane and Sage (configurable column mapping per target software). |
+| FR-ACC-010  | The system SHALL generate a fiscal year closing summary: total revenue, total expenses, net profit, margin percentage, and VAT position. |
+| FR-ACC-011  | All accounting exports SHALL include the user's SIRET, SIREN, and VAT number in file headers. |
+
+**User Story:**
+> As a French freelancer, I want to export my accounting data in FEC format so that I can hand it to my accountant or submit it during a tax audit without manual re-entry.
+
+**Acceptance Criteria:**
+- Given a fiscal year with invoices and expenses, when I export the FEC, then a valid semicolon-delimited UTF-8 file is generated with one debit and one credit entry per transaction line.
+- Given a quarter with €5,000 in services at 20% VAT and €500 in deductible expenses with VAT, when I view the VAT report, then TVA collectée = €1,000, TVA déductible = €100, net TVA due = €900.
+- Given I export to Pennylane CSV format, when I import the file in Pennylane, then all invoices and expenses are imported without mapping errors.
+
+---
+
+### 4.10 Public API & Outbound Webhooks
+
+#### FR-WBH-001: Personal Access Tokens
+
+| ID          | Requirement                                                                                    |
+|-------------|-----------------------------------------------------------------------------------------------|
+| FR-WBH-001  | The system SHALL allow users to create named Personal Access Tokens (PAT) for API access by external tools. |
+| FR-WBH-002  | Each PAT SHALL have configurable scopes (read:invoices, write:expenses, read:clients, etc.).  |
+| FR-WBH-003  | Each PAT SHALL support an optional expiry date.                                               |
+| FR-WBH-004  | The system SHALL display the token value only once upon creation.                              |
+| FR-WBH-005  | The system SHALL allow revoking any PAT at any time; revoked tokens SHALL be rejected immediately. |
+
+#### FR-WBH-002: Outbound Webhooks
+
+| ID          | Requirement                                                                                    |
+|-------------|-----------------------------------------------------------------------------------------------|
+| FR-WBH-006  | The system SHALL allow registering external HTTPS webhook endpoints with a list of subscribed events. |
+| FR-WBH-007  | The system SHALL sign all outbound webhook payloads with HMAC-SHA256 using a per-endpoint secret, delivered in the `X-Koomky-Signature` header. |
+| FR-WBH-008  | The system SHALL dispatch webhook events for: invoice.created/sent/paid/overdue, quote.sent/accepted/rejected/expired, expense.created, project.completed, payment.received, lead.created/status_changed/converted. |
+| FR-WBH-009  | Failed webhook deliveries SHALL be retried up to 5 times with exponential backoff (1s, 5s, 30s, 5 min, 30 min). |
+| FR-WBH-010  | The system SHALL provide a delivery log showing status, HTTP response code, attempt count, and payload for each delivery attempt. |
+| FR-WBH-011  | The system SHALL allow manually retrying a failed webhook delivery from the log.              |
+| FR-WBH-012  | The system SHALL provide a "test delivery" action that sends a sample payload to a registered endpoint. |
+
+#### FR-WBH-003: API Documentation
+
+| ID          | Requirement                                                                                    |
+|-------------|-----------------------------------------------------------------------------------------------|
+| FR-WBH-013  | The system SHALL auto-generate and expose an OpenAPI 3.1 specification at `/api/docs`.        |
+| FR-WBH-014  | The OpenAPI spec SHALL document all authenticated endpoints with request and response schemas. |
+
+**User Story:**
+> As a freelancer using n8n for automation, I want to receive a webhook when an invoice is paid so that I can automatically update my accounting spreadsheet without manual intervention.
+
+**Acceptance Criteria:**
+- Given I create a PAT with scope `read:invoices`, when I call `GET /api/v1/invoices` with that PAT, then I receive 200; when I call `POST /api/v1/invoices`, then I receive 403.
+- Given I register a webhook endpoint subscribed to `invoice.paid`, when an invoice is marked as paid, then my endpoint receives a signed POST within 5 seconds.
+- Given a webhook delivery fails with a 500 response, when 5 retries are exhausted, then the delivery is marked as failed and visible in the log.
+
+---
+
+### 4.11 Prospect & Lead Management
+
+#### FR-LEAD-001: Lead CRUD
+
+| ID           | Requirement                                                                                   |
+|--------------|-----------------------------------------------------------------------------------------------|
+| FR-LEAD-001  | The system SHALL allow creating a lead with: company name, contact name, email, phone, source, estimated value, currency, probability (0–100%), and expected close date. |
+| FR-LEAD-002  | The system SHALL support lead statuses: `new`, `contacted`, `qualified`, `proposal_sent`, `negotiating`, `won`, `lost`. |
+| FR-LEAD-003  | The system SHALL allow viewing leads in a Kanban pipeline view grouped by status.             |
+| FR-LEAD-004  | The system SHALL allow reordering leads within a status column via drag-and-drop.             |
+| FR-LEAD-005  | The system SHALL allow viewing leads in a filterable list view (status, source, date range, search). |
+| FR-LEAD-006  | The system SHALL allow transitioning a lead to any status via a status selector.              |
+| FR-LEAD-007  | When a lead is moved to `lost`, the system SHALL prompt for a mandatory lost reason.          |
+
+#### FR-LEAD-002: Lead Activity Log
+
+| ID           | Requirement                                                                                   |
+|--------------|-----------------------------------------------------------------------------------------------|
+| FR-LEAD-008  | The system SHALL allow logging activities on a lead: note, email sent, call, meeting, follow-up scheduled. |
+| FR-LEAD-009  | The system SHALL display a chronological activity timeline on the lead detail page.           |
+
+#### FR-LEAD-003: Lead Conversion
+
+| ID           | Requirement                                                                                   |
+|--------------|-----------------------------------------------------------------------------------------------|
+| FR-LEAD-010  | The system SHALL allow converting a `won` lead into a Client record in a single action.       |
+| FR-LEAD-011  | The conversion SHALL pre-fill the new Client form with data from the lead (company, contact, email, phone). |
+| FR-LEAD-012  | After conversion, the lead SHALL be linked to the created Client and its status set to `won`. |
+
+#### FR-LEAD-004: Pipeline Analytics
+
+| ID           | Requirement                                                                                   |
+|--------------|-----------------------------------------------------------------------------------------------|
+| FR-LEAD-013  | The system SHALL display pipeline analytics: total pipeline value, leads by stage, win rate, average deal value, and average time to close. |
+| FR-LEAD-014  | The system SHALL allow filtering pipeline analytics by date range and lead source.            |
+
+**User Story:**
+> As a freelancer, I want to manage my prospect pipeline so that I can track which leads I am nurturing, see the total potential revenue, and convert won deals into clients without duplicating data entry.
+
+**Acceptance Criteria:**
+- Given 5 leads in `proposal_sent` with a total estimated value of €30,000, when I view the Kanban, then the `proposal_sent` column shows 5 cards and €30,000.
+- Given a lead is moved to `won`, when I click "Convert to Client", then a new Client is created pre-filled with the lead's data and the lead is linked to that client.
+- Given a lead is moved to `lost`, when I confirm, then the system prompts for a lost reason before updating the status.
 
 ---
 
@@ -1487,14 +1612,49 @@ Each phase MUST be fully completed and validated (all tests passing, coverage >=
 
 **Milestone 4:** Production-ready release with polished UI, optimized performance, and comprehensive documentation.
 
+#### Phase 5: Recurring Invoices, Multi-Currency & Calendar (Weeks 25–32)
+
+| Week  | Deliverables                                                                   |
+|-------|--------------------------------------------------------------------------------|
+| 25-27 | Recurring invoice profiles, generator jobs, scheduling, notifications, UI      |
+| 27-29 | Multi-currency support: currencies/rates services, conversion in documents and reports, UI |
+| 29-32 | Calendar integration: Google Calendar + CalDAV connections, sync drivers, auto-events, UI |
+| 32    | Prometheus + Grafana monitoring stack, v1.1.0 release                          |
+
+**Milestone 5 (v1.1.0):** Recurring invoices, multi-currency, and calendar integration fully operational. Prometheus monitoring delivered.
+
+#### Phase 6: Client Portal & Expense Tracking (Weeks 33–40)
+
+| Week  | Deliverables                                                                   |
+|-------|--------------------------------------------------------------------------------|
+| 33-35 | Client portal: magic link auth, dashboard, invoice/quote viewing, accept/reject flows, portal settings |
+| 35-36 | Stripe payment integration: payment intents, webhook sync, portal pay flow, notifications |
+| 37-39 | Expense tracking: categories, CRUD, receipt upload, reporting, CSV export, import integration |
+| 39-40 | Financial integration: P&L report, project profitability, dashboard widgets, billable expense invoicing, v1.2.0 release |
+
+**Milestone 6 (v1.2.0):** Client portal with online payments, expense tracking, and financial reporting fully delivered.
+
+#### Phase 7: Accounting Integration, Public API & Prospect Pipeline (Weeks 41–51)
+
+| Week  | Deliverables                                                                   |
+|-------|--------------------------------------------------------------------------------|
+| 41-44 | FEC export, VAT declaration report, Pennylane/Sage accounting export, fiscal year closing summary |
+| 45-47 | Personal Access Tokens (Public API), outbound webhooks with HMAC signing and retry, OpenAPI 3.1 spec |
+| 48-51 | Prospect/lead pipeline: Kanban view, activity log, lead-to-client conversion, pipeline analytics, v1.3.0 release |
+
+**Milestone 7 (v1.3.0):** French accounting compliance exports, external automation via webhooks and public API, and full prospect pipeline delivered.
+
 ### 12.2 Milestone Summary
 
-| Milestone | Name                      | Target Completion | Key Deliverables                           |
-|-----------|---------------------------|-------------------|--------------------------------------------|
-| M1        | Core CRM                  | Week 6            | Auth, clients, dashboard, search           |
-| M2        | Projects & Finance        | Week 14           | Projects, tasks, invoices, quotes, credits |
-| M3        | Marketing Campaigns       | Week 20           | Email campaigns, SMS campaigns, analytics  |
-| M4        | Production Release        | Week 24           | Polish, optimization, deployment           |
+| Milestone | Name                                    | Target Completion | Version  | Key Deliverables                                                     |
+|-----------|-----------------------------------------|-------------------|----------|----------------------------------------------------------------------|
+| M1        | Core CRM                                | Week 6            | —        | Auth (incl. 2FA), clients, dashboard, global search                  |
+| M2        | Projects & Finance                      | Week 14           | —        | Projects, tasks, time tracking, invoices, quotes, credit notes       |
+| M3        | Marketing Campaigns                     | Week 20           | —        | Email campaigns, SMS campaigns, segmentation, analytics              |
+| M4        | Production Release                      | Week 24           | v1.0.0   | Polish, dark mode, responsive, performance, data import/export, deployment |
+| M5        | Recurring Invoices, Multi-Currency & Calendar | Week 32      | v1.1.0   | Recurring invoices, multi-currency, calendar integration, Prometheus monitoring |
+| M6        | Client Portal & Expense Tracking        | Week 40           | v1.2.0   | Client portal, Stripe payments, expense tracking, P&L reports        |
+| M7        | Accounting, Public API & Lead Pipeline  | Week 51           | v1.3.0   | FEC/VAT exports, webhooks, personal API tokens, prospect pipeline    |
 
 ---
 
