@@ -26,7 +26,7 @@ function formatDuration(minutes: number): string {
 }
 
 function formatCurrency(value: number): string {
-  return `${value.toLocaleString(undefined, {
+  return `${value.toLocaleString("en-US", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   })} EUR used`;
@@ -105,7 +105,7 @@ export function ProjectOverview({ project }: ProjectOverviewProps) {
         </CardHeader>
         <CardContent className="space-y-2">
           <span className="text-2xl font-semibold">
-            {budget.toLocaleString()}
+            {budget.toLocaleString("en-US")}
           </span>
           <p className="text-xs text-muted-foreground">
             {formatCurrency(budget)}
