@@ -46,6 +46,8 @@ services:
       dockerfile: backend/docker/node/Dockerfile
     command: start-frontend
     user: "${UID:-1000}:${GID:-1000}"
+    environment:
+      - NEXT_PUBLIC_API_URL=/api/v1
     volumes:
       - ./frontend:/app
       - frontend-node-modules:/app/node_modules

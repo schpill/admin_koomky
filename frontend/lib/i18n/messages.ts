@@ -21,7 +21,7 @@ export const messages: Record<Locale, MessageTree> = {
     },
     brand: {
       crm: "Koomky CRM",
-      footer: "Fabrique avec amour {heart} par",
+      footer: "Fabrique avec {heart} par",
     },
     sidebar: {
       dashboard: "Tableau de bord",
