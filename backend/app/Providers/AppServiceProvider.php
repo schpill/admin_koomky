@@ -6,14 +6,20 @@ use App\Listeners\LogAuthEvent;
 use App\Models\Client;
 use App\Models\Contact;
 use App\Models\CreditNote;
+use App\Models\Expense;
 use App\Models\Invoice;
+use App\Models\Lead;
+use App\Models\Payment;
 use App\Models\Project;
 use App\Models\Quote;
 use App\Models\Task;
 use App\Observers\ClientObserver;
 use App\Observers\ContactObserver;
 use App\Observers\CreditNoteObserver;
+use App\Observers\ExpenseObserver;
 use App\Observers\InvoiceObserver;
+use App\Observers\LeadObserver;
+use App\Observers\PaymentObserver;
 use App\Observers\ProjectObserver;
 use App\Observers\QuoteObserver;
 use App\Observers\TaskObserver;
@@ -22,6 +28,7 @@ use App\Services\ExchangeRates\EcbExchangeRatesDriver;
 use App\Services\ExchangeRates\ExchangeRateDriver;
 use App\Services\ExchangeRates\ExchangeRateService;
 use App\Services\ExchangeRates\OpenExchangeRatesDriver;
+use Dedoc\Scramble\Scramble;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
 use Illuminate\Auth\Events\Registered;
@@ -71,5 +78,15 @@ class AppServiceProvider extends ServiceProvider
         Invoice::observe(InvoiceObserver::class);
         Quote::observe(QuoteObserver::class);
         CreditNote::observe(CreditNoteObserver::class);
+        Expense::observe(ExpenseObserver::class);
+        Payment::observe(PaymentObserver::class);
+        Lead::observe(LeadObserver::class);
+
+        // Configure Scramble OpenAPI documentation routes
+        Scramble::configure()
+            ->expose(
+                ui: 'api/docs',
+                document: 'api/docs.json'
+            );
     }
 }

@@ -14,6 +14,13 @@ class LeadConversionController extends Controller
 {
     use ApiResponse;
 
+    protected LeadConversionService $conversionService;
+
+    public function __construct(LeadConversionService $conversionService)
+    {
+        $this->conversionService = $conversionService;
+    }
+
     public function convert(Request $request, string $id): JsonResponse
     {
         /** @var User $user */
@@ -29,10 +36,8 @@ class LeadConversionController extends Controller
             'phone' => 'sometimes|nullable|string',
         ]);
 
-        $service = new LeadConversionService;
-
         try {
-            $client = $service->convert($lead, $request->only(['name', 'email', 'phone']));
+            $client = $this->conversionService->convert($lead, $request->only(['name', 'email', 'phone']));
 
             return $this->success([
                 'client' => $client,

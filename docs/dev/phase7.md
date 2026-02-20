@@ -48,11 +48,11 @@
 | P7-BE-023 | Create WebhookDelivery model (relationships, scopes) | merged | |
 | P7-BE-024 | Create WebhookEndpointController (CRUD + test delivery) | merged | |
 | P7-BE-025 | Create WebhookDispatchService (payload build, HMAC-SHA256 signing, delivery recording) | merged | |
-| P7-BE-026 | Create WebhookDispatchJob (queued, exponential backoff retry, max 5 attempts) | todo | |
+| P7-BE-026 | Create WebhookDispatchJob (queued, exponential backoff retry, max 5 attempts) | done | |
 | P7-BE-027 | Create WebhookDeliveryController (delivery log, manual retry) | merged | |
-| P7-BE-028 | Integrate WebhookDispatchService into all documented application events (14 events) | todo | |
-| P7-BE-029 | Integrate dedoc/scramble to auto-generate OpenAPI 3.1 spec at /api/docs | todo | |
-| P7-BE-030 | Scope-guard middleware: enforce PAT abilities on API routes | todo | |
+| P7-BE-028 | Integrate WebhookDispatchService into all documented application events (14 events) | done | |
+| P7-BE-029 | Integrate dedoc/scramble to auto-generate OpenAPI 3.1 spec at /api/docs | done | |
+| P7-BE-030 | Scope-guard middleware: enforce PAT abilities on API routes | done | |
 
 ### Frontend
 
@@ -61,8 +61,8 @@
 | P7-FE-020 | Create app/settings/api-tokens/page.tsx (manage PATs with one-time token display) | merged | |
 | P7-FE-021 | Create app/settings/webhooks/page.tsx (manage webhook endpoints) | merged | |
 | P7-FE-022 | Create app/settings/webhooks/[id]/deliveries/page.tsx (delivery log with retry) | merged | |
-| P7-FE-023 | Create components/settings/webhook-form.tsx (URL + event checkboxes) | todo | |
-| P7-FE-024 | Create components/settings/api-token-form.tsx (name + scope checkboxes + expiry) | todo | |
+| P7-FE-023 | Create components/settings/webhook-form.tsx (URL + event checkboxes) | done | |
+| P7-FE-024 | Create components/settings/api-token-form.tsx (name + scope checkboxes + expiry) | done | |
 | P7-FE-025 | Add "API & Webhooks" section to settings sidebar | merged | |
 
 ---
@@ -78,16 +78,16 @@
 | P7-BE-042 | Create LeadFactory and LeadActivityFactory | merged | |
 | P7-BE-043 | Create LeadPolicy (user owns lead) | merged | |
 | P7-BE-044 | Create LeadController (CRUD, status transition, position reorder) | merged | |
-| P7-BE-045 | Create StoreLeadRequest (validation: email, phone E.164, probability, value) | todo | |
+| P7-BE-045 | Create StoreLeadRequest (validation: email, phone E.164, probability, value) | done | |
 | P7-BE-046 | Create LeadConversionService (create Client from Lead, link, set converted_at) | merged | |
 | P7-BE-047 | Create LeadConversionController (POST /api/v1/leads/{id}/convert) | merged | |
 | P7-BE-048 | Create LeadPipelineController (GET /api/v1/leads/pipeline — grouped by status) | merged | |
 | P7-BE-049 | Create LeadAnalyticsService (win rate, avg deal, avg time to close, pipeline value) | merged | |
 | P7-BE-050 | Create LeadAnalyticsController (GET /api/v1/leads/analytics) | merged | |
 | P7-BE-051 | Create LeadActivityController (list + create + delete, nested under lead) | merged | |
-| P7-BE-052 | Dispatch webhooks for lead events (lead.created, lead.status_changed, lead.converted) | todo | |
-| P7-BE-053 | Configure Meilisearch index for Lead | todo | |
-| P7-BE-054 | Add leads to DataExportService (GDPR export) | todo | |
+| P7-BE-052 | Dispatch webhooks for lead events (lead.created, lead.status_changed, lead.converted) | done | |
+| P7-BE-053 | Configure Meilisearch index for Lead | done | |
+| P7-BE-054 | Add leads to DataExportService (GDPR export) | done | |
 
 ### Frontend
 
@@ -99,8 +99,8 @@
 | P7-FE-033 | Create app/leads/[id]/page.tsx (detail + activity timeline + status transition + convert button) | merged | |
 | P7-FE-034 | Create app/leads/[id]/edit/page.tsx (edit lead form) | merged | |
 | P7-FE-035 | Create app/leads/analytics/page.tsx (funnel chart, win rate, source breakdown) | merged | |
-| P7-FE-036 | Create components/leads/lead-kanban.tsx (dnd-kit Kanban board) | todo | |
-| P7-FE-037 | Create components/leads/lead-activity-form.tsx (inline activity logger) | todo | |
-| P7-FE-038 | Create components/leads/convert-to-client-dialog.tsx (conversion confirmation) | todo | |
+| P7-FE-036 | Create components/leads/lead-kanban.tsx (dnd-kit Kanban board) | done | |
+| P7-FE-037 | Create components/leads/lead-activity-form.tsx (inline activity logger) | done | |
+| P7-FE-038 | Create components/leads/convert-to-client-dialog.tsx (conversion confirmation) | done | |
 | P7-FE-039 | Add Leads entry to sidebar navigation (above Clients, with pipeline value badge) | merged | |
-| P7-FE-040 | Add pipeline summary widget to dashboard (total value, funnel mini, win rate) | todo | |
+| P7-FE-040 | Add pipeline summary widget to dashboard (total value, funnel mini, win rate) | done | |

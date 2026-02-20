@@ -5,6 +5,7 @@ namespace App\Observers;
 use App\Models\Project;
 use App\Services\ActivityService;
 use App\Services\Calendar\CalendarAutoEventService;
+use App\Services\WebhookDispatchService;
 
 class ProjectObserver
 {
@@ -13,15 +14,13 @@ class ProjectObserver
         app(CalendarAutoEventService::class)->syncProjectDeadline($project);
 
         $client = $project->client;
-        if (! $client) {
-            return;
+        if ($client) {
+            ActivityService::log($client, "Project created: {$project->name}", [
+                'project_id' => $project->id,
+                'project_reference' => $project->reference,
+                'status' => $project->status,
+            ]);
         }
-
-        ActivityService::log($client, "Project created: {$project->name}", [
-            'project_id' => $project->id,
-            'project_reference' => $project->reference,
-            'status' => $project->status,
-        ]);
     }
 
     public function updated(Project $project): void
@@ -35,24 +34,58 @@ class ProjectObserver
         }
 
         $client = $project->client;
-        if (! $client) {
-            return;
+        $previousStatus = (string) $project->getOriginal('status');
+        $newStatus = (string) $project->status;
+
+        if ($client) {
+            ActivityService::log($client, "Project status changed: {$project->name}", [
+                'project_id' => $project->id,
+                'from' => $previousStatus,
+                'to' => $newStatus,
+            ]);
+
+            if ($newStatus === 'completed') {
+                ActivityService::log($client, "Project completed: {$project->name}", [
+                    'project_id' => $project->id,
+                    'project_reference' => $project->reference,
+                ]);
+            }
         }
 
-        $previousStatus = $project->getOriginal('status');
-        $newStatus = $project->status;
+        // Dispatch status-specific webhook
+        $webhookEvent = match ($newStatus) {
+            'completed' => 'project.completed',
+            'cancelled' => 'project.cancelled',
+            default => null,
+        };
 
-        ActivityService::log($client, "Project status changed: {$project->name}", [
-            'project_id' => $project->id,
-            'from' => $previousStatus,
-            'to' => $newStatus,
-        ]);
-
-        if ($newStatus === 'completed') {
-            ActivityService::log($client, "Project completed: {$project->name}", [
-                'project_id' => $project->id,
-                'project_reference' => $project->reference,
+        if ($webhookEvent !== null) {
+            $this->dispatchWebhook($project, $webhookEvent, [
+                'previous_status' => $previousStatus,
             ]);
         }
+    }
+
+    /**
+     * Dispatch a webhook for the project event.
+     *
+     * @param  array<string, mixed>  $extraData
+     */
+    private function dispatchWebhook(Project $project, string $event, array $extraData = []): void
+    {
+        $userId = $project->user_id;
+
+        $data = array_merge([
+            'id' => $project->id,
+            'reference' => $project->reference,
+            'name' => $project->name,
+            'status' => $project->status,
+            'client_id' => $project->client_id,
+            'deadline' => $project->deadline?->toDateString(),
+        ], $extraData);
+
+        /** @var WebhookDispatchService $service */
+        $service = app(WebhookDispatchService::class);
+        $service->dispatch($event, $data, $userId);
     }
 }

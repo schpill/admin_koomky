@@ -9,6 +9,7 @@ import { UpcomingDeadlinesWidget } from "@/components/dashboard/upcoming-deadlin
 import { CampaignSummaryWidget } from "@/components/dashboard/campaign-summary-widget";
 import { RecurringInvoicesWidget } from "@/components/dashboard/recurring-invoices-widget";
 import { CalendarWidget } from "@/components/dashboard/calendar-widget";
+import { PipelineSummaryWidget } from "@/components/dashboard/pipeline-summary-widget";
 import { CurrencyAmount } from "@/components/shared/currency-amount";
 import { useDashboardStore } from "@/lib/stores/dashboard";
 import { useCalendarStore } from "@/lib/stores/calendar";
@@ -216,20 +217,22 @@ export default function DashboardPage() {
         data={stats?.revenue_trend || []}
       />
 
-      <CampaignSummaryWidget
-        activeCampaigns={stats?.active_campaigns_count || 0}
-        averageOpenRate={Number(stats?.average_campaign_open_rate || 0)}
-        averageClickRate={Number(stats?.average_campaign_click_rate || 0)}
-      />
-
-      <RecurringInvoicesWidget
-        activeCount={stats?.recurring_profiles_active_count || 0}
-        estimatedMonthlyRevenue={Number(
-          stats?.recurring_estimated_revenue_month || 0
-        )}
-        currency={baseCurrency}
-        upcomingProfiles={stats?.recurring_upcoming_due_profiles || []}
-      />
+      <div className="grid gap-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
+        <PipelineSummaryWidget />
+        <CampaignSummaryWidget
+          activeCampaigns={stats?.active_campaigns_count || 0}
+          averageOpenRate={Number(stats?.average_campaign_open_rate || 0)}
+          averageClickRate={Number(stats?.average_campaign_click_rate || 0)}
+        />
+        <RecurringInvoicesWidget
+          activeCount={stats?.recurring_profiles_active_count || 0}
+          estimatedMonthlyRevenue={Number(
+            stats?.recurring_estimated_revenue_month || 0
+          )}
+          currency={baseCurrency}
+          upcomingProfiles={stats?.recurring_upcoming_due_profiles || []}
+        />
+      </div>
 
       <CalendarWidget
         events={(calendarEvents || []).map((event) => ({
