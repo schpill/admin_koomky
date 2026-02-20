@@ -135,12 +135,12 @@ class FecExportService
 
         foreach ($invoices as $invoice) {
             $client = $invoice->client;
-            $clientAuxNum = $auxPrefix.($client?->id ?? '');
-            $clientName = $client?->name ?? 'Client inconnu';
+            $clientAuxNum = $auxPrefix.($client->id ?? '');
+            $clientName = $client->name ?? 'Client inconnu';
             $pieceRef = $invoice->number;
-            $pieceDate = $invoice->issue_date?->format('Ymd') ?? '';
-            $ecritureDate = $invoice->issue_date?->format('Ymd') ?? '';
-            $validDate = $invoice->issue_date?->format('Ymd') ?? '';
+            $pieceDate = $invoice->issue_date->format('Ymd');
+            $ecritureDate = $invoice->issue_date->format('Ymd');
+            $validDate = $invoice->issue_date->format('Ymd');
 
             $total = (float) ($invoice->base_currency_total ?? $invoice->total);
             $taxAmount = (float) $invoice->tax_amount;
@@ -225,12 +225,12 @@ class FecExportService
 
         foreach ($creditNotes as $creditNote) {
             $client = $creditNote->client;
-            $clientAuxNum = $auxPrefix.($client?->id ?? '');
-            $clientName = $client?->name ?? 'Client inconnu';
+            $clientAuxNum = $auxPrefix.($client->id ?? '');
+            $clientName = $client->name ?? 'Client inconnu';
             $pieceRef = $creditNote->number;
-            $pieceDate = $creditNote->issue_date?->format('Ymd') ?? '';
-            $ecritureDate = $creditNote->issue_date?->format('Ymd') ?? '';
-            $validDate = $creditNote->issue_date?->format('Ymd') ?? '';
+            $pieceDate = $creditNote->issue_date->format('Ymd');
+            $ecritureDate = $creditNote->issue_date->format('Ymd');
+            $validDate = $creditNote->issue_date->format('Ymd');
 
             $total = (float) ($creditNote->base_currency_total ?? $creditNote->total);
             $taxAmount = (float) $creditNote->tax_amount;
@@ -320,13 +320,13 @@ class FecExportService
                 continue;
             }
             $client = $invoice->client;
-            $clientAuxNum = $auxPrefix.($client?->id ?? '');
-            $clientName = $client?->name ?? 'Client inconnu';
+            $clientAuxNum = $auxPrefix.($client->id ?? '');
+            $clientName = $client->name ?? 'Client inconnu';
             $invoiceNumber = $invoice->number ?? 'N/A';
             $pieceRef = $payment->reference ?? 'PMT-'.$payment->id;
-            $pieceDate = $payment->payment_date?->format('Ymd') ?? '';
-            $ecritureDate = $payment->payment_date?->format('Ymd') ?? '';
-            $validDate = $payment->payment_date?->format('Ymd') ?? '';
+            $pieceDate = $payment->payment_date->format('Ymd');
+            $ecritureDate = $payment->payment_date->format('Ymd');
+            $validDate = $payment->payment_date->format('Ymd');
 
             $amount = (float) $payment->amount;
 
@@ -389,9 +389,9 @@ class FecExportService
         foreach ($expenses as $expense) {
             $vendor = $expense->vendor ?? 'Fournisseur';
             $pieceRef = $expense->reference ?? 'EXP-'.$expense->id;
-            $pieceDate = $expense->date?->format('Ymd') ?? '';
-            $ecritureDate = $expense->date?->format('Ymd') ?? '';
-            $validDate = $expense->date?->format('Ymd') ?? '';
+            $pieceDate = $expense->date->format('Ymd');
+            $ecritureDate = $expense->date->format('Ymd');
+            $validDate = $expense->date->format('Ymd');
 
             $amount = (float) ($expense->base_currency_amount ?? $expense->amount);
             $taxAmount = (float) $expense->tax_amount;
