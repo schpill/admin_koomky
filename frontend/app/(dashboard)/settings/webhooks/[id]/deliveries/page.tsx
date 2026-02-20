@@ -30,6 +30,7 @@ export default function WebhookDeliveriesPage() {
 
   useEffect(() => {
     fetchDeliveries();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [webhookId]);
 
   const fetchDeliveries = async () => {

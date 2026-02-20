@@ -8,6 +8,8 @@ import { ArrowLeft, Edit, Trash2, UserPlus, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { CurrencyAmount } from "@/components/shared/currency-amount";
 import { useLeadStore, LeadActivity } from "@/lib/stores/leads";
 import { useI18n } from "@/components/providers/i18n-provider";
@@ -61,6 +63,7 @@ export default function LeadDetailPage() {
   useEffect(() => {
     fetchLead(leadId);
     loadActivities();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [leadId]);
 
   const loadActivities = async () => {

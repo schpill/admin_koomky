@@ -31,6 +31,7 @@ export default function EditLeadPage() {
 
   useEffect(() => {
     fetchLead(leadId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [leadId]);
 
   useEffect(() => {
