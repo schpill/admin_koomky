@@ -123,12 +123,10 @@ export const useLeadStore = create<LeadState>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const response = await apiClient.get<{
-        data: {
-          data: Lead[];
-          current_page: number;
-          last_page: number;
-          total: number;
-        };
+        data: Lead[];
+        current_page: number;
+        last_page: number;
+        total: number;
       }>("/leads", { params });
       const payload = response.data || {
         data: [],
@@ -270,11 +268,9 @@ export const useLeadStore = create<LeadState>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const response = await apiClient.get<{
-        data: {
-          columns: Record<string, Lead[]>;
-          column_stats: Record<string, { count: number; total_value: number }>;
-          total_pipeline_value: number;
-        };
+        columns: Record<string, Lead[]>;
+        column_stats: Record<string, { count: number; total_value: number }>;
+        total_pipeline_value: number;
       }>("/leads/pipeline");
       set({ pipeline: response.data, isLoading: false });
     } catch (error) {
@@ -296,7 +292,7 @@ export const useLeadStore = create<LeadState>((set, get) => ({
 
   fetchActivities: async (leadId) => {
     try {
-      const response = await apiClient.get<{ data: { data: LeadActivity[] } }>(
+      const response = await apiClient.get<{ data: LeadActivity[] }>(
         `/leads/${leadId}/activities`
       );
       const activities = response.data?.data || [];
