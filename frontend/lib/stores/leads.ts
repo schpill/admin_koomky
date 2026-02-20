@@ -130,7 +130,12 @@ export const useLeadStore = create<LeadState>((set, get) => ({
           total: number;
         };
       }>("/leads", { params });
-      const payload = response.data || { data: [], current_page: 1, last_page: 1, total: 0 };
+      const payload = response.data || {
+        data: [],
+        current_page: 1,
+        last_page: 1,
+        total: 0,
+      };
       set({
         leads: payload.data || [],
         pagination: {

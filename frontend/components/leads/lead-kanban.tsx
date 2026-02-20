@@ -95,7 +95,9 @@ export function LeadKanban({
         await updateStatus(draggedLead.id, newStatus);
       } catch (error) {
         toast.error(
-          error instanceof Error ? error.message : "Failed to update lead status"
+          error instanceof Error
+            ? error.message
+            : "Failed to update lead status"
         );
       }
 

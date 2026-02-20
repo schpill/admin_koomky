@@ -261,7 +261,9 @@ describe("LeadKanban", () => {
       const onLeadClick = vi.fn();
       render(<LeadKanban onLeadClick={onLeadClick} />);
 
-      const card = screen.getByText("Acme Corp").closest("[draggable]") as HTMLElement;
+      const card = screen
+        .getByText("Acme Corp")
+        .closest("[draggable]") as HTMLElement;
       const contactedColumn = screen
         .getByText("Contacted")
         .closest("div[class]") as HTMLElement;
@@ -278,7 +280,9 @@ describe("LeadKanban", () => {
     it("does not call updateStatus when dropped in the same column", async () => {
       render(<LeadKanban />);
 
-      const card = screen.getByText("Acme Corp").closest("[draggable]") as HTMLElement;
+      const card = screen
+        .getByText("Acme Corp")
+        .closest("[draggable]") as HTMLElement;
       const newColumnHeader = screen.getByText("New");
       const newColumn = newColumnHeader.closest("div[class]") as HTMLElement;
 
@@ -294,7 +298,9 @@ describe("LeadKanban", () => {
     it("clears dragged state after drag ends", () => {
       render(<LeadKanban />);
 
-      const card = screen.getByText("Acme Corp").closest("[draggable]") as HTMLElement;
+      const card = screen
+        .getByText("Acme Corp")
+        .closest("[draggable]") as HTMLElement;
 
       fireEvent.dragStart(card);
       fireEvent.dragEnd(card);
@@ -321,7 +327,10 @@ describe("LeadKanban", () => {
       render(<LeadKanban onLeadClick={onLeadClick} />);
 
       const link = screen.getByRole("link", { name: "Acme Corp" });
-      const clickEvent = new MouseEvent("click", { bubbles: true, cancelable: true });
+      const clickEvent = new MouseEvent("click", {
+        bubbles: true,
+        cancelable: true,
+      });
       link.dispatchEvent(clickEvent);
 
       expect(onLeadClick).toHaveBeenCalled();

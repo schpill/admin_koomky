@@ -101,7 +101,9 @@ describe("useLeadStore", () => {
         data: { data: [], current_page: 1, last_page: 1, total: 0 },
       });
 
-      await useLeadStore.getState().fetchLeads({ status: "qualified", source: "website" });
+      await useLeadStore
+        .getState()
+        .fetchLeads({ status: "qualified", source: "website" });
 
       expect(apiClient.get).toHaveBeenCalledWith("/leads", {
         params: { status: "qualified", source: "website" },
@@ -153,9 +155,9 @@ describe("useLeadStore", () => {
         new Error("Lead not found")
       );
 
-      await expect(useLeadStore.getState().fetchLead("lead_999")).rejects.toThrow(
-        "Lead not found"
-      );
+      await expect(
+        useLeadStore.getState().fetchLead("lead_999")
+      ).rejects.toThrow("Lead not found");
       expect(useLeadStore.getState().error).toBe("Lead not found");
     });
   });
@@ -212,7 +214,9 @@ describe("useLeadStore", () => {
 
       expect(result?.notes).toBe("Updated via test");
       expect(useLeadStore.getState().leads[0].notes).toBe("Updated via test");
-      expect(useLeadStore.getState().currentLead?.notes).toBe("Updated via test");
+      expect(useLeadStore.getState().currentLead?.notes).toBe(
+        "Updated via test"
+      );
     });
 
     it("does not update currentLead when id does not match", async () => {
@@ -335,7 +339,9 @@ describe("useLeadStore", () => {
       await useLeadStore.getState().fetchPipeline();
 
       expect(useLeadStore.getState().pipeline?.column_stats.new.count).toBe(2);
-      expect(useLeadStore.getState().pipeline?.column_stats.new.total_value).toBe(10000);
+      expect(
+        useLeadStore.getState().pipeline?.column_stats.new.total_value
+      ).toBe(10000);
     });
 
     it("records error when pipeline fetch fails", async () => {
@@ -414,7 +420,9 @@ describe("useLeadStore", () => {
         data: qualifiedLead,
       });
 
-      const result = await useLeadStore.getState().updateStatus("lead_1", "qualified");
+      const result = await useLeadStore
+        .getState()
+        .updateStatus("lead_1", "qualified");
 
       expect(result?.status).toBe("qualified");
       expect(useLeadStore.getState().leads[0].status).toBe("qualified");
@@ -433,11 +441,9 @@ describe("useLeadStore", () => {
         data: lostLead,
       });
 
-      await useLeadStore.getState().updateStatus(
-        "lead_1",
-        "lost",
-        "Budget constraints"
-      );
+      await useLeadStore
+        .getState()
+        .updateStatus("lead_1", "lost", "Budget constraints");
 
       expect(apiClient.patch).toHaveBeenCalledWith("/leads/lead_1/status", {
         status: "lost",
@@ -531,7 +537,10 @@ describe("useLeadStore", () => {
     it("passes overrides to convert endpoint", async () => {
       const wonLead = { ...baseLead, status: "won" as const };
       (apiClient.post as ReturnType<typeof vi.fn>).mockResolvedValue({
-        data: { client: { id: "client_2", name: "Custom Name" }, lead: wonLead },
+        data: {
+          client: { id: "client_2", name: "Custom Name" },
+          lead: wonLead,
+        },
       });
 
       await useLeadStore.getState().convertToClient("lead_1", {
@@ -562,7 +571,9 @@ describe("useLeadStore", () => {
         data: { data: [baseActivity] },
       });
 
-      const activities = await useLeadStore.getState().fetchActivities("lead_1");
+      const activities = await useLeadStore
+        .getState()
+        .fetchActivities("lead_1");
 
       expect(activities).toHaveLength(1);
       expect(activities[0].id).toBe("act_1");
@@ -574,7 +585,9 @@ describe("useLeadStore", () => {
         data: {},
       });
 
-      const activities = await useLeadStore.getState().fetchActivities("lead_1");
+      const activities = await useLeadStore
+        .getState()
+        .fetchActivities("lead_1");
 
       expect(activities).toEqual([]);
     });
@@ -601,10 +614,10 @@ describe("useLeadStore", () => {
 
       expect(activity?.id).toBe("act_1");
       expect(activity?.type).toBe("call");
-      expect(apiClient.post).toHaveBeenCalledWith(
-        "/leads/lead_1/activities",
-        { type: "call", content: "Initial call with prospect" }
-      );
+      expect(apiClient.post).toHaveBeenCalledWith("/leads/lead_1/activities", {
+        type: "call",
+        content: "Initial call with prospect",
+      });
     });
 
     it("throws when activity creation fails", async () => {
