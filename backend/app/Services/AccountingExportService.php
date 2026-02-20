@@ -138,11 +138,11 @@ class AccountingExportService
                 'piece_ref' => $invoice->number,
                 'account_code' => '411000',
                 'account_name' => 'Clients',
-                'description' => 'Facture '.$invoice->number.' - '.($invoice->client?->name ?? 'Client'),
+                'description' => 'Facture '.$invoice->number.' - '.($invoice->client->name ?? 'Client'),
                 'debit' => $total,
                 'credit' => 0,
                 'currency' => $invoice->currency,
-                'client_ref' => $invoice->client?->id,
+                'client_ref' => $invoice->client->id ?? null,
             ]);
 
             // Revenue credit
@@ -204,11 +204,11 @@ class AccountingExportService
                 'piece_ref' => $creditNote->number,
                 'account_code' => '411000',
                 'account_name' => 'Clients',
-                'description' => 'Avoir '.$creditNote->number.' - '.($creditNote->client?->name ?? 'Client'),
+                'description' => 'Avoir '.$creditNote->number.' - '.($creditNote->client->name ?? 'Client'),
                 'debit' => 0,
                 'credit' => $total,
                 'currency' => $creditNote->currency,
-                'client_ref' => $creditNote->client?->id,
+                'client_ref' => $creditNote->client->id ?? null,
             ]);
 
             // Revenue debit (reverse)
@@ -261,8 +261,11 @@ class AccountingExportService
             ->get();
 
         foreach ($payments as $payment) {
-            $amount = (float) $payment->amount;
             $invoice = $payment->invoice;
+            if (! $invoice) {
+                continue;
+            }
+            $amount = (float) $payment->amount;
 
             // Bank debit
             $entries->push([
@@ -283,11 +286,11 @@ class AccountingExportService
                 'piece_ref' => $payment->reference ?? 'PMT-'.$payment->id,
                 'account_code' => '411000',
                 'account_name' => 'Clients',
-                'description' => 'Encaissement '.$invoice->number.' - '.($invoice->client?->name ?? 'Client'),
+                'description' => 'Encaissement '.$invoice->number.' - '.($invoice->client->name ?? 'Client'),
                 'debit' => 0,
                 'credit' => $amount,
                 'currency' => $invoice->currency ?? 'EUR',
-                'client_ref' => $invoice->client?->id,
+                'client_ref' => $invoice->client->id ?? null,
             ]);
         }
 
@@ -315,12 +318,15 @@ class AccountingExportService
             $taxAmount = (float) $expense->tax_amount;
             $chargeAmount = $amount - $taxAmount;
 
+            $categoryAccountCode = $expense->category->account_code ?? '622600';
+            $categoryName = $expense->category->name ?? 'Charges diverses';
+
             // Charge debit
             $entries->push([
                 'date' => $expense->date->format('Y-m-d'),
                 'piece_ref' => $expense->reference ?? 'EXP-'.$expense->id,
-                'account_code' => $expense->category?->account_code ?? '622600',
-                'account_name' => $expense->category?->name ?? 'Charges diverses',
+                'account_code' => $categoryAccountCode,
+                'account_name' => $categoryName,
                 'description' => $expense->description,
                 'debit' => $chargeAmount,
                 'credit' => 0,
