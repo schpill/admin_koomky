@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Api\V1\Accounting;
 
 use App\Http\Controllers\Controller;
@@ -14,6 +16,8 @@ class VatDeclarationController extends Controller
 {
     use ApiResponse;
 
+    public function __construct(private readonly VatDeclarationService $vatDeclarationService) {}
+
     public function index(Request $request): JsonResponse
     {
         $request->validate([
@@ -24,8 +28,7 @@ class VatDeclarationController extends Controller
         /** @var User $user */
         $user = $request->user();
 
-        $service = new VatDeclarationService;
-        $report = $service->build($user, [
+        $report = $this->vatDeclarationService->build($user, [
             'year' => (int) $request->year,
             'period_type' => $request->period_type ?? 'monthly',
         ]);
@@ -43,13 +46,12 @@ class VatDeclarationController extends Controller
         /** @var User $user */
         $user = $request->user();
 
-        $service = new VatDeclarationService;
-        $report = $service->build($user, [
+        $report = $this->vatDeclarationService->build($user, [
             'year' => (int) $request->year,
             'period_type' => $request->period_type ?? 'monthly',
         ]);
 
-        $csv = $service->toCsv($report);
+        $csv = $this->vatDeclarationService->toCsv($report);
 
         $headers = [
             'Content-Type' => 'text/csv; charset=UTF-8',

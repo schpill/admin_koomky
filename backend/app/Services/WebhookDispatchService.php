@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
+use App\Jobs\WebhookDispatchJob;
 use App\Models\WebhookDelivery;
 use App\Models\WebhookEndpoint;
 use Illuminate\Support\Facades\Http;
@@ -62,8 +65,8 @@ class WebhookDispatchService
             $delivery->next_retry_at = $delivery->calculateNextRetry();
             $delivery->save();
 
-            // Schedule retry job (simplified - in production use queue)
-            // WebhookDispatchJob::dispatch($delivery->id)->delay($delivery->next_retry_at);
+            // Schedule retry job
+            WebhookDispatchJob::dispatch($delivery->id)->delay($delivery->next_retry_at);
         }
 
         return $delivery;
@@ -162,12 +165,44 @@ class WebhookDispatchService
     }
 
     /**
+     * Validate that a webhook URL is safe to call (SSRF prevention).
+     *
+     * @throws \RuntimeException if the URL scheme is not HTTPS or resolves to a private/reserved IP
+     */
+    private function validateWebhookUrl(string $url): void
+    {
+        $scheme = parse_url($url, PHP_URL_SCHEME);
+        if ($scheme !== 'https') {
+            throw new \RuntimeException('Webhook URL must use HTTPS');
+        }
+
+        $host = parse_url($url, PHP_URL_HOST);
+        if (! is_string($host) || $host === '') {
+            throw new \RuntimeException('Webhook URL has an invalid host');
+        }
+
+        $ip = gethostbyname($host);
+
+        // If gethostbyname returns the hostname unchanged, DNS resolution failed.
+        // There is no SSRF risk when the host cannot be resolved; the HTTP client
+        // will surface a connection error instead.
+        if ($ip === $host) {
+            return;
+        }
+
+        if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) === false) {
+            throw new \RuntimeException('Webhook URL resolves to a private or reserved IP address');
+        }
+    }
+
+    /**
      * Send HTTP POST request to webhook endpoint.
      *
      * @param  array<string, mixed>|string  $payload
      */
     private function sendRequest(string $url, array|string $payload, string $signature): \Illuminate\Http\Client\Response
     {
+        $this->validateWebhookUrl($url);
         $payloadString = is_array($payload) ? json_encode($payload, JSON_THROW_ON_ERROR) : $payload;
         $payloadArray = is_array($payload) ? $payload : json_decode($payload, true, 512, JSON_THROW_ON_ERROR);
         $eventName = is_array($payloadArray) && isset($payloadArray['event'])

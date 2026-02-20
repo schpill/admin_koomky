@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -23,27 +23,30 @@ export default function AccountingExportPage() {
   const [columns, setColumns] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const fetchColumns = async () => {
+  const fetchColumns = async (targetFormat: string = format) => {
     try {
       const response = await apiClient.get<{
         data: Record<string, { name: string; columns: string[] }>;
       }>("/accounting/export/formats");
       const formats = response.data?.data || {};
-      if (formats[format]) {
-        setColumns(formats[format].columns);
+      if (formats[targetFormat]) {
+        setColumns(formats[targetFormat].columns);
       }
     } catch (error) {
-      console.error("Failed to fetch columns:", error);
+      toast.error(
+        error instanceof Error ? error.message : "Failed to fetch columns"
+      );
     }
   };
 
-  useState(() => {
+  useEffect(() => {
     fetchColumns();
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleFormatChange = (newFormat: string) => {
     setFormat(newFormat);
-    fetchColumns();
+    fetchColumns(newFormat);
   };
 
   const handleExport = async () => {

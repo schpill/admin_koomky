@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Api\V1\Accounting;
 
 use App\Http\Controllers\Controller;
@@ -13,6 +15,8 @@ class FiscalYearSummaryController extends Controller
 {
     use ApiResponse;
 
+    public function __construct(private readonly FiscalYearSummaryService $fiscalYearSummaryService) {}
+
     public function index(Request $request): JsonResponse
     {
         $request->validate([
@@ -24,8 +28,7 @@ class FiscalYearSummaryController extends Controller
 
         $year = (int) ($request->year ?? now()->year);
 
-        $service = new FiscalYearSummaryService;
-        $summary = $service->build($user, ['year' => $year]);
+        $summary = $this->fiscalYearSummaryService->build($user, ['year' => $year]);
 
         return $this->success($summary, 'Fiscal year summary retrieved successfully');
     }

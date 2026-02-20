@@ -401,29 +401,29 @@
 
 | #  | Criterion                                                                                    | Validated |
 |----|----------------------------------------------------------------------------------------------|-----------|
-| 1  | FEC export generates a valid semicolon-delimited UTF-8 file for any fiscal year             | [ ]       |
-| 2  | FEC entries balance (debit = credit) for all transaction types                              | [ ]       |
-| 3  | VAT declaration report shows correct TVA collectée, déductible, and net due                | [ ]       |
-| 4  | VAT report exports as PDF and CSV                                                           | [ ]       |
-| 5  | Pennylane-compatible CSV export functional for invoices and expenses                       | [ ]       |
-| 6  | Fiscal year closing summary shows correct revenue, expenses, profit, and TVA position       | [ ]       |
-| 7  | Personal Access Tokens: create with scopes, authenticate API calls, revoke                 | [ ]       |
-| 8  | Scope enforcement: read-only token cannot POST/PUT/DELETE                                   | [ ]       |
-| 9  | Outbound webhook endpoints: register, update, delete, test delivery                        | [ ]       |
-| 10 | Webhook payloads include correct HMAC-SHA256 signature                                     | [ ]       |
-| 11 | Webhook events fired for all 14 documented event types                                     | [ ]       |
-| 12 | Webhook retry with exponential backoff, max 5 attempts, delivery log updated               | [ ]       |
-| 13 | Manual retry from delivery log functional                                                   | [ ]       |
-| 14 | OpenAPI 3.1 spec accessible at /api/docs with all authenticated endpoints documented        | [ ]       |
-| 15 | Lead pipeline: full CRUD, status transitions, lost_reason enforcement                      | [ ]       |
-| 16 | Lead Kanban view renders with drag-and-drop status update                                  | [ ]       |
-| 17 | Lead-to-client conversion pre-fills client form and links the lead                         | [ ]       |
-| 18 | Pipeline analytics: correct win rate, avg deal value, avg time to close                    | [ ]       |
-| 19 | Leads indexed in Meilisearch and searchable via global search                              | [ ]       |
-| 20 | Leads included in GDPR data export                                                         | [ ]       |
-| 21 | Dashboard updated with pipeline summary widget                                              | [ ]       |
-| 22 | Back-end test coverage >= 80%                                                               | [ ]       |
-| 23 | Front-end test coverage >= 80%                                                              | [ ]       |
+| 1  | FEC export generates a valid semicolon-delimited UTF-8 file for any fiscal year             | [x]       |
+| 2  | FEC entries balance (debit = credit) for all transaction types                              | [x]       |
+| 3  | VAT declaration report shows correct TVA collectée, déductible, and net due                | [x]       |
+| 4  | VAT report exports as PDF and CSV                                                           | [x]       |
+| 5  | Pennylane-compatible CSV export functional for invoices and expenses                       | [x]       |
+| 6  | Fiscal year closing summary shows correct revenue, expenses, profit, and TVA position       | [x]       |
+| 7  | Personal Access Tokens: create with scopes, authenticate API calls, revoke                 | [x]       |
+| 8  | Scope enforcement: read-only token cannot POST/PUT/DELETE                                   | [x]       |
+| 9  | Outbound webhook endpoints: register, update, delete, test delivery                        | [x]       |
+| 10 | Webhook payloads include correct HMAC-SHA256 signature                                     | [x]       |
+| 11 | Webhook events fired for all 14 documented event types                                     | [x]       |
+| 12 | Webhook retry with exponential backoff, max 5 attempts, delivery log updated               | [x]       |
+| 13 | Manual retry from delivery log functional                                                   | [x]       |
+| 14 | OpenAPI 3.1 spec accessible at /api/docs with all authenticated endpoints documented        | [x]       |
+| 15 | Lead pipeline: full CRUD, status transitions, lost_reason enforcement                      | [x]       |
+| 16 | Lead Kanban view renders with drag-and-drop status update                                  | [x]       |
+| 17 | Lead-to-client conversion pre-fills client form and links the lead                         | [x]       |
+| 18 | Pipeline analytics: correct win rate, avg deal value, avg time to close                    | [x]       |
+| 19 | Leads indexed in Meilisearch and searchable via global search                              | [x]       |
+| 20 | Leads included in GDPR data export                                                         | [x]       |
+| 21 | Dashboard updated with pipeline summary widget                                              | [x]       |
+| 22 | Back-end test coverage >= 80%                                                               | [x]       |
+| 23 | Front-end test coverage >= 80%                                                              | [x]       |
 | 24 | CI pipeline fully green on `main`                                                           | [ ]       |
 | 25 | Version tagged as `v1.3.0` on GitHub                                                        | [ ]       |
 

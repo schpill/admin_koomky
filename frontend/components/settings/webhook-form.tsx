@@ -10,29 +10,12 @@ import { Label } from "@/components/ui/label";
 import { Loader2, RefreshCw } from "lucide-react";
 import { useI18n } from "@/components/providers/i18n-provider";
 import { cn } from "@/lib/utils";
+import {
+  WEBHOOK_EVENTS,
+  type WebhookEvent,
+} from "@/lib/constants/webhook-events";
 
-export const WEBHOOK_EVENTS = [
-  "invoice.created",
-  "invoice.sent",
-  "invoice.paid",
-  "invoice.overdue",
-  "invoice.cancelled",
-  "quote.sent",
-  "quote.accepted",
-  "quote.rejected",
-  "quote.expired",
-  "expense.created",
-  "expense.updated",
-  "expense.deleted",
-  "project.completed",
-  "project.cancelled",
-  "payment.received",
-  "lead.created",
-  "lead.status_changed",
-  "lead.converted",
-] as const;
-
-export type WebhookEvent = (typeof WEBHOOK_EVENTS)[number];
+export { WEBHOOK_EVENTS, type WebhookEvent };
 
 export type WebhookFormData = {
   name: string;
@@ -51,13 +34,9 @@ interface WebhookFormProps {
 }
 
 function generateSecret(): string {
-  const chars =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  let result = "";
-  for (let i = 0; i < 32; i++) {
-    result += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return result;
+  const array = new Uint8Array(32);
+  crypto.getRandomValues(array);
+  return Array.from(array, (b) => b.toString(16).padStart(2, "0")).join("");
 }
 
 export function WebhookForm({

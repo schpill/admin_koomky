@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/select";
 import { useLeadStore, LeadActivity } from "@/lib/stores/leads";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 const ACTIVITY_TYPES: Array<{
   value: LeadActivity["type"];
@@ -93,7 +94,9 @@ export function LeadActivityForm({
         onSuccess?.(activity);
       }
     } catch (error) {
-      console.error("Failed to create activity:", error);
+      toast.error(
+        error instanceof Error ? error.message : "Failed to create activity"
+      );
     } finally {
       setIsSubmitting(false);
     }

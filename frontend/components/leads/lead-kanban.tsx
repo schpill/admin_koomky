@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { CurrencyAmount } from "@/components/shared/currency-amount";
 import { useLeadStore, Lead } from "@/lib/stores/leads";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 const COLUMN_ORDER: Lead["status"][] = [
   "new",
@@ -93,7 +94,11 @@ export function LeadKanban({
       try {
         await updateStatus(draggedLead.id, newStatus);
       } catch (error) {
-        console.error("Failed to update lead status:", error);
+        toast.error(
+          error instanceof Error
+            ? error.message
+            : "Failed to update lead status"
+        );
       }
 
       setDraggedLead(null);

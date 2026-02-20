@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -29,19 +29,18 @@ interface VatReport {
   };
 }
 
+const currentYear = new Date().getFullYear();
+const years = Array.from({ length: 5 }, (_, i) => currentYear - i);
+
 export default function VatDeclarationPage() {
   const [report, setReport] = useState<VatReport | null>(null);
-  const [year, setYear] = useState(new Date().getFullYear());
+  const [year, setYear] = useState(currentYear);
   const [periodType, setPeriodType] = useState<"monthly" | "quarterly">(
     "monthly"
   );
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    fetchReport();
-  }, [year, periodType]);
-
-  const fetchReport = async () => {
+  const fetchReport = useCallback(async () => {
     setIsLoading(true);
     try {
       const response = await apiClient.get<{ data: VatReport }>(
@@ -56,7 +55,11 @@ export default function VatDeclarationPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [year, periodType]);
+
+  useEffect(() => {
+    fetchReport();
+  }, [fetchReport]);
 
   const handleExportCsv = async () => {
     const accessToken = useAuthStore.getState().accessToken;
@@ -120,7 +123,7 @@ export default function VatDeclarationPage() {
             value={year}
             onChange={(e) => setYear(parseInt(e.target.value))}
           >
-            {[2024, 2023, 2022, 2021].map((y) => (
+            {years.map((y) => (
               <option key={y} value={y}>
                 {y}
               </option>

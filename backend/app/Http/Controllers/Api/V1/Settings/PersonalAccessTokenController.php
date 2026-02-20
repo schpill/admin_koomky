@@ -73,6 +73,8 @@ class PersonalAccessTokenController extends Controller
             ['name' => 'read:leads', 'description' => 'Read lead information'],
             ['name' => 'write:leads', 'description' => 'Create, update, and delete leads'],
             ['name' => 'read:reports', 'description' => 'Read reports and analytics'],
+            ['name' => 'read:quotes', 'description' => 'Read quotes'],
+            ['name' => 'write:quotes', 'description' => 'Create, update, and delete quotes'],
         ];
 
         return $this->success($scopes, 'Available scopes retrieved successfully');
