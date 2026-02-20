@@ -12,6 +12,23 @@ Koomky is a self-hosted Freelance CRM built as a monorepo:
 
 ## Current Implementation Snapshot
 
+- **Phase 7 is in progress** — PR #17 (`feat/phase7-accounting-api-leads`) merged to `main` on 2026-02-20.
+- **Phase 7 scope delivered so far** (~85% complete):
+  - **Sprint 24 — Accounting (100% backend + frontend pages)**: FecExportService, VatDeclarationService, AccountingExportService, FiscalYearSummaryService, AccountingSettingsController + all 5 accounting pages + sidebar entry
+  - **Sprint 25 — Public API & Webhooks (~70%)**: PersonalAccessTokenController, WebhookEndpoint/WebhookDelivery models, WebhookEndpointController, WebhookDispatchService, WebhookDeliveryController + settings pages (api-tokens, webhooks, deliveries) + sidebar entry
+  - **Sprint 26 — Lead Pipeline (~75%)**: Lead/LeadActivity models, LeadController, LeadConversionService, LeadPipelineController, LeadAnalyticsService, LeadActivityController, LeadPolicy, factories + all leads pages + leads Zustand store + sidebar entry
+- **Phase 7 remaining tasks** (see `docs/dev/phase7.md`):
+  - P7-BE-026: `WebhookDispatchJob` (queued delivery with exponential backoff retry) — **missing**
+  - P7-BE-028: Webhook dispatch integration for all 14 application events — **not verified**
+  - P7-BE-029: OpenAPI 3.1 spec via `dedoc/scramble` at `/api/docs` — **not implemented**
+  - P7-BE-030: Scope-guard middleware enforcing PAT abilities — **not verified**
+  - P7-BE-045: `StoreLeadRequest` validation class — **missing**
+  - P7-BE-052/053/054: Lead webhooks, Meilisearch index, GDPR export — **not verified**
+  - P7-FE-023/024: `webhook-form.tsx` and `api-token-form.tsx` components — **missing**
+  - P7-FE-036/037/038: `lead-kanban.tsx`, `lead-activity-form.tsx`, `convert-to-client-dialog.tsx` — **missing**
+  - P7-FE-040: Dashboard pipeline summary widget — **not implemented**
+  - Frontend store for accounting (`stores/accounting.ts`) — **missing**
+  - All Phase 7 frontend and backend tests — **not yet written**
 - **Phase 6 is fully implemented and merged to `main`** (Client Portal & Expense Tracking roadmap scope).
 - **Phase 6 scope delivered**:
   - Client portal (magic link auth, dashboard, invoice/quote viewing, quote accept/reject flows)
@@ -31,8 +48,8 @@ Koomky is a self-hosted Freelance CRM built as a monorepo:
 - **Coverage gate policy**: backend and frontend thresholds remain **>= 80%**.
 - **Phase 5 validation automation is available** via:
   - `scripts/validate-phase5.sh` (backend coverage, frontend coverage, CI status check, tag check)
-- **No dedicated Phase 6 validation script exists yet**:
-  - Use phase-specific suites documented in `docs/dev/phase6.md`.
+- **No dedicated Phase 6 or Phase 7 validation scripts exist yet**:
+  - Use phase-specific suites documented in `docs/dev/phase6.md` and `docs/dev/phase7.md`.
 - **Public signup is disabled**:
   - Backend route `POST /api/v1/auth/register` is removed.
   - Frontend `/auth/register` page and middleware exposure are removed.
@@ -136,7 +153,7 @@ cd backend && php artisan users:create   # Create a private CRM user account
 
 ## Reference Documents
 
-- `PRD.md` — Full product requirements (v1.1.0 baseline + v1.2 roadmap)
-- `docs/phases/phase{1,2,3,4,5,6}.md` — Detailed specs per phase
-- `docs/dev/phase{1,2,3,4,5,6}.md` — Task tracking per phase
+- `PRD.md` — Full product requirements (v1.1.0 baseline + v1.2/v1.3 roadmap)
+- `docs/phases/phase{1,2,3,4,5,6,7}.md` — Detailed specs per phase
+- `docs/dev/phase{1,2,3,4,5,6,7}.md` — Task tracking per phase
 - `scripts/validate-phase5.sh` — Automated local validation for Phase 5 gates
