@@ -36,8 +36,6 @@ use Laravel\Scout\Searchable;
  * @property-read \App\Models\User $user
  * @property-read \App\Models\Client|null $wonClient
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\LeadActivity> $activities
- *
- * @extends HasFactory<\Database\Factories\LeadFactory>
  */
 class Lead extends Model
 {
