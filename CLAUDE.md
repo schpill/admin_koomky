@@ -117,6 +117,27 @@ make seed        # Seed database
 cd backend && php artisan users:create   # Create a private CRM user account
 ```
 
+## ⚠️ Règle critique — Ne jamais lancer `pnpm build` sur le container frontend en cours d'exécution
+
+**`docker compose run --rm frontend pnpm build` est INTERDIT** quand le container
+`frontend` est déjà en cours d'exécution en mode dev (`pnpm dev`).
+
+**Pourquoi** : le dossier `frontend/` est monté en volume. Un `pnpm build` dans un
+container éphémère écrase `.next/` sur le filesystem hôte avec des artefacts de
+production. Le dev server qui tourne voit alors un `.next/` corrompu et sert les
+chunks JS/CSS en 404 — les styles disparaissent de l'application.
+
+**Pour vérifier les types TypeScript**, utiliser exclusivement :
+```bash
+make lint        # inclut ESLint, ne touche pas .next/
+# ou laisser la CI GitHub valider le build TypeScript
+```
+
+**Si les styles ont disparu** (diagnostic : 404 sur `/_next/static/css/` dans les logs nginx) :
+```bash
+docker compose restart frontend   # régénère .next/ proprement en mode dev
+```
+
 ## Architecture Decisions
 
 - **API format**: JSON:API-inspired with `data`, `meta`, `links` structure
