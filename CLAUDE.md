@@ -12,7 +12,7 @@ Koomky is a self-hosted Freelance CRM built as a monorepo:
 
 ## Current Implementation Snapshot
 
-- **Phase 7 delivered** — PR #18 (`feat/phase7-completion`, commit `0e308484`, merged to `main` on 2026-02-20) closed the Accounting (FEC/VAT/exports), Public API & Webhooks, and Lead Pipeline workstreams.
+- **Phase 7 closed & released as `v1.3.0`** — PR #18 delivered the features; PR #19 (`fix/phase7-code-review`, merged 2026-02-20) applied the full code-review hardening (SSRF fix, LIKE escape, DI, LeadPolicy, webhook retry, service deduplication, 62 new frontend tests). Tag `v1.3.0` pushed to GitHub.
 - **Delivered artifacts**:
   - Backend: webhook models/controllers, `WebhookDispatchService`/`WebhookDispatchJob`, PAT scope-guard middleware, `StoreLeadRequest`, webhook delivery logging + OpenAPI UI (`dedoc/scramble` @ `/api/docs`), lead-related observers, and comprehensive unit tests (including WebhookDispatchService/Job and LeadConversion).
   - Frontend: API tokens/webhook forms, lead Kanban/activities/convert dialog + zustand store, pipeline analytics page, dashboard pipeline widget, and their corresponding Playwright/Vitest specs.

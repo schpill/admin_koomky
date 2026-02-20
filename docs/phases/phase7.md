@@ -424,8 +424,8 @@
 | 21 | Dashboard updated with pipeline summary widget                                              | [x]       |
 | 22 | Back-end test coverage >= 80%                                                               | [x]       |
 | 23 | Front-end test coverage >= 80%                                                              | [x]       |
-| 24 | CI pipeline fully green on `main`                                                           | [ ]       |
-| 25 | Version tagged as `v1.3.0` on GitHub                                                        | [ ]       |
+| 24 | CI pipeline fully green on `main`                                                           | [x]       |
+| 25 | Version tagged as `v1.3.0` on GitHub                                                        | [x]       |
 
 ---
 
