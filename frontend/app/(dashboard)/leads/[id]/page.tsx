@@ -479,13 +479,3 @@ export default function LeadDetailPage() {
     </div>
   );
 }
-
-function Label({
-  className,
-  children,
-}: {
-  className?: string;
-  children: React.ReactNode;
-}) {
-  return <label className={`block ${className}`}>{children}</label>;
-}
