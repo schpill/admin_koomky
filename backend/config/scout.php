@@ -222,6 +222,29 @@ return [
                     'created_at',
                 ],
             ],
+            'leads' => [
+                'searchableAttributes' => [
+                    'company_name',
+                    'first_name',
+                    'last_name',
+                    'email',
+                    'notes',
+                ],
+                'filterableAttributes' => [
+                    'user_id',
+                    'status',
+                    'source',
+                    'currency',
+                    'expected_close_date',
+                    'converted_at',
+                ],
+                'sortableAttributes' => [
+                    'estimated_value',
+                    'expected_close_date',
+                    'pipeline_position',
+                    'created_at',
+                ],
+            ],
             'expenses' => [
                 'searchableAttributes' => [
                     'description',

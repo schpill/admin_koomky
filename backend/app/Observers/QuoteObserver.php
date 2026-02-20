@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Models\Quote;
 use App\Services\ActivityService;
+use App\Services\WebhookDispatchService;
 use Illuminate\Support\Facades\DB;
 
 class QuoteObserver
@@ -20,6 +21,9 @@ class QuoteObserver
         }
 
         $this->syncCounterFromNumber($quote->number);
+
+        // Dispatch webhook
+        $this->dispatchWebhook($quote, 'quote.created');
     }
 
     public function updated(Quote $quote): void
@@ -47,6 +51,21 @@ class QuoteObserver
                 'quote_id' => $quote->id,
                 'quote_number' => $quote->number,
                 'status' => $newStatus,
+            ]);
+        }
+
+        // Dispatch status-specific webhook
+        $webhookEvent = match ($newStatus) {
+            'sent' => 'quote.sent',
+            'accepted' => 'quote.accepted',
+            'rejected' => 'quote.rejected',
+            'expired' => 'quote.expired',
+            default => null,
+        };
+
+        if ($webhookEvent !== null) {
+            $this->dispatchWebhook($quote, $webhookEvent, [
+                'previous_status' => $previousStatus,
             ]);
         }
     }
@@ -92,5 +111,30 @@ class QuoteObserver
                     'updated_at' => $now,
                 ]);
         });
+    }
+
+    /**
+     * Dispatch a webhook for the quote event.
+     *
+     * @param  array<string, mixed>  $extraData
+     */
+    private function dispatchWebhook(Quote $quote, string $event, array $extraData = []): void
+    {
+        $userId = $quote->user_id;
+
+        $data = array_merge([
+            'id' => $quote->id,
+            'number' => $quote->number,
+            'status' => $quote->status,
+            'total' => (float) $quote->total,
+            'currency' => $quote->currency,
+            'client_id' => $quote->client_id,
+            'issue_date' => $quote->issue_date->toDateString(),
+            'valid_until' => $quote->valid_until->toDateString(),
+        ], $extraData);
+
+        /** @var WebhookDispatchService $service */
+        $service = app(WebhookDispatchService::class);
+        $service->dispatch($event, $data, $userId);
     }
 }

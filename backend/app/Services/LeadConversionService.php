@@ -12,6 +12,13 @@ use Illuminate\Support\Facades\DB;
  */
 class LeadConversionService
 {
+    protected WebhookDispatchService $webhookService;
+
+    public function __construct(WebhookDispatchService $webhookService)
+    {
+        $this->webhookService = $webhookService;
+    }
+
     /**
      * Convert a won lead to a client.
      *
@@ -46,6 +53,9 @@ class LeadConversionService
                     'content' => 'Converted to existing client: '.$existingClient->name,
                 ]);
 
+                // Dispatch webhook
+                $this->dispatchConvertedWebhook($lead, $existingClient);
+
                 return $existingClient;
             }
 
@@ -70,8 +80,39 @@ class LeadConversionService
                 'content' => 'Converted to new client: '.$client->name,
             ]);
 
+            // Dispatch webhook
+            $this->dispatchConvertedWebhook($lead, $client);
+
             return $client;
         });
+    }
+
+    /**
+     * Dispatch the lead.converted webhook.
+     */
+    protected function dispatchConvertedWebhook(Lead $lead, Client $client): void
+    {
+        $userId = $lead->user_id;
+
+        $this->webhookService->dispatch('lead.converted', [
+            'id' => $lead->id,
+            'company_name' => $lead->company_name,
+            'first_name' => $lead->first_name,
+            'last_name' => $lead->last_name,
+            'email' => $lead->email,
+            'phone' => $lead->phone,
+            'source' => $lead->source,
+            'status' => $lead->status,
+            'estimated_value' => $lead->estimated_value !== null ? (float) $lead->estimated_value : null,
+            'currency' => $lead->currency,
+            'won_client_id' => $lead->won_client_id,
+            'converted_at' => $lead->converted_at?->toIso8601String(),
+            'client' => [
+                'id' => $client->id,
+                'name' => $client->name,
+                'email' => $client->email,
+            ],
+        ], $userId);
     }
 
     /**

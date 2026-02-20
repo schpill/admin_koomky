@@ -5,6 +5,7 @@ namespace App\Observers;
 use App\Models\Invoice;
 use App\Services\ActivityService;
 use App\Services\Calendar\CalendarAutoEventService;
+use App\Services\WebhookDispatchService;
 use Illuminate\Support\Facades\DB;
 
 class InvoiceObserver
@@ -23,6 +24,9 @@ class InvoiceObserver
         }
 
         $this->syncCounterFromNumber($invoice->number);
+
+        // Dispatch webhook
+        $this->dispatchWebhook($invoice, 'invoice.created');
     }
 
     public function updated(Invoice $invoice): void
@@ -54,6 +58,21 @@ class InvoiceObserver
                 'invoice_id' => $invoice->id,
                 'invoice_number' => $invoice->number,
                 'status' => $newStatus,
+            ]);
+        }
+
+        // Dispatch status-specific webhook
+        $webhookEvent = match ($newStatus) {
+            'sent' => 'invoice.sent',
+            'paid' => 'invoice.paid',
+            'overdue' => 'invoice.overdue',
+            'cancelled' => 'invoice.cancelled',
+            default => null,
+        };
+
+        if ($webhookEvent !== null) {
+            $this->dispatchWebhook($invoice, $webhookEvent, [
+                'previous_status' => $previousStatus,
             ]);
         }
     }
@@ -99,5 +118,30 @@ class InvoiceObserver
                     'updated_at' => $now,
                 ]);
         });
+    }
+
+    /**
+     * Dispatch a webhook for the invoice event.
+     *
+     * @param  array<string, mixed>  $extraData
+     */
+    private function dispatchWebhook(Invoice $invoice, string $event, array $extraData = []): void
+    {
+        $userId = $invoice->user_id;
+
+        $data = array_merge([
+            'id' => $invoice->id,
+            'number' => $invoice->number,
+            'status' => $invoice->status,
+            'total' => (float) $invoice->total,
+            'currency' => $invoice->currency,
+            'client_id' => $invoice->client_id,
+            'issue_date' => $invoice->issue_date->toDateString(),
+            'due_date' => $invoice->due_date->toDateString(),
+        ], $extraData);
+
+        /** @var WebhookDispatchService $service */
+        $service = app(WebhookDispatchService::class);
+        $service->dispatch($event, $data, $userId);
     }
 }

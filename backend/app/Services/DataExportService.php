@@ -10,6 +10,8 @@ use App\Models\CreditNote;
 use App\Models\Expense;
 use App\Models\ExpenseCategory;
 use App\Models\Invoice;
+use App\Models\Lead;
+use App\Models\LeadActivity;
 use App\Models\Project;
 use App\Models\Quote;
 use App\Models\Segment;
@@ -64,6 +66,11 @@ class DataExportService
             ->with(['category', 'project', 'client'])
             ->get();
 
+        $leads = Lead::query()
+            ->where('user_id', $user->id)
+            ->with(['activities'])
+            ->get();
+
         return [
             'exported_at' => now()->toIso8601String(),
             'user' => [
@@ -104,6 +111,11 @@ class DataExportService
                 ->toArray(),
             'expense_categories' => $expenseCategories->toArray(),
             'expenses' => $expenses->toArray(),
+            'leads' => $leads->toArray(),
+            'lead_activities' => LeadActivity::query()
+                ->whereIn('lead_id', $leads->pluck('id'))
+                ->get()
+                ->toArray(),
         ];
     }
 

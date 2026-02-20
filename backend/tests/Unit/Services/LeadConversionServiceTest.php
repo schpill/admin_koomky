@@ -5,6 +5,11 @@ uses(\Tests\TestCase::class, \Illuminate\Foundation\Testing\RefreshDatabase::cla
 beforeEach(function () {
     $this->user = \App\Models\User::factory()->create(['base_currency' => 'EUR']);
     $this->actingAs($this->user, 'sanctum');
+
+    // Mock WebhookDispatchService
+    $this->webhookService = \Mockery::mock(\App\Services\WebhookDispatchService::class);
+    $this->webhookService->shouldReceive('dispatch')->byDefault();
+    $this->app->instance(\App\Services\WebhookDispatchService::class, $this->webhookService);
 });
 
 test('convert lead to client creates new client', function () {
@@ -17,7 +22,7 @@ test('convert lead to client creates new client', function () {
         'phone' => '+1234567890',
     ]);
 
-    $service = new \App\Services\LeadConversionService;
+    $service = $this->app->make(\App\Services\LeadConversionService::class);
     $client = $service->convert($lead);
 
     expect($client->user_id)->toBe($this->user->id)
@@ -30,7 +35,7 @@ test('convert lead to client creates new client', function () {
 test('convert lead rejects non won status', function () {
     $lead = \App\Models\Lead::factory()->newLead()->create(['user_id' => $this->user->id]);
 
-    $service = new \App\Services\LeadConversionService;
+    $service = $this->app->make(\App\Services\LeadConversionService::class);
 
     expect(fn () => $service->convert($lead))->toThrow(\RuntimeException::class);
 });
@@ -42,7 +47,7 @@ test('convert lead rejects already converted lead', function () {
         'won_client_id' => $client->id,
     ]);
 
-    $service = new \App\Services\LeadConversionService;
+    $service = $this->app->make(\App\Services\LeadConversionService::class);
 
     expect(fn () => $service->convert($lead))->toThrow(\RuntimeException::class);
 });
@@ -58,7 +63,7 @@ test('convert lead links to existing client with same email', function () {
         'email' => 'john@acme.com',
     ]);
 
-    $service = new \App\Services\LeadConversionService;
+    $service = $this->app->make(\App\Services\LeadConversionService::class);
     $client = $service->convert($lead);
 
     expect($client->id)->toBe($existingClient->id)
@@ -72,7 +77,7 @@ test('convert lead allows field overrides', function () {
         'email' => 'john@acme.com',
     ]);
 
-    $service = new \App\Services\LeadConversionService;
+    $service = $this->app->make(\App\Services\LeadConversionService::class);
     $client = $service->convert($lead, [
         'name' => 'Custom Name',
     ]);
@@ -83,7 +88,7 @@ test('convert lead allows field overrides', function () {
 test('convert lead logs activity', function () {
     $lead = \App\Models\Lead::factory()->won()->create(['user_id' => $this->user->id]);
 
-    $service = new \App\Services\LeadConversionService;
+    $service = $this->app->make(\App\Services\LeadConversionService::class);
     $service->convert($lead);
 
     expect($lead->activities)->toHaveCount(1)
