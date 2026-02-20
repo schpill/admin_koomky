@@ -88,7 +88,7 @@ class PersonalAccessTokenController extends Controller
             'abilities' => $token->accessToken->abilities,
             'expires_at' => $token->accessToken->expires_at?->toIso8601String(),
             'token' => $token->plainTextToken, // Only shown once
-            'created_at' => $token->accessToken->created_at->toIso8601String(),
+            'created_at' => $token->accessToken->created_at?->toIso8601String(),
         ], 'API token created successfully. Copy the token now - it will not be shown again.', 201);
     }
 

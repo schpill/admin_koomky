@@ -113,16 +113,8 @@ class WebhookEndpointController extends Controller
             ->where('id', $id)
             ->firstOrFail();
 
-        $testPayload = [
-            'event' => 'test',
-            'timestamp' => now()->toIso8601String(),
-            'data' => [
-                'message' => 'This is a test webhook',
-            ],
-        ];
-
         // Dispatch test webhook (in production, this would go to a queue)
-        app(\App\Services\WebhookDispatchService::class)->dispatchTest($webhookEndpoint, $testPayload);
+        app(\App\Services\WebhookDispatchService::class)->dispatchTest($webhookEndpoint);
 
         return $this->success(null, 'Test webhook sent successfully');
     }
