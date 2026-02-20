@@ -76,6 +76,8 @@ class AccountingExportService
 
     /**
      * Get the column headers for a given format.
+     *
+     * @return array<int, string>
      */
     public function getColumns(string $format): array
     {

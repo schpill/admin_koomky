@@ -24,6 +24,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class WebhookEndpoint extends Model
 {
+    /** @use HasFactory<\Database\Factories\WebhookEndpointFactory> */
     use HasFactory, HasUuids;
 
     protected $fillable = [
@@ -57,7 +58,7 @@ class WebhookEndpoint extends Model
     }
 
     /**
-     * @return HasMany<WebhookDelivery>
+     * @return HasMany<WebhookDelivery, WebhookEndpoint>
      */
     public function deliveries(): HasMany
     {

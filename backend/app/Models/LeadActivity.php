@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class LeadActivity extends Model
 {
+    /** @use HasFactory<\Database\Factories\LeadActivityFactory> */
     use HasFactory, HasUuids;
 
     protected $fillable = [

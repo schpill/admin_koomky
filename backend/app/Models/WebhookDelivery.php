@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class WebhookDelivery extends Model
 {
+    /** @use HasFactory<\Database\Factories\WebhookDeliveryFactory> */
     use HasFactory, HasUuids;
 
     public $timestamps = false;

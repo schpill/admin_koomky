@@ -36,9 +36,12 @@ use Laravel\Scout\Searchable;
  * @property-read \App\Models\User $user
  * @property-read \App\Models\Client|null $wonClient
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\LeadActivity> $activities
+ *
+ * @extends HasFactory<\Database\Factories\LeadFactory>
  */
 class Lead extends Model
 {
+    /** @use HasFactory<\Database\Factories\LeadFactory> */
     use HasFactory, HasUuids, Searchable, SoftDeletes;
 
     protected $fillable = [
@@ -92,7 +95,7 @@ class Lead extends Model
     }
 
     /**
-     * @return HasMany<LeadActivity>
+     * @return HasMany<LeadActivity, Lead>
      */
     public function activities(): HasMany
     {
