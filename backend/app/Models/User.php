@@ -23,6 +23,11 @@ use Laravel\Sanctum\HasApiTokens;
  * @property string $invoice_numbering_pattern
  * @property string $base_currency
  * @property string $exchange_rate_provider
+ * @property string $accounting_journal_sales
+ * @property string $accounting_journal_purchases
+ * @property string $accounting_journal_bank
+ * @property string|null $accounting_auxiliary_prefix
+ * @property int $fiscal_year_start_month
  * @property array<string, mixed>|null $email_settings
  * @property array<string, mixed>|null $sms_settings
  * @property array<string, mixed>|null $notification_preferences
@@ -53,6 +58,11 @@ class User extends Authenticatable
         'invoice_numbering_pattern',
         'base_currency',
         'exchange_rate_provider',
+        'accounting_journal_sales',
+        'accounting_journal_purchases',
+        'accounting_journal_bank',
+        'accounting_auxiliary_prefix',
+        'fiscal_year_start_month',
         'email_settings',
         'sms_settings',
         'notification_preferences',
@@ -84,6 +94,11 @@ class User extends Authenticatable
             'bank_details' => 'encrypted',
             'base_currency' => 'string',
             'exchange_rate_provider' => 'string',
+            'accounting_journal_sales' => 'string',
+            'accounting_journal_purchases' => 'string',
+            'accounting_journal_bank' => 'string',
+            'accounting_auxiliary_prefix' => 'string',
+            'fiscal_year_start_month' => 'integer',
             'email_settings' => 'array',
             'sms_settings' => 'array',
             'notification_preferences' => 'array',
@@ -236,5 +251,21 @@ class User extends Authenticatable
     public function expenses(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Expense::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\WebhookEndpoint, \App\Models\User>
+     */
+    public function webhookEndpoints(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(WebhookEndpoint::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\Lead, \App\Models\User>
+     */
+    public function leads(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Lead::class);
     }
 }

@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $name
  * @property string|null $color
  * @property string|null $icon
+ * @property string|null $account_code
  * @property bool $is_default
  */
 class ExpenseCategory extends Model
@@ -28,6 +29,7 @@ class ExpenseCategory extends Model
         'name',
         'color',
         'icon',
+        'account_code',
         'is_default',
     ];
 

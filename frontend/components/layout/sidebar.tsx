@@ -18,6 +18,8 @@ import {
   ExternalLink,
   LogOut,
   ChevronLeft,
+  Target,
+  Calculator,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -27,6 +29,7 @@ import { useI18n } from "@/components/providers/i18n-provider";
 
 const navigation = [
   { key: "dashboard", href: "/", icon: LayoutDashboard },
+  { key: "leads", href: "/leads", icon: Target },
   { key: "clients", href: "/clients", icon: Users },
   { key: "projects", href: "/projects", icon: FolderKanban },
   { key: "campaigns", href: "/campaigns", icon: Megaphone },
@@ -34,6 +37,7 @@ const navigation = [
   { key: "quotes", href: "/quotes", icon: FileText },
   { key: "expenses", href: "/expenses", icon: Receipt },
   { key: "creditNotes", href: "/credit-notes", icon: FileText },
+  { key: "accounting", href: "/accounting", icon: Calculator },
   { key: "reports", href: "/reports", icon: BarChart3 },
   { key: "calendar", href: "/calendar", icon: CalendarDays },
 ];

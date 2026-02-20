@@ -1,6 +1,11 @@
 <?php
 
 use App\Http\Controllers\Api\V1\AccountDeletionController;
+use App\Http\Controllers\Api\V1\Accounting\AccountingExportController;
+use App\Http\Controllers\Api\V1\Accounting\AccountingSettingsController;
+use App\Http\Controllers\Api\V1\Accounting\FecExportController;
+use App\Http\Controllers\Api\V1\Accounting\FiscalYearSummaryController;
+use App\Http\Controllers\Api\V1\Accounting\VatDeclarationController;
 use App\Http\Controllers\Api\V1\ActivityController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\CalendarConnectionController;
@@ -21,6 +26,11 @@ use App\Http\Controllers\Api\V1\ExpenseReportController;
 use App\Http\Controllers\Api\V1\HealthController;
 use App\Http\Controllers\Api\V1\InvoiceController;
 use App\Http\Controllers\Api\V1\InvoicingSettingsController;
+use App\Http\Controllers\Api\V1\LeadActivityController;
+use App\Http\Controllers\Api\V1\LeadAnalyticsController;
+use App\Http\Controllers\Api\V1\LeadController;
+use App\Http\Controllers\Api\V1\LeadConversionController;
+use App\Http\Controllers\Api\V1\LeadPipelineController;
 use App\Http\Controllers\Api\V1\PaymentController;
 use App\Http\Controllers\Api\V1\PortalAccessTokenController;
 use App\Http\Controllers\Api\V1\PortalAuthController;
@@ -39,6 +49,9 @@ use App\Http\Controllers\Api\V1\RecurringInvoiceProfileController;
 use App\Http\Controllers\Api\V1\ReportController;
 use App\Http\Controllers\Api\V1\SearchController;
 use App\Http\Controllers\Api\V1\SegmentController;
+use App\Http\Controllers\Api\V1\Settings\PersonalAccessTokenController as SettingsPersonalAccessTokenController;
+use App\Http\Controllers\Api\V1\Settings\WebhookDeliveryController;
+use App\Http\Controllers\Api\V1\Settings\WebhookEndpointController;
 use App\Http\Controllers\Api\V1\StripeWebhookController;
 use App\Http\Controllers\Api\V1\TagController;
 use App\Http\Controllers\Api\V1\TaskController;
@@ -246,5 +259,48 @@ Route::prefix('v1')->group(function () {
         // Search & Activities
         Route::get('search', SearchController::class);
         Route::get('activities', [ActivityController::class, 'index']);
+
+        // Phase 7 - Accounting
+        Route::prefix('accounting')->group(function () {
+            Route::get('/fec/count', [FecExportController::class, 'count']);
+            Route::get('/fec', [FecExportController::class, 'export']);
+            Route::get('/vat', [VatDeclarationController::class, 'index']);
+            Route::get('/vat/export', [VatDeclarationController::class, 'exportCsv']);
+            Route::get('/export/formats', [AccountingExportController::class, 'formats']);
+            Route::get('/export', [AccountingExportController::class, 'export']);
+            Route::get('/fiscal-year', [FiscalYearSummaryController::class, 'index']);
+        });
+
+        // Phase 7 - Settings (Accounting, API Tokens, Webhooks)
+        Route::prefix('settings')->group(function () {
+            Route::get('/accounting', [AccountingSettingsController::class, 'show']);
+            Route::put('/accounting', [AccountingSettingsController::class, 'update']);
+
+            Route::get('/api-tokens', [SettingsPersonalAccessTokenController::class, 'index']);
+            Route::post('/api-tokens', [SettingsPersonalAccessTokenController::class, 'store']);
+            Route::delete('/api-tokens/{id}', [SettingsPersonalAccessTokenController::class, 'destroy']);
+            Route::get('/api-tokens/scopes', [SettingsPersonalAccessTokenController::class, 'scopes']);
+
+            Route::get('/webhooks', [WebhookEndpointController::class, 'index']);
+            Route::post('/webhooks', [WebhookEndpointController::class, 'store']);
+            Route::get('/webhooks/{id}', [WebhookEndpointController::class, 'show']);
+            Route::put('/webhooks/{id}', [WebhookEndpointController::class, 'update']);
+            Route::delete('/webhooks/{id}', [WebhookEndpointController::class, 'destroy']);
+            Route::post('/webhooks/{id}/test', [WebhookEndpointController::class, 'test']);
+            Route::get('/webhooks/{id}/deliveries', [WebhookDeliveryController::class, 'index']);
+            Route::get('/webhooks/{endpointId}/deliveries/{deliveryId}', [WebhookDeliveryController::class, 'show']);
+            Route::post('/webhooks/{endpointId}/deliveries/{deliveryId}/retry', [WebhookDeliveryController::class, 'retry']);
+        });
+
+        // Phase 7 - Leads
+        Route::get('leads/pipeline', [LeadPipelineController::class, 'index']);
+        Route::get('leads/analytics', [LeadAnalyticsController::class, 'index']);
+        Route::patch('leads/{id}/status', [LeadController::class, 'updateStatus']);
+        Route::patch('leads/{id}/position', [LeadController::class, 'updatePosition']);
+        Route::post('leads/{id}/convert', [LeadConversionController::class, 'convert']);
+        Route::get('leads/{leadId}/activities', [LeadActivityController::class, 'index']);
+        Route::post('leads/{leadId}/activities', [LeadActivityController::class, 'store']);
+        Route::delete('leads/{leadId}/activities/{activityId}', [LeadActivityController::class, 'destroy']);
+        Route::apiResource('leads', LeadController::class);
     });
 });
