@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Api\V1\Accounting;
 
 use App\Http\Controllers\Controller;
@@ -13,6 +15,8 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 class AccountingExportController extends Controller
 {
     use ApiResponse;
+
+    public function __construct(private readonly AccountingExportService $accountingExportService) {}
 
     public function formats(): JsonResponse
     {
@@ -36,8 +40,7 @@ class AccountingExportController extends Controller
         /** @var User $user */
         $user = $request->user();
 
-        $service = new AccountingExportService;
-        $generator = $service->generate($user, $request->format, [
+        $generator = $this->accountingExportService->generate($user, $request->format, [
             'date_from' => $request->date_from,
             'date_to' => $request->date_to,
         ]);

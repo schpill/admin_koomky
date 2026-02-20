@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Plus, Trash2, Copy, Check, Key } from "lucide-react";
 import { apiClient } from "@/lib/api";
 import { toast } from "sonner";
+import { API_SCOPES } from "@/lib/constants/api-scopes";
 
 interface ApiToken {
   id: string;
@@ -18,25 +19,6 @@ interface ApiToken {
   expires_at: string | null;
   created_at: string;
 }
-
-const AVAILABLE_SCOPES = [
-  { name: "read:clients", description: "Read client information" },
-  { name: "write:clients", description: "Create, update, and delete clients" },
-  { name: "read:invoices", description: "Read invoices and credit notes" },
-  {
-    name: "write:invoices",
-    description: "Create, update, and delete invoices",
-  },
-  { name: "read:expenses", description: "Read expense records" },
-  {
-    name: "write:expenses",
-    description: "Create, update, and delete expenses",
-  },
-  { name: "read:projects", description: "Read project information" },
-  { name: "read:leads", description: "Read lead information" },
-  { name: "write:leads", description: "Create, update, and delete leads" },
-  { name: "read:reports", description: "Read reports and analytics" },
-];
 
 export default function ApiTokensPage() {
   const [tokens, setTokens] = useState<ApiToken[]>([]);
@@ -208,7 +190,7 @@ export default function ApiTokensPage() {
               <div className="space-y-2">
                 <Label>Scopes</Label>
                 <div className="grid gap-2 md:grid-cols-2 lg:grid-cols-3">
-                  {AVAILABLE_SCOPES.map((scope) => (
+                  {API_SCOPES.map((scope) => (
                     <label
                       key={scope.name}
                       className="flex cursor-pointer items-center gap-2 rounded border p-2 hover:bg-muted"

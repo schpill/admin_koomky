@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Api\V1\Accounting;
 
 use App\Http\Controllers\Controller;
@@ -14,6 +16,8 @@ class FecExportController extends Controller
 {
     use ApiResponse;
 
+    public function __construct(private readonly FecExportService $fecExportService) {}
+
     public function count(Request $request): JsonResponse
     {
         $request->validate([
@@ -24,8 +28,7 @@ class FecExportController extends Controller
         /** @var User $user */
         $user = $request->user();
 
-        $service = new FecExportService;
-        $count = $service->getEntryCount($user, [
+        $count = $this->fecExportService->getEntryCount($user, [
             'date_from' => $request->date_from,
             'date_to' => $request->date_to,
         ]);
@@ -43,8 +46,7 @@ class FecExportController extends Controller
         /** @var User $user */
         $user = $request->user();
 
-        $service = new FecExportService;
-        $generator = $service->generate($user, [
+        $generator = $this->fecExportService->generate($user, [
             'date_from' => $request->date_from,
             'date_to' => $request->date_to,
         ]);

@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Plus, Trash2, Edit, Send, Eye } from "lucide-react";
 import { apiClient } from "@/lib/api";
 import { toast } from "sonner";
+import { WEBHOOK_EVENTS } from "@/lib/constants/webhook-events";
 
 interface WebhookEndpoint {
   id: string;
@@ -21,27 +22,6 @@ interface WebhookEndpoint {
   last_triggered_at: string | null;
   created_at: string;
 }
-
-const WEBHOOK_EVENTS = [
-  "invoice.created",
-  "invoice.sent",
-  "invoice.paid",
-  "invoice.overdue",
-  "invoice.cancelled",
-  "quote.sent",
-  "quote.accepted",
-  "quote.rejected",
-  "quote.expired",
-  "expense.created",
-  "expense.updated",
-  "expense.deleted",
-  "project.completed",
-  "project.cancelled",
-  "payment.received",
-  "lead.created",
-  "lead.status_changed",
-  "lead.converted",
-];
 
 export default function WebhooksPage() {
   const [endpoints, setEndpoints] = useState<WebhookEndpoint[]>([]);

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
 use App\Models\CreditNote;
@@ -25,7 +27,6 @@ class FiscalYearSummaryService
         $fiscalYearStartMonth = $user->fiscal_year_start_month ?? 1;
 
         $dateFrom = Carbon::create($year, $fiscalYearStartMonth, 1)?->startOfMonth() ?? Carbon::now();
-        $dateTo = Carbon::create($year + ($fiscalYearStartMonth > 1 ? 0 : 0), $fiscalYearStartMonth > 1 ? $fiscalYearStartMonth - 1 : 12, 1)?->endOfMonth() ?? Carbon::now();
 
         // If fiscal year starts mid-year (e.g., July), the year spans two calendar years
         if ($fiscalYearStartMonth > 1) {

@@ -1,21 +1,29 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\V1\Leads\StoreLeadRequest;
 use App\Models\Lead;
 use App\Models\User;
 use App\Services\LeadAnalyticsService;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class LeadController extends Controller
 {
     use ApiResponse;
 
+    public function __construct(private readonly LeadAnalyticsService $leadAnalyticsService) {}
+
     public function index(Request $request): JsonResponse
     {
+        Gate::authorize('viewAny', Lead::class);
+
         /** @var User $user */
         $user = $request->user();
 
@@ -30,7 +38,7 @@ class LeadController extends Controller
         }
 
         if ($request->filled('search')) {
-            $search = $request->search;
+            $search = addcslashes((string) $request->search, '%_\\');
             $query->where(function ($q) use ($search) {
                 $q->where('company_name', 'like', "%{$search}%")
                     ->orWhere('first_name', 'like', "%{$search}%")
@@ -44,21 +52,9 @@ class LeadController extends Controller
         return $this->success($leads, 'Leads retrieved successfully');
     }
 
-    public function store(Request $request): JsonResponse
+    public function store(StoreLeadRequest $request): JsonResponse
     {
-        $request->validate([
-            'company_name' => 'nullable|string|max:255',
-            'first_name' => 'required|string|max:100',
-            'last_name' => 'required|string|max:100',
-            'email' => 'nullable|email|max:255',
-            'phone' => 'nullable|string|max:50',
-            'source' => 'sometimes|in:manual,referral,website,campaign,other',
-            'estimated_value' => 'nullable|numeric|min:0',
-            'currency' => 'sometimes|string|size:3',
-            'probability' => 'nullable|integer|min:0|max:100',
-            'expected_close_date' => 'nullable|date',
-            'notes' => 'nullable|string',
-        ]);
+        Gate::authorize('create', Lead::class);
 
         /** @var User $user */
         $user = $request->user();
@@ -91,6 +87,8 @@ class LeadController extends Controller
             ->where('id', $id)
             ->firstOrFail();
 
+        Gate::authorize('view', $lead);
+
         $lead->load(['activities', 'wonClient']);
 
         return $this->success($lead, 'Lead retrieved successfully');
@@ -104,6 +102,8 @@ class LeadController extends Controller
         $lead = Lead::where('user_id', $user->id)
             ->where('id', $id)
             ->firstOrFail();
+
+        Gate::authorize('update', $lead);
 
         $request->validate([
             'company_name' => 'sometimes|nullable|string|max:255',
@@ -137,6 +137,8 @@ class LeadController extends Controller
             ->where('id', $id)
             ->firstOrFail();
 
+        Gate::authorize('delete', $lead);
+
         $lead->delete();
 
         return $this->success(null, 'Lead deleted successfully');
@@ -150,6 +152,8 @@ class LeadController extends Controller
         $lead = Lead::where('user_id', $user->id)
             ->where('id', $id)
             ->firstOrFail();
+
+        Gate::authorize('update', $lead);
 
         $request->validate([
             'status' => 'required|in:new,contacted,qualified,proposal_sent,negotiating,won,lost',
@@ -179,6 +183,8 @@ class LeadController extends Controller
             ->where('id', $id)
             ->firstOrFail();
 
+        Gate::authorize('update', $lead);
+
         $request->validate([
             'position' => 'required|integer|min:0',
         ]);
@@ -188,50 +194,12 @@ class LeadController extends Controller
         return $this->success($lead, 'Lead position updated successfully');
     }
 
-    public function pipeline(Request $request): JsonResponse
-    {
-        /** @var User $user */
-        $user = $request->user();
-
-        $columns = ['new', 'contacted', 'qualified', 'proposal_sent', 'negotiating', 'won', 'lost'];
-
-        $leads = Lead::where('user_id', $user->id)
-            ->orderBy('pipeline_position')
-            ->get()
-            ->groupBy('status');
-
-        $columnStats = [];
-        $totalPipelineValue = 0;
-
-        foreach ($columns as $column) {
-            $columnLeads = $leads->get($column, collect());
-            $columnValue = $columnLeads->sum('estimated_value');
-
-            if (! in_array($column, ['won', 'lost'])) {
-                $totalPipelineValue += $columnValue;
-            }
-
-            $columnStats[$column] = [
-                'count' => $columnLeads->count(),
-                'total_value' => (float) $columnValue,
-            ];
-        }
-
-        return $this->success([
-            'columns' => $columns,
-            'leads' => $leads,
-            'column_stats' => $columnStats,
-            'total_pipeline_value' => (float) $totalPipelineValue,
-        ], 'Pipeline retrieved successfully');
-    }
-
     public function analytics(Request $request): JsonResponse
     {
         /** @var User $user */
         $user = $request->user();
 
-        $service = new LeadAnalyticsService;
-        $analytics = $service->build($user);
+        $analytics = $this->leadAnalyticsService->build($user);
 
         return $this->success($analytics, 'Lead analytics retrieved successfully');
     }
