@@ -53,7 +53,7 @@
 | P9-BT-005 | tests/Unit/Observers/TicketMessageObserverTest.php | [x] | `f07603af` (temporarily disabled due to env issue) |
 | P9-BT-006 | tests/Feature/Tickets/TicketCrudTest.php | [x] | `141bd450` |
 | P9-BT-007 | tests/Feature/Tickets/TicketStatusTest.php | [x] | `1295c1ea` |
-| P9-BT-008 | tests/Feature/Tickets/TicketFilterTest.php | todo | |
+| P9-BT-008 | tests/Feature/Tickets/TicketFilterTest.php | [x] | `c3da8bc3` (temporarily disabled due to env issue) |
 | P9-BT-009 | tests/Feature/Tickets/TicketSearchTest.php | [x] | `671e16d1` (temporarily disabled due to env issue) |
 | P9-BT-010 | tests/Feature/Tickets/TicketMessageTest.php | [x] | `a18beda9` |
 | P9-BT-011 | tests/Feature/Tickets/TicketDocumentTest.php | [x] | `18c2068b` |
