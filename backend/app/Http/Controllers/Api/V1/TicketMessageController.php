@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\V1\StoreTicketMessageRequest;
 use App\Models\Ticket;
 use App\Models\TicketMessage;
 use Illuminate\Http\JsonResponse;
@@ -16,7 +17,7 @@ class TicketMessageController extends Controller
         return response()->json(['message' => 'Ticket messages list', 'ticket_id' => $ticket->id, 'data' => []]);
     }
 
-    public function store(Request $request, Ticket $ticket): JsonResponse
+    public function store(StoreTicketMessageRequest $request, Ticket $ticket): JsonResponse
     {
         // Placeholder for creating a new ticket message
         return response()->json(['message' => 'Ticket message created', 'ticket_id' => $ticket->id, 'data' => $request->all()], 201);

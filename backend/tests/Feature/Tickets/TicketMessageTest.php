@@ -23,6 +23,28 @@ class TicketMessageTest extends TestCase
     }
 
     /** @test */
+    public function message_creation_requires_content()
+    {
+        $response = $this->actingAs($this->user, 'sanctum')->postJson('/api/v1/tickets/' . $this->ticket->id . '/messages', [
+            'content' => '',
+            'is_internal' => false,
+        ]);
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['content']);
+    }
+
+    /** @test */
+    public function message_creation_validates_is_internal_as_boolean()
+    {
+        $response = $this->actingAs($this->user, 'sanctum')->postJson('/api/v1/tickets/' . $this->ticket->id . '/messages', [
+            'content' => 'Some content',
+            'is_internal' => 'not-a-boolean',
+        ]);
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['is_internal']);
+    }
+
+    /** @test */
     public function an_authenticated_user_can_list_ticket_messages()
     {
         $response = $this->actingAs($this->user, 'sanctum')->getJson('/api/v1/tickets/' . $this->ticket->id . '/messages');
