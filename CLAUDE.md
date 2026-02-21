@@ -12,8 +12,19 @@ Koomky is a self-hosted Freelance CRM built as a monorepo:
 
 ## Current Implementation Snapshot
 
+- **Phase 8 closed & merged to `main`** — PR #20 (`feature/phase-8-ged`, merged 2026-02-21) delivers the full GED (Document Management System).
+- **Phase 8 scope delivered**:
+  - Document model (UUID PK, Scout Searchable, `byType`/`byClient`/`byTag` scopes), migration, factory, policy, observer
+  - `DocumentTypeDetectorService` (finfo MIME detection, dangerous MIME rejection, script language detection)
+  - `DocumentStorageService` (store, overwrite, delete, streamDownload, quota enforcement)
+  - `DocumentMailService` + `DocumentAttachmentMail` (queued, attachment from storage, `last_sent_at`/`last_sent_to`)
+  - `DocumentController` (index with Scout search fix, store, show, update, destroy, reupload, download, sendEmail, bulkDestroy, stats)
+  - Meilisearch Scout index (searchable: title, original_filename, tags; filterable: user_id, client_id, document_type; sortable: created_at, title, file_size)
+  - GDPR export inclusion and webhook events (document.uploaded, document.updated, document.deleted, document.sent)
+  - Frontend: Zustand store, documents library page (grid/list, search, filters, bulk select, stats bar), document detail page, 7 components (upload dialog, reupload dialog, preview, card, type badge, send email dialog, filters), sidebar entry, dashboard widget
+  - 45 backend tests (130 assertions) + 244 frontend tests (97.4% coverage) + 5 E2E scenarios
 - **Phase 7 closed & released as `v1.3.0`** — PR #18 delivered the features; PR #19 (`fix/phase7-code-review`, merged 2026-02-20) applied the full code-review hardening (SSRF fix, LIKE escape, DI, LeadPolicy, webhook retry, service deduplication, 62 new frontend tests). Tag `v1.3.0` pushed to GitHub.
-- **Delivered artifacts**:
+- **Phase 7 delivered artifacts**:
   - Backend: webhook models/controllers, `WebhookDispatchService`/`WebhookDispatchJob`, PAT scope-guard middleware, `StoreLeadRequest`, webhook delivery logging + OpenAPI UI (`dedoc/scramble` @ `/api/docs`), lead-related observers, and comprehensive unit tests (including WebhookDispatchService/Job and LeadConversion).
   - Frontend: API tokens/webhook forms, lead Kanban/activities/convert dialog + zustand store, pipeline analytics page, dashboard pipeline widget, and their corresponding Playwright/Vitest specs.
   - Infrastructure: Meilisearch lead index, GDPR export inclusion, and coverage above the 80% gates for both backend and frontend.
@@ -36,8 +47,8 @@ Koomky is a self-hosted Freelance CRM built as a monorepo:
 - **Coverage gate policy**: backend and frontend thresholds remain **>= 80%**.
 - **Phase 5 validation automation is available** via:
   - `scripts/validate-phase5.sh` (backend coverage, frontend coverage, CI status check, tag check)
-- **No dedicated Phase 6 or Phase 7 validation scripts exist yet**:
-  - Use phase-specific suites documented in `docs/dev/phase6.md` and `docs/dev/phase7.md`.
+- **No dedicated Phase 6, Phase 7 or Phase 8 validation scripts exist yet**:
+  - Use phase-specific suites documented in `docs/dev/phase6.md`, `docs/dev/phase7.md` and `docs/dev/phase8.md`.
 - **Public signup is disabled**:
   - Backend route `POST /api/v1/auth/register` is removed.
   - Frontend `/auth/register` page and middleware exposure are removed.
@@ -163,6 +174,6 @@ docker compose restart frontend   # régénère .next/ proprement en mode dev
 ## Reference Documents
 
 - `PRD.md` — Full product requirements (v1.1.0 baseline + v1.2/v1.3 roadmap)
-- `docs/phases/phase{1,2,3,4,5,6,7}.md` — Detailed specs per phase
-- `docs/dev/phase{1,2,3,4,5,6,7}.md` — Task tracking per phase
+- `docs/phases/phase{1,2,3,4,5,6,7,8}.md` — Detailed specs per phase
+- `docs/dev/phase{1,2,3,4,5,6,7,8}.md` — Task tracking per phase
 - `scripts/validate-phase5.sh` — Automated local validation for Phase 5 gates
