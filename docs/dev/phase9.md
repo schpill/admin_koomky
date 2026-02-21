@@ -25,7 +25,7 @@
 | ID | Task | Status | Owner |
 |----|------|--------|-------|
 | P9-BE-008 | Create TicketController (index, store, show, update, destroy, changeStatus, assign, stats, overdue) | [x] | `1112af31` |
-| P9-BE-009 | Create TicketMessageController (index, store, update, destroy) | [~] | |
+| P9-BE-009 | Create TicketMessageController (index, store, update, destroy) | [x] | `ae41202c` |
 | P9-BE-010 | Create TicketDocumentController (index, store/upload, attach existing GED doc, detach) | todo | |
 | P9-BE-011 | Create StoreTicketRequest (title, description, client_id nullable+owned, project_id nullable+owned+belongs to client, assigned_to nullable, priority enum, category max 100, tags, deadline nullable future date) | todo | |
 | P9-BE-012 | Create UpdateTicketRequest (same rules as Store, all optional) | todo | |
@@ -55,7 +55,7 @@
 | P9-BT-007 | tests/Feature/Tickets/TicketStatusTest.php | todo | |
 | P9-BT-008 | tests/Feature/Tickets/TicketFilterTest.php | todo | |
 | P9-BT-009 | tests/Feature/Tickets/TicketSearchTest.php | todo | |
-| P9-BT-010 | tests/Feature/Tickets/TicketMessageTest.php | [~] | |
+| P9-BT-010 | tests/Feature/Tickets/TicketMessageTest.php | [x] | `ae41202c` |
 | P9-BT-011 | tests/Feature/Tickets/TicketDocumentTest.php | todo | |
 | P9-BT-012 | tests/Feature/Tickets/TicketStatsTest.php | todo | |
 | P9-BT-013 | tests/Feature/Tickets/TicketAssignTest.php | todo | |
