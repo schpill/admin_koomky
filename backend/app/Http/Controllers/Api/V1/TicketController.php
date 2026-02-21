@@ -6,6 +6,7 @@ use App\Models\Ticket;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use App\Http\Requests\Api\V1\StoreTicketRequest;
 
 class TicketController extends Controller
 {
@@ -15,7 +16,7 @@ class TicketController extends Controller
         return response()->json(['message' => 'Tickets list', 'filters' => $request->all(), 'data' => []]);
     }
 
-    public function store(Request $request): JsonResponse
+    public function store(StoreTicketRequest $request): JsonResponse
     {
         // Placeholder for creating a new ticket
         return response()->json(['message' => 'Ticket created', 'data' => $request->all()], 201);

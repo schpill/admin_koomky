@@ -19,6 +19,40 @@ class TicketCrudTest extends TestCase
     }
 
     /** @test */
+    public function ticket_creation_requires_a_title()
+    {
+        $response = $this->actingAs($this->user, 'sanctum')->postJson('/api/v1/tickets', [
+            'title' => '',
+            'description' => 'A description',
+        ]);
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['title']);
+    }
+
+    /** @test */
+    public function ticket_creation_requires_a_description()
+    {
+        $response = $this->actingAs($this->user, 'sanctum')->postJson('/api/v1/tickets', [
+            'title' => 'A Title',
+            'description' => '',
+        ]);
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['description']);
+    }
+
+    /** @test */
+    public function ticket_creation_requires_a_future_deadline_if_provided()
+    {
+        $response = $this->actingAs($this->user, 'sanctum')->postJson('/api/v1/tickets', [
+            'title' => 'A Title',
+            'description' => 'A description',
+            'deadline' => '2020-01-01',
+        ]);
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['deadline']);
+    }
+
+    /** @test */
     public function an_authenticated_user_can_access_ticket_index()
     {
         $response = $this->actingAs($this->user, 'sanctum')->getJson('/api/v1/tickets');
@@ -37,6 +71,7 @@ class TicketCrudTest extends TestCase
             'title' => 'Test Ticket',
             'description' => 'This is a test ticket description.',
             'user_id' => $this->user->id, // Owner
+            'priority' => 'normal',
             // other fields will be added later when requests are implemented
         ]);
         $response->assertStatus(201);
