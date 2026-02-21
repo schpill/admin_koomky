@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <crap_result>
   <project/>
-  <timestamp>2026-02-21 18:18:04</timestamp>
+  <timestamp>2026-02-21 18:24:12</timestamp>
   <stats>
     <name>Method Crap Stats</name>
-    <methodCount>1116</methodCount>
-    <crapMethodCount>116</crapMethodCount>
-    <crapLoad>876</crapLoad>
-    <totalCrap>12409.53</totalCrap>
-    <crapMethodPercent>10.39</crapMethodPercent>
+    <methodCount>1132</methodCount>
+    <crapMethodCount>118</crapMethodCount>
+    <crapLoad>887</crapLoad>
+    <totalCrap>12493.91</totalCrap>
+    <crapMethodPercent>10.42</crapMethodPercent>
   </stats>
   <methods>
     <method>
@@ -3427,9 +3427,9 @@
       <methodName>index</methodName>
       <methodSignature>index(App\Models\Ticket $ticket): Illuminate\Http\JsonResponse</methodSignature>
       <fullMethod>index(App\Models\Ticket $ticket): Illuminate\Http\JsonResponse</fullMethod>
-      <crap>1</crap>
+      <crap>2</crap>
       <complexity>1</complexity>
-      <coverage>100</coverage>
+      <coverage>0</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -3438,9 +3438,9 @@
       <methodName>store</methodName>
       <methodSignature>store(App\Http\Requests\Api\V1\StoreTicketMessageRequest $request, App\Models\Ticket $ticket): Illuminate\Http\JsonResponse</methodSignature>
       <fullMethod>store(App\Http\Requests\Api\V1\StoreTicketMessageRequest $request, App\Models\Ticket $ticket): Illuminate\Http\JsonResponse</fullMethod>
-      <crap>1</crap>
+      <crap>2</crap>
       <complexity>1</complexity>
-      <coverage>100</coverage>
+      <coverage>0</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -3449,9 +3449,9 @@
       <methodName>update</methodName>
       <methodSignature>update(Illuminate\Http\Request $request, App\Models\Ticket $ticket, App\Models\TicketMessage $message): Illuminate\Http\JsonResponse</methodSignature>
       <fullMethod>update(Illuminate\Http\Request $request, App\Models\Ticket $ticket, App\Models\TicketMessage $message): Illuminate\Http\JsonResponse</fullMethod>
-      <crap>1</crap>
+      <crap>2</crap>
       <complexity>1</complexity>
-      <coverage>100</coverage>
+      <coverage>0</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -3460,9 +3460,9 @@
       <methodName>destroy</methodName>
       <methodSignature>destroy(App\Models\Ticket $ticket, App\Models\TicketMessage $message): Illuminate\Http\JsonResponse</methodSignature>
       <fullMethod>destroy(App\Models\Ticket $ticket, App\Models\TicketMessage $message): Illuminate\Http\JsonResponse</fullMethod>
-      <crap>1</crap>
+      <crap>2</crap>
       <complexity>1</complexity>
-      <coverage>100</coverage>
+      <coverage>0</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -3900,9 +3900,9 @@
       <methodName>__construct</methodName>
       <methodSignature>__construct(App\Services\PrometheusMetricsService $metricsService)</methodSignature>
       <fullMethod>__construct(App\Services\PrometheusMetricsService $metricsService)</fullMethod>
-      <crap>1</crap>
+      <crap>2</crap>
       <complexity>1</complexity>
-      <coverage>100</coverage>
+      <coverage>0</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -3911,9 +3911,9 @@
       <methodName>handle</methodName>
       <methodSignature>handle(Illuminate\Http\Request $request, Closure $next): Symfony\Component\HttpFoundation\Response</methodSignature>
       <fullMethod>handle(Illuminate\Http\Request $request, Closure $next): Symfony\Component\HttpFoundation\Response</fullMethod>
-      <crap>2</crap>
+      <crap>6</crap>
       <complexity>2</complexity>
-      <coverage>95.24</coverage>
+      <coverage>0</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -3922,9 +3922,9 @@
       <methodName>handle</methodName>
       <methodSignature>handle(Illuminate\Http\Request $request, Closure $next): Symfony\Component\HttpFoundation\Response</methodSignature>
       <fullMethod>handle(Illuminate\Http\Request $request, Closure $next): Symfony\Component\HttpFoundation\Response</fullMethod>
-      <crap>2</crap>
+      <crap>6</crap>
       <complexity>2</complexity>
-      <coverage>94.44</coverage>
+      <coverage>0</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -3933,10 +3933,10 @@
       <methodName>handle</methodName>
       <methodSignature>handle(Illuminate\Http\Request $request, Closure $next): Symfony\Component\HttpFoundation\Response</methodSignature>
       <fullMethod>handle(Illuminate\Http\Request $request, Closure $next): Symfony\Component\HttpFoundation\Response</fullMethod>
-      <crap>14.62</crap>
+      <crap>30</crap>
       <complexity>5</complexity>
-      <coverage>27.27</coverage>
-      <crapLoad>0</crapLoad>
+      <coverage>0</coverage>
+      <crapLoad>5</crapLoad>
     </method>
     <method>
       <package>App\Http\Middleware</package>
@@ -3944,9 +3944,9 @@
       <methodName>handle</methodName>
       <methodSignature>handle(Illuminate\Http\Request $request, Closure $next): Symfony\Component\HttpFoundation\Response</methodSignature>
       <fullMethod>handle(Illuminate\Http\Request $request, Closure $next): Symfony\Component\HttpFoundation\Response</fullMethod>
-      <crap>1</crap>
+      <crap>2</crap>
       <complexity>1</complexity>
-      <coverage>100</coverage>
+      <coverage>0</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -4593,9 +4593,9 @@
       <methodName>authorize</methodName>
       <methodSignature>authorize(): bool</methodSignature>
       <fullMethod>authorize(): bool</fullMethod>
-      <crap>1</crap>
+      <crap>2</crap>
       <complexity>1</complexity>
-      <coverage>100</coverage>
+      <coverage>0</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -4604,9 +4604,9 @@
       <methodName>rules</methodName>
       <methodSignature>rules(): array</methodSignature>
       <fullMethod>rules(): array</fullMethod>
-      <crap>1</crap>
+      <crap>2</crap>
       <complexity>1</complexity>
-      <coverage>100</coverage>
+      <coverage>0</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -5396,6 +5396,138 @@
       <methodName>attachments</methodName>
       <methodSignature>attachments(): array</methodSignature>
       <fullMethod>attachments(): array</fullMethod>
+      <crap>2</crap>
+      <complexity>1</complexity>
+      <coverage>0</coverage>
+      <crapLoad>0</crapLoad>
+    </method>
+    <method>
+      <package>App\Mail\Tickets</package>
+      <className>App\Mail\Tickets\TicketAssigned</className>
+      <methodName>__construct</methodName>
+      <methodSignature>__construct(App\Models\Ticket $ticket)</methodSignature>
+      <fullMethod>__construct(App\Models\Ticket $ticket)</fullMethod>
+      <crap>1</crap>
+      <complexity>1</complexity>
+      <coverage>100</coverage>
+      <crapLoad>0</crapLoad>
+    </method>
+    <method>
+      <package>App\Mail\Tickets</package>
+      <className>App\Mail\Tickets\TicketAssigned</className>
+      <methodName>envelope</methodName>
+      <methodSignature>envelope(): Illuminate\Mail\Mailables\Envelope</methodSignature>
+      <fullMethod>envelope(): Illuminate\Mail\Mailables\Envelope</fullMethod>
+      <crap>1</crap>
+      <complexity>1</complexity>
+      <coverage>100</coverage>
+      <crapLoad>0</crapLoad>
+    </method>
+    <method>
+      <package>App\Mail\Tickets</package>
+      <className>App\Mail\Tickets\TicketAssigned</className>
+      <methodName>content</methodName>
+      <methodSignature>content(): Illuminate\Mail\Mailables\Content</methodSignature>
+      <fullMethod>content(): Illuminate\Mail\Mailables\Content</fullMethod>
+      <crap>2</crap>
+      <complexity>1</complexity>
+      <coverage>0</coverage>
+      <crapLoad>0</crapLoad>
+    </method>
+    <method>
+      <package>App\Mail\Tickets</package>
+      <className>App\Mail\Tickets\TicketClosed</className>
+      <methodName>__construct</methodName>
+      <methodSignature>__construct(App\Models\Ticket $ticket)</methodSignature>
+      <fullMethod>__construct(App\Models\Ticket $ticket)</fullMethod>
+      <crap>1</crap>
+      <complexity>1</complexity>
+      <coverage>100</coverage>
+      <crapLoad>0</crapLoad>
+    </method>
+    <method>
+      <package>App\Mail\Tickets</package>
+      <className>App\Mail\Tickets\TicketClosed</className>
+      <methodName>envelope</methodName>
+      <methodSignature>envelope(): Illuminate\Mail\Mailables\Envelope</methodSignature>
+      <fullMethod>envelope(): Illuminate\Mail\Mailables\Envelope</fullMethod>
+      <crap>1</crap>
+      <complexity>1</complexity>
+      <coverage>100</coverage>
+      <crapLoad>0</crapLoad>
+    </method>
+    <method>
+      <package>App\Mail\Tickets</package>
+      <className>App\Mail\Tickets\TicketClosed</className>
+      <methodName>content</methodName>
+      <methodSignature>content(): Illuminate\Mail\Mailables\Content</methodSignature>
+      <fullMethod>content(): Illuminate\Mail\Mailables\Content</fullMethod>
+      <crap>2</crap>
+      <complexity>1</complexity>
+      <coverage>0</coverage>
+      <crapLoad>0</crapLoad>
+    </method>
+    <method>
+      <package>App\Mail\Tickets</package>
+      <className>App\Mail\Tickets\TicketNewMessage</className>
+      <methodName>__construct</methodName>
+      <methodSignature>__construct(App\Models\Ticket $ticket, App\Models\TicketMessage $message)</methodSignature>
+      <fullMethod>__construct(App\Models\Ticket $ticket, App\Models\TicketMessage $message)</fullMethod>
+      <crap>1</crap>
+      <complexity>1</complexity>
+      <coverage>100</coverage>
+      <crapLoad>0</crapLoad>
+    </method>
+    <method>
+      <package>App\Mail\Tickets</package>
+      <className>App\Mail\Tickets\TicketNewMessage</className>
+      <methodName>envelope</methodName>
+      <methodSignature>envelope(): Illuminate\Mail\Mailables\Envelope</methodSignature>
+      <fullMethod>envelope(): Illuminate\Mail\Mailables\Envelope</fullMethod>
+      <crap>1</crap>
+      <complexity>1</complexity>
+      <coverage>100</coverage>
+      <crapLoad>0</crapLoad>
+    </method>
+    <method>
+      <package>App\Mail\Tickets</package>
+      <className>App\Mail\Tickets\TicketNewMessage</className>
+      <methodName>content</methodName>
+      <methodSignature>content(): Illuminate\Mail\Mailables\Content</methodSignature>
+      <fullMethod>content(): Illuminate\Mail\Mailables\Content</fullMethod>
+      <crap>2</crap>
+      <complexity>1</complexity>
+      <coverage>0</coverage>
+      <crapLoad>0</crapLoad>
+    </method>
+    <method>
+      <package>App\Mail\Tickets</package>
+      <className>App\Mail\Tickets\TicketResolved</className>
+      <methodName>__construct</methodName>
+      <methodSignature>__construct(App\Models\Ticket $ticket)</methodSignature>
+      <fullMethod>__construct(App\Models\Ticket $ticket)</fullMethod>
+      <crap>1</crap>
+      <complexity>1</complexity>
+      <coverage>100</coverage>
+      <crapLoad>0</crapLoad>
+    </method>
+    <method>
+      <package>App\Mail\Tickets</package>
+      <className>App\Mail\Tickets\TicketResolved</className>
+      <methodName>envelope</methodName>
+      <methodSignature>envelope(): Illuminate\Mail\Mailables\Envelope</methodSignature>
+      <fullMethod>envelope(): Illuminate\Mail\Mailables\Envelope</fullMethod>
+      <crap>1</crap>
+      <complexity>1</complexity>
+      <coverage>100</coverage>
+      <crapLoad>0</crapLoad>
+    </method>
+    <method>
+      <package>App\Mail\Tickets</package>
+      <className>App\Mail\Tickets\TicketResolved</className>
+      <methodName>content</methodName>
+      <methodSignature>content(): Illuminate\Mail\Mailables\Content</methodSignature>
+      <fullMethod>content(): Illuminate\Mail\Mailables\Content</fullMethod>
       <crap>2</crap>
       <complexity>1</complexity>
       <coverage>0</coverage>
@@ -7552,9 +7684,9 @@
       <methodName>assignee</methodName>
       <methodSignature>assignee(): Illuminate\Database\Eloquent\Relations\BelongsTo</methodSignature>
       <fullMethod>assignee(): Illuminate\Database\Eloquent\Relations\BelongsTo</fullMethod>
-      <crap>2</crap>
+      <crap>1</crap>
       <complexity>1</complexity>
-      <coverage>0</coverage>
+      <coverage>100</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -9587,9 +9719,9 @@
       <methodName>addMessage</methodName>
       <methodSignature>addMessage(App\Models\User $user, App\Models\Ticket $ticket): bool</methodSignature>
       <fullMethod>addMessage(App\Models\User $user, App\Models\Ticket $ticket): bool</fullMethod>
-      <crap>2</crap>
+      <crap>6</crap>
       <complexity>2</complexity>
-      <coverage>100</coverage>
+      <coverage>0</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -11391,9 +11523,9 @@
       <methodName>incrementCounter</methodName>
       <methodSignature>incrementCounter(string $name, array $labels, float $value): void</methodSignature>
       <fullMethod>incrementCounter(string $name, array $labels, float $value): void</fullMethod>
-      <crap>1</crap>
+      <crap>2</crap>
       <complexity>1</complexity>
-      <coverage>100</coverage>
+      <coverage>0</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -11413,10 +11545,10 @@
       <methodName>observeHistogram</methodName>
       <methodSignature>observeHistogram(string $name, float $value, array $labels): void</methodSignature>
       <fullMethod>observeHistogram(string $name, float $value, array $labels): void</fullMethod>
-      <crap>5</crap>
+      <crap>30</crap>
       <complexity>5</complexity>
-      <coverage>100</coverage>
-      <crapLoad>0</crapLoad>
+      <coverage>0</coverage>
+      <crapLoad>5</crapLoad>
     </method>
     <method>
       <package>App\Services</package>
@@ -11457,9 +11589,9 @@
       <methodName>labelsKey</methodName>
       <methodSignature>labelsKey(array $labels): string</methodSignature>
       <fullMethod>labelsKey(array $labels): string</fullMethod>
-      <crap>1</crap>
+      <crap>2</crap>
       <complexity>1</complexity>
-      <coverage>100</coverage>
+      <coverage>0</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -11879,6 +12011,50 @@
       <complexity>5</complexity>
       <coverage>0</coverage>
       <crapLoad>5</crapLoad>
+    </method>
+    <method>
+      <package>App\Services</package>
+      <className>App\Services\TicketNotificationService</className>
+      <methodName>notifyAssigned</methodName>
+      <methodSignature>notifyAssigned(App\Models\Ticket $ticket): void</methodSignature>
+      <fullMethod>notifyAssigned(App\Models\Ticket $ticket): void</fullMethod>
+      <crap>1</crap>
+      <complexity>1</complexity>
+      <coverage>100</coverage>
+      <crapLoad>0</crapLoad>
+    </method>
+    <method>
+      <package>App\Services</package>
+      <className>App\Services\TicketNotificationService</className>
+      <methodName>notifyOwnerResolved</methodName>
+      <methodSignature>notifyOwnerResolved(App\Models\Ticket $ticket): void</methodSignature>
+      <fullMethod>notifyOwnerResolved(App\Models\Ticket $ticket): void</fullMethod>
+      <crap>1</crap>
+      <complexity>1</complexity>
+      <coverage>100</coverage>
+      <crapLoad>0</crapLoad>
+    </method>
+    <method>
+      <package>App\Services</package>
+      <className>App\Services\TicketNotificationService</className>
+      <methodName>notifyOwnerClosed</methodName>
+      <methodSignature>notifyOwnerClosed(App\Models\Ticket $ticket): void</methodSignature>
+      <fullMethod>notifyOwnerClosed(App\Models\Ticket $ticket): void</fullMethod>
+      <crap>1</crap>
+      <complexity>1</complexity>
+      <coverage>100</coverage>
+      <crapLoad>0</crapLoad>
+    </method>
+    <method>
+      <package>App\Services</package>
+      <className>App\Services\TicketNotificationService</className>
+      <methodName>notifyParticipantsNewMessage</methodName>
+      <methodSignature>notifyParticipantsNewMessage(App\Models\Ticket $ticket, App\Models\TicketMessage $message): void</methodSignature>
+      <fullMethod>notifyParticipantsNewMessage(App\Models\Ticket $ticket, App\Models\TicketMessage $message): void</fullMethod>
+      <crap>4</crap>
+      <complexity>4</complexity>
+      <coverage>100</coverage>
+      <crapLoad>0</crapLoad>
     </method>
     <method>
       <package>App\Services</package>
