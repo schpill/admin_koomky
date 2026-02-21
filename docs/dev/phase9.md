@@ -35,7 +35,7 @@
 
 | ID | Task | Status | Owner |
 |----|------|--------|-------|
-| P9-BE-014 | Create TicketNotificationService (notifyAssigned, notifyOwnerResolved, notifyOwnerClosed, notifyParticipantsNewMessage — all queued) | [~] | |
+| P9-BE-014 | Create TicketNotificationService (notifyAssigned, notifyOwnerResolved, notifyOwnerClosed, notifyParticipantsNewMessage — all queued) | [x] | `cacdc5fc` |
 | P9-BE-015 | Create TicketObserver (assigned_to default on created, webhooks on open/assign/resolve/close/delete, set resolved_at / closed_at) | [x] | `86fd643d` |
 | P9-BE-016 | Create TicketMessageObserver (set first_response_at on first public message from assignee, trigger notifyParticipantsNewMessage) | todo | |
 | P9-BE-017 | Configure Meilisearch Scout index for Ticket (searchable: title, description; filterable: user_id, assigned_to, client_id, project_id, status, priority, category, tags; sortable: created_at, updated_at, deadline, priority) | todo | |
@@ -48,7 +48,7 @@
 |----|-----------|--------|-------|
 | P9-BT-001 | tests/Unit/Models/TicketTest.php | [x] | `86fd643d` |
 | P9-BT-002 | tests/Unit/Models/TicketMessageTest.php | todo | |
-| P9-BT-003 | tests/Unit/Services/TicketNotificationServiceTest.php | [~] | |
+| P9-BT-003 | tests/Unit/Services/TicketNotificationServiceTest.php | [x] | `cacdc5fc` |
 | P9-BT-004 | tests/Unit/Observers/TicketObserverTest.php | todo | |
 | P9-BT-005 | tests/Unit/Observers/TicketMessageObserverTest.php | todo | |
 | P9-BT-006 | tests/Feature/Tickets/TicketCrudTest.php | [x] | `141bd450` |
