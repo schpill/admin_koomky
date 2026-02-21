@@ -16,6 +16,7 @@ class CreateUserCommand extends Command
     public function handle(): int
     {
         $email = $this->argument('email');
+
         if (! is_string($email) || trim($email) === '') {
             $email = (string) $this->ask('Email address');
         }
@@ -92,11 +93,13 @@ class CreateUserCommand extends Command
             $symbols[random_int(0, strlen($symbols) - 1)],
         ];
 
-        for ($i = count($characters); $i < $length; $i++) {
+        $countCharacters = count($characters);
+
+        for ($i = $countCharacters; $i < $length; $i++) {
             $characters[] = $all[random_int(0, strlen($all) - 1)];
         }
 
-        for ($i = count($characters) - 1; $i > 0; $i--) {
+        for ($i = $countCharacters - 1; $i > 0; $i--) {
             $swapIndex = random_int(0, $i);
             [$characters[$i], $characters[$swapIndex]] = [$characters[$swapIndex], $characters[$i]];
         }

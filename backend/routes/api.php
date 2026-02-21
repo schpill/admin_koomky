@@ -20,6 +20,7 @@ use App\Http\Controllers\Api\V1\CurrencyController;
 use App\Http\Controllers\Api\V1\DashboardController;
 use App\Http\Controllers\Api\V1\DataExportController;
 use App\Http\Controllers\Api\V1\DataImportController;
+use App\Http\Controllers\Api\V1\DocumentController;
 use App\Http\Controllers\Api\V1\ExpenseCategoryController;
 use App\Http\Controllers\Api\V1\ExpenseController;
 use App\Http\Controllers\Api\V1\ExpenseReportController;
@@ -302,5 +303,13 @@ Route::prefix('v1')->group(function () {
         Route::post('leads/{leadId}/activities', [LeadActivityController::class, 'store']);
         Route::delete('leads/{leadId}/activities/{activityId}', [LeadActivityController::class, 'destroy']);
         Route::apiResource('leads', LeadController::class);
+
+        // Documents (GED)
+        Route::get('documents/stats', [DocumentController::class, 'stats']);
+        Route::delete('documents/bulk', [DocumentController::class, 'bulkDestroy']);
+        Route::apiResource('documents', DocumentController::class);
+        Route::post('documents/{document}/reupload', [DocumentController::class, 'reupload']);
+        Route::get('documents/{document}/download', [DocumentController::class, 'download']);
+        Route::post('documents/{document}/email', [DocumentController::class, 'sendEmail']);
     });
 });

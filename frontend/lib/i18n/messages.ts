@@ -26,6 +26,7 @@ export const messages: Record<Locale, MessageTree> = {
     sidebar: {
       dashboard: "Tableau de bord",
       leads: "Prospects",
+      documents: "Documents",
       clients: "Clients",
       invoices: "Factures",
       projects: "Projets",
@@ -1511,6 +1512,7 @@ export const messages: Record<Locale, MessageTree> = {
     sidebar: {
       dashboard: "Dashboard",
       leads: "Leads",
+      documents: "Documents",
       clients: "Clients",
       invoices: "Invoices",
       projects: "Projects",

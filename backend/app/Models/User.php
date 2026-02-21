@@ -70,6 +70,7 @@ class User extends Authenticatable
         'two_factor_recovery_codes',
         'two_factor_confirmed_at',
         'deletion_scheduled_at',
+        'document_storage_quota_mb',
     ];
 
     /**
@@ -106,6 +107,7 @@ class User extends Authenticatable
             'two_factor_secret' => 'encrypted',
             'two_factor_recovery_codes' => 'encrypted',
             'deletion_scheduled_at' => 'datetime',
+            'document_storage_quota_mb' => 'integer',
         ];
     }
 
@@ -267,5 +269,13 @@ class User extends Authenticatable
     public function leads(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Lead::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\Document, \App\Models\User>
+     */
+    public function documents(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Document::class);
     }
 }

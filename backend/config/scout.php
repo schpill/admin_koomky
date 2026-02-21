@@ -266,6 +266,24 @@ return [
                     'created_at',
                 ],
             ],
+            'documents' => [
+                'searchableAttributes' => [
+                    'title',
+                    'original_filename',
+                    'tags',
+                ],
+                'filterableAttributes' => [
+                    'user_id',
+                    'client_id',
+                    'document_type',
+                    'script_language',
+                ],
+                'sortableAttributes' => [
+                    'created_at',
+                    'title',
+                    'file_size',
+                ],
+            ],
         ],
     ],
 
