@@ -75,7 +75,6 @@ class Ticket extends Model
 
     public function documents(): BelongsToMany
     {
-        return $this->belongsToMany(Document::class, 'ticket_documents')
-                    ->withTimestamps('attached_at');
+        return $this->belongsToMany(Document::class, 'ticket_documents');
     }
 }

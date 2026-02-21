@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <crap_result>
   <project/>
-  <timestamp>2026-02-21 17:50:07</timestamp>
+  <timestamp>2026-02-21 17:56:07</timestamp>
   <stats>
     <name>Method Crap Stats</name>
-    <methodCount>1106</methodCount>
+    <methodCount>1110</methodCount>
     <crapMethodCount>116</crapMethodCount>
     <crapLoad>876</crapLoad>
-    <totalCrap>12387.53</totalCrap>
-    <crapMethodPercent>10.49</crapMethodPercent>
+    <totalCrap>12390.53</totalCrap>
+    <crapMethodPercent>10.45</crapMethodPercent>
   </stats>
   <methods>
     <method>
@@ -3379,7 +3379,7 @@
     </method>
     <method>
       <package>App\Http\Controllers\Api\V1</package>
-      <className>App\Http\Controllers\Api\V1\TicketMessageController</className>
+      <className>App\Http\Controllers\Api\V1\TicketDocumentController</className>
       <methodName>index</methodName>
       <methodSignature>index(App\Models\Ticket $ticket): Illuminate\Http\JsonResponse</methodSignature>
       <fullMethod>index(App\Models\Ticket $ticket): Illuminate\Http\JsonResponse</fullMethod>
@@ -3390,7 +3390,7 @@
     </method>
     <method>
       <package>App\Http\Controllers\Api\V1</package>
-      <className>App\Http\Controllers\Api\V1\TicketMessageController</className>
+      <className>App\Http\Controllers\Api\V1\TicketDocumentController</className>
       <methodName>store</methodName>
       <methodSignature>store(Illuminate\Http\Request $request, App\Models\Ticket $ticket): Illuminate\Http\JsonResponse</methodSignature>
       <fullMethod>store(Illuminate\Http\Request $request, App\Models\Ticket $ticket): Illuminate\Http\JsonResponse</fullMethod>
@@ -3401,10 +3401,21 @@
     </method>
     <method>
       <package>App\Http\Controllers\Api\V1</package>
-      <className>App\Http\Controllers\Api\V1\TicketMessageController</className>
-      <methodName>update</methodName>
-      <methodSignature>update(Illuminate\Http\Request $request, App\Models\Ticket $ticket, App\Models\TicketMessage $message): Illuminate\Http\JsonResponse</methodSignature>
-      <fullMethod>update(Illuminate\Http\Request $request, App\Models\Ticket $ticket, App\Models\TicketMessage $message): Illuminate\Http\JsonResponse</fullMethod>
+      <className>App\Http\Controllers\Api\V1\TicketDocumentController</className>
+      <methodName>attach</methodName>
+      <methodSignature>attach(Illuminate\Http\Request $request, App\Models\Ticket $ticket): Illuminate\Http\JsonResponse</methodSignature>
+      <fullMethod>attach(Illuminate\Http\Request $request, App\Models\Ticket $ticket): Illuminate\Http\JsonResponse</fullMethod>
+      <crap>1</crap>
+      <complexity>1</complexity>
+      <coverage>100</coverage>
+      <crapLoad>0</crapLoad>
+    </method>
+    <method>
+      <package>App\Http\Controllers\Api\V1</package>
+      <className>App\Http\Controllers\Api\V1\TicketDocumentController</className>
+      <methodName>detach</methodName>
+      <methodSignature>detach(App\Models\Ticket $ticket, App\Models\Document $document): Illuminate\Http\JsonResponse</methodSignature>
+      <fullMethod>detach(App\Models\Ticket $ticket, App\Models\Document $document): Illuminate\Http\JsonResponse</fullMethod>
       <crap>1</crap>
       <complexity>1</complexity>
       <coverage>100</coverage>
@@ -3413,12 +3424,45 @@
     <method>
       <package>App\Http\Controllers\Api\V1</package>
       <className>App\Http\Controllers\Api\V1\TicketMessageController</className>
+      <methodName>index</methodName>
+      <methodSignature>index(App\Models\Ticket $ticket): Illuminate\Http\JsonResponse</methodSignature>
+      <fullMethod>index(App\Models\Ticket $ticket): Illuminate\Http\JsonResponse</fullMethod>
+      <crap>2</crap>
+      <complexity>1</complexity>
+      <coverage>0</coverage>
+      <crapLoad>0</crapLoad>
+    </method>
+    <method>
+      <package>App\Http\Controllers\Api\V1</package>
+      <className>App\Http\Controllers\Api\V1\TicketMessageController</className>
+      <methodName>store</methodName>
+      <methodSignature>store(Illuminate\Http\Request $request, App\Models\Ticket $ticket): Illuminate\Http\JsonResponse</methodSignature>
+      <fullMethod>store(Illuminate\Http\Request $request, App\Models\Ticket $ticket): Illuminate\Http\JsonResponse</fullMethod>
+      <crap>2</crap>
+      <complexity>1</complexity>
+      <coverage>0</coverage>
+      <crapLoad>0</crapLoad>
+    </method>
+    <method>
+      <package>App\Http\Controllers\Api\V1</package>
+      <className>App\Http\Controllers\Api\V1\TicketMessageController</className>
+      <methodName>update</methodName>
+      <methodSignature>update(Illuminate\Http\Request $request, App\Models\Ticket $ticket, App\Models\TicketMessage $message): Illuminate\Http\JsonResponse</methodSignature>
+      <fullMethod>update(Illuminate\Http\Request $request, App\Models\Ticket $ticket, App\Models\TicketMessage $message): Illuminate\Http\JsonResponse</fullMethod>
+      <crap>2</crap>
+      <complexity>1</complexity>
+      <coverage>0</coverage>
+      <crapLoad>0</crapLoad>
+    </method>
+    <method>
+      <package>App\Http\Controllers\Api\V1</package>
+      <className>App\Http\Controllers\Api\V1\TicketMessageController</className>
       <methodName>destroy</methodName>
       <methodSignature>destroy(App\Models\Ticket $ticket, App\Models\TicketMessage $message): Illuminate\Http\JsonResponse</methodSignature>
       <fullMethod>destroy(App\Models\Ticket $ticket, App\Models\TicketMessage $message): Illuminate\Http\JsonResponse</fullMethod>
-      <crap>1</crap>
+      <crap>2</crap>
       <complexity>1</complexity>
-      <coverage>100</coverage>
+      <coverage>0</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -5979,9 +6023,9 @@
       <methodName>client</methodName>
       <methodSignature>client(): Illuminate\Database\Eloquent\Relations\BelongsTo</methodSignature>
       <fullMethod>client(): Illuminate\Database\Eloquent\Relations\BelongsTo</fullMethod>
-      <crap>2</crap>
+      <crap>1</crap>
       <complexity>1</complexity>
-      <coverage>0</coverage>
+      <coverage>100</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -7486,9 +7530,9 @@
       <methodName>documents</methodName>
       <methodSignature>documents(): Illuminate\Database\Eloquent\Relations\BelongsToMany</methodSignature>
       <fullMethod>documents(): Illuminate\Database\Eloquent\Relations\BelongsToMany</fullMethod>
-      <crap>2</crap>
+      <crap>1</crap>
       <complexity>1</complexity>
-      <coverage>0</coverage>
+      <coverage>100</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -7497,9 +7541,9 @@
       <methodName>ticket</methodName>
       <methodSignature>ticket(): Illuminate\Database\Eloquent\Relations\BelongsTo</methodSignature>
       <fullMethod>ticket(): Illuminate\Database\Eloquent\Relations\BelongsTo</fullMethod>
-      <crap>1</crap>
+      <crap>2</crap>
       <complexity>1</complexity>
-      <coverage>100</coverage>
+      <coverage>0</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -7508,9 +7552,9 @@
       <methodName>user</methodName>
       <methodSignature>user(): Illuminate\Database\Eloquent\Relations\BelongsTo</methodSignature>
       <fullMethod>user(): Illuminate\Database\Eloquent\Relations\BelongsTo</fullMethod>
-      <crap>1</crap>
+      <crap>2</crap>
       <complexity>1</complexity>
-      <coverage>100</coverage>
+      <coverage>0</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -8322,9 +8366,9 @@
       <methodName>created</methodName>
       <methodSignature>created(App\Models\Document $document): void</methodSignature>
       <fullMethod>created(App\Models\Document $document): void</fullMethod>
-      <crap>6</crap>
+      <crap>2</crap>
       <complexity>2</complexity>
-      <coverage>0</coverage>
+      <coverage>100</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -8355,9 +8399,9 @@
       <methodName>dispatchWebhook</methodName>
       <methodSignature>dispatchWebhook(App\Models\Document $document, string $event, array $extraData): void</methodSignature>
       <fullMethod>dispatchWebhook(App\Models\Document $document, string $event, array $extraData): void</fullMethod>
-      <crap>2</crap>
+      <crap>1</crap>
       <complexity>1</complexity>
-      <coverage>0</coverage>
+      <coverage>100</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>

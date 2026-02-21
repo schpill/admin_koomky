@@ -60,6 +60,7 @@ use App\Http\Controllers\Api\V1\TimeEntryController;
 use App\Http\Controllers\Api\V1\UserSettingsController;
 use App\Http\Controllers\Api\V1\TicketController;
 use App\Http\Controllers\Api\V1\TicketMessageController;
+use App\Http\Controllers\Api\V1\TicketDocumentController;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
@@ -323,5 +324,11 @@ Route::prefix('v1')->group(function () {
 
         // Ticket Messages
         Route::apiResource('tickets.messages', TicketMessageController::class)->except(['show']);
+
+        // Ticket Documents
+        Route::get('tickets/{ticket}/documents', [TicketDocumentController::class, 'index']);
+        Route::post('tickets/{ticket}/documents', [TicketDocumentController::class, 'store']);
+        Route::delete('tickets/{ticket}/documents/{document}', [TicketDocumentController::class, 'detach']);
+        Route::post('tickets/{ticket}/documents/attach', [TicketDocumentController::class, 'attach']);
     });
 });
