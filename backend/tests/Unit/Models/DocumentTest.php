@@ -1,9 +1,9 @@
 <?php
 
+use App\Enums\DocumentType;
+use App\Models\Client;
 use App\Models\Document;
 use App\Models\User;
-use App\Models\Client;
-use App\Enums\DocumentType;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -67,7 +67,7 @@ test('scope byTag filters correctly', function () {
 test('it has searchable array for scout', function () {
     $document = Document::factory()->create([
         'title' => 'Test Document',
-        'tags' => ['test', 'unit']
+        'tags' => ['test', 'unit'],
     ]);
 
     $searchableArray = $document->toSearchableArray();

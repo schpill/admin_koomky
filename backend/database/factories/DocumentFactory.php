@@ -19,7 +19,7 @@ class DocumentFactory extends Factory
      */
     public function definition(): array
     {
-        $originalFilename = $this->faker->word() . '.' . $this->faker->fileExtension();
+        $originalFilename = $this->faker->word().'.'.$this->faker->fileExtension();
         $documentType = $this->faker->randomElement(DocumentType::cases());
         $scriptLanguage = null;
         if ($documentType === DocumentType::SCRIPT) {
@@ -31,7 +31,7 @@ class DocumentFactory extends Factory
             'client_id' => Client::factory(),
             'title' => $this->faker->sentence(3),
             'original_filename' => $originalFilename,
-            'storage_path' => 'documents/' . $this->faker->uuid() . '/' . $originalFilename,
+            'storage_path' => 'documents/'.$this->faker->uuid().'/'.$originalFilename,
             'storage_disk' => 'local',
             'mime_type' => $this->faker->mimeType(),
             'document_type' => $documentType,

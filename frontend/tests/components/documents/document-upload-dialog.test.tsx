@@ -23,11 +23,15 @@ describe("DocumentUploadDialog", () => {
         <DocumentUploadDialog />
       </I18nProvider>
     );
-    
-    const trigger = screen.getByRole("button", { name: /importer un document/i });
+
+    const trigger = screen.getByRole("button", {
+      name: /importer un document/i,
+    });
     fireEvent.click(trigger);
-    
-    expect(screen.getAllByText("Importer un document").length).toBeGreaterThan(0);
+
+    expect(screen.getAllByText("Importer un document").length).toBeGreaterThan(
+      0
+    );
   });
 
   it("shows file selection zone", () => {
@@ -36,8 +40,12 @@ describe("DocumentUploadDialog", () => {
         <DocumentUploadDialog />
       </I18nProvider>
     );
-    fireEvent.click(screen.getByRole("button", { name: /importer un document/i }));
-    
-    expect(screen.getByText(/cliquez pour choisir un fichier/i)).toBeInTheDocument();
+    fireEvent.click(
+      screen.getByRole("button", { name: /importer un document/i })
+    );
+
+    expect(
+      screen.getByText(/cliquez pour choisir un fichier/i)
+    ).toBeInTheDocument();
   });
 });

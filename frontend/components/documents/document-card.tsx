@@ -1,26 +1,26 @@
 "use client";
 
-import { 
-  Download, 
-  Mail, 
-  Trash2, 
-  MoreVertical, 
+import {
+  Download,
+  Mail,
+  Trash2,
+  MoreVertical,
   ExternalLink,
-  History
+  History,
 } from "lucide-react";
 import { formatBytes, formatDate } from "@/lib/utils";
-import { 
-  Card, 
-  CardContent, 
-  CardFooter, 
-  CardHeader 
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
 } from "@/components/ui/card";
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuTrigger,
-  DropdownMenuSeparator
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -51,18 +51,18 @@ export function DocumentCard({
       <CardHeader className="p-4 pb-0">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-2">
-            <Checkbox 
-              checked={isSelected} 
+            <Checkbox
+              checked={isSelected}
               onCheckedChange={(checked) => onSelect?.(checked as boolean)}
               className="z-10"
             />
-            <DocumentTypeBadge 
-              type={document.document_type} 
-              scriptLanguage={document.script_language} 
+            <DocumentTypeBadge
+              type={document.document_type}
+              scriptLanguage={document.script_language}
               showLabel={false}
             />
           </div>
-          
+
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" className="h-8 w-8">
@@ -71,7 +71,10 @@ export function DocumentCard({
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem asChild>
-                <Link href={`/documents/${document.id}`} className="flex w-full items-center">
+                <Link
+                  href={`/documents/${document.id}`}
+                  className="flex w-full items-center"
+                >
                   <ExternalLink className="mr-2 h-4 w-4" />
                   Ouvrir
                 </Link>
@@ -85,7 +88,10 @@ export function DocumentCard({
                 Envoyer par email
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={onDelete} className="text-red-600 focus:text-red-600">
+              <DropdownMenuItem
+                onClick={onDelete}
+                className="text-red-600 focus:text-red-600"
+              >
                 <Trash2 className="mr-2 h-4 w-4" />
                 Supprimer
               </DropdownMenuItem>
@@ -93,17 +99,20 @@ export function DocumentCard({
           </DropdownMenu>
         </div>
       </CardHeader>
-      
+
       <CardContent className="p-4 pt-2">
         <Link href={`/documents/${document.id}`}>
-          <h3 className="line-clamp-1 font-semibold text-sm hover:underline cursor-pointer" title={document.title}>
+          <h3
+            className="line-clamp-1 font-semibold text-sm hover:underline cursor-pointer"
+            title={document.title}
+          >
             {document.title}
           </h3>
         </Link>
         <p className="mt-1 text-xs text-muted-foreground line-clamp-1">
           {document.original_filename}
         </p>
-        
+
         {document.client && (
           <div className="mt-2">
             <Badge variant="outline" className="text-[10px] font-normal">
@@ -112,18 +121,20 @@ export function DocumentCard({
           </div>
         )}
       </CardContent>
-      
+
       <CardFooter className="flex items-center justify-between p-4 pt-0 text-[10px] text-muted-foreground">
         <div className="flex items-center gap-2">
           <span>{formatBytes(document.file_size)}</span>
           <span>•</span>
           <span>{formatDate(document.created_at)}</span>
         </div>
-        
+
         {document.version > 1 && (
-          <Badge variant="secondary" className="h-4 px-1 text-[9px] font-normal gap-0.5">
-            <History className="h-2 w-2" />
-            v{document.version}
+          <Badge
+            variant="secondary"
+            className="h-4 px-1 text-[9px] font-normal gap-0.5"
+          >
+            <History className="h-2 w-2" />v{document.version}
           </Badge>
         )}
       </CardFooter>

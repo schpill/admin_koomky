@@ -1,10 +1,10 @@
 <?php
 
-use App\Models\User;
 use App\Models\Document;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
@@ -18,7 +18,7 @@ test('it can reupload a document', function () {
         'user_id' => $this->user->id,
         'original_filename' => 'old.pdf',
         'version' => 1,
-        'storage_path' => 'documents/old.pdf'
+        'storage_path' => 'documents/old.pdf',
     ]);
     Storage::disk('local')->put($document->storage_path, 'old content');
 

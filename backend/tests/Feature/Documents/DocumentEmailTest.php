@@ -1,11 +1,11 @@
 <?php
 
-use App\Models\User;
-use App\Models\Document;
 use App\Mail\DocumentAttachmentMail;
+use App\Models\Document;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 

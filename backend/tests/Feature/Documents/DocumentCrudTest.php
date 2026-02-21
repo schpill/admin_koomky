@@ -1,12 +1,11 @@
 <?php
 
-use App\Models\User;
+use App\Enums\DocumentType;
 use App\Models\Client;
 use App\Models\Document;
-use App\Enums\DocumentType;
-use Illuminate\Support\Facades\Storage;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
+use Illuminate\Support\Facades\Storage;
 
 uses(RefreshDatabase::class);
 
@@ -84,7 +83,7 @@ test('it updates document metadata', function () {
 test('it deletes a document and its file', function () {
     $document = Document::factory()->create([
         'user_id' => $this->user->id,
-        'storage_path' => 'documents/test.pdf'
+        'storage_path' => 'documents/test.pdf',
     ]);
     Storage::disk('local')->put($document->storage_path, 'content');
 

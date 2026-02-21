@@ -1,21 +1,21 @@
 "use client";
 
 import { useEffect } from "react";
-import { 
-  FileText, 
-  ArrowRight, 
+import {
+  FileText,
+  ArrowRight,
   ExternalLink,
   Loader2,
-  Files
+  Files,
 } from "lucide-react";
 import { useDocumentStore } from "@/lib/stores/documents";
 import { DocumentTypeBadge } from "@/components/documents/document-type-badge";
-import { 
-  Card, 
-  CardContent, 
-  CardHeader, 
+import {
+  Card,
+  CardContent,
+  CardHeader,
   CardTitle,
-  CardFooter
+  CardFooter,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { formatDate } from "@/lib/utils";
@@ -48,11 +48,15 @@ export function RecentDocumentsWidget() {
         {isLoading && documents.length === 0 ? (
           <div className="flex flex-col gap-4 p-4 items-center justify-center h-48">
             <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-            <p className="text-xs text-muted-foreground">Chargement des documents...</p>
+            <p className="text-xs text-muted-foreground">
+              Chargement des documents...
+            </p>
           </div>
         ) : recentDocs.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-48 text-center p-6 border-2 border-dashed border-muted rounded-lg m-4">
-            <p className="text-sm text-muted-foreground italic">Aucun document importé.</p>
+            <p className="text-sm text-muted-foreground italic">
+              Aucun document importé.
+            </p>
             <Button variant="link" size="sm" asChild className="mt-2 text-xs">
               <Link href="/documents">Importer le premier document</Link>
             </Button>
@@ -60,15 +64,15 @@ export function RecentDocumentsWidget() {
         ) : (
           <div className="space-y-1">
             {recentDocs.map((doc) => (
-              <Link 
-                key={doc.id} 
+              <Link
+                key={doc.id}
                 href={`/documents/${doc.id}`}
                 className="flex items-center gap-3 p-3 rounded-md hover:bg-accent/50 transition-colors group"
               >
                 <div className="rounded-md bg-muted p-2 group-hover:bg-background transition-colors">
-                  <DocumentTypeBadge 
-                    type={doc.document_type} 
-                    showLabel={false} 
+                  <DocumentTypeBadge
+                    type={doc.document_type}
+                    showLabel={false}
                     className="p-0 bg-transparent dark:bg-transparent"
                   />
                 </div>

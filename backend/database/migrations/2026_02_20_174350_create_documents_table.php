@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('storage_disk', 50)->default('local');
             $table->string('mime_type', 150);
             $table->enum('document_type', [
-                'pdf', 'spreadsheet', 'document', 'text', 'script', 'image', 'archive', 'presentation', 'other'
+                'pdf', 'spreadsheet', 'document', 'text', 'script', 'image', 'archive', 'presentation', 'other',
             ])->default('other');
             $table->string('script_language', 30)->nullable();
             $table->unsignedBigInteger('file_size');

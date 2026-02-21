@@ -61,8 +61,8 @@ class DocumentTypeDetectorService
 
         if (in_array($mimeType, self::DANGEROUS_MIMES)) {
             // Check if it's a script we actually want to allow
-            if (!isset(self::SCRIPT_EXTENSIONS[$extension])) {
-                 throw new \InvalidArgumentException("Dangerous file type rejected: {$mimeType}");
+            if (! isset(self::SCRIPT_EXTENSIONS[$extension])) {
+                throw new \InvalidArgumentException("Dangerous file type rejected: {$mimeType}");
             }
         }
 

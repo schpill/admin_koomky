@@ -72,15 +72,23 @@ interface DocumentState {
   error: string | null;
 
   // Actions
-  fetchDocuments: (params?: DocumentFilters & { page?: number; per_page?: number }) => Promise<void>;
+  fetchDocuments: (
+    params?: DocumentFilters & { page?: number; per_page?: number }
+  ) => Promise<void>;
   fetchDocument: (id: string) => Promise<void>;
   uploadDocument: (data: FormData) => Promise<Document>;
   updateDocument: (id: string, data: Partial<Document>) => Promise<Document>;
   deleteDocument: (id: string) => Promise<void>;
   bulkDelete: (ids: string[]) => Promise<void>;
   reuploadDocument: (id: string, file: File) => Promise<Document>;
-  downloadDocument: (id: string, options?: { inline?: boolean }) => Promise<void>;
-  sendEmail: (id: string, data: { email: string; message?: string }) => Promise<void>;
+  downloadDocument: (
+    id: string,
+    options?: { inline?: boolean }
+  ) => Promise<void>;
+  sendEmail: (
+    id: string,
+    data: { email: string; message?: string }
+  ) => Promise<void>;
   fetchStats: () => Promise<void>;
 }
 
@@ -147,7 +155,9 @@ export const useDocumentStore = create<DocumentState>((set, get) => ({
     try {
       const response = await apiClient.put<Document>(`/documents/${id}`, data);
       set({
-        documents: get().documents.map((doc) => (doc.id === id ? response.data : doc)),
+        documents: get().documents.map((doc) =>
+          doc.id === id ? response.data : doc
+        ),
         currentDocument: response.data,
         isLoading: false,
       });
@@ -175,8 +185,8 @@ export const useDocumentStore = create<DocumentState>((set, get) => ({
   bulkDelete: async (ids) => {
     set({ isLoading: true, error: null });
     try {
-      await apiClient.delete("/documents/bulk", { 
-        body: JSON.stringify({ ids }) 
+      await apiClient.delete("/documents/bulk", {
+        body: JSON.stringify({ ids }),
       } as any);
       set({
         documents: get().documents.filter((doc) => !ids.includes(doc.id)),
@@ -193,11 +203,17 @@ export const useDocumentStore = create<DocumentState>((set, get) => ({
     try {
       const formData = new FormData();
       formData.append("file", file);
-      const response = await apiClient.post<Document>(`/documents/${id}/reupload`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      const response = await apiClient.post<Document>(
+        `/documents/${id}/reupload`,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
       set({
-        documents: get().documents.map((doc) => (doc.id === id ? response.data : doc)),
+        documents: get().documents.map((doc) =>
+          doc.id === id ? response.data : doc
+        ),
         currentDocument: response.data,
         isLoading: false,
       });
@@ -214,7 +230,7 @@ export const useDocumentStore = create<DocumentState>((set, get) => ({
         params: options,
         responseType: "blob",
       });
-      
+
       const contentDisposition = response.headers?.get("content-disposition");
       let filename = "document";
       if (contentDisposition) {
@@ -243,9 +259,13 @@ export const useDocumentStore = create<DocumentState>((set, get) => ({
       await apiClient.post(`/documents/${id}/email`, data);
       set({ isLoading: false });
       // Refresh document to get updated last_sent_at
-      const updatedDocResponse = await apiClient.get<Document>(`/documents/${id}`);
+      const updatedDocResponse = await apiClient.get<Document>(
+        `/documents/${id}`
+      );
       set({
-        documents: get().documents.map((doc) => (doc.id === id ? updatedDocResponse.data : doc)),
+        documents: get().documents.map((doc) =>
+          doc.id === id ? updatedDocResponse.data : doc
+        ),
         currentDocument: updatedDocResponse.data,
       });
     } catch (error) {

@@ -1,11 +1,11 @@
 <?php
 
-use App\Models\User;
 use App\Models\Client;
 use App\Models\Document;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 

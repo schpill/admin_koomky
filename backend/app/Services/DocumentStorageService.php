@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 class DocumentStorageService
 {
     private const DISK = 'local';
+
     private const BASE_PATH = 'documents';
 
     public function store(UploadedFile $file, User $user): string
@@ -19,10 +20,16 @@ class DocumentStorageService
 
         $uuid = (string) Str::uuid();
         $extension = $file->getClientOriginalExtension();
-        $directory = self::BASE_PATH . "/{$user->id}";
+        $directory = self::BASE_PATH."/{$user->id}";
         $filename = "{$uuid}.{$extension}";
 
-        return $file->storeAs($directory, $filename, self::DISK);
+        $path = $file->storeAs($directory, $filename, self::DISK);
+
+        if ($path === false) {
+            throw new \RuntimeException('Failed to store the document.');
+        }
+
+        return $path;
     }
 
     public function overwrite(string $path, UploadedFile $file, User $user): void
@@ -45,7 +52,7 @@ class DocumentStorageService
 
     public function streamDownload(string $path, string $mimeType, string $filename, bool $inline = false): StreamedResponse
     {
-        if (!Storage::disk(self::DISK)->exists($path)) {
+        if (! Storage::disk(self::DISK)->exists($path)) {
             abort(404);
         }
 
@@ -69,6 +76,6 @@ class DocumentStorageService
 
     public function getTotalUsedBytes(User $user): int
     {
-        return $user->documents()->sum('file_size');
+        return (int) $user->documents()->sum('file_size');
     }
 }

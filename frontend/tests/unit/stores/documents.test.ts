@@ -52,7 +52,7 @@ describe("useDocumentStore", () => {
 
     const formData = new FormData();
     formData.append("file", new File([""], "test.png"));
-    
+
     await useDocumentStore.getState().uploadDocument(formData);
 
     const state = useDocumentStore.getState();
@@ -68,7 +68,9 @@ describe("useDocumentStore", () => {
       data: { id: "d1", title: "New Title" },
     });
 
-    await useDocumentStore.getState().updateDocument("d1", { title: "New Title" });
+    await useDocumentStore
+      .getState()
+      .updateDocument("d1", { title: "New Title" });
 
     expect(useDocumentStore.getState().documents[0].title).toBe("New Title");
   });
@@ -88,7 +90,11 @@ describe("useDocumentStore", () => {
 
   it("bulk deletes documents", async () => {
     useDocumentStore.setState({
-      documents: [{ id: "d1" } as any, { id: "d2" } as any, { id: "d3" } as any],
+      documents: [
+        { id: "d1" } as any,
+        { id: "d2" } as any,
+        { id: "d3" } as any,
+      ],
     });
 
     (apiClient.delete as any).mockResolvedValue({});

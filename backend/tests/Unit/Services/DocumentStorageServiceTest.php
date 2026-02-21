@@ -1,18 +1,18 @@
 <?php
 
-use App\Services\DocumentStorageService;
-use App\Models\User;
 use App\Models\Document;
+use App\Models\User;
+use App\Services\DocumentStorageService;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 uses(TestCase::class, RefreshDatabase::class);
 
 beforeEach(function () {
     Storage::fake('local');
-    $this->service = new DocumentStorageService();
+    $this->service = new DocumentStorageService;
     $this->user = User::factory()->create(['document_storage_quota_mb' => 1]); // 1MB
 });
 
@@ -27,15 +27,15 @@ test('it stores a file correctly', function () {
 test('it throws exception if quota exceeded', function () {
     $this->user->update(['document_storage_quota_mb' => 0]); // 0MB quota
     $file = UploadedFile::fake()->create('large.pdf', 100);
-    
-    expect(fn() => $this->service->store($file, $this->user))
+
+    expect(fn () => $this->service->store($file, $this->user))
         ->toThrow(\RuntimeException::class, 'Storage quota exceeded');
 });
 
 test('it overwrites a file', function () {
     $file = UploadedFile::fake()->createWithContent('old.pdf', 'old content');
     $path = $this->service->store($file, $this->user);
-    
+
     $newFile = UploadedFile::fake()->createWithContent('new.pdf', 'new longer content');
     $this->service->overwrite($path, $newFile, $this->user);
 
@@ -46,7 +46,7 @@ test('it overwrites a file', function () {
 test('it deletes a file', function () {
     $file = UploadedFile::fake()->create('delete-me.pdf', 100);
     $path = $this->service->store($file, $this->user);
-    
+
     $this->service->delete($path);
 
     expect(Storage::disk('local')->exists($path))->toBeFalse();

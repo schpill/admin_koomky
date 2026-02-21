@@ -1,9 +1,9 @@
 <?php
 
-use App\Models\User;
 use App\Models\Document;
-use Illuminate\Support\Facades\Storage;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Storage;
 
 uses(RefreshDatabase::class);
 

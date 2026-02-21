@@ -75,7 +75,7 @@ export async function api<T>(
   if (!headers["Content-Type"] && !(options.body instanceof FormData)) {
     headers["Content-Type"] = "application/json";
   }
-  
+
   if (!headers["Accept"]) {
     headers["Accept"] = "application/json";
   }
@@ -181,21 +181,36 @@ export const apiClient = {
     api<T>(endpoint, {
       ...options,
       method: "POST",
-      body: body instanceof FormData ? body : body ? JSON.stringify(body) : undefined,
+      body:
+        body instanceof FormData
+          ? body
+          : body
+            ? JSON.stringify(body)
+            : undefined,
     }),
 
   put: <T>(endpoint: string, body?: any, options?: ApiOptions) =>
     api<T>(endpoint, {
       ...options,
       method: "PUT",
-      body: body instanceof FormData ? body : body ? JSON.stringify(body) : undefined,
+      body:
+        body instanceof FormData
+          ? body
+          : body
+            ? JSON.stringify(body)
+            : undefined,
     }),
 
   patch: <T>(endpoint: string, body?: any, options?: ApiOptions) =>
     api<T>(endpoint, {
       ...options,
       method: "PATCH",
-      body: body instanceof FormData ? body : body ? JSON.stringify(body) : undefined,
+      body:
+        body instanceof FormData
+          ? body
+          : body
+            ? JSON.stringify(body)
+            : undefined,
     }),
 
   delete: <T>(endpoint: string, options?: ApiOptions) =>

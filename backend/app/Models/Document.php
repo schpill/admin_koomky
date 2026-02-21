@@ -14,13 +14,14 @@ class Document extends Model
 {
     /** @use HasFactory<\Database\Factories\DocumentFactory> */
     use HasFactory;
+
     use HasUuids;
     use Searchable;
 
     /**
      * The attributes that are mass assignable.
      *
-     * @var array<int, string>
+     * @var list<string>
      */
     protected $fillable = [
         'user_id',
@@ -54,6 +55,8 @@ class Document extends Model
 
     /**
      * Get the user that owns the document.
+     *
+     * @return BelongsTo<User, $this>
      */
     public function user(): BelongsTo
     {
@@ -62,6 +65,8 @@ class Document extends Model
 
     /**
      * Get the client associated with the document.
+     *
+     * @return BelongsTo<Client, $this>
      */
     public function client(): BelongsTo
     {
@@ -70,6 +75,8 @@ class Document extends Model
 
     /**
      * Scope a query to only include documents of a certain type.
+     *
+     * @param  Builder<Document>  $query
      */
     public function scopeByType(Builder $query, string $type): void
     {
@@ -78,6 +85,8 @@ class Document extends Model
 
     /**
      * Scope a query to only include documents for a specific client.
+     *
+     * @param  Builder<Document>  $query
      */
     public function scopeByClient(Builder $query, string $clientId): void
     {
@@ -86,6 +95,8 @@ class Document extends Model
 
     /**
      * Scope a query to only include documents with a specific tag.
+     *
+     * @param  Builder<Document>  $query
      */
     public function scopeByTag(Builder $query, string $tag): void
     {
@@ -99,12 +110,7 @@ class Document extends Model
      */
     public function toSearchableArray(): array
     {
-        $array = $this->toArray();
-
-        // Add relationships to the searchable array.
-        $array['user'] = $this->user->toArray();
-        $array['client'] = $this->client ? $this->client->toArray() : null;
-
+        $user = $this->user;
 
         return [
             'id' => $this->id,
@@ -116,7 +122,7 @@ class Document extends Model
             'document_type' => $this->document_type->value,
             'script_language' => $this->script_language,
             'file_size' => $this->file_size,
-            'created_at' => $this->created_at->timestamp,
+            'created_at' => $this->created_at?->timestamp,
         ];
     }
 }

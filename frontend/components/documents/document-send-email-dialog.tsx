@@ -1,19 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { 
-  Mail, 
-  Loader2, 
-  AlertCircle,
-  Send
-} from "lucide-react";
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
-  DialogTitle, 
+import { Mail, Loader2, AlertCircle, Send } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
   DialogFooter,
-  DialogDescription
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -34,7 +29,7 @@ export function DocumentSendEmailDialog({
   onOpenChange,
 }: DocumentSendEmailDialogProps) {
   const { sendEmail } = useDocumentStore();
-  
+
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [isSending, setIsSending] = useState(false);
@@ -87,18 +82,19 @@ export function DocumentSendEmailDialog({
             <div className="flex items-start gap-3 rounded-lg bg-blue-50 dark:bg-blue-900/20 p-3 text-blue-800 dark:text-blue-400">
               <AlertCircle className="h-5 w-5 shrink-0 mt-0.5" />
               <p className="text-xs">
-                Ce fichier est volumineux ({Math.round(document.file_size / 1024 / 1024)} MB). 
-                Certains serveurs de messagerie pourraient le rejeter.
+                Ce fichier est volumineux (
+                {Math.round(document.file_size / 1024 / 1024)} MB). Certains
+                serveurs de messagerie pourraient le rejeter.
               </p>
             </div>
           )}
 
           <div className="grid gap-2">
             <Label htmlFor="email">Destinataire</Label>
-            <Input 
-              id="email" 
+            <Input
+              id="email"
               type="email"
-              placeholder="adresse@exemple.com" 
+              placeholder="adresse@exemple.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               autoFocus
@@ -107,9 +103,9 @@ export function DocumentSendEmailDialog({
 
           <div className="grid gap-2">
             <Label htmlFor="message">Message (optionnel)</Label>
-            <Textarea 
-              id="message" 
-              placeholder="Ajoutez un message personnel..." 
+            <Textarea
+              id="message"
+              placeholder="Ajoutez un message personnel..."
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               rows={4}
@@ -118,7 +114,11 @@ export function DocumentSendEmailDialog({
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={isSending}>
+          <Button
+            variant="outline"
+            onClick={() => onOpenChange(false)}
+            disabled={isSending}
+          >
             Annuler
           </Button>
           <Button onClick={handleSend} disabled={!email || isSending}>

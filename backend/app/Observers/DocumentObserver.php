@@ -35,6 +35,7 @@ class DocumentObserver
                 'sent_to' => $document->last_sent_to,
                 'sent_at' => $document->last_sent_at->toIso8601String(),
             ]);
+
             return;
         }
 

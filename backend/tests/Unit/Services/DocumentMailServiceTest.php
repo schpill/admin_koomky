@@ -1,18 +1,17 @@
 <?php
 
-use App\Services\DocumentMailService;
-use App\Models\Document;
-use App\Models\User;
 use App\Mail\DocumentAttachmentMail;
-use Illuminate\Support\Facades\Mail;
+use App\Models\Document;
+use App\Services\DocumentMailService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
 uses(TestCase::class, RefreshDatabase::class);
 
 beforeEach(function () {
     Mail::fake();
-    $this->service = new DocumentMailService();
+    $this->service = new DocumentMailService;
 });
 
 test('it sends an email and updates document metadata', function () {
@@ -21,7 +20,7 @@ test('it sends an email and updates document metadata', function () {
         'last_sent_at' => null,
         'last_sent_to' => null,
     ]);
-    
+
     $recipient = 'client@example.com';
     $message = 'Here is your invoice.';
 
@@ -38,8 +37,8 @@ test('it sends an email and updates document metadata', function () {
 
 test('it throws exception for invalid email', function () {
     $document = Document::factory()->create();
-    
-    expect(fn() => $this->service->send($document, 'invalid-email', 'msg'))
+
+    expect(fn () => $this->service->send($document, 'invalid-email', 'msg'))
         ->toThrow(\InvalidArgumentException::class, 'Invalid recipient email address');
 
     Mail::assertNothingSent();

@@ -1,20 +1,14 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { 
-  Upload, 
-  File, 
-  X, 
-  Loader2, 
-  AlertTriangle 
-} from "lucide-react";
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
-  DialogTitle, 
+import { Upload, File, X, Loader2, AlertTriangle } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
   DialogFooter,
-  DialogDescription
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useDocumentStore, type Document } from "@/lib/stores/documents";
@@ -35,10 +29,10 @@ export function DocumentReuploadDialog({
   onSuccess,
 }: DocumentReuploadDialogProps) {
   const { reuploadDocument } = useDocumentStore();
-  
+
   const [file, setFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
-  
+
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const resetForm = () => {
@@ -70,10 +64,13 @@ export function DocumentReuploadDialog({
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => {
-      onOpenChange(open);
-      if (!open) resetForm();
-    }}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        onOpenChange(open);
+        if (!open) resetForm();
+      }}
+    >
       <DialogContent className="sm:max-w-[450px]">
         <DialogHeader>
           <DialogTitle>Nouvelle version</DialogTitle>
@@ -86,15 +83,17 @@ export function DocumentReuploadDialog({
           <div className="flex items-center gap-3 rounded-lg bg-yellow-50 dark:bg-yellow-900/20 p-4 text-yellow-800 dark:text-yellow-400">
             <AlertTriangle className="h-5 w-5 shrink-0" />
             <p className="text-xs">
-              Cette action va écraser le fichier actuel. La version passera de 
-              <strong> v{currentDocument.version}</strong> à 
+              Cette action va écraser le fichier actuel. La version passera de
+              <strong> v{currentDocument.version}</strong> à
               <strong> v{currentDocument.version + 1}</strong>.
             </p>
           </div>
 
-          <div 
+          <div
             className={`relative flex flex-col items-center justify-center rounded-lg border-2 border-dashed p-8 transition-colors ${
-              file ? "border-primary bg-primary/5" : "border-muted-foreground/25 hover:border-primary/50"
+              file
+                ? "border-primary bg-primary/5"
+                : "border-muted-foreground/25 hover:border-primary/50"
             }`}
             onDragOver={(e) => e.preventDefault()}
             onDrop={(e) => {
@@ -104,13 +103,13 @@ export function DocumentReuploadDialog({
               }
             }}
           >
-            <input 
-              type="file" 
+            <input
+              type="file"
               ref={fileInputRef}
               onChange={handleFileChange}
               className="hidden"
             />
-            
+
             {file ? (
               <div className="flex w-full items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
@@ -118,13 +117,17 @@ export function DocumentReuploadDialog({
                     <File className="h-6 w-6 text-primary" />
                   </div>
                   <div>
-                    <p className="text-sm font-medium line-clamp-1">{file.name}</p>
-                    <p className="text-xs text-muted-foreground">{formatBytes(file.size)}</p>
+                    <p className="text-sm font-medium line-clamp-1">
+                      {file.name}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {formatBytes(file.size)}
+                    </p>
                   </div>
                 </div>
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
+                <Button
+                  variant="ghost"
+                  size="icon"
                   className="h-8 w-8 text-muted-foreground"
                   onClick={() => setFile(null)}
                 >
@@ -137,14 +140,16 @@ export function DocumentReuploadDialog({
                   <Upload className="h-6 w-6 text-muted-foreground" />
                 </div>
                 <div>
-                  <Button 
-                    variant="link" 
+                  <Button
+                    variant="link"
                     className="p-0 h-auto"
                     onClick={() => fileInputRef.current?.click()}
                   >
                     Cliquez pour choisir un fichier
                   </Button>
-                  <p className="text-xs text-muted-foreground">ou glissez-déposez ici</p>
+                  <p className="text-xs text-muted-foreground">
+                    ou glissez-déposez ici
+                  </p>
                 </div>
               </div>
             )}
@@ -152,7 +157,11 @@ export function DocumentReuploadDialog({
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={isUploading}>
+          <Button
+            variant="outline"
+            onClick={() => onOpenChange(false)}
+            disabled={isUploading}
+          >
             Annuler
           </Button>
           <Button onClick={handleUpload} disabled={!file || isUploading}>

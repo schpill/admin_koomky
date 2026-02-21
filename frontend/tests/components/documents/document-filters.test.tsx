@@ -26,15 +26,17 @@ describe("DocumentFilters", () => {
 
   it("renders search input", () => {
     render(<DocumentFilters />);
-    expect(screen.getByPlaceholderText(/rechercher par titre/i)).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText(/rechercher par titre/i)
+    ).toBeInTheDocument();
   });
 
   it("calls fetchDocuments when filters are cleared", () => {
     render(<DocumentFilters />);
-    
+
     const clearButton = screen.getByText(/réinitialiser les filtres/i);
     fireEvent.click(clearButton);
-    
+
     expect(fetchDocuments).toHaveBeenCalled();
   });
 });

@@ -1,20 +1,20 @@
 "use client";
 
 import { useEffect, useState, use } from "react";
-import { 
-  ArrowLeft, 
-  Download, 
-  Mail, 
-  Trash2, 
-  History, 
-  Edit2, 
-  Check, 
-  X, 
+import {
+  ArrowLeft,
+  Download,
+  Mail,
+  Trash2,
+  History,
+  Edit2,
+  Check,
+  X,
   Plus,
   Clock,
   Send,
   User,
-  ExternalLink
+  ExternalLink,
 } from "lucide-react";
 import { useDocumentStore } from "@/lib/stores/documents";
 import { useClientStore } from "@/lib/stores/clients";
@@ -27,14 +27,14 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
-import { 
+import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -49,16 +49,20 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-export default function DocumentDetailPage({ params }: { params: Promise<{ id: string }> }) {
+export default function DocumentDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = use(params);
   const router = useRouter();
-  const { 
-    currentDocument, 
-    isLoading, 
-    fetchDocument, 
-    updateDocument, 
+  const {
+    currentDocument,
+    isLoading,
+    fetchDocument,
+    updateDocument,
     deleteDocument,
-    downloadDocument 
+    downloadDocument,
   } = useDocumentStore();
   const { clients, fetchClients } = useClientStore();
 
@@ -97,7 +101,9 @@ export default function DocumentDetailPage({ params }: { params: Promise<{ id: s
 
   const handleUpdateClient = async (clientId: string) => {
     try {
-      await updateDocument(id, { client_id: clientId === "none" ? null : clientId });
+      await updateDocument(id, {
+        client_id: clientId === "none" ? null : clientId,
+      });
       toast.success("Client mis à jour");
     } catch (error: any) {
       toast.error(error.message);
@@ -120,7 +126,9 @@ export default function DocumentDetailPage({ params }: { params: Promise<{ id: s
   };
 
   const handleRemoveTag = async (tagToRemove: string) => {
-    const newTags = (currentDocument?.tags || []).filter(t => t !== tagToRemove);
+    const newTags = (currentDocument?.tags || []).filter(
+      (t) => t !== tagToRemove
+    );
     try {
       await updateDocument(id, { tags: newTags });
     } catch (error: any) {
@@ -173,19 +181,19 @@ export default function DocumentDetailPage({ params }: { params: Promise<{ id: s
     <div className="flex h-full flex-col space-y-6 p-8">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="space-y-1">
-          <Link 
-            href="/documents" 
+          <Link
+            href="/documents"
             className="flex items-center text-sm text-muted-foreground hover:text-foreground mb-2"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
             Retour à la bibliothèque
           </Link>
-          
+
           <div className="flex items-center gap-3">
             {isEditingTitle ? (
               <div className="flex items-center gap-2">
-                <Input 
-                  value={editedTitle} 
+                <Input
+                  value={editedTitle}
                   onChange={(e) => setEditedTitle(e.target.value)}
                   className="h-9 w-[300px] text-xl font-bold"
                   autoFocus
@@ -194,19 +202,23 @@ export default function DocumentDetailPage({ params }: { params: Promise<{ id: s
                 <Button size="icon" variant="ghost" onClick={handleUpdateTitle}>
                   <Check className="h-4 w-4 text-green-600" />
                 </Button>
-                <Button size="icon" variant="ghost" onClick={() => {
-                  setEditedTitle(currentDocument.title);
-                  setIsEditingTitle(false);
-                }}>
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  onClick={() => {
+                    setEditedTitle(currentDocument.title);
+                    setIsEditingTitle(false);
+                  }}
+                >
                   <X className="h-4 w-4 text-red-600" />
                 </Button>
               </div>
             ) : (
               <h1 className="group flex items-center gap-2 text-3xl font-bold tracking-tight">
                 {currentDocument.title}
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
+                <Button
+                  variant="ghost"
+                  size="icon"
                   className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
                   onClick={() => setIsEditingTitle(true)}
                 >
@@ -214,28 +226,44 @@ export default function DocumentDetailPage({ params }: { params: Promise<{ id: s
                 </Button>
               </h1>
             )}
-            <DocumentTypeBadge 
-              type={currentDocument.document_type} 
-              scriptLanguage={currentDocument.script_language} 
+            <DocumentTypeBadge
+              type={currentDocument.document_type}
+              scriptLanguage={currentDocument.script_language}
               className="mt-1"
             />
           </div>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          <Button variant="outline" className="gap-2" onClick={() => downloadDocument(id)}>
+          <Button
+            variant="outline"
+            className="gap-2"
+            onClick={() => downloadDocument(id)}
+          >
             <Download className="h-4 w-4" />
             Télécharger
           </Button>
-          <Button variant="outline" className="gap-2" onClick={() => setIsReuploadOpen(true)}>
+          <Button
+            variant="outline"
+            className="gap-2"
+            onClick={() => setIsReuploadOpen(true)}
+          >
             <History className="h-4 w-4" />
             Mettre à jour
           </Button>
-          <Button variant="outline" className="gap-2" onClick={() => setIsEmailOpen(true)}>
+          <Button
+            variant="outline"
+            className="gap-2"
+            onClick={() => setIsEmailOpen(true)}
+          >
             <Mail className="h-4 w-4" />
             Envoyer par email
           </Button>
-          <Button variant="outline" className="gap-2 text-destructive hover:bg-destructive/10 hover:text-destructive" onClick={() => setIsDeleteDialogOpen(true)}>
+          <Button
+            variant="outline"
+            className="gap-2 text-destructive hover:bg-destructive/10 hover:text-destructive"
+            onClick={() => setIsDeleteDialogOpen(true)}
+          >
             <Trash2 className="h-4 w-4" />
             Supprimer
           </Button>
@@ -260,21 +288,30 @@ export default function DocumentDetailPage({ params }: { params: Promise<{ id: s
             <div className="space-y-3">
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Nom original</span>
-                <span className="font-medium truncate max-w-[150px]" title={currentDocument.original_filename}>
+                <span
+                  className="font-medium truncate max-w-[150px]"
+                  title={currentDocument.original_filename}
+                >
                   {currentDocument.original_filename}
                 </span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Taille</span>
-                <span className="font-medium">{formatBytes(currentDocument.file_size)}</span>
+                <span className="font-medium">
+                  {formatBytes(currentDocument.file_size)}
+                </span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Version</span>
-                <Badge variant="secondary" className="h-5">v{currentDocument.version}</Badge>
+                <Badge variant="secondary" className="h-5">
+                  v{currentDocument.version}
+                </Badge>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Importé le</span>
-                <span className="font-medium">{formatDate(currentDocument.created_at)}</span>
+                <span className="font-medium">
+                  {formatDate(currentDocument.created_at)}
+                </span>
               </div>
             </div>
           </div>
@@ -287,9 +324,11 @@ export default function DocumentDetailPage({ params }: { params: Promise<{ id: s
             <Separator />
             <div className="space-y-4">
               <div className="space-y-2">
-                <label className="text-xs text-muted-foreground ml-1">Client associé</label>
-                <Select 
-                  value={currentDocument.client_id || "none"} 
+                <label className="text-xs text-muted-foreground ml-1">
+                  Client associé
+                </label>
+                <Select
+                  value={currentDocument.client_id || "none"}
                   onValueChange={handleUpdateClient}
                 >
                   <SelectTrigger>
@@ -305,9 +344,14 @@ export default function DocumentDetailPage({ params }: { params: Promise<{ id: s
                   </SelectContent>
                 </Select>
               </div>
-              
+
               {currentDocument.client && (
-                <Button variant="ghost" size="sm" asChild className="w-full justify-start text-xs">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  asChild
+                  className="w-full justify-start text-xs"
+                >
                   <Link href={`/clients/${currentDocument.client_id}`}>
                     <ExternalLink className="mr-2 h-3 w-3" />
                     Voir la fiche client
@@ -327,9 +371,13 @@ export default function DocumentDetailPage({ params }: { params: Promise<{ id: s
               <div className="flex flex-wrap gap-1.5">
                 {currentDocument.tags.length > 0 ? (
                   currentDocument.tags.map((tag) => (
-                    <Badge key={tag} variant="outline" className="gap-1 px-2 py-0.5">
+                    <Badge
+                      key={tag}
+                      variant="outline"
+                      className="gap-1 px-2 py-0.5"
+                    >
                       {tag}
-                      <button 
+                      <button
                         onClick={() => handleRemoveTag(tag)}
                         className="rounded-full hover:bg-muted/80 p-0.5"
                       >
@@ -338,19 +386,26 @@ export default function DocumentDetailPage({ params }: { params: Promise<{ id: s
                     </Badge>
                   ))
                 ) : (
-                  <p className="text-xs text-muted-foreground italic">Aucun tag</p>
+                  <p className="text-xs text-muted-foreground italic">
+                    Aucun tag
+                  </p>
                 )}
               </div>
-              
+
               <div className="flex gap-2">
-                <Input 
-                  placeholder="Nouveau tag..." 
+                <Input
+                  placeholder="Nouveau tag..."
                   value={tagInput}
                   onChange={(e) => setTagInput(e.target.value)}
                   className="h-8 text-xs"
                   onKeyDown={(e) => e.key === "Enter" && handleAddTag()}
                 />
-                <Button size="icon" variant="outline" className="h-8 w-8" onClick={handleAddTag}>
+                <Button
+                  size="icon"
+                  variant="outline"
+                  className="h-8 w-8"
+                  onClick={handleAddTag}
+                >
                   <Plus className="h-3.5 w-3.5" />
                 </Button>
               </div>
@@ -365,7 +420,10 @@ export default function DocumentDetailPage({ params }: { params: Promise<{ id: s
               </h3>
               <div className="space-y-1 text-sm">
                 <p className="text-green-700 dark:text-green-500">
-                  Envoyé à : <span className="font-medium">{currentDocument.last_sent_to}</span>
+                  Envoyé à :{" "}
+                  <span className="font-medium">
+                    {currentDocument.last_sent_to}
+                  </span>
                 </p>
                 <p className="text-xs text-green-600/80 dark:text-green-600">
                   Le {formatDate(currentDocument.last_sent_at)}
@@ -377,29 +435,36 @@ export default function DocumentDetailPage({ params }: { params: Promise<{ id: s
       </div>
 
       {/* Dialogs */}
-      <DocumentReuploadDialog 
+      <DocumentReuploadDialog
         document={currentDocument}
         isOpen={isReuploadOpen}
         onOpenChange={setIsReuploadOpen}
       />
 
-      <DocumentSendEmailDialog 
+      <DocumentSendEmailDialog
         document={currentDocument}
         isOpen={isEmailOpen}
         onOpenChange={setIsEmailOpen}
       />
 
-      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+      <AlertDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Supprimer le document</AlertDialogTitle>
             <AlertDialogDescription>
-              Êtes-vous sûr de vouloir supprimer ce document ? Cette action est irréversible et supprimera également le fichier sur le serveur.
+              Êtes-vous sûr de vouloir supprimer ce document ? Cette action est
+              irréversible et supprimera également le fichier sur le serveur.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Annuler</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+            <AlertDialogAction
+              onClick={handleDelete}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
               Supprimer
             </AlertDialogAction>
           </AlertDialogFooter>

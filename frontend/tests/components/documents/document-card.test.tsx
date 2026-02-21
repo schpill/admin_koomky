@@ -30,15 +30,17 @@ describe("DocumentCard", () => {
   it("calls onSelect when checkbox is clicked", () => {
     const onSelect = vi.fn();
     render(<DocumentCard document={mockDoc} onSelect={onSelect} />);
-    
+
     const checkbox = screen.getByRole("checkbox");
     fireEvent.click(checkbox);
-    
+
     expect(onSelect).toHaveBeenCalled();
   });
 
   it("shows client badge when associated", () => {
-    render(<DocumentCard document={{ ...mockDoc, client: { name: "Client A" } }} />);
+    render(
+      <DocumentCard document={{ ...mockDoc, client: { name: "Client A" } }} />
+    );
     expect(screen.getByText("Client A")).toBeInTheDocument();
   });
 });

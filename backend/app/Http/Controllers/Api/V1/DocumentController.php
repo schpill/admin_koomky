@@ -27,7 +27,11 @@ class DocumentController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $query = $request->user()->documents();
+        $user = $request->user();
+        if (! $user) {
+            return response()->json(['message' => 'User not authenticated'], 401);
+        }
+        $query = $user->documents();
 
         // Filters
         if ($request->has('client_id')) {
@@ -51,13 +55,12 @@ class DocumentController extends Controller
         }
 
         // Search via Scout if q is present
-        if ($request->has('q')) {
-            $documents = Document::search($request->q)
-                ->where('user_id', $request->user()->id);
-            
-            // Re-apply filters if possible with Meilisearch or filter the results
-            // Note: Basic Scout doesn't always support all Eloquent scopes directly
-            // For now, let's keep it simple.
+        if ($request->filled('q')) {
+            $ids = Document::search($request->q)
+                ->where('user_id', $user->id)
+                ->keys();
+
+            $query->whereIn('id', $ids);
         }
 
         // Sorting
@@ -75,6 +78,10 @@ class DocumentController extends Controller
     {
         $file = $request->file('file');
         $user = $request->user();
+
+        if (! $user) {
+            return response()->json(['message' => 'User not authenticated'], 401);
+        }
 
         try {
             $detection = $this->detector->detect($file);
@@ -147,14 +154,19 @@ class DocumentController extends Controller
         Gate::authorize('reupload', $document);
 
         $request->validate([
-            'file' => 'required|file|max:' . (config('performance.max_document_upload_mb', 50) * 1024),
+            'file' => 'required|file|max:'.(config('performance.max_document_upload_mb', 50) * 1024),
         ]);
 
         $file = $request->file('file');
-        
+        $user = $request->user();
+
+        if (! $user) {
+            return response()->json(['message' => 'User not authenticated'], 401);
+        }
+
         try {
             $detection = $this->detector->detect($file);
-            $this->storage->overwrite($document->storage_path, $file, $request->user());
+            $this->storage->overwrite($document->storage_path, $file, $user);
 
             $document->update([
                 'mime_type' => $detection->mime_type,
@@ -200,6 +212,7 @@ class DocumentController extends Controller
 
         try {
             $this->mailer->send($document, $request->email, $request->message);
+
             return response()->json(['message' => 'Email sent successfully']);
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage()], 422);
@@ -225,7 +238,7 @@ class DocumentController extends Controller
             $document->delete();
         }
 
-        return response()->json(['message' => count($documents) . ' documents deleted']);
+        return response()->json(['message' => count($documents).' documents deleted']);
     }
 
     /**
@@ -234,7 +247,11 @@ class DocumentController extends Controller
     public function stats(Request $request): JsonResponse
     {
         $user = $request->user();
-        
+
+        if (! $user) {
+            return response()->json(['message' => 'User not authenticated'], 401);
+        }
+
         $stats = $user->documents()
             ->selectRaw('document_type, count(*) as count, sum(file_size) as size')
             ->groupBy('document_type')

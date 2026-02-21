@@ -1,14 +1,14 @@
 <?php
 
-use App\Services\DocumentTypeDetectorService;
 use App\Enums\DocumentType;
+use App\Services\DocumentTypeDetectorService;
 use Illuminate\Http\UploadedFile;
 use Tests\TestCase;
 
 uses(TestCase::class);
 
 beforeEach(function () {
-    $this->detector = new DocumentTypeDetectorService();
+    $this->detector = new DocumentTypeDetectorService;
 });
 
 test('it detects PDF', function () {
@@ -52,8 +52,8 @@ test('it detects image', function () {
 
 test('it rejects dangerous mimes', function () {
     $file = UploadedFile::fake()->create('malicious.exe', 100, 'application/x-msdownload');
-    
-    expect(fn() => $this->detector->detect($file))->toThrow(\InvalidArgumentException::class);
+
+    expect(fn () => $this->detector->detect($file))->toThrow(\InvalidArgumentException::class);
 });
 
 test('it maps unknown mime to other', function () {

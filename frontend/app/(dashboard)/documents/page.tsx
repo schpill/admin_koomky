@@ -1,13 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { 
-  LayoutGrid, 
-  List, 
-  Trash2, 
-  FileText, 
+import {
+  LayoutGrid,
+  List,
+  Trash2,
+  FileText,
   HardDrive,
-  AlertCircle
+  AlertCircle,
 } from "lucide-react";
 import { useDocumentStore } from "@/lib/stores/documents";
 import { DocumentCard } from "@/components/documents/document-card";
@@ -20,17 +20,17 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
 import { formatBytes, formatDate } from "@/lib/utils";
 import { DocumentTypeBadge } from "@/components/documents/document-type-badge";
-import { 
+import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -43,15 +43,15 @@ import {
 import { toast } from "sonner";
 
 export default function DocumentsPage() {
-  const { 
-    documents, 
-    isLoading, 
-    fetchDocuments, 
-    fetchStats, 
+  const {
+    documents,
+    isLoading,
+    fetchDocuments,
+    fetchStats,
     stats,
     downloadDocument,
     deleteDocument,
-    bulkDelete
+    bulkDelete,
   } = useDocumentStore();
 
   const [view, setView] = useState<"grid" | "list">("grid");
@@ -68,8 +68,8 @@ export default function DocumentsPage() {
   }, [fetchDocuments, fetchStats]);
 
   const toggleSelect = (id: string) => {
-    setSelectedIds(prev => 
-      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
     );
   };
 
@@ -77,7 +77,7 @@ export default function DocumentsPage() {
     if (selectedIds.length === documents.length) {
       setSelectedIds([]);
     } else {
-      setSelectedIds(documents.map(d => d.id));
+      setSelectedIds(documents.map((d) => d.id));
     }
   };
 
@@ -144,16 +144,21 @@ export default function DocumentsPage() {
                     Stockage utilisé
                   </p>
                   <p className="text-lg font-bold">
-                    {formatBytes(stats?.total_size_bytes || 0)} / {formatBytes(stats?.quota_bytes || 0)}
+                    {formatBytes(stats?.total_size_bytes || 0)} /{" "}
+                    {formatBytes(stats?.quota_bytes || 0)}
                   </p>
                 </div>
               </div>
-              <span className="text-sm font-medium">{stats?.usage_percentage || 0}%</span>
+              <span className="text-sm font-medium">
+                {stats?.usage_percentage || 0}%
+              </span>
             </div>
             <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
-              <div 
-                className="h-full bg-purple-500 transition-all duration-500" 
-                style={{ width: `${Math.min(stats?.usage_percentage || 0, 100)}%` }}
+              <div
+                className="h-full bg-purple-500 transition-all duration-500"
+                style={{
+                  width: `${Math.min(stats?.usage_percentage || 0, 100)}%`,
+                }}
               />
             </div>
           </div>
@@ -170,7 +175,11 @@ export default function DocumentsPage() {
         <main className="flex-1 space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <Tabs value={view} onValueChange={(v) => setView(v as any)} className="w-auto">
+              <Tabs
+                value={view}
+                onValueChange={(v) => setView(v as any)}
+                className="w-auto"
+              >
                 <TabsList>
                   <TabsTrigger value="grid" className="gap-2">
                     <LayoutGrid className="h-4 w-4" />
@@ -182,16 +191,16 @@ export default function DocumentsPage() {
                   </TabsTrigger>
                 </TabsList>
               </Tabs>
-              
+
               {selectedIds.length > 0 && (
                 <div className="flex items-center gap-2 animate-in fade-in slide-in-from-left-4">
                   <Separator orientation="vertical" className="h-8" />
                   <span className="text-sm font-medium text-muted-foreground px-2">
                     {selectedIds.length} sélectionné(s)
                   </span>
-                  <Button 
-                    variant="destructive" 
-                    size="sm" 
+                  <Button
+                    variant="destructive"
+                    size="sm"
                     className="h-8 gap-2"
                     onClick={() => setIsBulkDeleteDialogOpen(true)}
                   >
@@ -203,16 +212,27 @@ export default function DocumentsPage() {
             </div>
 
             <Button variant="outline" size="sm" onClick={selectAll}>
-              {selectedIds.length === documents.length && documents.length > 0 
-                ? "Tout désélectionner" 
+              {selectedIds.length === documents.length && documents.length > 0
+                ? "Tout désélectionner"
                 : "Tout sélectionner"}
             </Button>
           </div>
 
           {isLoading && documents.length === 0 ? (
-            <div className={view === "grid" ? "grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" : "space-y-2"}>
+            <div
+              className={
+                view === "grid"
+                  ? "grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+                  : "space-y-2"
+              }
+            >
               {Array.from({ length: 8 }).map((_, i) => (
-                <Skeleton key={i} className={view === "grid" ? "h-48 w-full rounded-xl" : "h-12 w-full"} />
+                <Skeleton
+                  key={i}
+                  className={
+                    view === "grid" ? "h-48 w-full rounded-xl" : "h-12 w-full"
+                  }
+                />
               ))}
             </div>
           ) : documents.length === 0 ? (
@@ -222,7 +242,8 @@ export default function DocumentsPage() {
               </div>
               <h3 className="text-lg font-semibold">Aucun document trouvé</h3>
               <p className="text-muted-foreground max-w-sm mt-2">
-                Commencez par importer un document ou modifiez vos filtres de recherche.
+                Commencez par importer un document ou modifiez vos filtres de
+                recherche.
               </p>
               <div className="mt-6">
                 <DocumentUploadDialog />
@@ -231,9 +252,9 @@ export default function DocumentsPage() {
           ) : view === "grid" ? (
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {documents.map((doc) => (
-                <DocumentCard 
-                  key={doc.id} 
-                  document={doc} 
+                <DocumentCard
+                  key={doc.id}
+                  document={doc}
                   isSelected={selectedIds.includes(doc.id)}
                   onSelect={() => toggleSelect(doc.id)}
                   onDownload={() => downloadDocument(doc.id)}
@@ -254,8 +275,11 @@ export default function DocumentsPage() {
                 <TableHeader>
                   <TableRow className="bg-muted/50">
                     <TableHead className="w-12 text-center">
-                      <Checkbox 
-                        checked={selectedIds.length === documents.length && documents.length > 0}
+                      <Checkbox
+                        checked={
+                          selectedIds.length === documents.length &&
+                          documents.length > 0
+                        }
                         onCheckedChange={selectAll}
                       />
                     </TableHead>
@@ -269,9 +293,12 @@ export default function DocumentsPage() {
                 </TableHeader>
                 <TableBody>
                   {documents.map((doc) => (
-                    <TableRow key={doc.id} className="group transition-colors hover:bg-muted/50">
+                    <TableRow
+                      key={doc.id}
+                      className="group transition-colors hover:bg-muted/50"
+                    >
                       <TableCell className="text-center">
-                        <Checkbox 
+                        <Checkbox
                           checked={selectedIds.includes(doc.id)}
                           onCheckedChange={() => toggleSelect(doc.id)}
                         />
@@ -279,15 +306,22 @@ export default function DocumentsPage() {
                       <TableCell className="font-medium">
                         <div className="flex flex-col">
                           <span className="line-clamp-1">{doc.title}</span>
-                          <span className="text-[10px] text-muted-foreground line-clamp-1">{doc.original_filename}</span>
+                          <span className="text-[10px] text-muted-foreground line-clamp-1">
+                            {doc.original_filename}
+                          </span>
                         </div>
                       </TableCell>
                       <TableCell>
-                        <DocumentTypeBadge type={doc.document_type} scriptLanguage={doc.script_language} />
+                        <DocumentTypeBadge
+                          type={doc.document_type}
+                          scriptLanguage={doc.script_language}
+                        />
                       </TableCell>
                       <TableCell>
                         {doc.client ? (
-                          <Badge variant="outline" className="font-normal">{doc.client.name}</Badge>
+                          <Badge variant="outline" className="font-normal">
+                            {doc.client.name}
+                          </Badge>
                         ) : (
                           <span className="text-muted-foreground">—</span>
                         )}
@@ -300,19 +334,34 @@ export default function DocumentsPage() {
                       </TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-2">
-                          <Button variant="ghost" size="icon" className="h-8 w-8 opacity-0 group-hover:opacity-100" onClick={() => downloadDocument(doc.id)}>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 opacity-0 group-hover:opacity-100"
+                            onClick={() => downloadDocument(doc.id)}
+                          >
                             <Download className="h-4 w-4" />
                           </Button>
-                          <Button variant="ghost" size="icon" className="h-8 w-8 opacity-0 group-hover:opacity-100" onClick={() => {
-                            setDocumentToEmail(doc);
-                            setIsEmailDialogOpen(true);
-                          }}>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 opacity-0 group-hover:opacity-100"
+                            onClick={() => {
+                              setDocumentToEmail(doc);
+                              setIsEmailDialogOpen(true);
+                            }}
+                          >
                             <Mail className="h-4 w-4" />
                           </Button>
-                          <Button variant="ghost" size="icon" className="h-8 w-8 opacity-0 group-hover:opacity-100 text-destructive" onClick={() => {
-                            setDocumentToDelete(doc.id);
-                            setIsDeleteDialogOpen(true);
-                          }}>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 opacity-0 group-hover:opacity-100 text-destructive"
+                            onClick={() => {
+                              setDocumentToDelete(doc.id);
+                              setIsDeleteDialogOpen(true);
+                            }}
+                          >
                             <Trash2 className="h-4 w-4" />
                           </Button>
                         </div>
@@ -327,34 +376,48 @@ export default function DocumentsPage() {
       </div>
 
       {/* Dialogs */}
-      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+      <AlertDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Êtes-vous sûr ?</AlertDialogTitle>
             <AlertDialogDescription>
-              Cette action est irréversible. Le document et son fichier physique seront définitivement supprimés.
+              Cette action est irréversible. Le document et son fichier physique
+              seront définitivement supprimés.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Annuler</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+            <AlertDialogAction
+              onClick={handleDelete}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
               Supprimer
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
 
-      <AlertDialog open={isBulkDeleteDialogOpen} onOpenChange={setIsBulkDeleteDialogOpen}>
+      <AlertDialog
+        open={isBulkDeleteDialogOpen}
+        onOpenChange={setIsBulkDeleteDialogOpen}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Suppression groupée</AlertDialogTitle>
             <AlertDialogDescription>
-              Vous êtes sur le point de supprimer {selectedIds.length} documents. Cette action est irréversible.
+              Vous êtes sur le point de supprimer {selectedIds.length}{" "}
+              documents. Cette action est irréversible.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Annuler</AlertDialogCancel>
-            <AlertDialogAction onClick={handleBulkDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+            <AlertDialogAction
+              onClick={handleBulkDelete}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
               Tout supprimer
             </AlertDialogAction>
           </AlertDialogFooter>
@@ -362,10 +425,10 @@ export default function DocumentsPage() {
       </AlertDialog>
 
       {documentToEmail && (
-        <DocumentSendEmailDialog 
-          document={documentToEmail} 
-          isOpen={isEmailDialogOpen} 
-          onOpenChange={setIsEmailDialogOpen} 
+        <DocumentSendEmailDialog
+          document={documentToEmail}
+          isOpen={isEmailDialogOpen}
+          onOpenChange={setIsEmailDialogOpen}
         />
       )}
     </div>
@@ -391,7 +454,7 @@ function Download(props: any) {
       <polyline points="7 10 12 15 17 10" />
       <line x1="12" x2="12" y1="15" y2="3" />
     </svg>
-  )
+  );
 }
 
 function Mail(props: any) {
@@ -411,5 +474,5 @@ function Mail(props: any) {
       <rect width="20" height="16" x="2" y="4" rx="2" />
       <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
     </svg>
-  )
+  );
 }

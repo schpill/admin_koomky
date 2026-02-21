@@ -1,9 +1,9 @@
 <?php
 
-use App\Models\User;
 use App\Models\Document;
-use Illuminate\Support\Facades\Storage;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Storage;
 
 uses(RefreshDatabase::class);
 
@@ -17,7 +17,7 @@ test('it can download a document', function () {
         'user_id' => $this->user->id,
         'original_filename' => 'test.pdf',
         'mime_type' => 'application/pdf',
-        'storage_path' => 'documents/test.pdf'
+        'storage_path' => 'documents/test.pdf',
     ]);
     Storage::disk('local')->put($document->storage_path, 'PDF content');
 
@@ -33,7 +33,7 @@ test('it can preview a document inline', function () {
         'user_id' => $this->user->id,
         'original_filename' => 'test.png',
         'mime_type' => 'image/png',
-        'storage_path' => 'documents/test.png'
+        'storage_path' => 'documents/test.png',
     ]);
     Storage::disk('local')->put($document->storage_path, 'image data');
 
