@@ -59,6 +59,7 @@ use App\Http\Controllers\Api\V1\TaskController;
 use App\Http\Controllers\Api\V1\TimeEntryController;
 use App\Http\Controllers\Api\V1\UserSettingsController;
 use App\Http\Controllers\Api\V1\TicketController;
+use App\Http\Controllers\Api\V1\TicketMessageController;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
@@ -319,5 +320,8 @@ Route::prefix('v1')->group(function () {
         Route::apiResource('tickets', TicketController::class);
         Route::patch('tickets/{ticket}/status', [TicketController::class, 'changeStatus']);
         Route::patch('tickets/{ticket}/assign', [TicketController::class, 'assign']);
+
+        // Ticket Messages
+        Route::apiResource('tickets.messages', TicketMessageController::class)->except(['show']);
     });
 });

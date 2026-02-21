@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <crap_result>
   <project/>
-  <timestamp>2026-02-21 17:45:13</timestamp>
+  <timestamp>2026-02-21 17:50:07</timestamp>
   <stats>
     <name>Method Crap Stats</name>
-    <methodCount>1102</methodCount>
+    <methodCount>1106</methodCount>
     <crapMethodCount>116</crapMethodCount>
     <crapLoad>876</crapLoad>
-    <totalCrap>12376.53</totalCrap>
-    <crapMethodPercent>10.53</crapMethodPercent>
+    <totalCrap>12387.53</totalCrap>
+    <crapMethodPercent>10.49</crapMethodPercent>
   </stats>
   <methods>
     <method>
@@ -3284,9 +3284,9 @@
       <methodName>index</methodName>
       <methodSignature>index(Illuminate\Http\Request $request): Illuminate\Http\JsonResponse</methodSignature>
       <fullMethod>index(Illuminate\Http\Request $request): Illuminate\Http\JsonResponse</fullMethod>
-      <crap>1</crap>
+      <crap>2</crap>
       <complexity>1</complexity>
-      <coverage>100</coverage>
+      <coverage>0</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -3295,9 +3295,9 @@
       <methodName>store</methodName>
       <methodSignature>store(Illuminate\Http\Request $request): Illuminate\Http\JsonResponse</methodSignature>
       <fullMethod>store(Illuminate\Http\Request $request): Illuminate\Http\JsonResponse</fullMethod>
-      <crap>1</crap>
+      <crap>2</crap>
       <complexity>1</complexity>
-      <coverage>100</coverage>
+      <coverage>0</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -3306,9 +3306,9 @@
       <methodName>show</methodName>
       <methodSignature>show(App\Models\Ticket $ticket): Illuminate\Http\JsonResponse</methodSignature>
       <fullMethod>show(App\Models\Ticket $ticket): Illuminate\Http\JsonResponse</fullMethod>
-      <crap>1</crap>
+      <crap>2</crap>
       <complexity>1</complexity>
-      <coverage>100</coverage>
+      <coverage>0</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -3317,9 +3317,9 @@
       <methodName>update</methodName>
       <methodSignature>update(Illuminate\Http\Request $request, App\Models\Ticket $ticket): Illuminate\Http\JsonResponse</methodSignature>
       <fullMethod>update(Illuminate\Http\Request $request, App\Models\Ticket $ticket): Illuminate\Http\JsonResponse</fullMethod>
-      <crap>1</crap>
+      <crap>2</crap>
       <complexity>1</complexity>
-      <coverage>100</coverage>
+      <coverage>0</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -3328,9 +3328,9 @@
       <methodName>destroy</methodName>
       <methodSignature>destroy(App\Models\Ticket $ticket): Illuminate\Http\JsonResponse</methodSignature>
       <fullMethod>destroy(App\Models\Ticket $ticket): Illuminate\Http\JsonResponse</fullMethod>
-      <crap>1</crap>
+      <crap>2</crap>
       <complexity>1</complexity>
-      <coverage>100</coverage>
+      <coverage>0</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -3339,9 +3339,9 @@
       <methodName>changeStatus</methodName>
       <methodSignature>changeStatus(Illuminate\Http\Request $request, App\Models\Ticket $ticket): Illuminate\Http\JsonResponse</methodSignature>
       <fullMethod>changeStatus(Illuminate\Http\Request $request, App\Models\Ticket $ticket): Illuminate\Http\JsonResponse</fullMethod>
-      <crap>1</crap>
+      <crap>2</crap>
       <complexity>1</complexity>
-      <coverage>100</coverage>
+      <coverage>0</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -3350,9 +3350,9 @@
       <methodName>assign</methodName>
       <methodSignature>assign(Illuminate\Http\Request $request, App\Models\Ticket $ticket): Illuminate\Http\JsonResponse</methodSignature>
       <fullMethod>assign(Illuminate\Http\Request $request, App\Models\Ticket $ticket): Illuminate\Http\JsonResponse</fullMethod>
-      <crap>1</crap>
+      <crap>2</crap>
       <complexity>1</complexity>
-      <coverage>100</coverage>
+      <coverage>0</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -3361,9 +3361,9 @@
       <methodName>stats</methodName>
       <methodSignature>stats(): Illuminate\Http\JsonResponse</methodSignature>
       <fullMethod>stats(): Illuminate\Http\JsonResponse</fullMethod>
-      <crap>1</crap>
+      <crap>2</crap>
       <complexity>1</complexity>
-      <coverage>100</coverage>
+      <coverage>0</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -3372,6 +3372,50 @@
       <methodName>overdue</methodName>
       <methodSignature>overdue(): Illuminate\Http\JsonResponse</methodSignature>
       <fullMethod>overdue(): Illuminate\Http\JsonResponse</fullMethod>
+      <crap>2</crap>
+      <complexity>1</complexity>
+      <coverage>0</coverage>
+      <crapLoad>0</crapLoad>
+    </method>
+    <method>
+      <package>App\Http\Controllers\Api\V1</package>
+      <className>App\Http\Controllers\Api\V1\TicketMessageController</className>
+      <methodName>index</methodName>
+      <methodSignature>index(App\Models\Ticket $ticket): Illuminate\Http\JsonResponse</methodSignature>
+      <fullMethod>index(App\Models\Ticket $ticket): Illuminate\Http\JsonResponse</fullMethod>
+      <crap>1</crap>
+      <complexity>1</complexity>
+      <coverage>100</coverage>
+      <crapLoad>0</crapLoad>
+    </method>
+    <method>
+      <package>App\Http\Controllers\Api\V1</package>
+      <className>App\Http\Controllers\Api\V1\TicketMessageController</className>
+      <methodName>store</methodName>
+      <methodSignature>store(Illuminate\Http\Request $request, App\Models\Ticket $ticket): Illuminate\Http\JsonResponse</methodSignature>
+      <fullMethod>store(Illuminate\Http\Request $request, App\Models\Ticket $ticket): Illuminate\Http\JsonResponse</fullMethod>
+      <crap>1</crap>
+      <complexity>1</complexity>
+      <coverage>100</coverage>
+      <crapLoad>0</crapLoad>
+    </method>
+    <method>
+      <package>App\Http\Controllers\Api\V1</package>
+      <className>App\Http\Controllers\Api\V1\TicketMessageController</className>
+      <methodName>update</methodName>
+      <methodSignature>update(Illuminate\Http\Request $request, App\Models\Ticket $ticket, App\Models\TicketMessage $message): Illuminate\Http\JsonResponse</methodSignature>
+      <fullMethod>update(Illuminate\Http\Request $request, App\Models\Ticket $ticket, App\Models\TicketMessage $message): Illuminate\Http\JsonResponse</fullMethod>
+      <crap>1</crap>
+      <complexity>1</complexity>
+      <coverage>100</coverage>
+      <crapLoad>0</crapLoad>
+    </method>
+    <method>
+      <package>App\Http\Controllers\Api\V1</package>
+      <className>App\Http\Controllers\Api\V1\TicketMessageController</className>
+      <methodName>destroy</methodName>
+      <methodSignature>destroy(App\Models\Ticket $ticket, App\Models\TicketMessage $message): Illuminate\Http\JsonResponse</methodSignature>
+      <fullMethod>destroy(App\Models\Ticket $ticket, App\Models\TicketMessage $message): Illuminate\Http\JsonResponse</fullMethod>
       <crap>1</crap>
       <complexity>1</complexity>
       <coverage>100</coverage>
@@ -7453,9 +7497,9 @@
       <methodName>ticket</methodName>
       <methodSignature>ticket(): Illuminate\Database\Eloquent\Relations\BelongsTo</methodSignature>
       <fullMethod>ticket(): Illuminate\Database\Eloquent\Relations\BelongsTo</fullMethod>
-      <crap>2</crap>
+      <crap>1</crap>
       <complexity>1</complexity>
-      <coverage>0</coverage>
+      <coverage>100</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -7464,9 +7508,9 @@
       <methodName>user</methodName>
       <methodSignature>user(): Illuminate\Database\Eloquent\Relations\BelongsTo</methodSignature>
       <fullMethod>user(): Illuminate\Database\Eloquent\Relations\BelongsTo</fullMethod>
-      <crap>2</crap>
+      <crap>1</crap>
       <complexity>1</complexity>
-      <coverage>0</coverage>
+      <coverage>100</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
