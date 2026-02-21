@@ -39,7 +39,7 @@
 | P9-BE-015 | Create TicketObserver (assigned_to default on created, webhooks on open/assign/resolve/close/delete, set resolved_at / closed_at) | [x] | `86fd643d` |
 | P9-BE-016 | Create TicketMessageObserver (set first_response_at on first public message from assignee, trigger notifyParticipantsNewMessage) | [x] | `f07603af` |
 | P9-BE-017 | Configure Meilisearch Scout index for Ticket (searchable: title, description; filterable: user_id, assigned_to, client_id, project_id, status, priority, category, tags; sortable: created_at, updated_at, deadline, priority) | [x] | `671e16d1` |
-| P9-BE-018 | Add tickets + ticket_messages (public) to DataExportService (GDPR export) | todo | |
+| P9-BE-018 | Add tickets + ticket_messages (public) to DataExportService (GDPR export) | [x] | `621906` |
 | P9-BE-019 | Dispatch webhooks for ticket events via existing WebhookDispatchService (ticket.opened, ticket.assigned, ticket.resolved, ticket.closed, ticket.deleted) | todo | |
 
 ### Backend Tests
