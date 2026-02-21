@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <crap_result>
   <project/>
-  <timestamp>2026-02-21 15:18:41</timestamp>
+  <timestamp>2026-02-21 17:37:17</timestamp>
   <stats>
     <name>Method Crap Stats</name>
-    <methodCount>1080</methodCount>
+    <methodCount>1093</methodCount>
     <crapMethodCount>118</crapMethodCount>
     <crapLoad>887</crapLoad>
-    <totalCrap>12397.68</totalCrap>
-    <crapMethodPercent>10.93</crapMethodPercent>
+    <totalCrap>12390.91</totalCrap>
+    <crapMethodPercent>10.8</crapMethodPercent>
   </stats>
   <methods>
     <method>
@@ -5231,9 +5231,9 @@
       <methodName>casts</methodName>
       <methodSignature>casts(): array</methodSignature>
       <fullMethod>casts(): array</fullMethod>
-      <crap>2</crap>
+      <crap>1</crap>
       <complexity>1</complexity>
-      <coverage>0</coverage>
+      <coverage>100</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -6683,9 +6683,9 @@
       <methodName>user</methodName>
       <methodSignature>user(): Illuminate\Database\Eloquent\Relations\BelongsTo</methodSignature>
       <fullMethod>user(): Illuminate\Database\Eloquent\Relations\BelongsTo</fullMethod>
-      <crap>2</crap>
+      <crap>1</crap>
       <complexity>1</complexity>
-      <coverage>0</coverage>
+      <coverage>100</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -7805,9 +7805,9 @@
       <methodName>__construct</methodName>
       <methodSignature>__construct(App\Models\CalendarEvent $event)</methodSignature>
       <fullMethod>__construct(App\Models\CalendarEvent $event)</fullMethod>
-      <crap>2</crap>
+      <crap>1</crap>
       <complexity>1</complexity>
-      <coverage>0</coverage>
+      <coverage>100</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -7816,9 +7816,9 @@
       <methodName>via</methodName>
       <methodSignature>via($notifiable): array</methodSignature>
       <fullMethod>via($notifiable): array</fullMethod>
-      <crap>20</crap>
+      <crap>4</crap>
       <complexity>4</complexity>
-      <coverage>0</coverage>
+      <coverage>100</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -7827,9 +7827,9 @@
       <methodName>toMail</methodName>
       <methodSignature>toMail($notifiable): Illuminate\Notifications\Messages\MailMessage</methodSignature>
       <fullMethod>toMail($notifiable): Illuminate\Notifications\Messages\MailMessage</fullMethod>
-      <crap>2</crap>
+      <crap>1</crap>
       <complexity>1</complexity>
-      <coverage>0</coverage>
+      <coverage>100</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -7838,9 +7838,9 @@
       <methodName>toArray</methodName>
       <methodSignature>toArray($notifiable): array</methodSignature>
       <fullMethod>toArray($notifiable): array</fullMethod>
-      <crap>2</crap>
+      <crap>1</crap>
       <complexity>1</complexity>
-      <coverage>0</coverage>
+      <coverage>100</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -9242,6 +9242,149 @@
     </method>
     <method>
       <package>App\Policies</package>
+      <className>App\Policies\TicketPolicy</className>
+      <methodName>viewAny</methodName>
+      <methodSignature>viewAny(App\Models\User $user): bool</methodSignature>
+      <fullMethod>viewAny(App\Models\User $user): bool</fullMethod>
+      <crap>1</crap>
+      <complexity>1</complexity>
+      <coverage>100</coverage>
+      <crapLoad>0</crapLoad>
+    </method>
+    <method>
+      <package>App\Policies</package>
+      <className>App\Policies\TicketPolicy</className>
+      <methodName>view</methodName>
+      <methodSignature>view(App\Models\User $user, App\Models\Ticket $ticket): bool</methodSignature>
+      <fullMethod>view(App\Models\User $user, App\Models\Ticket $ticket): bool</fullMethod>
+      <crap>2</crap>
+      <complexity>2</complexity>
+      <coverage>100</coverage>
+      <crapLoad>0</crapLoad>
+    </method>
+    <method>
+      <package>App\Policies</package>
+      <className>App\Policies\TicketPolicy</className>
+      <methodName>create</methodName>
+      <methodSignature>create(App\Models\User $user): bool</methodSignature>
+      <fullMethod>create(App\Models\User $user): bool</fullMethod>
+      <crap>1</crap>
+      <complexity>1</complexity>
+      <coverage>100</coverage>
+      <crapLoad>0</crapLoad>
+    </method>
+    <method>
+      <package>App\Policies</package>
+      <className>App\Policies\TicketPolicy</className>
+      <methodName>update</methodName>
+      <methodSignature>update(App\Models\User $user, App\Models\Ticket $ticket): bool</methodSignature>
+      <fullMethod>update(App\Models\User $user, App\Models\Ticket $ticket): bool</fullMethod>
+      <crap>1</crap>
+      <complexity>1</complexity>
+      <coverage>100</coverage>
+      <crapLoad>0</crapLoad>
+    </method>
+    <method>
+      <package>App\Policies</package>
+      <className>App\Policies\TicketPolicy</className>
+      <methodName>delete</methodName>
+      <methodSignature>delete(App\Models\User $user, App\Models\Ticket $ticket): bool</methodSignature>
+      <fullMethod>delete(App\Models\User $user, App\Models\Ticket $ticket): bool</fullMethod>
+      <crap>1</crap>
+      <complexity>1</complexity>
+      <coverage>100</coverage>
+      <crapLoad>0</crapLoad>
+    </method>
+    <method>
+      <package>App\Policies</package>
+      <className>App\Policies\TicketPolicy</className>
+      <methodName>restore</methodName>
+      <methodSignature>restore(App\Models\User $user, App\Models\Ticket $ticket): bool</methodSignature>
+      <fullMethod>restore(App\Models\User $user, App\Models\Ticket $ticket): bool</fullMethod>
+      <crap>2</crap>
+      <complexity>1</complexity>
+      <coverage>0</coverage>
+      <crapLoad>0</crapLoad>
+    </method>
+    <method>
+      <package>App\Policies</package>
+      <className>App\Policies\TicketPolicy</className>
+      <methodName>forceDelete</methodName>
+      <methodSignature>forceDelete(App\Models\User $user, App\Models\Ticket $ticket): bool</methodSignature>
+      <fullMethod>forceDelete(App\Models\User $user, App\Models\Ticket $ticket): bool</fullMethod>
+      <crap>2</crap>
+      <complexity>1</complexity>
+      <coverage>0</coverage>
+      <crapLoad>0</crapLoad>
+    </method>
+    <method>
+      <package>App\Policies</package>
+      <className>App\Policies\TicketPolicy</className>
+      <methodName>assign</methodName>
+      <methodSignature>assign(App\Models\User $user, App\Models\Ticket $ticket): bool</methodSignature>
+      <fullMethod>assign(App\Models\User $user, App\Models\Ticket $ticket): bool</fullMethod>
+      <crap>1</crap>
+      <complexity>1</complexity>
+      <coverage>100</coverage>
+      <crapLoad>0</crapLoad>
+    </method>
+    <method>
+      <package>App\Policies</package>
+      <className>App\Policies\TicketPolicy</className>
+      <methodName>addMessage</methodName>
+      <methodSignature>addMessage(App\Models\User $user, App\Models\Ticket $ticket): bool</methodSignature>
+      <fullMethod>addMessage(App\Models\User $user, App\Models\Ticket $ticket): bool</fullMethod>
+      <crap>2</crap>
+      <complexity>2</complexity>
+      <coverage>100</coverage>
+      <crapLoad>0</crapLoad>
+    </method>
+    <method>
+      <package>App\Policies</package>
+      <className>App\Policies\TicketPolicy</className>
+      <methodName>uploadDocument</methodName>
+      <methodSignature>uploadDocument(App\Models\User $user, App\Models\Ticket $ticket): bool</methodSignature>
+      <fullMethod>uploadDocument(App\Models\User $user, App\Models\Ticket $ticket): bool</fullMethod>
+      <crap>2</crap>
+      <complexity>2</complexity>
+      <coverage>100</coverage>
+      <crapLoad>0</crapLoad>
+    </method>
+    <method>
+      <package>App\Policies</package>
+      <className>App\Policies\TicketPolicy</className>
+      <methodName>attachDocument</methodName>
+      <methodSignature>attachDocument(App\Models\User $user, App\Models\Ticket $ticket): bool</methodSignature>
+      <fullMethod>attachDocument(App\Models\User $user, App\Models\Ticket $ticket): bool</fullMethod>
+      <crap>2</crap>
+      <complexity>2</complexity>
+      <coverage>100</coverage>
+      <crapLoad>0</crapLoad>
+    </method>
+    <method>
+      <package>App\Policies</package>
+      <className>App\Policies\TicketPolicy</className>
+      <methodName>detachDocument</methodName>
+      <methodSignature>detachDocument(App\Models\User $user, App\Models\Ticket $ticket): bool</methodSignature>
+      <fullMethod>detachDocument(App\Models\User $user, App\Models\Ticket $ticket): bool</fullMethod>
+      <crap>2</crap>
+      <complexity>2</complexity>
+      <coverage>100</coverage>
+      <crapLoad>0</crapLoad>
+    </method>
+    <method>
+      <package>App\Policies</package>
+      <className>App\Policies\TicketPolicy</className>
+      <methodName>changeStatus</methodName>
+      <methodSignature>changeStatus(App\Models\User $user, App\Models\Ticket $ticket): bool</methodSignature>
+      <fullMethod>changeStatus(App\Models\User $user, App\Models\Ticket $ticket): bool</fullMethod>
+      <crap>2</crap>
+      <complexity>2</complexity>
+      <coverage>100</coverage>
+      <crapLoad>0</crapLoad>
+    </method>
+    <method>
+      <package>App\Policies</package>
       <className>App\Policies\WebhookEndpointPolicy</className>
       <methodName>viewAny</methodName>
       <methodSignature>viewAny(App\Models\User $user): bool</methodSignature>
@@ -9554,9 +9697,9 @@
       <methodName>syncProjectDeadline</methodName>
       <methodSignature>syncProjectDeadline(App\Models\Project $project): void</methodSignature>
       <fullMethod>syncProjectDeadline(App\Models\Project $project): void</fullMethod>
-      <crap>4.92</crap>
+      <crap>2</crap>
       <complexity>2</complexity>
-      <coverage>10</coverage>
+      <coverage>100</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -9587,9 +9730,9 @@
       <methodName>notify</methodName>
       <methodSignature>notify(mixed $user, App\Models\CalendarEvent $event): void</methodSignature>
       <fullMethod>notify(mixed $user, App\Models\CalendarEvent $event): void</fullMethod>
-      <crap>6</crap>
+      <crap>2.15</crap>
       <complexity>2</complexity>
-      <coverage>0</coverage>
+      <coverage>66.67</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
