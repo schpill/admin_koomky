@@ -77,4 +77,66 @@ class Ticket extends Model
     {
         return $this->belongsToMany(Document::class, 'ticket_documents');
     }
+
+    /**
+     * Get the index name for the model.
+     */
+    public function searchableAs(): string
+    {
+        return 'tickets';
+    }
+
+    /**
+     * Get the indexable data array for the model.
+     *
+     * @return array<string, mixed>
+     */
+    public function toSearchableArray(): array
+    {
+        $array = $this->toArray();
+
+        // Customize the data array for searchable fields.
+        return [
+            'id' => $this->id,
+            'title' => $this->title,
+            'description' => $this->description,
+            'user_id' => $this->user_id,
+            'assigned_to' => $this->assigned_to,
+            'client_id' => $this->client_id,
+            'project_id' => $this->project_id,
+            'status' => $this->status->value,
+            'priority' => $this->priority->value,
+            'category' => $this->category,
+            'tags' => $this->tags,
+            'deadline' => $this->deadline ? $this->deadline->timestamp : null,
+            'created_at' => $this->created_at->timestamp,
+            'updated_at' => $this->updated_at->timestamp,
+        ];
+    }
+
+    /**
+     * Get the Meilisearch index settings for the model.
+     *
+     * @return array<string, mixed>
+     */
+    public function searchableConfiguration(): array
+    {
+        return [
+            'searchableAttributes' => ['title', 'description'],
+            'filterableAttributes' => ['user_id', 'assigned_to', 'client_id', 'project_id', 'status', 'priority', 'category', 'tags'],
+            'sortableAttributes' => ['created_at', 'updated_at', 'deadline', 'priority'],
+        ];
+    }
+
+    // The following methods are for compatibility with older Scout versions or specific needs.
+    // In modern Scout (v9+ with Meilisearch), searchableConfiguration is preferred.
+    public function getFilterableAttributes(): array
+    {
+        return ['user_id', 'assigned_to', 'client_id', 'project_id', 'status', 'priority', 'category', 'tags'];
+    }
+
+    public function getSortableAttributes(): array
+    {
+        return ['created_at', 'updated_at', 'deadline', 'priority'];
+    }
 }
