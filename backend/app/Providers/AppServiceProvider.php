@@ -6,6 +6,7 @@ use App\Listeners\LogAuthEvent;
 use App\Models\Client;
 use App\Models\Contact;
 use App\Models\CreditNote;
+use App\Models\Document;
 use App\Models\Expense;
 use App\Models\Invoice;
 use App\Models\Lead;
@@ -16,6 +17,7 @@ use App\Models\Task;
 use App\Observers\ClientObserver;
 use App\Observers\ContactObserver;
 use App\Observers\CreditNoteObserver;
+use App\Observers\DocumentObserver;
 use App\Observers\ExpenseObserver;
 use App\Observers\InvoiceObserver;
 use App\Observers\LeadObserver;
@@ -81,6 +83,7 @@ class AppServiceProvider extends ServiceProvider
         Expense::observe(ExpenseObserver::class);
         Payment::observe(PaymentObserver::class);
         Lead::observe(LeadObserver::class);
+        Document::observe(DocumentObserver::class);
 
         // Configure Scramble OpenAPI documentation routes
         Scramble::configure()

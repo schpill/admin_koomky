@@ -30,6 +30,7 @@ import { useI18n } from "@/components/providers/i18n-provider";
 const navigation = [
   { key: "dashboard", href: "/", icon: LayoutDashboard },
   { key: "leads", href: "/leads", icon: Target },
+  { key: "documents", href: "/documents", icon: FileText },
   { key: "clients", href: "/clients", icon: Users },
   { key: "projects", href: "/projects", icon: FolderKanban },
   { key: "campaigns", href: "/campaigns", icon: Megaphone },

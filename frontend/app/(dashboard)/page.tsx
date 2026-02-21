@@ -10,6 +10,7 @@ import { CampaignSummaryWidget } from "@/components/dashboard/campaign-summary-w
 import { RecurringInvoicesWidget } from "@/components/dashboard/recurring-invoices-widget";
 import { CalendarWidget } from "@/components/dashboard/calendar-widget";
 import { PipelineSummaryWidget } from "@/components/dashboard/pipeline-summary-widget";
+import { RecentDocumentsWidget } from "@/components/dashboard/recent-documents-widget";
 import { CurrencyAmount } from "@/components/shared/currency-amount";
 import { useDashboardStore } from "@/lib/stores/dashboard";
 import { useCalendarStore } from "@/lib/stores/calendar";
@@ -256,6 +257,12 @@ export default function DashboardPage() {
             deadlines={stats?.upcoming_deadlines || []}
             isLoading={isLoading}
           />
+        </div>
+      </div>
+
+      <div className="grid gap-6 grid-cols-1 lg:grid-cols-3">
+        <div className="lg:col-span-1">
+          <RecentDocumentsWidget />
         </div>
       </div>
     </div>

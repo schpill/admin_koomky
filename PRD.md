@@ -4,11 +4,11 @@
 
 | Field             | Value                                      |
 |-------------------|--------------------------------------------|
-| **Document Version** | 1.3.0                                   |
+| **Document Version** | 1.4.0                                   |
 | **Status**           | Draft                                   |
 | **Author**           | Senior Freelance Developer              |
 | **Date**             | 2026-02-11                              |
-| **Last Updated**     | 2026-02-20                              |
+| **Last Updated**     | 2026-02-21                              |
 | **Confidentiality**  | Internal                                |
 
 ---
@@ -602,6 +602,32 @@ Freelance professionals face a fragmented tooling landscape that forces them to 
 - Given 5 leads in `proposal_sent` with a total estimated value of €30,000, when I view the Kanban, then the `proposal_sent` column shows 5 cards and €30,000.
 - Given a lead is moved to `won`, when I click "Convert to Client", then a new Client is created pre-filled with the lead's data and the lead is linked to that client.
 - Given a lead is moved to `lost`, when I confirm, then the system prompts for a lost reason before updating the status.
+
+---
+
+### 4.12 Document Management (GED)
+
+#### FR-GED-001: Document Library
+
+| ID          | Requirement                                                                                    |
+|-------------|-----------------------------------------------------------------------------------------------|
+| FR-GED-001  | The system SHALL allow uploading documents with optional title, tags, and client association. |
+| FR-GED-002  | The system SHALL provide a library view with grid and list toggles, sorting, and pagination.  |
+| FR-GED-003  | The system SHALL auto-detect document types (PDF, spreadsheet, image, script, etc.).         |
+| FR-GED-004  | The system SHALL support full-text search on title and tags via Meilisearch.                  |
+| FR-GED-005  | The system SHALL support document versioning by allowing file re-uploads (overwriting).       |
+| FR-GED-006  | The system SHALL allow sending documents as email attachments directly from the UI.           |
+| FR-GED-007  | The system SHALL provide inline previews for PDF, images, text, and script files.             |
+| FR-GED-008  | The system SHALL enforce per-user storage quotas (default 512 MB).                            |
+
+**User Story:**
+> As a freelancer, I want to store all my business documents (contracts, receipts, scripts) in one place so that I can easily retrieve, preview, and share them with clients.
+
+**Acceptance Criteria:**
+- Given I upload a file without a title, when it is saved, then the filename is used as the default title.
+- Given I re-upload a file for an existing document, when it is saved, then the version number is incremented.
+- Given a PDF document, when I click on it, then I can see its content in an inline preview panel.
+- Given my storage quota is full, when I try to upload a new document, then the system rejects it with an error.
 
 ---
 
@@ -1644,6 +1670,15 @@ Each phase MUST be fully completed and validated (all tests passing, coverage >=
 
 **Milestone 7 (v1.3.0):** French accounting compliance exports, external automation via webhooks and public API, and full prospect pipeline delivered.
 
+#### Phase 8: GED (Document Management) (Weeks 52–57)
+
+| Week  | Deliverables                                                                   |
+|-------|--------------------------------------------------------------------------------|
+| 52-54 | Storage service, type detection, backend CRUD, Scout integration, stats        |
+| 55-57 | Document library UI (grid/list), preview panel, re-upload flow, email delivery |
+
+**Milestone 8 (v1.4.0):** Document management system (GED) fully delivered with versioning and inline preview.
+
 ### 12.2 Milestone Summary
 
 | Milestone | Name                                    | Target Completion | Version  | Key Deliverables                                                     |
@@ -1655,6 +1690,7 @@ Each phase MUST be fully completed and validated (all tests passing, coverage >=
 | M5        | Recurring Invoices, Multi-Currency & Calendar | Week 32      | v1.1.0   | Recurring invoices, multi-currency, calendar integration, Prometheus monitoring |
 | M6        | Client Portal & Expense Tracking        | Week 40           | v1.2.0   | Client portal, Stripe payments, expense tracking, P&L reports        |
 | M7        | Accounting, Public API & Lead Pipeline  | Week 51           | v1.3.0   | FEC/VAT exports, webhooks, personal API tokens, prospect pipeline    |
+| M8        | GED (Document Management)               | Week 57           | v1.4.0   | Document library, versioning, preview, email attachments             |
 
 ---
 

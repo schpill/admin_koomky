@@ -7,6 +7,7 @@ use App\Models\CampaignTemplate;
 use App\Models\Client;
 use App\Models\Contact;
 use App\Models\CreditNote;
+use App\Models\Document;
 use App\Models\Expense;
 use App\Models\ExpenseCategory;
 use App\Models\Invoice;
@@ -71,6 +72,10 @@ class DataExportService
             ->with(['activities'])
             ->get();
 
+        $documents = Document::query()
+            ->where('user_id', $user->id)
+            ->get();
+
         return [
             'exported_at' => now()->toIso8601String(),
             'user' => [
@@ -116,6 +121,7 @@ class DataExportService
                 ->whereIn('lead_id', $leads->pluck('id'))
                 ->get()
                 ->toArray(),
+            'documents' => $documents->toArray(),
         ];
     }
 

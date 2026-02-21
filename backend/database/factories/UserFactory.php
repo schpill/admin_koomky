@@ -32,6 +32,7 @@ class UserFactory extends Factory
             'business_name' => fake()->company(),
             'base_currency' => 'EUR',
             'exchange_rate_provider' => 'open_exchange_rates',
+            'document_storage_quota_mb' => 512,
         ];
     }
 
