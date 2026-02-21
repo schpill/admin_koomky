@@ -58,6 +58,7 @@ use App\Http\Controllers\Api\V1\TagController;
 use App\Http\Controllers\Api\V1\TaskController;
 use App\Http\Controllers\Api\V1\TimeEntryController;
 use App\Http\Controllers\Api\V1\UserSettingsController;
+use App\Http\Controllers\Api\V1\TicketController;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
@@ -311,5 +312,12 @@ Route::prefix('v1')->group(function () {
         Route::post('documents/{document}/reupload', [DocumentController::class, 'reupload']);
         Route::get('documents/{document}/download', [DocumentController::class, 'download']);
         Route::post('documents/{document}/email', [DocumentController::class, 'sendEmail']);
+
+        // Tickets
+        Route::get('tickets/stats', [TicketController::class, 'stats']);
+        Route::get('tickets/overdue', [TicketController::class, 'overdue']);
+        Route::apiResource('tickets', TicketController::class);
+        Route::patch('tickets/{ticket}/status', [TicketController::class, 'changeStatus']);
+        Route::patch('tickets/{ticket}/assign', [TicketController::class, 'assign']);
     });
 });
