@@ -47,7 +47,7 @@
 | ID | Test File | Status | Owner |
 |----|-----------|--------|-------|
 | P9-BT-001 | tests/Unit/Models/TicketTest.php | [x] | `86fd643d` |
-| P9-BT-002 | tests/Unit/Models/TicketMessageTest.php | todo | |
+| P9-BT-002 | tests/Unit/Models/TicketMessageTest.php | [x] | `637151` |
 | P9-BT-003 | tests/Unit/Services/TicketNotificationServiceTest.php | [x] | `cacdc5fc` |
 | P9-BT-004 | tests/Unit/Observers/TicketObserverTest.php | [x] | `f07603af` (temporarily disabled due to env issue) |
 | P9-BT-005 | tests/Unit/Observers/TicketMessageObserverTest.php | [x] | `f07603af` (temporarily disabled due to env issue) |
