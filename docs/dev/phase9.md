@@ -18,7 +18,7 @@
 | P9-BE-004 | Create TicketPolicy (owner: all actions; assignee: add message + change status; others: no access) | [x] | `9dec69c3` |
 | P9-BE-005 | Migration: create_tickets_table | [x] | `86fd643d` |
 | P9-BE-006 | Migration: create_ticket_messages_table | [x] | `86fd643d` |
-| P9-BE-007 | Migration: create_ticket_documents_table (pivot: ticket_id, document_id, attached_at; unique index) | [~] | |
+| P9-BE-007 | Migration: create_ticket_documents_table (pivot: ticket_id, document_id, attached_at; unique index) | [x] | `d09bd1fa` |
 
 ### Backend — Controllers & Requests
 
