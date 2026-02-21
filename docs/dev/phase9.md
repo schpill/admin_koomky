@@ -15,7 +15,7 @@
 | P9-BE-001 | Create Ticket model (relationships: user/owner, assignee, client, project, messages, documents via pivot; scopes: byStatus, byPriority, byClient, byAssignee, overdue; Scout Searchable) | [x] | `86fd643d` |
 | P9-BE-002 | Create TicketMessage model (relationships: ticket, user; scopes: isPublic, isInternal) | [x] | `86fd643d` |
 | P9-BE-003 | Create TicketFactory + TicketMessageFactory | [x] | `86fd643d` |
-| P9-BE-004 | Create TicketPolicy (owner: all actions; assignee: add message + change status; others: no access) | [~] | |
+| P9-BE-004 | Create TicketPolicy (owner: all actions; assignee: add message + change status; others: no access) | [x] | `9dec69c3` |
 | P9-BE-005 | Migration: create_tickets_table | [x] | `86fd643d` |
 | P9-BE-006 | Migration: create_ticket_messages_table | [x] | `86fd643d` |
 | P9-BE-007 | Migration: create_ticket_documents_table (pivot: ticket_id, document_id, attached_at; unique index) | todo | |
