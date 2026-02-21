@@ -58,7 +58,7 @@
 | P9-BT-010 | tests/Feature/Tickets/TicketMessageTest.php | [x] | `a18beda9` |
 | P9-BT-011 | tests/Feature/Tickets/TicketDocumentTest.php | [x] | `18c2068b` |
 | P9-BT-012 | tests/Feature/Tickets/TicketStatsTest.php | [x] | `651045` |
-| P9-BT-013 | tests/Feature/Tickets/TicketAssignTest.php | todo | |
+| P9-BT-013 | tests/Feature/Tickets/TicketAssignTest.php | [x] | `656182` |
 
 ---
 
