@@ -11,17 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('segments', function (Blueprint $table) {
+        Schema::create('ticket_messages', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('user_id')->index();
-            $table->string('name');
-            $table->text('description')->nullable();
-            $table->json('filters');
-            $table->boolean('is_dynamic')->default(true);
-            $table->unsignedInteger('contact_count')->default(0);
+            $table->uuid('ticket_id');
+            $table->uuid('user_id');
+            $table->text('content');
+            $table->boolean('is_internal')->default(false);
             $table->timestamps();
 
+            $table->foreign('ticket_id')->references('id')->on('tickets')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+
+            $table->index('ticket_id');
+            $table->index(['ticket_id', 'is_internal']);
         });
     }
 
@@ -30,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('segments');
+        Schema::dropIfExists('ticket_messages');
     }
 };

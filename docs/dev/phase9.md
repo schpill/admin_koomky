@@ -12,12 +12,12 @@
 
 | ID | Task | Status | Owner |
 |----|------|--------|-------|
-| P9-BE-001 | Create Ticket model (relationships: user/owner, assignee, client, project, messages, documents via pivot; scopes: byStatus, byPriority, byClient, byAssignee, overdue; Scout Searchable) | todo | |
-| P9-BE-002 | Create TicketMessage model (relationships: ticket, user; scopes: isPublic, isInternal) | todo | |
-| P9-BE-003 | Create TicketFactory + TicketMessageFactory | todo | |
+| P9-BE-001 | Create Ticket model (relationships: user/owner, assignee, client, project, messages, documents via pivot; scopes: byStatus, byPriority, byClient, byAssignee, overdue; Scout Searchable) | [x] | |
+| P9-BE-002 | Create TicketMessage model (relationships: ticket, user; scopes: isPublic, isInternal) | [x] | |
+| P9-BE-003 | Create TicketFactory + TicketMessageFactory | [x] | |
 | P9-BE-004 | Create TicketPolicy (owner: all actions; assignee: add message + change status; others: no access) | todo | |
-| P9-BE-005 | Migration: create_tickets_table | todo | |
-| P9-BE-006 | Migration: create_ticket_messages_table | todo | |
+| P9-BE-005 | Migration: create_tickets_table | [x] | |
+| P9-BE-006 | Migration: create_ticket_messages_table | [x] | |
 | P9-BE-007 | Migration: create_ticket_documents_table (pivot: ticket_id, document_id, attached_at; unique index) | todo | |
 
 ### Backend — Controllers & Requests
@@ -36,7 +36,7 @@
 | ID | Task | Status | Owner |
 |----|------|--------|-------|
 | P9-BE-014 | Create TicketNotificationService (notifyAssigned, notifyOwnerResolved, notifyOwnerClosed, notifyParticipantsNewMessage — all queued) | todo | |
-| P9-BE-015 | Create TicketObserver (assigned_to default on created, webhooks on open/assign/resolve/close/delete, set resolved_at / closed_at) | todo | |
+| P9-BE-015 | Create TicketObserver (assigned_to default on created, webhooks on open/assign/resolve/close/delete, set resolved_at / closed_at) | [x] | |
 | P9-BE-016 | Create TicketMessageObserver (set first_response_at on first public message from assignee, trigger notifyParticipantsNewMessage) | todo | |
 | P9-BE-017 | Configure Meilisearch Scout index for Ticket (searchable: title, description; filterable: user_id, assigned_to, client_id, project_id, status, priority, category, tags; sortable: created_at, updated_at, deadline, priority) | todo | |
 | P9-BE-018 | Add tickets + ticket_messages (public) to DataExportService (GDPR export) | todo | |
@@ -46,7 +46,7 @@
 
 | ID | Test File | Status | Owner |
 |----|-----------|--------|-------|
-| P9-BT-001 | tests/Unit/Models/TicketTest.php | todo | |
+| P9-BT-001 | tests/Unit/Models/TicketTest.php | [x] | |
 | P9-BT-002 | tests/Unit/Models/TicketMessageTest.php | todo | |
 | P9-BT-003 | tests/Unit/Services/TicketNotificationServiceTest.php | todo | |
 | P9-BT-004 | tests/Unit/Observers/TicketObserverTest.php | todo | |
