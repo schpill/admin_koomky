@@ -7,6 +7,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use App\Http\Requests\Api\V1\StoreTicketRequest;
+use App\Http\Requests\Api\V1\UpdateTicketRequest;
 
 class TicketController extends Controller
 {
@@ -28,7 +29,7 @@ class TicketController extends Controller
         return response()->json(['message' => 'Ticket details', 'data' => $ticket]);
     }
 
-    public function update(Request $request, Ticket $ticket): JsonResponse
+    public function update(UpdateTicketRequest $request, Ticket $ticket): JsonResponse
     {
         // Placeholder for updating a ticket
         return response()->json(['message' => 'Ticket updated', 'data' => $request->all(), 'ticket_id' => $ticket->id]);

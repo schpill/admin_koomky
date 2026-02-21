@@ -28,7 +28,7 @@
 | P9-BE-009 | Create TicketMessageController (index, store, update, destroy) | [x] | `ae41202c` |
 | P9-BE-010 | Create TicketDocumentController (index, store/upload, attach existing GED doc, detach) | [x] | `18c2068b` |
 | P9-BE-011 | Create StoreTicketRequest (title, description, client_id nullable+owned, project_id nullable+owned+belongs to client, assigned_to nullable, priority enum, category max 100, tags, deadline nullable future date) | [x] | `565bc35f` |
-| P9-BE-012 | Create UpdateTicketRequest (same rules as Store, all optional) | todo | |
+| P9-BE-012 | Create UpdateTicketRequest (same rules as Store, all optional) | [~] | |
 | P9-BE-013 | Create StoreTicketMessageRequest (content required, is_internal boolean) | todo | |
 
 ### Backend — Services & Observers
@@ -51,7 +51,7 @@
 | P9-BT-003 | tests/Unit/Services/TicketNotificationServiceTest.php | todo | |
 | P9-BT-004 | tests/Unit/Observers/TicketObserverTest.php | todo | |
 | P9-BT-005 | tests/Unit/Observers/TicketMessageObserverTest.php | todo | |
-| P9-BT-006 | tests/Feature/Tickets/TicketCrudTest.php | [x] | `565bc35f` |
+| P9-BT-006 | tests/Feature/Tickets/TicketCrudTest.php | [~] | `565bc35f` |
 | P9-BT-007 | tests/Feature/Tickets/TicketStatusTest.php | todo | |
 | P9-BT-008 | tests/Feature/Tickets/TicketFilterTest.php | todo | |
 | P9-BT-009 | tests/Feature/Tickets/TicketSearchTest.php | todo | |
