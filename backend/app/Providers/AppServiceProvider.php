@@ -15,6 +15,7 @@ use App\Models\Project;
 use App\Models\Quote;
 use App\Models\Task;
 use App\Models\Ticket;
+use App\Models\TicketMessage;
 use App\Observers\ClientObserver;
 use App\Observers\ContactObserver;
 use App\Observers\CreditNoteObserver;
@@ -27,6 +28,7 @@ use App\Observers\ProjectObserver;
 use App\Observers\QuoteObserver;
 use App\Observers\TaskObserver;
 use App\Observers\TicketObserver;
+use App\Observers\TicketMessageObserver;
 use App\Services\ExchangeRates\ApiExchangeRateService;
 use App\Services\ExchangeRates\EcbExchangeRatesDriver;
 use App\Services\ExchangeRates\ExchangeRateDriver;
@@ -87,6 +89,7 @@ class AppServiceProvider extends ServiceProvider
         Lead::observe(LeadObserver::class);
         Document::observe(DocumentObserver::class);
         Ticket::observe(TicketObserver::class);
+        TicketMessage::observe(TicketMessageObserver::class);
 
         // Configure Scramble OpenAPI documentation routes
         Scramble::configure()

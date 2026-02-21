@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <crap_result>
   <project/>
-  <timestamp>2026-02-21 18:24:12</timestamp>
+  <timestamp>2026-02-21 18:46:03</timestamp>
   <stats>
     <name>Method Crap Stats</name>
-    <methodCount>1132</methodCount>
+    <methodCount>1138</methodCount>
     <crapMethodCount>118</crapMethodCount>
     <crapLoad>887</crapLoad>
-    <totalCrap>12493.91</totalCrap>
-    <crapMethodPercent>10.42</crapMethodPercent>
+    <totalCrap>12600.75</totalCrap>
+    <crapMethodPercent>10.37</crapMethodPercent>
   </stats>
   <methods>
     <method>
@@ -5407,9 +5407,9 @@
       <methodName>__construct</methodName>
       <methodSignature>__construct(App\Models\Ticket $ticket)</methodSignature>
       <fullMethod>__construct(App\Models\Ticket $ticket)</fullMethod>
-      <crap>1</crap>
+      <crap>2</crap>
       <complexity>1</complexity>
-      <coverage>100</coverage>
+      <coverage>0</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -5418,9 +5418,9 @@
       <methodName>envelope</methodName>
       <methodSignature>envelope(): Illuminate\Mail\Mailables\Envelope</methodSignature>
       <fullMethod>envelope(): Illuminate\Mail\Mailables\Envelope</fullMethod>
-      <crap>1</crap>
+      <crap>2</crap>
       <complexity>1</complexity>
-      <coverage>100</coverage>
+      <coverage>0</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -5440,9 +5440,9 @@
       <methodName>__construct</methodName>
       <methodSignature>__construct(App\Models\Ticket $ticket)</methodSignature>
       <fullMethod>__construct(App\Models\Ticket $ticket)</fullMethod>
-      <crap>1</crap>
+      <crap>2</crap>
       <complexity>1</complexity>
-      <coverage>100</coverage>
+      <coverage>0</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -5451,9 +5451,9 @@
       <methodName>envelope</methodName>
       <methodSignature>envelope(): Illuminate\Mail\Mailables\Envelope</methodSignature>
       <fullMethod>envelope(): Illuminate\Mail\Mailables\Envelope</fullMethod>
-      <crap>1</crap>
+      <crap>2</crap>
       <complexity>1</complexity>
-      <coverage>100</coverage>
+      <coverage>0</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -5473,9 +5473,9 @@
       <methodName>__construct</methodName>
       <methodSignature>__construct(App\Models\Ticket $ticket, App\Models\TicketMessage $message)</methodSignature>
       <fullMethod>__construct(App\Models\Ticket $ticket, App\Models\TicketMessage $message)</fullMethod>
-      <crap>1</crap>
+      <crap>2</crap>
       <complexity>1</complexity>
-      <coverage>100</coverage>
+      <coverage>0</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -5484,9 +5484,9 @@
       <methodName>envelope</methodName>
       <methodSignature>envelope(): Illuminate\Mail\Mailables\Envelope</methodSignature>
       <fullMethod>envelope(): Illuminate\Mail\Mailables\Envelope</fullMethod>
-      <crap>1</crap>
+      <crap>2</crap>
       <complexity>1</complexity>
-      <coverage>100</coverage>
+      <coverage>0</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -5506,9 +5506,9 @@
       <methodName>__construct</methodName>
       <methodSignature>__construct(App\Models\Ticket $ticket)</methodSignature>
       <fullMethod>__construct(App\Models\Ticket $ticket)</fullMethod>
-      <crap>1</crap>
+      <crap>2</crap>
       <complexity>1</complexity>
-      <coverage>100</coverage>
+      <coverage>0</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -5517,9 +5517,9 @@
       <methodName>envelope</methodName>
       <methodSignature>envelope(): Illuminate\Mail\Mailables\Envelope</methodSignature>
       <fullMethod>envelope(): Illuminate\Mail\Mailables\Envelope</fullMethod>
-      <crap>1</crap>
+      <crap>2</crap>
       <complexity>1</complexity>
-      <coverage>100</coverage>
+      <coverage>0</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -5616,9 +5616,9 @@
       <methodName>casts</methodName>
       <methodSignature>casts(): array</methodSignature>
       <fullMethod>casts(): array</fullMethod>
-      <crap>1</crap>
+      <crap>2</crap>
       <complexity>1</complexity>
-      <coverage>100</coverage>
+      <coverage>0</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -7068,9 +7068,9 @@
       <methodName>user</methodName>
       <methodSignature>user(): Illuminate\Database\Eloquent\Relations\BelongsTo</methodSignature>
       <fullMethod>user(): Illuminate\Database\Eloquent\Relations\BelongsTo</fullMethod>
-      <crap>1</crap>
+      <crap>2</crap>
       <complexity>1</complexity>
-      <coverage>100</coverage>
+      <coverage>0</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -7684,9 +7684,9 @@
       <methodName>assignee</methodName>
       <methodSignature>assignee(): Illuminate\Database\Eloquent\Relations\BelongsTo</methodSignature>
       <fullMethod>assignee(): Illuminate\Database\Eloquent\Relations\BelongsTo</fullMethod>
-      <crap>1</crap>
+      <crap>2</crap>
       <complexity>1</complexity>
-      <coverage>100</coverage>
+      <coverage>0</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -8135,9 +8135,9 @@
       <methodName>casts</methodName>
       <methodSignature>casts(): array</methodSignature>
       <fullMethod>casts(): array</fullMethod>
-      <crap>1</crap>
+      <crap>2</crap>
       <complexity>1</complexity>
-      <coverage>100</coverage>
+      <coverage>0</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -8190,9 +8190,9 @@
       <methodName>__construct</methodName>
       <methodSignature>__construct(App\Models\CalendarEvent $event)</methodSignature>
       <fullMethod>__construct(App\Models\CalendarEvent $event)</fullMethod>
-      <crap>1</crap>
+      <crap>2</crap>
       <complexity>1</complexity>
-      <coverage>100</coverage>
+      <coverage>0</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -8201,9 +8201,9 @@
       <methodName>via</methodName>
       <methodSignature>via($notifiable): array</methodSignature>
       <fullMethod>via($notifiable): array</fullMethod>
-      <crap>4</crap>
+      <crap>20</crap>
       <complexity>4</complexity>
-      <coverage>100</coverage>
+      <coverage>0</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -8212,9 +8212,9 @@
       <methodName>toMail</methodName>
       <methodSignature>toMail($notifiable): Illuminate\Notifications\Messages\MailMessage</methodSignature>
       <fullMethod>toMail($notifiable): Illuminate\Notifications\Messages\MailMessage</fullMethod>
-      <crap>1</crap>
+      <crap>2</crap>
       <complexity>1</complexity>
-      <coverage>100</coverage>
+      <coverage>0</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -8223,9 +8223,9 @@
       <methodName>toArray</methodName>
       <methodSignature>toArray($notifiable): array</methodSignature>
       <fullMethod>toArray($notifiable): array</fullMethod>
-      <crap>1</crap>
+      <crap>2</crap>
       <complexity>1</complexity>
-      <coverage>100</coverage>
+      <coverage>0</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -8454,9 +8454,9 @@
       <methodName>created</methodName>
       <methodSignature>created(App\Models\Client $client): void</methodSignature>
       <fullMethod>created(App\Models\Client $client): void</fullMethod>
-      <crap>1</crap>
+      <crap>2</crap>
       <complexity>1</complexity>
-      <coverage>100</coverage>
+      <coverage>0</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -8487,9 +8487,9 @@
       <methodName>dispatchWebhook</methodName>
       <methodSignature>dispatchWebhook(App\Models\Client $client, string $event, array $extraData): void</methodSignature>
       <fullMethod>dispatchWebhook(App\Models\Client $client, string $event, array $extraData): void</fullMethod>
-      <crap>1</crap>
+      <crap>2</crap>
       <complexity>1</complexity>
-      <coverage>100</coverage>
+      <coverage>0</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -8751,9 +8751,9 @@
       <methodName>created</methodName>
       <methodSignature>created(App\Models\Project $project): void</methodSignature>
       <fullMethod>created(App\Models\Project $project): void</fullMethod>
-      <crap>2</crap>
+      <crap>6</crap>
       <complexity>2</complexity>
-      <coverage>100</coverage>
+      <coverage>0</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -8846,13 +8846,79 @@
     </method>
     <method>
       <package>App\Observers</package>
+      <className>App\Observers\TicketMessageObserver</className>
+      <methodName>__construct</methodName>
+      <methodSignature>__construct(App\Services\TicketNotificationService $notificationService)</methodSignature>
+      <fullMethod>__construct(App\Services\TicketNotificationService $notificationService)</fullMethod>
+      <crap>2</crap>
+      <complexity>1</complexity>
+      <coverage>0</coverage>
+      <crapLoad>0</crapLoad>
+    </method>
+    <method>
+      <package>App\Observers</package>
+      <className>App\Observers\TicketMessageObserver</className>
+      <methodName>created</methodName>
+      <methodSignature>created(App\Models\TicketMessage $ticketMessage): void</methodSignature>
+      <fullMethod>created(App\Models\TicketMessage $ticketMessage): void</fullMethod>
+      <crap>20</crap>
+      <complexity>4</complexity>
+      <coverage>0</coverage>
+      <crapLoad>0</crapLoad>
+    </method>
+    <method>
+      <package>App\Observers</package>
+      <className>App\Observers\TicketMessageObserver</className>
+      <methodName>updated</methodName>
+      <methodSignature>updated(App\Models\TicketMessage $ticketMessage): void</methodSignature>
+      <fullMethod>updated(App\Models\TicketMessage $ticketMessage): void</fullMethod>
+      <crap>2</crap>
+      <complexity>1</complexity>
+      <coverage>0</coverage>
+      <crapLoad>0</crapLoad>
+    </method>
+    <method>
+      <package>App\Observers</package>
+      <className>App\Observers\TicketMessageObserver</className>
+      <methodName>deleted</methodName>
+      <methodSignature>deleted(App\Models\TicketMessage $ticketMessage): void</methodSignature>
+      <fullMethod>deleted(App\Models\TicketMessage $ticketMessage): void</fullMethod>
+      <crap>2</crap>
+      <complexity>1</complexity>
+      <coverage>0</coverage>
+      <crapLoad>0</crapLoad>
+    </method>
+    <method>
+      <package>App\Observers</package>
+      <className>App\Observers\TicketMessageObserver</className>
+      <methodName>restored</methodName>
+      <methodSignature>restored(App\Models\TicketMessage $ticketMessage): void</methodSignature>
+      <fullMethod>restored(App\Models\TicketMessage $ticketMessage): void</fullMethod>
+      <crap>2</crap>
+      <complexity>1</complexity>
+      <coverage>0</coverage>
+      <crapLoad>0</crapLoad>
+    </method>
+    <method>
+      <package>App\Observers</package>
+      <className>App\Observers\TicketMessageObserver</className>
+      <methodName>forceDeleted</methodName>
+      <methodSignature>forceDeleted(App\Models\TicketMessage $ticketMessage): void</methodSignature>
+      <fullMethod>forceDeleted(App\Models\TicketMessage $ticketMessage): void</fullMethod>
+      <crap>2</crap>
+      <complexity>1</complexity>
+      <coverage>0</coverage>
+      <crapLoad>0</crapLoad>
+    </method>
+    <method>
+      <package>App\Observers</package>
       <className>App\Observers\TicketObserver</className>
       <methodName>created</methodName>
       <methodSignature>created(App\Models\Ticket $ticket): void</methodSignature>
       <fullMethod>created(App\Models\Ticket $ticket): void</fullMethod>
-      <crap>2</crap>
+      <crap>6</crap>
       <complexity>2</complexity>
-      <coverage>100</coverage>
+      <coverage>0</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -8861,9 +8927,9 @@
       <methodName>updated</methodName>
       <methodSignature>updated(App\Models\Ticket $ticket): void</methodSignature>
       <fullMethod>updated(App\Models\Ticket $ticket): void</fullMethod>
-      <crap>1</crap>
+      <crap>2</crap>
       <complexity>1</complexity>
-      <coverage>100</coverage>
+      <coverage>0</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -9842,7 +9908,7 @@
       <fullMethod>boot(): void</fullMethod>
       <crap>1</crap>
       <complexity>1</complexity>
-      <coverage>96</coverage>
+      <coverage>96.15</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -10005,9 +10071,9 @@
       <methodName>log</methodName>
       <methodSignature>log(Illuminate\Database\Eloquent\Model $subject, string $description, ?array $metadata): App\Models\Activity</methodSignature>
       <fullMethod>log(Illuminate\Database\Eloquent\Model $subject, string $description, ?array $metadata): App\Models\Activity</fullMethod>
-      <crap>2</crap>
+      <crap>6</crap>
       <complexity>2</complexity>
-      <coverage>100</coverage>
+      <coverage>0</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -10082,9 +10148,9 @@
       <methodName>syncProjectDeadline</methodName>
       <methodSignature>syncProjectDeadline(App\Models\Project $project): void</methodSignature>
       <fullMethod>syncProjectDeadline(App\Models\Project $project): void</fullMethod>
-      <crap>2</crap>
+      <crap>6</crap>
       <complexity>2</complexity>
-      <coverage>100</coverage>
+      <coverage>0</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -10115,9 +10181,9 @@
       <methodName>notify</methodName>
       <methodSignature>notify(mixed $user, App\Models\CalendarEvent $event): void</methodSignature>
       <fullMethod>notify(mixed $user, App\Models\CalendarEvent $event): void</fullMethod>
-      <crap>2.15</crap>
+      <crap>6</crap>
       <complexity>2</complexity>
-      <coverage>66.67</coverage>
+      <coverage>0</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -12018,9 +12084,9 @@
       <methodName>notifyAssigned</methodName>
       <methodSignature>notifyAssigned(App\Models\Ticket $ticket): void</methodSignature>
       <fullMethod>notifyAssigned(App\Models\Ticket $ticket): void</fullMethod>
-      <crap>1</crap>
+      <crap>2</crap>
       <complexity>1</complexity>
-      <coverage>100</coverage>
+      <coverage>0</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -12029,9 +12095,9 @@
       <methodName>notifyOwnerResolved</methodName>
       <methodSignature>notifyOwnerResolved(App\Models\Ticket $ticket): void</methodSignature>
       <fullMethod>notifyOwnerResolved(App\Models\Ticket $ticket): void</fullMethod>
-      <crap>1</crap>
+      <crap>2</crap>
       <complexity>1</complexity>
-      <coverage>100</coverage>
+      <coverage>0</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -12040,9 +12106,9 @@
       <methodName>notifyOwnerClosed</methodName>
       <methodSignature>notifyOwnerClosed(App\Models\Ticket $ticket): void</methodSignature>
       <fullMethod>notifyOwnerClosed(App\Models\Ticket $ticket): void</fullMethod>
-      <crap>1</crap>
+      <crap>2</crap>
       <complexity>1</complexity>
-      <coverage>100</coverage>
+      <coverage>0</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -12051,9 +12117,9 @@
       <methodName>notifyParticipantsNewMessage</methodName>
       <methodSignature>notifyParticipantsNewMessage(App\Models\Ticket $ticket, App\Models\TicketMessage $message): void</methodSignature>
       <fullMethod>notifyParticipantsNewMessage(App\Models\Ticket $ticket, App\Models\TicketMessage $message): void</fullMethod>
-      <crap>4</crap>
+      <crap>20</crap>
       <complexity>4</complexity>
-      <coverage>100</coverage>
+      <coverage>0</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
@@ -12183,9 +12249,9 @@
       <methodName>dispatch</methodName>
       <methodSignature>dispatch(string $event, array $data, string $userId): void</methodSignature>
       <fullMethod>dispatch(string $event, array $data, string $userId): void</fullMethod>
-      <crap>2.01</crap>
+      <crap>6</crap>
       <complexity>2</complexity>
-      <coverage>85.71</coverage>
+      <coverage>0</coverage>
       <crapLoad>0</crapLoad>
     </method>
     <method>
