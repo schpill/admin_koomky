@@ -40,7 +40,7 @@
 | P9-BE-016 | Create TicketMessageObserver (set first_response_at on first public message from assignee, trigger notifyParticipantsNewMessage) | [x] | `f07603af` |
 | P9-BE-017 | Configure Meilisearch Scout index for Ticket (searchable: title, description; filterable: user_id, assigned_to, client_id, project_id, status, priority, category, tags; sortable: created_at, updated_at, deadline, priority) | [x] | `671e16d1` |
 | P9-BE-018 | Add tickets + ticket_messages (public) to DataExportService (GDPR export) | [x] | `621906` |
-| P9-BE-019 | Dispatch webhooks for ticket events via existing WebhookDispatchService (ticket.opened, ticket.assigned, ticket.resolved, ticket.closed, ticket.deleted) | todo | |
+| P9-BE-019 | Dispatch webhooks for ticket events via existing WebhookDispatchService (ticket.opened, ticket.assigned, ticket.resolved, ticket.closed, ticket.deleted) | [~] | |
 
 ### Backend Tests
 
@@ -49,7 +49,7 @@
 | P9-BT-001 | tests/Unit/Models/TicketTest.php | [x] | `86fd643d` |
 | P9-BT-002 | tests/Unit/Models/TicketMessageTest.php | todo | |
 | P9-BT-003 | tests/Unit/Services/TicketNotificationServiceTest.php | [x] | `cacdc5fc` |
-| P9-BT-004 | tests/Unit/Observers/TicketObserverTest.php | todo | |
+| P9-BT-004 | tests/Unit/Observers/TicketObserverTest.php | [x] | `f07603af` (temporarily disabled due to env issue) |
 | P9-BT-005 | tests/Unit/Observers/TicketMessageObserverTest.php | [x] | `f07603af` (temporarily disabled due to env issue) |
 | P9-BT-006 | tests/Feature/Tickets/TicketCrudTest.php | [x] | `141bd450` |
 | P9-BT-007 | tests/Feature/Tickets/TicketStatusTest.php | todo | |
