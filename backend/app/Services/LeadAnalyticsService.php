@@ -116,18 +116,31 @@ class LeadAnalyticsService
 
     /**
      * Compute average time to close in days.
+     *
+     * Uses PHP-side calculation to remain compatible with both PostgreSQL
+     * (production) and SQLite (tests), avoiding EXTRACT(EPOCH FROM ...) syntax.
      */
     private function computeAverageTimeToClose(User $user, Carbon $dateFrom, Carbon $dateTo): float
     {
-        $result = Lead::query()
+        $leads = Lead::query()
             ->where('user_id', $user->id)
             ->where('status', 'won')
             ->whereNotNull('converted_at')
             ->whereBetween('converted_at', [$dateFrom, $dateTo])
-            ->selectRaw('AVG(EXTRACT(EPOCH FROM (converted_at - created_at)) / 86400) as avg_days')
-            ->value('avg_days');
+            ->get(['created_at', 'converted_at']);
 
-        return round((float) ($result ?? 0), 1);
+        if ($leads->isEmpty()) {
+            return 0.0;
+        }
+
+        $totalDays = $leads->reduce(function (float $carry, Lead $lead): float {
+            // whereNotNull('converted_at') guarantees this is set; pass true to
+            // force absolute value (Carbon v3 changed the default to signed)
+            /** @phpstan-ignore method.nonObject */
+            return $carry + ($lead->converted_at->diffInSeconds($lead->created_at, true) / 86400);
+        }, 0.0);
+
+        return round($totalDays / $leads->count(), 1);
     }
 
     /**
