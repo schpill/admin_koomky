@@ -1,9 +1,10 @@
 <?php
 
 use App\Services\PrometheusMetricsService;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-uses(TestCase::class);
+uses(TestCase::class, RefreshDatabase::class);
 
 test('prometheus metrics service increments counter sets gauge and observes histogram', function () {
     $service = app(PrometheusMetricsService::class);

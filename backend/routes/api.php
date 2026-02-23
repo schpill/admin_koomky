@@ -56,6 +56,9 @@ use App\Http\Controllers\Api\V1\Settings\WebhookEndpointController;
 use App\Http\Controllers\Api\V1\StripeWebhookController;
 use App\Http\Controllers\Api\V1\TagController;
 use App\Http\Controllers\Api\V1\TaskController;
+use App\Http\Controllers\Api\V1\TicketController;
+use App\Http\Controllers\Api\V1\TicketDocumentController;
+use App\Http\Controllers\Api\V1\TicketMessageController;
 use App\Http\Controllers\Api\V1\TimeEntryController;
 use App\Http\Controllers\Api\V1\UserSettingsController;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -311,5 +314,21 @@ Route::prefix('v1')->group(function () {
         Route::post('documents/{document}/reupload', [DocumentController::class, 'reupload']);
         Route::get('documents/{document}/download', [DocumentController::class, 'download']);
         Route::post('documents/{document}/email', [DocumentController::class, 'sendEmail']);
+
+        // Tickets
+        Route::get('tickets/stats', [TicketController::class, 'stats']);
+        Route::get('tickets/overdue', [TicketController::class, 'overdue']);
+        Route::apiResource('tickets', TicketController::class);
+        Route::patch('tickets/{ticket}/status', [TicketController::class, 'changeStatus']);
+        Route::patch('tickets/{ticket}/assign', [TicketController::class, 'assign']);
+
+        // Ticket Messages
+        Route::apiResource('tickets.messages', TicketMessageController::class)->except(['show']);
+
+        // Ticket Documents
+        Route::get('tickets/{ticket}/documents', [TicketDocumentController::class, 'index']);
+        Route::post('tickets/{ticket}/documents', [TicketDocumentController::class, 'store']);
+        Route::delete('tickets/{ticket}/documents/{document}', [TicketDocumentController::class, 'detach']);
+        Route::post('tickets/{ticket}/documents/attach', [TicketDocumentController::class, 'attach']);
     });
 });

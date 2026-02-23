@@ -14,9 +14,13 @@ import { RecentDocumentsWidget } from "@/components/dashboard/recent-documents-w
 import { CurrencyAmount } from "@/components/shared/currency-amount";
 import { useDashboardStore } from "@/lib/stores/dashboard";
 import { useCalendarStore } from "@/lib/stores/calendar";
+import { useTicketStore } from "@/lib/stores/tickets";
+import { TicketPriorityBadge } from "@/components/tickets/ticket-priority-badge";
 import { useI18n } from "@/components/providers/i18n-provider";
 import { useNotificationStore } from "@/lib/stores/notifications";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import Link from "next/link";
+import { AlertTriangle } from "lucide-react";
 
 const RevenueChart = dynamic(
   () =>
@@ -34,6 +38,11 @@ export default function DashboardPage() {
   const { stats, isLoading, fetchStats } = useDashboardStore();
   const { events: calendarEvents, fetchEvents: fetchCalendarEvents } =
     useCalendarStore();
+  const {
+    tickets: urgentTickets,
+    isLoading: ticketsLoading,
+    fetchTickets: fetchUrgentTickets,
+  } = useTicketStore();
   const baseCurrency = stats?.base_currency || "EUR";
   const { t } = useI18n();
   const setNotifications = useNotificationStore(
@@ -43,6 +52,10 @@ export default function DashboardPage() {
   useEffect(() => {
     fetchStats();
   }, [fetchStats]);
+
+  useEffect(() => {
+    fetchUrgentTickets({ priority: "urgent", status: "open" });
+  }, []);
 
   useEffect(() => {
     const from = new Date().toISOString().slice(0, 10);
@@ -263,6 +276,76 @@ export default function DashboardPage() {
       <div className="grid gap-6 grid-cols-1 lg:grid-cols-3">
         <div className="lg:col-span-1">
           <RecentDocumentsWidget />
+        </div>
+        <div className="lg:col-span-1">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium">
+                Urgent Tickets
+              </CardTitle>
+              <AlertTriangle className="h-4 w-4 text-red-500" />
+            </CardHeader>
+            <CardContent>
+              {ticketsLoading ? (
+                <div className="space-y-2">
+                  {Array.from({ length: 3 }).map((_, i) => (
+                    <div
+                      key={i}
+                      className="h-8 animate-pulse rounded bg-gray-100"
+                    />
+                  ))}
+                </div>
+              ) : urgentTickets.length === 0 ? (
+                <p className="text-sm text-muted-foreground">
+                  No urgent open tickets
+                </p>
+              ) : (
+                <div className="space-y-3">
+                  {urgentTickets.slice(0, 5).map((ticket) => {
+                    const deadlineOverdue =
+                      ticket.deadline &&
+                      ticket.status !== "resolved" &&
+                      ticket.status !== "closed" &&
+                      new Date(ticket.deadline) < new Date();
+                    return (
+                      <Link
+                        key={ticket.id}
+                        href={`/tickets/${ticket.id}`}
+                        className="flex items-center justify-between rounded-md border p-2 text-sm hover:bg-muted/50"
+                      >
+                        <div className="flex-1 truncate">
+                          <p className="font-medium truncate">{ticket.title}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {ticket.client?.name ?? "Divers"}
+                          </p>
+                        </div>
+                        <div className="flex flex-col items-end gap-1 ml-2">
+                          <TicketPriorityBadge priority={ticket.priority} />
+                          {ticket.deadline && (
+                            <span
+                              className={
+                                deadlineOverdue
+                                  ? "text-xs font-semibold text-red-600"
+                                  : "text-xs text-muted-foreground"
+                              }
+                            >
+                              {new Date(ticket.deadline).toLocaleDateString()}
+                            </span>
+                          )}
+                        </div>
+                      </Link>
+                    );
+                  })}
+                </div>
+              )}
+              <Link
+                href="/tickets"
+                className="mt-3 block text-xs text-muted-foreground hover:underline"
+              >
+                View all tickets
+              </Link>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>

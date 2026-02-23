@@ -20,6 +20,7 @@ import {
   ChevronLeft,
   Target,
   Calculator,
+  TicketCheck,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -31,6 +32,7 @@ const navigation = [
   { key: "dashboard", href: "/", icon: LayoutDashboard },
   { key: "leads", href: "/leads", icon: Target },
   { key: "documents", href: "/documents", icon: FileText },
+  { key: "tickets", href: "/tickets", icon: TicketCheck },
   { key: "clients", href: "/clients", icon: Users },
   { key: "projects", href: "/projects", icon: FolderKanban },
   { key: "campaigns", href: "/campaigns", icon: Megaphone },

@@ -200,7 +200,7 @@ class SegmentFilterEngine
 
         $query->whereHas('client', function (Builder $clientQuery) use ($comparison, $amount): void {
             $clientQuery->whereRaw(
-                '(select coalesce(sum(total), 0) from invoices where invoices.client_id = clients.id) '.$comparison.' ?',
+                '(select coalesce(sum(total), 0) from invoices where invoices.client_id = clients.id) '.$comparison.' CAST(? AS REAL)',
                 [$amount]
             );
         });

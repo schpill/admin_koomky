@@ -133,13 +133,18 @@ test('job logs permanently failed when max attempts reached', function () {
 });
 
 test('job re-throws exception to trigger retry mechanism', function () {
-    $delivery = WebhookDelivery::factory()->create([
-        'webhook_endpoint_id' => $this->endpoint->id,
-        'payload' => ['event' => 'test.event', 'data' => ['id' => 1]],
+    // Use a URL that resolves to a private IP to trigger the SSRF guard, which
+    // throws before any HTTP request is made. This guarantees a deterministic
+    // exception without needing Http::fake().
+    $privateEndpoint = WebhookEndpoint::factory()->create([
+        'user_id' => $this->user->id,
+        'is_active' => true,
+        'url' => 'https://localhost/webhook',
     ]);
 
-    Http::fake([
-        $this->endpoint->url => Http::failedConnection(new Exception('Connection failed')),
+    $delivery = WebhookDelivery::factory()->create([
+        'webhook_endpoint_id' => $privateEndpoint->id,
+        'payload' => ['event' => 'test.event', 'data' => ['id' => 1]],
     ]);
 
     Log::shouldReceive('error')
@@ -149,7 +154,7 @@ test('job re-throws exception to trigger retry mechanism', function () {
     $job = new WebhookDispatchJob($delivery->id);
 
     expect(fn () => $job->handle(app(WebhookDispatchService::class)))
-        ->toThrow(Exception::class, 'Connection failed');
+        ->toThrow(Exception::class, 'Webhook URL resolves to a private or reserved IP address');
 });
 
 test('job failed method marks delivery as failed', function () {
