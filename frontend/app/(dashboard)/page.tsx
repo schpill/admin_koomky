@@ -54,7 +54,7 @@ export default function DashboardPage() {
   }, [fetchStats]);
 
   useEffect(() => {
-    fetchUrgentTickets({ priority: "urgent", status: "open", per_page: 5 });
+    fetchUrgentTickets({ priority: "urgent", status: "open" });
   }, []);
 
   useEffect(() => {
