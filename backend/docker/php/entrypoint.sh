@@ -9,8 +9,9 @@ set -e
 # Set correct permissions for storage and cache
 # This ensures that the application can write to these directories
 # even if the volume is mounted from the host with different ownership.
-chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/vendor/pestphp/pest/.temp /var/www/html/database/migrations
-chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/vendor/pestphp/pest/.temp /var/www/html/database/migrations
+chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache || true
+chown -R www-data:www-data /var/www/html/vendor/pestphp/pest/.temp 2>/dev/null || true
+chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache || true
 
 # If in testing environment, force SQLite in-memory database
 if [ "$APP_ENV" = "testing" ]; then
