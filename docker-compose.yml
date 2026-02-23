@@ -63,7 +63,7 @@ services:
       - POSTGRES_USER=koomky
       - POSTGRES_PASSWORD=secret
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - ../data/koomky/postgres:/var/lib/postgresql/data
       - ./backend/docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - koomky-network
@@ -71,6 +71,8 @@ services:
   # Cache & Queues
   redis:
     image: redis:7-alpine
+    volumes:
+      - ../data/koomky/redis:/data
     networks:
       - koomky-network
 
@@ -82,7 +84,7 @@ services:
     environment:
       - MEILI_MASTER_KEY=masterKey
     volumes:
-      - meilisearch-data:/meili_data
+      - ../data/koomky/meilisearch:/meili_data
     networks:
       - koomky-network
 
@@ -138,7 +140,7 @@ services:
     ports:
       - "3001:3000"
     volumes:
-      - grafana-data:/var/lib/grafana
+      - ../data/koomky/grafana:/var/lib/grafana
       - ./backend/docker/grafana/provisioning:/etc/grafana/provisioning:ro
       - ./backend/docker/grafana/dashboards:/var/lib/grafana/dashboards:ro
     depends_on:
@@ -192,8 +194,5 @@ networks:
     driver: bridge
 
 volumes:
-  postgres-data:
-  meilisearch-data:
-  grafana-data:
   frontend-node-modules:
   frontend-next:
