@@ -19,7 +19,7 @@ class TicketNewMessage extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'New Message on Ticket: #' . $this->ticket->title,
+            subject: 'New Message on Ticket: #'.$this->ticket->title,
         );
     }
 

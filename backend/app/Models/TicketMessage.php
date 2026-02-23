@@ -9,12 +9,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class TicketMessage extends Model
 {
+    /** @use HasFactory<\Database\Factories\TicketMessageFactory> */
     use HasFactory, HasUuids;
 
     /**
      * The attributes that are mass assignable.
      *
-     * @var array<int, string>
+     * @var list<string>
      */
     protected $fillable = [
         'ticket_id',
@@ -32,13 +33,37 @@ class TicketMessage extends Model
         'is_internal' => 'boolean',
     ];
 
+    /** @return BelongsTo<Ticket, $this> */
     public function ticket(): BelongsTo
     {
         return $this->belongsTo(Ticket::class);
     }
 
+    /** @return BelongsTo<User, $this> */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Scope a query to only include public messages.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder<TicketMessage>  $query
+     * @return \Illuminate\Database\Eloquent\Builder<TicketMessage>
+     */
+    public function scopeIsPublic($query)
+    {
+        return $query->where('is_internal', false);
+    }
+
+    /**
+     * Scope a query to only include internal messages.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder<TicketMessage>  $query
+     * @return \Illuminate\Database\Eloquent\Builder<TicketMessage>
+     */
+    public function scopeIsInternal($query)
+    {
+        return $query->where('is_internal', true);
     }
 }

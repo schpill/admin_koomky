@@ -15,7 +15,7 @@ class TicketPolicyTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->policy = new TicketPolicy();
+        $this->policy = new TicketPolicy;
     }
 
     /** @test */

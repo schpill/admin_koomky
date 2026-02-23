@@ -17,6 +17,8 @@ use App\Models\Project;
 use App\Models\Quote;
 use App\Models\Segment;
 use App\Models\Tag;
+use App\Models\Ticket;
+use App\Models\TicketMessage;
 use App\Models\User;
 use RuntimeException;
 use ZipArchive;
@@ -26,7 +28,7 @@ class DataExportService
     /**
      * @return array<string, mixed>
      */
-    public function buildPayload(User $user): array
+    public function exportUserData(User $user): array
     {
         $clients = Client::query()
             ->where('user_id', $user->id)
@@ -76,6 +78,19 @@ class DataExportService
             ->where('user_id', $user->id)
             ->get();
 
+        $documents = Document::query()
+            ->where('user_id', $user->id)
+            ->get();
+
+        $tickets = Ticket::query()
+            ->where('user_id', $user->id)
+            ->get();
+
+        $ticketMessages = TicketMessage::query()
+            ->whereHas('ticket', fn ($query) => $query->where('user_id', $user->id))
+            ->where('is_internal', false)
+            ->get();
+
         return [
             'exported_at' => now()->toIso8601String(),
             'user' => [
@@ -122,12 +137,14 @@ class DataExportService
                 ->get()
                 ->toArray(),
             'documents' => $documents->toArray(),
+            'tickets' => $tickets->toArray(),
+            'ticket_messages' => $ticketMessages->toArray(),
         ];
     }
 
     public function createArchive(User $user): string
     {
-        $payload = $this->buildPayload($user);
+        $payload = $this->exportUserData($user);
 
         $archivePath = tempnam(sys_get_temp_dir(), 'koomky-export-');
         if ($archivePath === false) {

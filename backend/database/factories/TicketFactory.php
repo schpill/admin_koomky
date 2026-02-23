@@ -94,4 +94,20 @@ class TicketFactory extends Factory
             'status' => TicketStatus::Open,
         ]);
     }
+
+    public function resolved(): Factory
+    {
+        return $this->state(fn (array $attributes) => [
+            'status' => TicketStatus::Resolved,
+            'resolved_at' => now(),
+        ]);
+    }
+
+    public function closed(): Factory
+    {
+        return $this->state(fn (array $attributes) => [
+            'status' => TicketStatus::Closed,
+            'closed_at' => now(),
+        ]);
+    }
 }

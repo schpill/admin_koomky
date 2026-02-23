@@ -3,7 +3,6 @@
 namespace App\Http\Requests\Api\V1;
 
 use App\Enums\TicketPriority;
-use App\Enums\TicketStatus;
 use App\Models\Client;
 use App\Models\Project;
 use App\Models\Ticket;
@@ -18,7 +17,7 @@ class StoreTicketRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('create', Ticket::class);
+        return $this->user()?->can('create', Ticket::class) ?? false;
     }
 
     /**
@@ -32,13 +31,14 @@ class StoreTicketRequest extends FormRequest
             'title' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
             'client_id' => ['nullable', 'uuid', Rule::exists(Client::class, 'id')->where(function ($query) {
-                return $query->where('user_id', $this->user()->id);
+                return $query->where('user_id', $this->user()?->id);
             })],
             'project_id' => ['nullable', 'uuid', Rule::exists(Project::class, 'id')->where(function ($query) {
                 if ($this->input('client_id')) {
                     $query->where('client_id', $this->input('client_id'));
                 }
-                return $query->where('user_id', $this->user()->id);
+
+                return $query->where('user_id', $this->user()?->id);
             })],
             'assigned_to' => ['nullable', 'uuid', Rule::exists(User::class, 'id')],
             'priority' => ['required', Rule::enum(TicketPriority::class)],

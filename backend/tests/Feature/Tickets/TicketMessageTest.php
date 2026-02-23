@@ -13,6 +13,7 @@ class TicketMessageTest extends TestCase
     use RefreshDatabase;
 
     protected User $user;
+
     protected Ticket $ticket;
 
     protected function setUp(): void
@@ -25,7 +26,7 @@ class TicketMessageTest extends TestCase
     /** @test */
     public function message_creation_requires_content()
     {
-        $response = $this->actingAs($this->user, 'sanctum')->postJson('/api/v1/tickets/' . $this->ticket->id . '/messages', [
+        $response = $this->actingAs($this->user, 'sanctum')->postJson('/api/v1/tickets/'.$this->ticket->id.'/messages', [
             'content' => '',
             'is_internal' => false,
         ]);
@@ -36,7 +37,7 @@ class TicketMessageTest extends TestCase
     /** @test */
     public function message_creation_validates_is_internal_as_boolean()
     {
-        $response = $this->actingAs($this->user, 'sanctum')->postJson('/api/v1/tickets/' . $this->ticket->id . '/messages', [
+        $response = $this->actingAs($this->user, 'sanctum')->postJson('/api/v1/tickets/'.$this->ticket->id.'/messages', [
             'content' => 'Some content',
             'is_internal' => 'not-a-boolean',
         ]);
@@ -47,7 +48,7 @@ class TicketMessageTest extends TestCase
     /** @test */
     public function an_authenticated_user_can_list_ticket_messages()
     {
-        $response = $this->actingAs($this->user, 'sanctum')->getJson('/api/v1/tickets/' . $this->ticket->id . '/messages');
+        $response = $this->actingAs($this->user, 'sanctum')->getJson('/api/v1/tickets/'.$this->ticket->id.'/messages');
         $response->assertOk();
         $response->assertJsonStructure([
             'message',
@@ -59,7 +60,7 @@ class TicketMessageTest extends TestCase
     /** @test */
     public function an_authenticated_user_can_create_a_ticket_message()
     {
-        $response = $this->actingAs($this->user, 'sanctum')->postJson('/api/v1/tickets/' . $this->ticket->id . '/messages', [
+        $response = $this->actingAs($this->user, 'sanctum')->postJson('/api/v1/tickets/'.$this->ticket->id.'/messages', [
             'content' => 'Test message content',
             'is_internal' => false,
         ]);
@@ -71,7 +72,7 @@ class TicketMessageTest extends TestCase
     public function an_authenticated_user_can_update_a_ticket_message()
     {
         $message = TicketMessage::factory()->for($this->ticket)->for($this->user)->create();
-        $response = $this->actingAs($this->user, 'sanctum')->putJson('/api/v1/tickets/' . $this->ticket->id . '/messages/' . $message->id, [
+        $response = $this->actingAs($this->user, 'sanctum')->putJson('/api/v1/tickets/'.$this->ticket->id.'/messages/'.$message->id, [
             'content' => 'Updated message content',
         ]);
         $response->assertOk();
@@ -82,7 +83,7 @@ class TicketMessageTest extends TestCase
     public function an_authenticated_user_can_delete_a_ticket_message()
     {
         $message = TicketMessage::factory()->for($this->ticket)->for($this->user)->create();
-        $response = $this->actingAs($this->user, 'sanctum')->deleteJson('/api/v1/tickets/' . $this->ticket->id . '/messages/' . $message->id);
+        $response = $this->actingAs($this->user, 'sanctum')->deleteJson('/api/v1/tickets/'.$this->ticket->id.'/messages/'.$message->id);
         $response->assertStatus(204);
     }
 }

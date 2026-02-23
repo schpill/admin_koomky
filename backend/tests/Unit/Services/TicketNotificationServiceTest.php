@@ -19,14 +19,17 @@ class TicketNotificationServiceTest extends TestCase
     use RefreshDatabase;
 
     protected TicketNotificationService $service;
+
     protected User $owner;
+
     protected User $assignee;
+
     protected Ticket $ticket;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->service = new TicketNotificationService();
+        $this->service = new TicketNotificationService;
         $this->owner = User::factory()->create();
         $this->assignee = User::factory()->create();
         $this->ticket = Ticket::factory()->for($this->owner, 'owner')->create([
@@ -37,7 +40,7 @@ class TicketNotificationServiceTest extends TestCase
     }
 
     /** @test */
-    public function notifyAssigned_queues_mail_to_assignee()
+    public function notify_assigned_queues_mail_to_assignee()
     {
         $this->service->notifyAssigned($this->ticket);
 
@@ -48,7 +51,7 @@ class TicketNotificationServiceTest extends TestCase
     }
 
     /** @test */
-    public function notifyOwnerResolved_queues_mail_to_owner()
+    public function notify_owner_resolved_queues_mail_to_owner()
     {
         $this->service->notifyOwnerResolved($this->ticket);
 
@@ -59,7 +62,7 @@ class TicketNotificationServiceTest extends TestCase
     }
 
     /** @test */
-    public function notifyOwnerClosed_queues_mail_to_owner()
+    public function notify_owner_closed_queues_mail_to_owner()
     {
         $this->service->notifyOwnerClosed($this->ticket);
 
@@ -70,10 +73,13 @@ class TicketNotificationServiceTest extends TestCase
     }
 
     /** @test */
-    public function notifyParticipantsNewMessage_queues_mail_to_owner_and_assignee_if_not_author()
+    public function notify_participants_new_message_queues_mail_to_owner_and_assignee_if_not_author()
     {
         $messageAuthor = User::factory()->create();
+        // Create message (observer fires and queues 2 mails), then reset Mail::fake() so only
+        // the manual service call below is counted in the assertion.
         $message = TicketMessage::factory()->for($this->ticket)->for($messageAuthor, 'user')->public()->create();
+        Mail::fake(); // reset — clears the 2 mails triggered by TicketMessageObserver
 
         // Ensure the message author is neither the owner nor the assignee for this test scenario
         // This might need adjustment based on specific test data, but for now it's a simple setup
@@ -91,7 +97,7 @@ class TicketNotificationServiceTest extends TestCase
     }
 
     /** @test */
-    public function notifyParticipantsNewMessage_does_not_queue_mail_to_author()
+    public function notify_participants_new_message_does_not_queue_mail_to_author()
     {
         $message = TicketMessage::factory()->for($this->ticket)->for($this->owner, 'user')->public()->create();
 
@@ -103,7 +109,7 @@ class TicketNotificationServiceTest extends TestCase
     }
 
     /** @test */
-    public function notifyParticipantsNewMessage_does_not_queue_mail_for_internal_messages()
+    public function notify_participants_new_message_does_not_queue_mail_for_internal_messages()
     {
         $message = TicketMessage::factory()->for($this->ticket)->for($this->owner, 'user')->internal()->create();
 

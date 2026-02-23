@@ -8,7 +8,6 @@ use App\Mail\Tickets\TicketNewMessage;
 use App\Mail\Tickets\TicketResolved;
 use App\Models\Ticket;
 use App\Models\TicketMessage;
-use App\Models\User;
 use Illuminate\Support\Facades\Mail;
 
 class TicketNotificationService
@@ -38,8 +37,8 @@ class TicketNotificationService
         }
 
         $recipients = collect([$ticket->owner, $ticket->assignee])
-                        ->filter(fn ($user) => $user && $user->id !== $message->user_id)
-                        ->unique('id');
+            ->filter(fn ($user) => $user && $user->id !== $message->user_id)
+            ->unique('id');
 
         foreach ($recipients as $recipient) {
             Mail::to($recipient)->queue(new TicketNewMessage($ticket, $message));

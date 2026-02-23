@@ -4,8 +4,6 @@ namespace App\Http\Requests\Api\V1;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-use App\Models\Ticket;
-
 class StoreTicketMessageRequest extends FormRequest
 {
     /**
@@ -13,7 +11,7 @@ class StoreTicketMessageRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('addMessage', $this->route('ticket'));
+        return $this->user()?->can('addMessage', $this->route('ticket')) ?? false;
     }
 
     /**

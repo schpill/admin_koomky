@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\Ticket;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class TicketPolicy
 {
@@ -66,7 +65,8 @@ class TicketPolicy
 
     public function assign(User $user, Ticket $ticket): bool
     {
-        return $user->id === $ticket->user_id; // Only owner can assign the ticket
+        // Owner can assign to any user, assignee can assign to themselves
+        return $user->id === $ticket->user_id || ($user->id === $ticket->assigned_to && request()->input('assigned_to') === $user->id);
     }
 
     public function addMessage(User $user, Ticket $ticket): bool
@@ -93,11 +93,9 @@ class TicketPolicy
         return $user->id === $ticket->user_id || $user->id === $ticket->assigned_to;
     }
 
-
     public function changeStatus(User $user, Ticket $ticket): bool
     {
         // Owner or assignee can change status
         return $user->id === $ticket->user_id || $user->id === $ticket->assigned_to;
     }
-
 }

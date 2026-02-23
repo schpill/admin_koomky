@@ -60,7 +60,7 @@ class TicketCrudTest extends TestCase
         $response->assertJsonStructure([
             'message',
             'filters',
-            'data'
+            'data',
         ]);
     }
 
@@ -82,7 +82,7 @@ class TicketCrudTest extends TestCase
     public function an_authenticated_user_can_view_a_ticket()
     {
         $ticket = \App\Models\Ticket::factory()->for($this->user, 'owner')->create();
-        $response = $this->actingAs($this->user, 'sanctum')->getJson('/api/v1/tickets/' . $ticket->id);
+        $response = $this->actingAs($this->user, 'sanctum')->getJson('/api/v1/tickets/'.$ticket->id);
         $response->assertOk();
         $response->assertJson(['message' => 'Ticket details']);
     }
@@ -91,7 +91,7 @@ class TicketCrudTest extends TestCase
     public function an_authenticated_user_can_update_a_ticket()
     {
         $ticket = \App\Models\Ticket::factory()->for($this->user, 'owner')->create();
-        $response = $this->actingAs($this->user, 'sanctum')->putJson('/api/v1/tickets/' . $ticket->id, [
+        $response = $this->actingAs($this->user, 'sanctum')->putJson('/api/v1/tickets/'.$ticket->id, [
             'title' => 'Updated Ticket Title',
         ]);
         $response->assertOk();
@@ -102,30 +102,30 @@ class TicketCrudTest extends TestCase
     public function ticket_update_allows_optional_fields_and_validates_them()
     {
         $ticket = \App\Models\Ticket::factory()->for($this->user, 'owner')->create();
-        
+
         // Test invalid category
-        $response = $this->actingAs($this->user, 'sanctum')->putJson('/api/v1/tickets/' . $ticket->id, [
+        $response = $this->actingAs($this->user, 'sanctum')->putJson('/api/v1/tickets/'.$ticket->id, [
             'category' => str_repeat('a', 101),
         ]);
         $response->assertStatus(422);
         $response->assertJsonValidationErrors(['category']);
 
         // Test invalid deadline (past date)
-        $response = $this->actingAs($this->user, 'sanctum')->putJson('/api/v1/tickets/' . $ticket->id, [
+        $response = $this->actingAs($this->user, 'sanctum')->putJson('/api/v1/tickets/'.$ticket->id, [
             'deadline' => '2020-01-01',
         ]);
         $response->assertStatus(422);
         $response->assertJsonValidationErrors(['deadline']);
 
         // Test invalid priority
-        $response = $this->actingAs($this->user, 'sanctum')->putJson('/api/v1/tickets/' . $ticket->id, [
+        $response = $this->actingAs($this->user, 'sanctum')->putJson('/api/v1/tickets/'.$ticket->id, [
             'priority' => 'invalid-priority',
         ]);
         $response->assertStatus(422);
         $response->assertJsonValidationErrors(['priority']);
 
         // Test valid partial update
-        $response = $this->actingAs($this->user, 'sanctum')->putJson('/api/v1/tickets/' . $ticket->id, [
+        $response = $this->actingAs($this->user, 'sanctum')->putJson('/api/v1/tickets/'.$ticket->id, [
             'title' => 'Partially Updated Title',
         ]);
         $response->assertOk();
@@ -136,15 +136,15 @@ class TicketCrudTest extends TestCase
     public function an_authenticated_user_can_delete_a_ticket()
     {
         $ticket = \App\Models\Ticket::factory()->for($this->user, 'owner')->create();
-        $response = $this->actingAs($this->user, 'sanctum')->deleteJson('/api/v1/tickets/' . $ticket->id);
+        $response = $this->actingAs($this->user, 'sanctum')->deleteJson('/api/v1/tickets/'.$ticket->id);
         $response->assertStatus(204);
     }
 
     /** @test */
     public function an_authenticated_user_can_change_ticket_status()
     {
-        $ticket = \App\Models\Ticket::factory()->for($this->user, 'owner')->create();
-        $response = $this->actingAs($this->user, 'sanctum')->patchJson('/api/v1/tickets/' . $ticket->id . '/status', [
+        $ticket = \App\Models\Ticket::factory()->for($this->user, 'owner')->status(\App\Enums\TicketStatus::Open)->create();
+        $response = $this->actingAs($this->user, 'sanctum')->patchJson('/api/v1/tickets/'.$ticket->id.'/status', [
             'status' => 'in_progress',
         ]);
         $response->assertOk();
@@ -156,7 +156,7 @@ class TicketCrudTest extends TestCase
     {
         $ticket = \App\Models\Ticket::factory()->for($this->user, 'owner')->create();
         $assignee = User::factory()->create();
-        $response = $this->actingAs($this->user, 'sanctum')->patchJson('/api/v1/tickets/' . $ticket->id . '/assign', [
+        $response = $this->actingAs($this->user, 'sanctum')->patchJson('/api/v1/tickets/'.$ticket->id.'/assign', [
             'assigned_to' => $assignee->id,
         ]);
         $response->assertOk();

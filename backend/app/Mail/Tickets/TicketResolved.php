@@ -18,7 +18,7 @@ class TicketResolved extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Ticket Resolved: #' . $this->ticket->title,
+            subject: 'Ticket Resolved: #'.$this->ticket->title,
         );
     }
 

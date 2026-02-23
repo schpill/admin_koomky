@@ -6,18 +6,19 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravel\Scout\Searchable;
 
 class Ticket extends Model
 {
+    /** @use HasFactory<\Database\Factories\TicketFactory> */
     use HasFactory, HasUuids, Searchable;
 
     /**
      * The attributes that are mass assignable.
      *
-     * @var array<int, string>
+     * @var list<string>
      */
     protected $fillable = [
         'title',
@@ -48,31 +49,37 @@ class Ticket extends Model
         'priority' => \App\Enums\TicketPriority::class,
     ];
 
+    /** @return BelongsTo<User, $this> */
     public function owner(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
     }
 
+    /** @return BelongsTo<User, $this> */
     public function assignee(): BelongsTo
     {
         return $this->belongsTo(User::class, 'assigned_to');
     }
 
+    /** @return BelongsTo<Client, $this> */
     public function client(): BelongsTo
     {
         return $this->belongsTo(Client::class);
     }
 
+    /** @return BelongsTo<Project, $this> */
     public function project(): BelongsTo
     {
         return $this->belongsTo(Project::class);
     }
 
+    /** @return HasMany<TicketMessage, $this> */
     public function messages(): HasMany
     {
         return $this->hasMany(TicketMessage::class);
     }
 
+    /** @return BelongsToMany<Document, $this> */
     public function documents(): BelongsToMany
     {
         return $this->belongsToMany(Document::class, 'ticket_documents');
@@ -108,9 +115,9 @@ class Ticket extends Model
             'priority' => $this->priority->value,
             'category' => $this->category,
             'tags' => $this->tags,
-            'deadline' => $this->deadline ? $this->deadline->timestamp : null,
-            'created_at' => $this->created_at->timestamp,
-            'updated_at' => $this->updated_at->timestamp,
+            'deadline' => $this->deadline?->timestamp,
+            'created_at' => $this->created_at?->timestamp,
+            'updated_at' => $this->updated_at?->timestamp,
         ];
     }
 
@@ -130,13 +137,22 @@ class Ticket extends Model
 
     // The following methods are for compatibility with older Scout versions or specific needs.
     // In modern Scout (v9+ with Meilisearch), searchableConfiguration is preferred.
+    /** @return list<string> */
     public function getFilterableAttributes(): array
     {
         return ['user_id', 'assigned_to', 'client_id', 'project_id', 'status', 'priority', 'category', 'tags'];
     }
 
+    /** @return list<string> */
     public function getSortableAttributes(): array
     {
         return ['created_at', 'updated_at', 'deadline', 'priority'];
+    }
+
+    public function isOverdue(): bool
+    {
+        return $this->deadline &&
+               $this->deadline->isPast() &&
+               ! in_array($this->status, [\App\Enums\TicketStatus::Resolved, \App\Enums\TicketStatus::Closed]);
     }
 }

@@ -7,16 +7,18 @@ use App\Services\TicketNotificationService;
 
 class TicketMessageObserver
 {
-    public function __construct(protected TicketNotificationService $notificationService)
-    {
-    }
+    public function __construct(protected TicketNotificationService $notificationService) {}
 
     /**
      * Handle the TicketMessage "created" event.
      */
     public function created(TicketMessage $ticketMessage): void
     {
-        $ticket = $ticketMessage->ticket;
+        $ticket = $ticketMessage->ticket()->first();
+
+        if ($ticket === null) {
+            return;
+        }
 
         // Set first_response_at if it's the first public message from an assignee
         if (
@@ -24,8 +26,8 @@ class TicketMessageObserver
             is_null($ticket->first_response_at) &&
             $ticketMessage->user_id === $ticket->assigned_to
         ) {
-            $ticket->first_response_at = now();
-            $ticket->save();
+            // Use updateQuietly to avoid re-triggering model events
+            $ticket->updateQuietly(['first_response_at' => now()]);
         }
 
         // Trigger notification for public messages

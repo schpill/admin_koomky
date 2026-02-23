@@ -3,10 +3,8 @@
 namespace App\Http\Requests\Api\V1;
 
 use App\Enums\TicketPriority;
-use App\Enums\TicketStatus;
 use App\Models\Client;
 use App\Models\Project;
-use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -18,7 +16,7 @@ class UpdateTicketRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('update', $this->route('ticket'));
+        return $this->user()?->can('update', $this->route('ticket')) ?? false;
     }
 
     /**
@@ -32,13 +30,14 @@ class UpdateTicketRequest extends FormRequest
             'title' => ['sometimes', 'string', 'max:255'],
             'description' => ['sometimes', 'string'],
             'client_id' => ['sometimes', 'nullable', 'uuid', Rule::exists(Client::class, 'id')->where(function ($query) {
-                return $query->where('user_id', $this->user()->id);
+                return $query->where('user_id', $this->user()?->id);
             })],
             'project_id' => ['sometimes', 'nullable', 'uuid', Rule::exists(Project::class, 'id')->where(function ($query) {
                 if ($this->input('client_id')) {
                     $query->where('client_id', $this->input('client_id'));
                 }
-                return $query->where('user_id', $this->user()->id);
+
+                return $query->where('user_id', $this->user()?->id);
             })],
             'assigned_to' => ['sometimes', 'nullable', 'uuid', Rule::exists(User::class, 'id')],
             'priority' => ['sometimes', Rule::enum(TicketPriority::class)],
