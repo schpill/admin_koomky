@@ -34,8 +34,10 @@ services:
       - MAIL_HOST=mailpit
       - MEILISEARCH_HOST=http://meilisearch:7700
     depends_on:
-      - postgres
-      - redis
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
     networks:
       - koomky-network
 
@@ -65,6 +67,11 @@ services:
     volumes:
       - ../data/koomky/postgres:/var/lib/postgresql/data
       - ./backend/docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U koomky -d koomky"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
     networks:
       - koomky-network
 
@@ -99,8 +106,10 @@ services:
       - ./backend:/var/www/html
     environment: *php-env
     depends_on:
-      - redis
-      - postgres
+      redis:
+        condition: service_started
+      postgres:
+        condition: service_healthy
     networks:
       - koomky-network
 
@@ -115,7 +124,8 @@ services:
       - ./backend:/var/www/html
     environment: *php-env
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     networks:
       - koomky-network
 

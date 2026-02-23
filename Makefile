@@ -1,7 +1,7 @@
 .PHONY: up upwc down restart build install test lint fresh seed shell-api shell-frontend deploy tinker
 
 up:
-	docker compose up -d
+	docker compose up -d --build
 
 upwc:
 	docker compose stop frontend
@@ -19,6 +19,10 @@ restart:
 
 build:
 	docker compose build
+	docker tag admin_koomky-frontend:latest admin_koomky_frontend:latest 2>/dev/null || true
+	docker tag admin_koomky-api:latest admin_koomky_api:latest 2>/dev/null || true
+	docker tag admin_koomky-queue-worker:latest admin_koomky_queue-worker:latest 2>/dev/null || true
+	docker tag admin_koomky-scheduler:latest admin_koomky_scheduler:latest 2>/dev/null || true
 
 install:
 	docker compose run --rm api composer install
