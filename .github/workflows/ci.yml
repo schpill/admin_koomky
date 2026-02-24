@@ -51,7 +51,7 @@ jobs:
       - name: Run PHPStan
         run: cd backend && ./vendor/bin/phpstan analyse -c phpstan.neon --memory-limit=512M
       - name: Run Tests
-        run: cd backend && ./vendor/bin/pest --coverage --min=80
+        run: cd backend && php -d memory_limit=2G ./vendor/bin/pest --coverage --min=80
         env:
           APP_ENV: testing
           DB_CONNECTION: pgsql
