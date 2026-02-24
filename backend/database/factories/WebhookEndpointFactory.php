@@ -22,7 +22,9 @@ class WebhookEndpointFactory extends Factory
         return [
             'user_id' => User::factory(),
             'name' => $this->faker->company().' Webhook',
-            'url' => 'https://'.$this->faker->domainName().'/webhook',
+            // Keep test webhooks deterministic and publicly routable so SSRF
+            // validation does not fail randomly on CI DNS resolution.
+            'url' => 'https://example.com/webhook',
             'secret' => Str::random(32),
             'events' => ['invoice.created', 'invoice.paid'],
             'is_active' => true,
