@@ -29,7 +29,7 @@ export function EmbeddingStatusBadge({ status, onRetry }: Props) {
         <Badge variant="destructive">Failed</Badge>
         {onRetry ? (
           <Button size="sm" variant="outline" onClick={onRetry}>
-            Relancer l'indexation
+            Relancer l&apos;indexation
           </Button>
         ) : null}
       </div>

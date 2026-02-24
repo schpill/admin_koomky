@@ -55,7 +55,7 @@ export default function RagSettingsPage() {
         <div>
           <h1 className="text-3xl font-bold">Intelligence documentaire</h1>
           <p className="text-sm text-muted-foreground">
-            Statut d'indexation et administration RAG
+            Statut d&apos;indexation et administration RAG
           </p>
         </div>
 
