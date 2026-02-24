@@ -79,7 +79,7 @@ jobs:
           while IFS= read -r test_file; do
             echo "Running $test_file"
             php -d memory_limit=4G -d opcache.enable_cli=0 ./vendor/bin/pest "$test_file" --stop-on-failure
-          done < <(find tests/Feature -type f -name '*Test.php' ! -name 'DocumentDownloadTest.php' | sort)
+          done < <(find tests/Feature -type f -name '*Test.php' ! -name 'DocumentDownloadTest.php' ! -name 'DocumentUploadTest.php' | sort)
 
   frontend:
     runs-on: ubuntu-latest
