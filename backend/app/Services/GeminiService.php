@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Http;
 
 class GeminiService
 {
+    /** @return float[] */
     public function embed(string $text): array
     {
         $baseUrl = (string) config('services.gemini.url', 'https://generativelanguage.googleapis.com/v1beta');
@@ -35,6 +36,7 @@ class GeminiService
         return array_map(static fn ($value): float => (float) $value, $values);
     }
 
+    /** @param string[] $context */
     public function generate(string $prompt, array $context = []): string
     {
         $baseUrl = (string) config('services.gemini.url', 'https://generativelanguage.googleapis.com/v1beta');

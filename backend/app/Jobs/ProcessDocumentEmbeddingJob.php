@@ -16,6 +16,7 @@ class ProcessDocumentEmbeddingJob implements ShouldQueue
 
     public int $tries = 3;
 
+    /** @var int[] */
     public array $backoff = [30, 120, 300];
 
     public function __construct(public Document $document)

@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class RagUsageLog extends Model
 {
+    /** @use HasFactory<\Database\Factories\RagUsageLogFactory> */
     use HasFactory;
     use HasUuids;
 
@@ -33,6 +34,7 @@ class RagUsageLog extends Model
         ];
     }
 
+    /** @return BelongsTo<User, RagUsageLog> */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

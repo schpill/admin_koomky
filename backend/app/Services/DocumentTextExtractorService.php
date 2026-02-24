@@ -53,6 +53,7 @@ class DocumentTextExtractorService
             foreach ($doc->getSections() as $section) {
                 foreach ($section->getElements() as $element) {
                     if (method_exists($element, 'getText')) {
+                        /** @phpstan-ignore-next-line */
                         $text .= $element->getText()."\n";
                     }
                 }

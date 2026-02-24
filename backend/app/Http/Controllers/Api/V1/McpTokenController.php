@@ -14,6 +14,7 @@ class McpTokenController extends Controller
     public function __invoke(Request $request): JsonResponse
     {
         $user = $request->user();
+        abort_unless($user !== null, 401);
         $token = $user->createToken('mcp-read', ['mcp:read']);
 
         return $this->success([

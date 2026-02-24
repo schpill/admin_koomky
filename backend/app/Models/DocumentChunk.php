@@ -7,8 +7,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property float $score
+ */
 class DocumentChunk extends Model
 {
+    /** @use HasFactory<\Database\Factories\DocumentChunkFactory> */
     use HasFactory;
     use HasUuids;
 
@@ -34,11 +38,13 @@ class DocumentChunk extends Model
         ];
     }
 
+    /** @return BelongsTo<Document, DocumentChunk> */
     public function document(): BelongsTo
     {
         return $this->belongsTo(Document::class);
     }
 
+    /** @return BelongsTo<User, DocumentChunk> */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

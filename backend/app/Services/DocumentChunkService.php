@@ -10,6 +10,7 @@ class DocumentChunkService
 
     private const OVERLAP_TOKENS = 64;
 
+    /** @return array<int, array{index: int, content: string, token_count: int}> */
     public function chunk(string $text): array
     {
         $text = trim($text);
@@ -54,6 +55,7 @@ class DocumentChunkService
         return $this->mergeSmallChunks($chunks);
     }
 
+    /** @return array<int, string> */
     private function splitByWordLimit(string $text, int $maxTokens, int $overlapTokens): array
     {
         $words = preg_split('/\s+/u', trim($text)) ?: [];
@@ -83,6 +85,10 @@ class DocumentChunkService
         return $chunks;
     }
 
+    /**
+     * @param  array<int, array{index: int, content: string, token_count: int}>  $chunks
+     * @return array<int, array{index: int, content: string, token_count: int}>
+     */
     private function mergeSmallChunks(array $chunks): array
     {
         if ($chunks === []) {
@@ -121,6 +127,7 @@ class DocumentChunkService
         return $merged;
     }
 
+    /** @return array{index: int, content: string, token_count: int} */
     private function buildChunk(int $index, string $content): array
     {
         return [

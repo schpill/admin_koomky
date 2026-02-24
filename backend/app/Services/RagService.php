@@ -11,6 +11,7 @@ class RagService
         protected GeminiService $gemini
     ) {}
 
+    /** @return array<string, mixed> */
     public function answer(string $question, string $userId, ?string $clientId = null): array
     {
         $start = microtime(true);

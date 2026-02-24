@@ -10,6 +10,7 @@ class VectorSearchService
 {
     public function __construct(protected GeminiService $gemini) {}
 
+    /** @return Collection<int, mixed> */
     public function search(string $query, string $userId, int $topK = 5, ?string $clientId = null): Collection
     {
         $vector = $this->gemini->embed($query);
@@ -48,14 +49,17 @@ class VectorSearchService
         }
 
         return $queryBuilder->get()->map(function (DocumentChunk $chunk) use ($vector) {
-            $chunkVector = is_array($chunk->embedding) ? $chunk->embedding : [];
-            $score = $this->cosineSimilarity($vector, $chunkVector);
+            $score = $this->cosineSimilarity($vector, (array) $chunk->embedding);
             $chunk->score = $score;
 
             return $chunk;
         })->sortByDesc('score')->take($topK)->values();
     }
 
+    /**
+     * @param  float[]  $a
+     * @param  float[]  $b
+     */
     private function cosineSimilarity(array $a, array $b): float
     {
         $len = min(count($a), count($b));
