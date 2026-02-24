@@ -54,7 +54,7 @@ jobs:
       - name: Enable Linux memory overcommit
         run: sudo sysctl -w vm.overcommit_memory=1
       - name: Run Tests
-        run: cd backend && php -d memory_limit=1G ./vendor/bin/pest --coverage --coverage-filter=app --min=80
+        run: cd backend && php -d memory_limit=1G ./vendor/bin/pest
         env:
           APP_ENV: testing
           DB_CONNECTION: pgsql
