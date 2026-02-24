@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { PortalHeader } from "@/components/portal/portal-header";
+import { ChatWidget } from "@/components/rag/chat-widget";
+import { useRagStore } from "@/lib/stores/rag";
 import {
   clearPortalSession,
   getPortalSession,
@@ -34,6 +36,7 @@ export default function PortalLayout({
   const [branding, setBranding] = useState<
     PortalDashboardBrandingPayload["branding"] | null
   >(null);
+  const [ragAvailable, setRagAvailable] = useState(false);
 
   useEffect(() => {
     const currentSession = getPortalSession();
@@ -88,13 +91,30 @@ export default function PortalLayout({
     };
   }, [isAuthRoute, session?.portal_token]);
 
+  useEffect(() => {
+    if (isAuthRoute || !session?.portal_token) {
+      return;
+    }
+
+    portalApiClient
+      .get<{ available: boolean; indexed_documents: number }>("/portal/rag/status")
+      .then((response) => {
+        setRagAvailable(Boolean(response.data?.available));
+      })
+      .catch(() => {
+        setRagAvailable(false);
+      });
+  }, [isAuthRoute, session?.portal_token]);
+
   const logout = async () => {
+    const clearRagHistory = useRagStore.getState().clearHistory;
     try {
       await portalApiClient.post("/portal/auth/logout");
     } catch {
       // Session cleanup still occurs even if API fails.
     }
 
+    clearRagHistory();
     clearPortalSession();
     setSession(null);
     router.push("/portal/auth");
@@ -129,6 +149,7 @@ export default function PortalLayout({
       <main className="mx-auto w-full max-w-6xl space-y-6 px-4 py-6">
         {children}
       </main>
+      {ragAvailable ? <ChatWidget portalMode /> : null}
     </div>
   );
 }

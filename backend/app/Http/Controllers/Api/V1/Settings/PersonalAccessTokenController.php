@@ -75,6 +75,7 @@ class PersonalAccessTokenController extends Controller
             ['name' => 'read:reports', 'description' => 'Read reports and analytics'],
             ['name' => 'read:quotes', 'description' => 'Read quotes'],
             ['name' => 'write:quotes', 'description' => 'Create, update, and delete quotes'],
+            ['name' => 'mcp:read', 'description' => 'Read-only access for MCP RAG tools'],
         ];
 
         return $this->success($scopes, 'Available scopes retrieved successfully');

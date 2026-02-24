@@ -28,6 +28,7 @@ export interface Document {
   tags: string[];
   last_sent_at: string | null;
   last_sent_to: string | null;
+  embedding_status: "pending" | "indexing" | "indexed" | "failed" | null;
   created_at: string;
   updated_at: string;
   client?: any;

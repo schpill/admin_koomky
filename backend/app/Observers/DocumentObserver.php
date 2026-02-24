@@ -2,8 +2,10 @@
 
 namespace App\Observers;
 
+use App\Jobs\ProcessDocumentEmbeddingJob;
 use App\Models\Document;
 use App\Services\ActivityService;
+use App\Services\DocumentEmbeddingService;
 use App\Services\WebhookDispatchService;
 
 class DocumentObserver
@@ -22,6 +24,11 @@ class DocumentObserver
         }
 
         $this->dispatchWebhook($document, 'document.uploaded');
+
+        if ($this->isIndexableMime($document->mime_type)) {
+            $document->update(['embedding_status' => 'pending']);
+            ProcessDocumentEmbeddingJob::dispatch($document);
+        }
     }
 
     /**
@@ -40,6 +47,11 @@ class DocumentObserver
         }
 
         $this->dispatchWebhook($document, 'document.updated');
+
+        if ($document->wasChanged('storage_path') && $this->isIndexableMime($document->mime_type)) {
+            $document->update(['embedding_status' => 'pending']);
+            ProcessDocumentEmbeddingJob::dispatch($document);
+        }
     }
 
     /**
@@ -48,6 +60,8 @@ class DocumentObserver
     public function deleted(Document $document): void
     {
         $this->dispatchWebhook($document, 'document.deleted');
+
+        app(DocumentEmbeddingService::class)->deleteDocumentChunks($document);
     }
 
     /**
@@ -69,5 +83,16 @@ class DocumentObserver
         ], $extraData);
 
         app(WebhookDispatchService::class)->dispatch($event, $data, $document->user_id);
+    }
+
+    private function isIndexableMime(string $mime): bool
+    {
+        return in_array($mime, [
+            'application/pdf',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'text/plain',
+            'text/markdown',
+            'text/html',
+        ], true);
     }
 }

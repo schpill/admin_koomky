@@ -22,6 +22,7 @@ import { DocumentTypeBadge } from "@/components/documents/document-type-badge";
 import { DocumentPreview } from "@/components/documents/document-preview";
 import { DocumentReuploadDialog } from "@/components/documents/document-reupload-dialog";
 import { DocumentSendEmailDialog } from "@/components/documents/document-send-email-dialog";
+import { EmbeddingStatusBadge } from "@/components/rag/embedding-status-badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -45,6 +46,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { formatBytes, formatDate } from "@/lib/utils";
+import { apiClient } from "@/lib/api";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -72,6 +74,7 @@ export default function DocumentDetailPage({
   const [isEmailOpen, setIsEmailOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [tagInput, setTagInput] = useState("");
+  const [isReindexing, setIsReindexing] = useState(false);
 
   useEffect(() => {
     fetchDocument(id);
@@ -143,6 +146,19 @@ export default function DocumentDetailPage({
       router.push("/documents");
     } catch (error: any) {
       toast.error(error.message);
+    }
+  };
+
+  const handleReindex = async () => {
+    try {
+      setIsReindexing(true);
+      await apiClient.post(`/rag/reindex/${id}`);
+      await fetchDocument(id);
+      toast.success("Ré-indexation lancée");
+    } catch (error: any) {
+      toast.error(error.message || "Échec de la ré-indexation");
+    } finally {
+      setIsReindexing(false);
     }
   };
 
@@ -306,6 +322,17 @@ export default function DocumentDetailPage({
                 <Badge variant="secondary" className="h-5">
                   v{currentDocument.version}
                 </Badge>
+              </div>
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-muted-foreground">Indexation RAG</span>
+                <EmbeddingStatusBadge
+                  status={currentDocument.embedding_status}
+                  onRetry={
+                    currentDocument.embedding_status === "failed" && !isReindexing
+                      ? handleReindex
+                      : undefined
+                  }
+                />
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Importé le</span>

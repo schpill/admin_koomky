@@ -20,6 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'two-factor' => \App\Http\Middleware\RequireTwoFactorAuthentication::class,
             'portal-auth' => \App\Http\Middleware\PortalAuthMiddleware::class,
             'abilities' => \App\Http\Middleware\CheckAbilities::class,
+            'mcp-scope' => \App\Http\Middleware\McpScopeGuard::class,
         ]);
 
         $middleware->api(append: [
