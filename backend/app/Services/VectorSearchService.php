@@ -49,7 +49,7 @@ class VectorSearchService
         }
 
         return $queryBuilder->get()->map(function (DocumentChunk $chunk) use ($vector) {
-            $score = $this->cosineSimilarity($vector, (array) $chunk->embedding);
+            $score = $this->cosineSimilarity($vector, array_map('floatval', (array) $chunk->embedding));
             $chunk->score = $score;
 
             return $chunk;
