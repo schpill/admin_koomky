@@ -67,11 +67,11 @@ jobs:
       - name: Enable Linux memory overcommit
         run: sudo sysctl -w vm.overcommit_memory=1
       - name: Run Unit Tests
-        run: cd backend && php -d memory_limit=8G ./vendor/bin/pest tests/Unit
+        run: cd backend && php -d memory_limit=12G ./vendor/bin/pest tests/Unit
       - name: Run Feature Tests (Part 1)
         run: >
           cd backend &&
-          php -d memory_limit=8G ./vendor/bin/pest
+          php -d memory_limit=12G ./vendor/bin/pest
           tests/Feature/Account
           tests/Feature/Api
           tests/Feature/Calendar
@@ -79,6 +79,10 @@ jobs:
           tests/Feature/Command
           tests/Feature/Currency
           tests/Feature/Dashboard
+      - name: Run Feature Tests (Part 2)
+        run: >
+          cd backend &&
+          php -d memory_limit=12G ./vendor/bin/pest
           tests/Feature/Degradation
           tests/Feature/Documents
           tests/Feature/Expense
@@ -86,15 +90,19 @@ jobs:
           tests/Feature/Health
           tests/Feature/Import
           tests/Feature/Invoice
-      - name: Run Feature Tests (Part 2)
+      - name: Run Feature Tests (Part 3)
         run: >
           cd backend &&
-          php -d memory_limit=8G ./vendor/bin/pest
+          php -d memory_limit=12G ./vendor/bin/pest
           tests/Feature/Monitoring
           tests/Feature/Performance
           tests/Feature/Portal
           tests/Feature/Rag
           tests/Feature/RecurringInvoice
+      - name: Run Feature Tests (Part 4)
+        run: >
+          cd backend &&
+          php -d memory_limit=12G ./vendor/bin/pest
           tests/Feature/Reports
           tests/Feature/Security
           tests/Feature/Segment
