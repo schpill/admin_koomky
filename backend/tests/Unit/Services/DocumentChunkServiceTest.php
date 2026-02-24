@@ -7,7 +7,7 @@ uses(TestCase::class);
 
 it('creates one chunk for short text', function () {
     $service = new DocumentChunkService;
-    $chunks = $service->chunk("Paragraphe court.");
+    $chunks = $service->chunk('Paragraphe court.');
 
     expect($chunks)->toHaveCount(1)
         ->and($chunks[0]['index'])->toBe(0)

@@ -33,6 +33,7 @@ class DocumentChunkService
 
             if ($candidateTokens <= self::MAX_TOKENS) {
                 $buffer = $candidate;
+
                 continue;
             }
 
@@ -92,6 +93,7 @@ class DocumentChunkService
         foreach ($chunks as $chunk) {
             if ($merged === []) {
                 $merged[] = $chunk;
+
                 continue;
             }
 
@@ -105,6 +107,7 @@ class DocumentChunkService
                     'content' => $combinedContent,
                     'token_count' => $this->estimateTokens($combinedContent),
                 ];
+
                 continue;
             }
 

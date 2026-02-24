@@ -18,11 +18,11 @@ class VectorSearchService
         if ($driver === 'pgsql') {
             $vectorLiteral = '['.implode(',', array_map(static fn ($v) => (string) $v, $vector)).']';
 
-            $sql = "SELECT c.id, c.document_id, c.chunk_index, c.content, c.token_count, d.title, d.client_id,
+            $sql = 'SELECT c.id, c.document_id, c.chunk_index, c.content, c.token_count, d.title, d.client_id,
                         1 - (c.embedding <=> ?::vector) AS score
                     FROM document_chunks c
                     INNER JOIN documents d ON d.id = c.document_id
-                    WHERE d.user_id = ?";
+                    WHERE d.user_id = ?';
 
             $bindings = [$vectorLiteral, $userId];
 

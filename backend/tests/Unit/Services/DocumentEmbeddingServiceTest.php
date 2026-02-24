@@ -1,9 +1,9 @@
 <?php
 
 use App\Models\Document;
+use App\Services\DocumentChunkService;
 use App\Services\DocumentEmbeddingService;
 use App\Services\DocumentTextExtractorService;
-use App\Services\DocumentChunkService;
 use App\Services\GeminiService;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;

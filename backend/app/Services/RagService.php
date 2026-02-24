@@ -27,7 +27,7 @@ class RagService
 
         $context = $chunks->map(fn ($chunk) => "[source {$chunk->document_id}#{$chunk->chunk_index}] {$chunk->content}")->all();
 
-        $prompt = "Tu es un assistant basé sur les documents fournis. Réponds uniquement à partir du contexte ci-dessous. "
+        $prompt = 'Tu es un assistant basé sur les documents fournis. Réponds uniquement à partir du contexte ci-dessous. '
             ."Si la réponse n'est pas dans les documents, dis-le clairement. Cite les sources.";
 
         $answer = $this->gemini->generate($prompt."\nQuestion: {$question}", $context);
