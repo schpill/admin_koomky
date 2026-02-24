@@ -7,6 +7,20 @@ on:
 jobs:
   backend:
     runs-on: ubuntu-latest
+    env:
+      APP_ENV: testing
+      DB_CONNECTION: pgsql
+      DB_HOST: 127.0.0.1
+      DB_PORT: 5432
+      DB_DATABASE: koomky
+      DB_USERNAME: koomky
+      DB_PASSWORD: secret
+      CACHE_STORE: array
+      QUEUE_CONNECTION: sync
+      SESSION_DRIVER: array
+      MAIL_MAILER: array
+      SCOUT_DRIVER: "null"
+      REDIS_HOST: 127.0.0.1
     services:
       postgres:
         image: postgres:16-alpine
@@ -52,22 +66,41 @@ jobs:
         run: cd backend && ./vendor/bin/phpstan analyse -c phpstan.neon --memory-limit=512M
       - name: Enable Linux memory overcommit
         run: sudo sysctl -w vm.overcommit_memory=1
-      - name: Run Tests
-        run: cd backend && php -d memory_limit=4G ./vendor/bin/pest
-        env:
-          APP_ENV: testing
-          DB_CONNECTION: pgsql
-          DB_HOST: 127.0.0.1
-          DB_PORT: 5432
-          DB_DATABASE: koomky
-          DB_USERNAME: koomky
-          DB_PASSWORD: secret
-          CACHE_STORE: array
-          QUEUE_CONNECTION: sync
-          SESSION_DRIVER: array
-          MAIL_MAILER: array
-          SCOUT_DRIVER: "null"
-          REDIS_HOST: 127.0.0.1
+      - name: Run Unit Tests
+        run: cd backend && php -d memory_limit=4G ./vendor/bin/pest tests/Unit
+      - name: Run Feature Tests (Part 1)
+        run: >
+          cd backend &&
+          php -d memory_limit=4G ./vendor/bin/pest
+          tests/Feature/Account
+          tests/Feature/Api
+          tests/Feature/Calendar
+          tests/Feature/Campaign
+          tests/Feature/Command
+          tests/Feature/Currency
+          tests/Feature/Dashboard
+          tests/Feature/Degradation
+          tests/Feature/Documents
+          tests/Feature/Expense
+          tests/Feature/Export
+          tests/Feature/Health
+          tests/Feature/Import
+          tests/Feature/Invoice
+      - name: Run Feature Tests (Part 2)
+        run: >
+          cd backend &&
+          php -d memory_limit=4G ./vendor/bin/pest
+          tests/Feature/Monitoring
+          tests/Feature/Performance
+          tests/Feature/Portal
+          tests/Feature/Rag
+          tests/Feature/RecurringInvoice
+          tests/Feature/Reports
+          tests/Feature/Security
+          tests/Feature/Segment
+          tests/Feature/Settings
+          tests/Feature/Tickets
+          tests/Feature/Unsubscribe
 
   frontend:
     runs-on: ubuntu-latest
