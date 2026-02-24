@@ -14,6 +14,7 @@ class DocumentChunk extends Model
 {
     /** @use HasFactory<\Database\Factories\DocumentChunkFactory> */
     use HasFactory;
+
     use HasUuids;
 
     public $timestamps = false;

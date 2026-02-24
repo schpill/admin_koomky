@@ -11,6 +11,7 @@ class RagUsageLog extends Model
 {
     /** @use HasFactory<\Database\Factories\RagUsageLogFactory> */
     use HasFactory;
+
     use HasUuids;
 
     public $timestamps = false;
