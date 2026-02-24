@@ -32,8 +32,7 @@ jobs:
         with:
           php-version: '8.3'
           extensions: pdo_pgsql, pdo_sqlite, mbstring, exif, pcntl, bcmath, gd, zip, intl
-          coverage: pcov
-          ini-values: pcov.enabled=1, pcov.directory=backend/app
+          coverage: none
       - name: Install Dependencies
         run: composer install --working-dir=backend
       - name: Prepare Environment
@@ -54,7 +53,7 @@ jobs:
       - name: Enable Linux memory overcommit
         run: sudo sysctl -w vm.overcommit_memory=1
       - name: Run Tests
-        run: cd backend && php -d memory_limit=1G ./vendor/bin/pest
+        run: cd backend && php -d memory_limit=2G ./vendor/bin/pest
         env:
           APP_ENV: testing
           DB_CONNECTION: pgsql
