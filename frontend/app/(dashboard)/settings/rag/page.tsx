@@ -42,7 +42,9 @@ export default function RagSettingsPage() {
 
   const filtered = rows.filter((row) => {
     if (!q.trim()) return true;
-    return String(row.title || "").toLowerCase().includes(q.toLowerCase());
+    return String(row.title || "")
+      .toLowerCase()
+      .includes(q.toLowerCase());
   });
 
   const indexed = rows.filter((r) => r.embedding_status === "indexed").length;
@@ -52,13 +54,32 @@ export default function RagSettingsPage() {
       <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-bold">Intelligence documentaire</h1>
-          <p className="text-sm text-muted-foreground">Statut d'indexation et administration RAG</p>
+          <p className="text-sm text-muted-foreground">
+            Statut d'indexation et administration RAG
+          </p>
         </div>
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-          <Card><CardHeader><CardTitle>Documents indexés</CardTitle></CardHeader><CardContent>{indexed}/{rows.length}</CardContent></Card>
-          <Card><CardHeader><CardTitle>Chunks estimés</CardTitle></CardHeader><CardContent>{rows.length * 3}</CardContent></Card>
-          <Card><CardHeader><CardTitle>Dernière synchro</CardTitle></CardHeader><CardContent>{new Date().toLocaleString()}</CardContent></Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Documents indexés</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {indexed}/{rows.length}
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Chunks estimés</CardTitle>
+            </CardHeader>
+            <CardContent>{rows.length * 3}</CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Dernière synchro</CardTitle>
+            </CardHeader>
+            <CardContent>{new Date().toLocaleString()}</CardContent>
+          </Card>
         </div>
 
         <Card>
@@ -66,16 +87,30 @@ export default function RagSettingsPage() {
             <CardTitle>Documents</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <Input value={q} onChange={(event) => setQ(event.target.value)} placeholder="Rechercher un document..." />
-            {loading ? <p className="text-sm text-muted-foreground">Chargement...</p> : null}
+            <Input
+              value={q}
+              onChange={(event) => setQ(event.target.value)}
+              placeholder="Rechercher un document..."
+            />
+            {loading ? (
+              <p className="text-sm text-muted-foreground">Chargement...</p>
+            ) : null}
             <div className="space-y-3">
               {filtered.map((row) => (
-                <div key={row.id} className="flex items-center justify-between rounded-lg border p-3">
+                <div
+                  key={row.id}
+                  className="flex items-center justify-between rounded-lg border p-3"
+                >
                   <div>
                     <p className="font-medium">{row.title}</p>
-                    <p className="text-xs text-muted-foreground">{row.mime_type}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {row.mime_type}
+                    </p>
                   </div>
-                  <EmbeddingStatusBadge status={row.embedding_status} onRetry={() => void retry(row.id)} />
+                  <EmbeddingStatusBadge
+                    status={row.embedding_status}
+                    onRetry={() => void retry(row.id)}
+                  />
                 </div>
               ))}
             </div>

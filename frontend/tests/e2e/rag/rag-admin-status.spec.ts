@@ -66,9 +66,7 @@ test.describe("RAG admin status page", () => {
   test("filters documents by search query", async ({ page }) => {
     await page.goto("/settings/rag");
 
-    await page
-      .getByPlaceholder("Rechercher un document...")
-      .fill("Devis");
+    await page.getByPlaceholder("Rechercher un document...").fill("Devis");
 
     await expect(page.getByText("Devis technique")).toBeVisible();
     await expect(page.getByText("Contrat de prestation")).not.toBeVisible();
@@ -89,7 +87,9 @@ test.describe("RAG admin status page", () => {
     await page.goto("/settings/rag");
 
     // The failed badge for doc-2 should show a retry button
-    const retryButton = page.getByRole("button", { name: /retry|relancer/i }).first();
+    const retryButton = page
+      .getByRole("button", { name: /retry|relancer/i })
+      .first();
     await expect(retryButton).toBeVisible();
     await retryButton.click();
 

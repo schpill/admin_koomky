@@ -328,7 +328,8 @@ export default function DocumentDetailPage({
                 <EmbeddingStatusBadge
                   status={currentDocument.embedding_status}
                   onRetry={
-                    currentDocument.embedding_status === "failed" && !isReindexing
+                    currentDocument.embedding_status === "failed" &&
+                    !isReindexing
                       ? handleReindex
                       : undefined
                   }

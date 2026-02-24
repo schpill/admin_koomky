@@ -6,8 +6,8 @@ vi.mock("@/lib/stores/rag", () => ({
     messages: [],
     loading: false,
     askQuestion: vi.fn(),
-    clearHistory: vi.fn()
-  })
+    clearHistory: vi.fn(),
+  }),
 }));
 
 import { ChatWidget } from "@/components/rag/chat-widget";
@@ -21,6 +21,8 @@ describe("ChatWidget", () => {
   it("opens panel and allows typing", () => {
     render(<ChatWidget />);
     fireEvent.click(screen.getByRole("button"));
-    expect(screen.getByPlaceholderText("Posez votre question...")).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText("Posez votre question...")
+    ).toBeInTheDocument();
   });
 });

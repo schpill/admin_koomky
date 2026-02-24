@@ -29,7 +29,9 @@ export function ChatWidget({ portalMode = false }: ChatWidgetProps) {
           <div className="flex items-center justify-between border-b p-3">
             <div>
               <p className="text-sm font-semibold">Assistant documentaire</p>
-              <p className="text-xs text-muted-foreground">Basé sur les documents partagés</p>
+              <p className="text-xs text-muted-foreground">
+                Basé sur les documents partagés
+              </p>
             </div>
             <Button variant="ghost" size="icon" onClick={() => setOpen(false)}>
               <X className="h-4 w-4" />
@@ -41,7 +43,9 @@ export function ChatWidget({ portalMode = false }: ChatWidgetProps) {
               {messages.map((message) => (
                 <div
                   key={message.id}
-                  className={message.role === "user" ? "text-right" : "text-left"}
+                  className={
+                    message.role === "user" ? "text-right" : "text-left"
+                  }
                 >
                   <div
                     className={`inline-block max-w-[90%] rounded-lg px-3 py-2 text-sm ${
@@ -52,11 +56,16 @@ export function ChatWidget({ portalMode = false }: ChatWidgetProps) {
                   >
                     {message.content}
                   </div>
-                  {message.role === "assistant" && message.sources && message.sources.length > 0 ? (
+                  {message.role === "assistant" &&
+                  message.sources &&
+                  message.sources.length > 0 ? (
                     <div className="mt-2 space-y-1 text-xs text-muted-foreground">
                       {message.sources.map((source, idx) => (
-                        <p key={`${source.document_id}-${source.chunk_index}-${idx}`}>
-                          Source: {source.title || source.document_id}#{source.chunk_index}
+                        <p
+                          key={`${source.document_id}-${source.chunk_index}-${idx}`}
+                        >
+                          Source: {source.title || source.document_id}#
+                          {source.chunk_index}
                         </p>
                       ))}
                     </div>
@@ -89,14 +98,19 @@ export function ChatWidget({ portalMode = false }: ChatWidgetProps) {
               </Button>
             </div>
             <div className="mt-2 flex justify-end">
-              <Button variant="ghost" size="sm" onClick={clearHistory}>Effacer</Button>
+              <Button variant="ghost" size="sm" onClick={clearHistory}>
+                Effacer
+              </Button>
             </div>
           </div>
         </div>
       ) : null}
 
       {!open ? (
-        <Button className="h-12 w-12 rounded-full" onClick={() => setOpen(true)}>
+        <Button
+          className="h-12 w-12 rounded-full"
+          onClick={() => setOpen(true)}
+        >
           <MessageCircle className="h-5 w-5" />
         </Button>
       ) : null}

@@ -22,8 +22,16 @@ interface RagState {
   loading: boolean;
   error: string | null;
   sources: RagSource[];
-  askQuestion: (question: string, clientId?: string, portalMode?: boolean) => Promise<void>;
-  searchDocuments: (query: string, clientId?: string, portalMode?: boolean) => Promise<any[]>;
+  askQuestion: (
+    question: string,
+    clientId?: string,
+    portalMode?: boolean
+  ) => Promise<void>;
+  searchDocuments: (
+    query: string,
+    clientId?: string,
+    portalMode?: boolean
+  ) => Promise<any[]>;
   clearHistory: () => void;
 }
 
@@ -42,15 +50,22 @@ export const useRagStore = create<RagState>((set, get) => ({
       id: uid(),
       role: "user",
       content: question,
-      created_at: new Date().toISOString()
+      created_at: new Date().toISOString(),
     };
 
-    set({ loading: true, error: null, messages: [...get().messages, userMessage] });
+    set({
+      loading: true,
+      error: null,
+      messages: [...get().messages, userMessage],
+    });
 
     try {
       const response = portalMode
         ? await portalApiClient.post<any>("/portal/rag/ask", { question })
-        : await apiClient.post<any>("/rag/ask", { question, client_id: clientId });
+        : await apiClient.post<any>("/rag/ask", {
+            question,
+            client_id: clientId,
+          });
 
       const data = response.data;
       const assistantMessage: RagMessage = {
@@ -58,13 +73,13 @@ export const useRagStore = create<RagState>((set, get) => ({
         role: "assistant",
         content: data.answer,
         sources: data.sources || [],
-        created_at: new Date().toISOString()
+        created_at: new Date().toISOString(),
       };
 
       set({
         loading: false,
         messages: [...get().messages, assistantMessage],
-        sources: data.sources || []
+        sources: data.sources || [],
       });
     } catch (error) {
       set({
@@ -79,8 +94,12 @@ export const useRagStore = create<RagState>((set, get) => ({
     set({ loading: true, error: null });
     try {
       const response = portalMode
-        ? await portalApiClient.get<any>(`/portal/rag/search?q=${encodeURIComponent(query)}`)
-        : await apiClient.get<any>("/rag/search", { params: { q: query, client_id: clientId } });
+        ? await portalApiClient.get<any>(
+            `/portal/rag/search?q=${encodeURIComponent(query)}`
+          )
+        : await apiClient.get<any>("/rag/search", {
+            params: { q: query, client_id: clientId },
+          });
 
       const data = response.data;
       set({ loading: false });
@@ -91,5 +110,5 @@ export const useRagStore = create<RagState>((set, get) => ({
     }
   },
 
-  clearHistory: () => set({ messages: [], sources: [], error: null })
+  clearHistory: () => set({ messages: [], sources: [], error: null }),
 }));

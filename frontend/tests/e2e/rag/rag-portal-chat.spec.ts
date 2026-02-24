@@ -14,7 +14,10 @@ test.describe("RAG portal chat widget", () => {
   test.beforeEach(async ({ page }) => {
     // Inject portal session so layout doesn't redirect to /portal/auth
     await page.addInitScript((session) => {
-      window.localStorage.setItem("koomky-portal-session", JSON.stringify(session));
+      window.localStorage.setItem(
+        "koomky-portal-session",
+        JSON.stringify(session)
+      );
     }, portalSession);
 
     await page.route("**/api/v1/portal/**", async (route) => {
@@ -52,7 +55,12 @@ test.describe("RAG portal chat widget", () => {
             answer:
               "Le délai de paiement standard est de 30 jours à compter de la date de facturation.",
             sources: [
-              { document_id: "doc-1", chunk_index: 0, score: 0.92, title: "CGV" },
+              {
+                document_id: "doc-1",
+                chunk_index: 0,
+                score: 0.92,
+                title: "CGV",
+              },
             ],
             tokens_used: 120,
             latency_ms: 450,
@@ -74,7 +82,10 @@ test.describe("RAG portal chat widget", () => {
     await page.goto("/portal/invoices");
 
     // Wait for the RAG status call to resolve and widget to appear
-    const chatButton = page.locator("button").filter({ has: page.locator("svg") }).last();
+    const chatButton = page
+      .locator("button")
+      .filter({ has: page.locator("svg") })
+      .last();
     await expect(chatButton).toBeVisible({ timeout: 5000 });
   });
 
@@ -88,7 +99,9 @@ test.describe("RAG portal chat widget", () => {
         contentType: "application/json",
         body: portalResponse({
           answer: "Le délai de paiement standard est de 30 jours.",
-          sources: [{ document_id: "doc-1", chunk_index: 0, score: 0.92, title: "CGV" }],
+          sources: [
+            { document_id: "doc-1", chunk_index: 0, score: 0.92, title: "CGV" },
+          ],
           tokens_used: 100,
           latency_ms: 300,
         }),

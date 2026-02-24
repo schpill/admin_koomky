@@ -97,7 +97,9 @@ export default function PortalLayout({
     }
 
     portalApiClient
-      .get<{ available: boolean; indexed_documents: number }>("/portal/rag/status")
+      .get<{ available: boolean; indexed_documents: number }>(
+        "/portal/rag/status"
+      )
       .then((response) => {
         setRagAvailable(Boolean(response.data?.available));
       })
