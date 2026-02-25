@@ -12,6 +12,14 @@ Koomky is a self-hosted Freelance CRM built as a monorepo:
 
 ## Current Implementation Snapshot
 
+- **Phase 10 closed & merged to `main`** — PR #22 (`feature/phase-10-rag-mcp`, merged 2026-02-25) delivers the full RAG pipeline + MCP server (v1.6.0).
+- **Phase 10 scope delivered**:
+  - Backend RAG pipeline: `GeminiService` (embed + generate via Gemini API), `DocumentTextExtractorService` (PDF/DOCX/TXT), `DocumentChunkService` (overlap chunking), `DocumentEmbeddingService`, `VectorSearchService` (pgvector cosine), `RagService` (top-5 + prompt + answer/sources/tokens/latency)
+  - Infrastructure: pgvector extension, `document_chunks` table (HNSW index, vector(768)), `embedding_status` column on documents, `rag_usage_logs` table, queue `embeddings`, `ProcessDocumentEmbeddingJob`
+  - API: `RagController` (ask, search, status, reindex), `PortalRagController`, `McpTokenController` (PAT scope `mcp:read`), `McpScopeGuard` middleware
+  - MCP server TypeScript (`mcp/`): 4 tools (search_documents, ask_question, list_topics, get_document_context), stdio + SSE transport, `docs/mcp/claude-desktop.md`
+  - Frontend: Zustand `rag` store, `chat-widget.tsx` (portal chatbot), `embedding-status-badge.tsx`, settings RAG admin page, document detail badge + reindex button, sidebar entry
+  - 10 backend tests (Unit + Feature) + 5 MCP TypeScript tests + 5 frontend unit/component tests + 2 E2E scenarios
 - **Phase 9 closed & merged to `main`** — PR #21 (`feature/phase-9-tickets`, merged 2026-02-23) delivers the full Support Ticket System.
 - **Phase 9 scope delivered**:
   - Ticket model (UUID PK, Scout Searchable, `byStatus`/`byPriority`/`byClient`/`byAssignee`/`overdue` scopes), TicketMessage model, factories, migrations (tickets, ticket_messages, ticket_documents pivot)
@@ -60,8 +68,8 @@ Koomky is a self-hosted Freelance CRM built as a monorepo:
 - **Coverage gate policy**: backend and frontend thresholds remain **>= 80%**.
 - **Phase 5 validation automation is available** via:
   - `scripts/validate-phase5.sh` (backend coverage, frontend coverage, CI status check, tag check)
-- **No dedicated Phase 6, Phase 7, Phase 8 or Phase 9 validation scripts exist yet**:
-  - Use phase-specific suites documented in `docs/dev/phase6.md`, `docs/dev/phase7.md`, `docs/dev/phase8.md` and `docs/dev/phase9.md`.
+- **No dedicated Phase 6–10 validation scripts exist yet**:
+  - Use phase-specific suites documented in `docs/dev/phase6.md` through `docs/dev/phase10.md`.
 - **Public signup is disabled**:
   - Backend route `POST /api/v1/auth/register` is removed.
   - Frontend `/auth/register` page and middleware exposure are removed.
@@ -186,7 +194,8 @@ docker compose restart frontend   # régénère .next/ proprement en mode dev
 
 ## Reference Documents
 
-- `PRD.md` — Full product requirements (v1.1.0 baseline + v1.2/v1.3 roadmap)
-- `docs/phases/phase{1,2,3,4,5,6,7,8,9}.md` — Detailed specs per phase
-- `docs/dev/phase{1,2,3,4,5,6,7,8,9}.md` — Task tracking per phase
+- `PRD.md` — Full product requirements (v1.1.0 baseline + v1.2/v1.3/v1.6 roadmap)
+- `docs/phases/phase{1,2,3,4,5,6,7,8,9,10}.md` — Detailed specs per phase
+- `docs/dev/phase{1,2,3,4,5,6,7,8,9,10}.md` — Task tracking per phase
+- `docs/mcp/claude-desktop.md` — MCP server config for Claude Desktop
 - `scripts/validate-phase5.sh` — Automated local validation for Phase 5 gates
