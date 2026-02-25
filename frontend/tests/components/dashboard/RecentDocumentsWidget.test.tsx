@@ -9,7 +9,9 @@ vi.mock("@/lib/stores/documents", () => ({
 
 const mockFetchDocuments = vi.fn();
 
-function setup(overrides: Partial<ReturnType<typeof documentStore.useDocumentStore>>) {
+function setup(
+  overrides: Partial<ReturnType<typeof documentStore.useDocumentStore>>
+) {
   vi.mocked(documentStore.useDocumentStore).mockReturnValue({
     documents: [],
     fetchDocuments: mockFetchDocuments,
