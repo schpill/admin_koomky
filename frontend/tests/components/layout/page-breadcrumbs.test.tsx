@@ -54,7 +54,9 @@ describe("PageBreadcrumbs", () => {
   it("translates settings sub-pages into French", () => {
     renderFR("/settings/security");
 
-    expect(screen.getByRole("link", { name: "Paramètres" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: "Paramètres" })
+    ).toBeInTheDocument();
     expect(screen.getByText("Sécurité")).toBeInTheDocument();
   });
 

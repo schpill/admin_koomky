@@ -117,7 +117,9 @@ export default function TicketsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">{t("tickets.title")}</h1>
+          <h1 className="text-2xl font-bold tracking-tight">
+            {t("tickets.title")}
+          </h1>
           <p className="text-muted-foreground">{t("tickets.subtitle")}</p>
         </div>
         <Button onClick={() => setShowCreateDialog(true)}>
@@ -145,7 +147,9 @@ export default function TicketsPage() {
 
           {/* Status filter */}
           <div className="space-y-2">
-            <p className="text-sm font-semibold">{t("tickets.filters.status")}</p>
+            <p className="text-sm font-semibold">
+              {t("tickets.filters.status")}
+            </p>
             {(
               [
                 "open",
@@ -170,7 +174,9 @@ export default function TicketsPage() {
 
           {/* Priority filter */}
           <div className="space-y-2">
-            <p className="text-sm font-semibold">{t("tickets.filters.priority")}</p>
+            <p className="text-sm font-semibold">
+              {t("tickets.filters.priority")}
+            </p>
             {(["low", "normal", "high", "urgent"] as TicketPriority[]).map(
               (p) => (
                 <div key={p} className="flex items-center gap-2">
@@ -294,7 +300,10 @@ export default function TicketsPage() {
               {pagination && pagination.last_page > 1 && (
                 <div className="mt-4 flex items-center justify-between text-sm text-muted-foreground">
                   <span>
-                    {t("tickets.showingOf", { count: String(tickets.length), total: String(pagination.total) })}
+                    {t("tickets.showingOf", {
+                      count: String(tickets.length),
+                      total: String(pagination.total),
+                    })}
                   </span>
                   <div className="flex gap-2">
                     {Array.from(

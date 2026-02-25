@@ -172,24 +172,34 @@ export default function TicketDetailPage({
           {/* Meta grid */}
           <div className="grid grid-cols-2 gap-x-8 gap-y-2 text-sm sm:grid-cols-4">
             <div>
-              <span className="text-muted-foreground">{t("tickets.detail.client")}</span>
+              <span className="text-muted-foreground">
+                {t("tickets.detail.client")}
+              </span>
               <p className="font-medium">{ticket.client?.name ?? "Divers"}</p>
             </div>
             <div>
-              <span className="text-muted-foreground">{t("tickets.detail.project")}</span>
+              <span className="text-muted-foreground">
+                {t("tickets.detail.project")}
+              </span>
               <p className="font-medium">{ticket.project?.name ?? "\u2014"}</p>
             </div>
             <div>
-              <span className="text-muted-foreground">{t("tickets.detail.owner")}</span>
+              <span className="text-muted-foreground">
+                {t("tickets.detail.owner")}
+              </span>
               <p className="font-medium">{ticket.owner?.name ?? "\u2014"}</p>
             </div>
             <div>
-              <span className="text-muted-foreground">{t("tickets.detail.assignee")}</span>
+              <span className="text-muted-foreground">
+                {t("tickets.detail.assignee")}
+              </span>
               <p className="font-medium">{ticket.assignee?.name ?? "\u2014"}</p>
             </div>
             {ticket.deadline && (
               <div>
-                <span className="text-muted-foreground">{t("tickets.detail.deadline")}</span>
+                <span className="text-muted-foreground">
+                  {t("tickets.detail.deadline")}
+                </span>
                 <p
                   className={cn(
                     "font-medium",
@@ -205,7 +215,9 @@ export default function TicketDetailPage({
             )}
             {ticket.category && (
               <div>
-                <span className="text-muted-foreground">{t("tickets.detail.category")}</span>
+                <span className="text-muted-foreground">
+                  {t("tickets.detail.category")}
+                </span>
                 <p className="font-medium">{ticket.category}</p>
               </div>
             )}
@@ -264,10 +276,14 @@ export default function TicketDetailPage({
       <Tabs defaultValue="conversation">
         <TabsList>
           <TabsTrigger value="conversation">
-            {t("tickets.detail.tabConversation", { count: String(messages.length) })}
+            {t("tickets.detail.tabConversation", {
+              count: String(messages.length),
+            })}
           </TabsTrigger>
           <TabsTrigger value="attachments">
-            {t("tickets.detail.tabAttachments", { count: String(documents.length) })}
+            {t("tickets.detail.tabAttachments", {
+              count: String(documents.length),
+            })}
           </TabsTrigger>
         </TabsList>
 
@@ -281,7 +297,9 @@ export default function TicketDetailPage({
           />
           {editingMessage && (
             <div className="rounded-lg border bg-yellow-50 p-4 space-y-2">
-              <p className="text-sm font-medium">{t("tickets.detail.editingMessage")}</p>
+              <p className="text-sm font-medium">
+                {t("tickets.detail.editingMessage")}
+              </p>
               <textarea
                 className="w-full rounded border p-2 text-sm"
                 defaultValue={editingMessage.content}
@@ -362,13 +380,17 @@ export default function TicketDetailPage({
       <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>{t("tickets.detail.deleteDialog.title")}</AlertDialogTitle>
+            <AlertDialogTitle>
+              {t("tickets.detail.deleteDialog.title")}
+            </AlertDialogTitle>
             <AlertDialogDescription>
               {t("tickets.detail.deleteDialog.description")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>{t("tickets.detail.deleteDialog.cancel")}</AlertDialogCancel>
+            <AlertDialogCancel>
+              {t("tickets.detail.deleteDialog.cancel")}
+            </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDelete}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"

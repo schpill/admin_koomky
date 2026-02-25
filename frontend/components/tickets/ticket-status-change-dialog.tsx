@@ -74,7 +74,9 @@ export function TicketStatusChangeDialog({
               onValueChange={(v) => setNewStatus(v as TicketStatus)}
             >
               <SelectTrigger>
-                <SelectValue placeholder={t("tickets.statusChange.selectStatus")} />
+                <SelectValue
+                  placeholder={t("tickets.statusChange.selectStatus")}
+                />
               </SelectTrigger>
               <SelectContent>
                 {validTransitions.map((s) => (

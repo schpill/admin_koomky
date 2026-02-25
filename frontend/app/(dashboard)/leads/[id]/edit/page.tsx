@@ -82,7 +82,9 @@ export default function EditLeadPage() {
       toast.success(t("leads.form.toasts.updateSuccess"));
       router.push(`/leads/${leadId}`);
     } catch (error) {
-      toast.error((error as Error).message || t("leads.form.toasts.updateError"));
+      toast.error(
+        (error as Error).message || t("leads.form.toasts.updateError")
+      );
     }
   };
 
@@ -98,7 +100,9 @@ export default function EditLeadPage() {
     <div className="mx-auto max-w-2xl space-y-6">
       <div>
         <h1 className="text-3xl font-bold">{t("leads.editLead")}</h1>
-        <p className="text-sm text-muted-foreground">{t("leads.editSubtitle")}</p>
+        <p className="text-sm text-muted-foreground">
+          {t("leads.editSubtitle")}
+        </p>
       </div>
 
       <Card>
@@ -109,7 +113,9 @@ export default function EditLeadPage() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="company_name">{t("leads.form.companyName")}</Label>
+                <Label htmlFor="company_name">
+                  {t("leads.form.companyName")}
+                </Label>
                 <Input
                   id="company_name"
                   value={form.company_name}
@@ -187,7 +193,9 @@ export default function EditLeadPage() {
 
             <div className="grid gap-4 md:grid-cols-3">
               <div className="space-y-2">
-                <Label htmlFor="estimated_value">{t("leads.form.estimatedValue")}</Label>
+                <Label htmlFor="estimated_value">
+                  {t("leads.form.estimatedValue")}
+                </Label>
                 <Input
                   id="estimated_value"
                   type="number"
@@ -200,7 +208,9 @@ export default function EditLeadPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="probability">{t("leads.form.probability")}</Label>
+                <Label htmlFor="probability">
+                  {t("leads.form.probability")}
+                </Label>
                 <Input
                   id="probability"
                   type="number"
@@ -214,7 +224,9 @@ export default function EditLeadPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="expected_close_date">{t("leads.form.expectedCloseDate")}</Label>
+                <Label htmlFor="expected_close_date">
+                  {t("leads.form.expectedCloseDate")}
+                </Label>
                 <Input
                   id="expected_close_date"
                   type="date"
@@ -246,7 +258,9 @@ export default function EditLeadPage() {
                 {t("leads.form.cancel")}
               </Button>
               <Button type="submit" disabled={isLoading}>
-                {isLoading ? t("leads.form.saving") : t("leads.form.saveChanges")}
+                {isLoading
+                  ? t("leads.form.saving")
+                  : t("leads.form.saveChanges")}
               </Button>
             </div>
           </form>

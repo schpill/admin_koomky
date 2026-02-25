@@ -85,7 +85,9 @@ export default function LeadDetailPage() {
       await updateStatus(leadId, newStatus);
       toast.success(t("leads.detail.toasts.statusUpdated"));
     } catch (error) {
-      toast.error((error as Error).message || t("leads.detail.toasts.statusError"));
+      toast.error(
+        (error as Error).message || t("leads.detail.toasts.statusError")
+      );
     }
   };
 
@@ -101,7 +103,9 @@ export default function LeadDetailPage() {
       setLostReason("");
       toast.success(t("leads.detail.toasts.markedAsLost"));
     } catch (error) {
-      toast.error((error as Error).message || t("leads.detail.toasts.statusError"));
+      toast.error(
+        (error as Error).message || t("leads.detail.toasts.statusError")
+      );
     }
   };
 
@@ -113,7 +117,9 @@ export default function LeadDetailPage() {
       toast.success(t("leads.detail.toasts.deleted"));
       router.push("/leads");
     } catch (error) {
-      toast.error((error as Error).message || t("leads.detail.toasts.deleteError"));
+      toast.error(
+        (error as Error).message || t("leads.detail.toasts.deleteError")
+      );
     }
   };
 
@@ -127,7 +133,9 @@ export default function LeadDetailPage() {
         router.push(`/clients/${result.client.id}`);
       }
     } catch (error) {
-      toast.error((error as Error).message || t("leads.detail.toasts.convertError"));
+      toast.error(
+        (error as Error).message || t("leads.detail.toasts.convertError")
+      );
     }
   };
 
@@ -150,7 +158,9 @@ export default function LeadDetailPage() {
       loadActivities();
       toast.success(t("leads.detail.toasts.activityLogged"));
     } catch (error) {
-      toast.error((error as Error).message || t("leads.detail.toasts.activityError"));
+      toast.error(
+        (error as Error).message || t("leads.detail.toasts.activityError")
+      );
     }
   };
 
@@ -185,7 +195,9 @@ export default function LeadDetailPage() {
           </h1>
           <div className="mt-2 flex items-center gap-2">
             <Badge className={STATUS_COLORS[currentLead?.status || "new"]}>
-              {currentLead?.status ? t(`leads.status.${currentLead.status}`) : ""}
+              {currentLead?.status
+                ? t(`leads.status.${currentLead.status}`)
+                : ""}
             </Badge>
             {currentLead?.source && (
               <Badge variant="outline" className="capitalize">
@@ -222,21 +234,29 @@ export default function LeadDetailPage() {
             </CardHeader>
             <CardContent className="grid gap-4 md:grid-cols-2">
               <div>
-                <span className="text-sm text-muted-foreground">{t("leads.detail.contact")}</span>
+                <span className="text-sm text-muted-foreground">
+                  {t("leads.detail.contact")}
+                </span>
                 <p className="font-medium">{currentLead?.full_name}</p>
               </div>
               <div>
-                <span className="text-sm text-muted-foreground">{t("leads.detail.company")}</span>
+                <span className="text-sm text-muted-foreground">
+                  {t("leads.detail.company")}
+                </span>
                 <p className="font-medium">
                   {currentLead?.company_name || "-"}
                 </p>
               </div>
               <div>
-                <span className="text-sm text-muted-foreground">{t("leads.detail.email")}</span>
+                <span className="text-sm text-muted-foreground">
+                  {t("leads.detail.email")}
+                </span>
                 <p className="font-medium">{currentLead?.email || "-"}</p>
               </div>
               <div>
-                <span className="text-sm text-muted-foreground">{t("leads.detail.phone")}</span>
+                <span className="text-sm text-muted-foreground">
+                  {t("leads.detail.phone")}
+                </span>
                 <p className="font-medium">{currentLead?.phone || "-"}</p>
               </div>
               <div>
@@ -273,7 +293,9 @@ export default function LeadDetailPage() {
                 </p>
               </div>
               <div>
-                <span className="text-sm text-muted-foreground">{t("leads.detail.created")}</span>
+                <span className="text-sm text-muted-foreground">
+                  {t("leads.detail.created")}
+                </span>
                 <p className="font-medium">
                   {currentLead?.created_at
                     ? new Date(currentLead.created_at).toLocaleDateString()
@@ -282,7 +304,9 @@ export default function LeadDetailPage() {
               </div>
               {currentLead?.notes && (
                 <div className="md:col-span-2">
-                  <span className="text-sm text-muted-foreground">{t("leads.detail.notes")}</span>
+                  <span className="text-sm text-muted-foreground">
+                    {t("leads.detail.notes")}
+                  </span>
                   <p className="font-medium">{currentLead.notes}</p>
                 </div>
               )}
@@ -315,7 +339,9 @@ export default function LeadDetailPage() {
                 >
                   <div className="grid gap-3 md:grid-cols-2">
                     <div>
-                      <Label className="text-sm">{t("leads.detail.activityType")}</Label>
+                      <Label className="text-sm">
+                        {t("leads.detail.activityType")}
+                      </Label>
                       <select
                         className="mt-1 h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
                         value={activityForm.type}
@@ -326,16 +352,28 @@ export default function LeadDetailPage() {
                           })
                         }
                       >
-                        <option value="note">{t("leads.activityType.note")}</option>
-                        <option value="call">{t("leads.activityType.call")}</option>
-                        <option value="email_sent">{t("leads.activityType.email_sent")}</option>
-                        <option value="meeting">{t("leads.activityType.meeting")}</option>
-                        <option value="follow_up">{t("leads.activityType.follow_up")}</option>
+                        <option value="note">
+                          {t("leads.activityType.note")}
+                        </option>
+                        <option value="call">
+                          {t("leads.activityType.call")}
+                        </option>
+                        <option value="email_sent">
+                          {t("leads.activityType.email_sent")}
+                        </option>
+                        <option value="meeting">
+                          {t("leads.activityType.meeting")}
+                        </option>
+                        <option value="follow_up">
+                          {t("leads.activityType.follow_up")}
+                        </option>
                       </select>
                     </div>
                     {activityForm.type === "follow_up" && (
                       <div>
-                        <Label className="text-sm">{t("leads.detail.activityScheduledAt")}</Label>
+                        <Label className="text-sm">
+                          {t("leads.detail.activityScheduledAt")}
+                        </Label>
                         <Input
                           type="datetime-local"
                           className="mt-1"
@@ -451,7 +489,9 @@ export default function LeadDetailPage() {
           {showLostDialog && (
             <Card className="border-red-200">
               <CardHeader>
-                <CardTitle className="text-red-600">{t("leads.detail.markAsLost")}</CardTitle>
+                <CardTitle className="text-red-600">
+                  {t("leads.detail.markAsLost")}
+                </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <textarea

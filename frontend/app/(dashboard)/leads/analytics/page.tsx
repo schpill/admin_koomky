@@ -77,7 +77,8 @@ export default function LeadAnalyticsPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {analytics?.average_time_to_close || 0} {t("leads.analytics.days")}
+              {analytics?.average_time_to_close || 0}{" "}
+              {t("leads.analytics.days")}
             </div>
           </CardContent>
         </Card>
@@ -106,7 +107,9 @@ export default function LeadAnalyticsPage() {
                 )}
               </div>
             ) : (
-              <p className="text-muted-foreground">{t("leads.analytics.noData")}</p>
+              <p className="text-muted-foreground">
+                {t("leads.analytics.noData")}
+              </p>
             )}
           </CardContent>
         </Card>
@@ -125,7 +128,9 @@ export default function LeadAnalyticsPage() {
                     className="flex items-center justify-between"
                   >
                     <div>
-                      <span className="capitalize">{t(`leads.source.${item.source}`)}</span>
+                      <span className="capitalize">
+                        {t(`leads.source.${item.source}`)}
+                      </span>
                       <span className="ml-2 text-sm text-muted-foreground">
                         ({item.count} {t("leads.analytics.leads")})
                       </span>
@@ -135,7 +140,9 @@ export default function LeadAnalyticsPage() {
                 ))}
               </div>
             ) : (
-              <p className="text-muted-foreground">{t("leads.analytics.noData")}</p>
+              <p className="text-muted-foreground">
+                {t("leads.analytics.noData")}
+              </p>
             )}
           </CardContent>
         </Card>

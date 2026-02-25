@@ -59,16 +59,16 @@ export default function CreateLeadPage() {
         router.push(`/leads/${lead.id}`);
       }
     } catch (error) {
-      toast.error((error as Error).message || t("leads.form.toasts.createError"));
+      toast.error(
+        (error as Error).message || t("leads.form.toasts.createError")
+      );
     }
   };
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">
-          {t("leads.createLead")}
-        </h1>
+        <h1 className="text-3xl font-bold">{t("leads.createLead")}</h1>
         <p className="text-sm text-muted-foreground">
           {t("leads.createSubtitle")}
         </p>
@@ -82,7 +82,9 @@ export default function CreateLeadPage() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="company_name">{t("leads.form.companyName")}</Label>
+                <Label htmlFor="company_name">
+                  {t("leads.form.companyName")}
+                </Label>
                 <Input
                   id="company_name"
                   value={form.company_name}
@@ -160,7 +162,9 @@ export default function CreateLeadPage() {
 
             <div className="grid gap-4 md:grid-cols-3">
               <div className="space-y-2">
-                <Label htmlFor="estimated_value">{t("leads.form.estimatedValue")}</Label>
+                <Label htmlFor="estimated_value">
+                  {t("leads.form.estimatedValue")}
+                </Label>
                 <Input
                   id="estimated_value"
                   type="number"
@@ -173,7 +177,9 @@ export default function CreateLeadPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="probability">{t("leads.form.probability")}</Label>
+                <Label htmlFor="probability">
+                  {t("leads.form.probability")}
+                </Label>
                 <Input
                   id="probability"
                   type="number"
@@ -187,7 +193,9 @@ export default function CreateLeadPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="expected_close_date">{t("leads.form.expectedCloseDate")}</Label>
+                <Label htmlFor="expected_close_date">
+                  {t("leads.form.expectedCloseDate")}
+                </Label>
                 <Input
                   id="expected_close_date"
                   type="date"

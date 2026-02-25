@@ -40,7 +40,11 @@ export function TicketStatsCard({ stats, isLoading }: TicketStatsCardProps) {
   }
 
   const items = [
-    { label: t("tickets.stats.open"), value: stats?.total_open ?? 0, className: "" },
+    {
+      label: t("tickets.stats.open"),
+      value: stats?.total_open ?? 0,
+      className: "",
+    },
     {
       label: t("tickets.stats.in_progress"),
       value: stats?.total_in_progress ?? 0,

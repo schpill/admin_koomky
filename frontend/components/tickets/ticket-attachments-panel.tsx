@@ -59,7 +59,9 @@ export function TicketAttachmentsPanel({
       </div>
 
       {documents.length === 0 ? (
-        <p className="text-sm text-muted-foreground">{t("tickets.attachments.noAttachments")}</p>
+        <p className="text-sm text-muted-foreground">
+          {t("tickets.attachments.noAttachments")}
+        </p>
       ) : (
         <div className="space-y-2">
           {documents.map((doc: any) => (

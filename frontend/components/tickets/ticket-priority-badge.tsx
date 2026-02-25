@@ -5,7 +5,10 @@ import { useI18n } from "@/components/providers/i18n-provider";
 
 type TicketPriority = "low" | "normal" | "high" | "urgent";
 
-const priorityConfig: Record<TicketPriority, { className: string; icon?: boolean }> = {
+const priorityConfig: Record<
+  TicketPriority,
+  { className: string; icon?: boolean }
+> = {
   low: { className: "bg-gray-50 text-gray-500" },
   normal: { className: "bg-blue-50 text-blue-600" },
   high: { className: "bg-orange-100 text-orange-600" },

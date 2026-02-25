@@ -29,12 +29,16 @@ describe("TicketPriorityBadge", () => {
   });
 
   it("does NOT render alert icon for non-urgent priorities", () => {
-    const { container } = renderWithProviders(<TicketPriorityBadge priority="normal" />);
+    const { container } = renderWithProviders(
+      <TicketPriorityBadge priority="normal" />
+    );
     expect(container.querySelector("svg")).toBeNull();
   });
 
   it("renders alert icon for urgent priority", () => {
-    const { container } = renderWithProviders(<TicketPriorityBadge priority="urgent" />);
+    const { container } = renderWithProviders(
+      <TicketPriorityBadge priority="urgent" />
+    );
     expect(container.querySelector("svg")).toBeInTheDocument();
   });
 });

@@ -60,7 +60,9 @@ export function ConvertToClientDialog({
       }
     } catch (error) {
       const message =
-        error instanceof Error ? error.message : t("leads.convert.toasts.errorDesc");
+        error instanceof Error
+          ? error.message
+          : t("leads.convert.toasts.errorDesc");
       toast.error(t("leads.convert.toasts.error"), {
         description: message,
       });
@@ -90,13 +92,17 @@ export function ConvertToClientDialog({
 
         <div className="space-y-4 py-4">
           <div className="rounded-lg border bg-muted/50 p-4">
-            <h4 className="mb-3 text-sm font-medium">{t("leads.convert.summary")}</h4>
+            <h4 className="mb-3 text-sm font-medium">
+              {t("leads.convert.summary")}
+            </h4>
             <div className="space-y-3">
               {lead.company_name && (
                 <div className="flex items-center gap-3">
                   <Building2 className="h-4 w-4 text-muted-foreground" />
                   <div>
-                    <p className="text-xs text-muted-foreground">{t("leads.convert.company")}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {t("leads.convert.company")}
+                    </p>
                     <p className="font-medium">{lead.company_name}</p>
                   </div>
                 </div>
@@ -105,7 +111,9 @@ export function ConvertToClientDialog({
               <div className="flex items-center gap-3">
                 <User className="h-4 w-4 text-muted-foreground" />
                 <div>
-                  <p className="text-xs text-muted-foreground">{t("leads.convert.contact")}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {t("leads.convert.contact")}
+                  </p>
                   <p className="font-medium">{lead.full_name}</p>
                 </div>
               </div>
@@ -129,14 +137,18 @@ export function ConvertToClientDialog({
 
               {lead.email && (
                 <div className="text-sm">
-                  <span className="text-muted-foreground">{t("leads.convert.email")}</span>{" "}
+                  <span className="text-muted-foreground">
+                    {t("leads.convert.email")}
+                  </span>{" "}
                   <span>{lead.email}</span>
                 </div>
               )}
 
               {lead.phone && (
                 <div className="text-sm">
-                  <span className="text-muted-foreground">{t("leads.convert.phone")}</span>{" "}
+                  <span className="text-muted-foreground">
+                    {t("leads.convert.phone")}
+                  </span>{" "}
                   <span>{lead.phone}</span>
                 </div>
               )}

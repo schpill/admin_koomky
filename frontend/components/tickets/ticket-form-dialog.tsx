@@ -141,7 +141,11 @@ export function TicketFormDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle>{ticket ? t("tickets.form.titleEdit") : t("tickets.form.titleCreate")}</DialogTitle>
+          <DialogTitle>
+            {ticket
+              ? t("tickets.form.titleEdit")
+              : t("tickets.form.titleCreate")}
+          </DialogTitle>
         </DialogHeader>
         <form
           onSubmit={handleSubmit(handleFormSubmit)}
@@ -149,11 +153,14 @@ export function TicketFormDialog({
         >
           <div className="space-y-2">
             <Label htmlFor="title">
-              {t("tickets.form.fieldTitle")} <span className="text-red-500">*</span>
+              {t("tickets.form.fieldTitle")}{" "}
+              <span className="text-red-500">*</span>
             </Label>
             <Input
               id="title"
-              {...register("title", { required: t("tickets.form.fieldTitleRequired") })}
+              {...register("title", {
+                required: t("tickets.form.fieldTitleRequired"),
+              })}
               placeholder={t("tickets.form.fieldTitlePlaceholder")}
             />
             {errors.title && (
@@ -163,7 +170,8 @@ export function TicketFormDialog({
 
           <div className="space-y-2">
             <Label htmlFor="description">
-              {t("tickets.form.fieldDescription")} <span className="text-red-500">*</span>
+              {t("tickets.form.fieldDescription")}{" "}
+              <span className="text-red-500">*</span>
             </Label>
             <Textarea
               id="description"
@@ -194,7 +202,9 @@ export function TicketFormDialog({
                   <SelectValue placeholder={t("tickets.form.noClient")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="__none__">{t("tickets.form.noClient")}</SelectItem>
+                  <SelectItem value="__none__">
+                    {t("tickets.form.noClient")}
+                  </SelectItem>
                   {clients.map((c: any) => (
                     <SelectItem key={c.id} value={c.id}>
                       {c.name}
@@ -213,7 +223,11 @@ export function TicketFormDialog({
               >
                 <SelectTrigger>
                   <SelectValue
-                    placeholder={selectedClientId ? t("tickets.form.selectProject") : "Divers"}
+                    placeholder={
+                      selectedClientId
+                        ? t("tickets.form.selectProject")
+                        : "Divers"
+                    }
                   />
                 </SelectTrigger>
                 <SelectContent>
@@ -238,15 +252,25 @@ export function TicketFormDialog({
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="low">{t("tickets.priority.low")}</SelectItem>
-                  <SelectItem value="normal">{t("tickets.priority.normal")}</SelectItem>
-                  <SelectItem value="high">{t("tickets.priority.high")}</SelectItem>
-                  <SelectItem value="urgent">{t("tickets.priority.urgent")}</SelectItem>
+                  <SelectItem value="low">
+                    {t("tickets.priority.low")}
+                  </SelectItem>
+                  <SelectItem value="normal">
+                    {t("tickets.priority.normal")}
+                  </SelectItem>
+                  <SelectItem value="high">
+                    {t("tickets.priority.high")}
+                  </SelectItem>
+                  <SelectItem value="urgent">
+                    {t("tickets.priority.urgent")}
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="assigned_to">{t("tickets.form.fieldAssignee")}</Label>
+              <Label htmlFor="assigned_to">
+                {t("tickets.form.fieldAssignee")}
+              </Label>
               <Input
                 id="assigned_to"
                 {...register("assigned_to")}
@@ -257,7 +281,9 @@ export function TicketFormDialog({
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="category">{t("tickets.form.fieldCategory")}</Label>
+              <Label htmlFor="category">
+                {t("tickets.form.fieldCategory")}
+              </Label>
               <Input
                 id="category"
                 {...register("category")}
@@ -265,7 +291,9 @@ export function TicketFormDialog({
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="deadline">{t("tickets.form.fieldDeadline")}</Label>
+              <Label htmlFor="deadline">
+                {t("tickets.form.fieldDeadline")}
+              </Label>
               <Input id="deadline" type="date" {...register("deadline")} />
             </div>
           </div>

@@ -34,12 +34,16 @@ describe("TicketStatusBadge", () => {
   });
 
   it("applies correct color class for open status", () => {
-    const { container } = renderWithProviders(<TicketStatusBadge status="open" />);
+    const { container } = renderWithProviders(
+      <TicketStatusBadge status="open" />
+    );
     expect(container.firstChild).toHaveClass("bg-gray-100");
   });
 
   it("applies correct color class for resolved status", () => {
-    const { container } = renderWithProviders(<TicketStatusBadge status="resolved" />);
+    const { container } = renderWithProviders(
+      <TicketStatusBadge status="resolved" />
+    );
     expect(container.firstChild).toHaveClass("bg-green-100");
   });
 });

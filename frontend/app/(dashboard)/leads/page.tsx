@@ -57,7 +57,9 @@ export default function LeadsPage() {
           <h1 className="text-3xl font-bold">{t("leads.title")}</h1>
           <p className="text-sm text-muted-foreground">
             {pipeline?.total_pipeline_value
-              ? t("leads.pipelineValue", { value: `€${pipeline.total_pipeline_value.toLocaleString()}` })
+              ? t("leads.pipelineValue", {
+                  value: `€${pipeline.total_pipeline_value.toLocaleString()}`,
+                })
               : t("leads.subtitle")}
           </p>
         </div>
@@ -113,8 +115,12 @@ export default function LeadsPage() {
               <option value="new">{t("leads.status.new")}</option>
               <option value="contacted">{t("leads.status.contacted")}</option>
               <option value="qualified">{t("leads.status.qualified")}</option>
-              <option value="proposal_sent">{t("leads.status.proposal_sent")}</option>
-              <option value="negotiating">{t("leads.status.negotiating")}</option>
+              <option value="proposal_sent">
+                {t("leads.status.proposal_sent")}
+              </option>
+              <option value="negotiating">
+                {t("leads.status.negotiating")}
+              </option>
               <option value="won">{t("leads.status.won")}</option>
               <option value="lost">{t("leads.status.lost")}</option>
             </select>
