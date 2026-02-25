@@ -1,6 +1,11 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi, beforeAll } from "vitest";
 import { TicketMessageComposer } from "@/components/tickets/ticket-message-composer";
+import { I18nProvider } from "@/components/providers/i18n-provider";
+
+function renderWithProviders(ui: React.ReactElement) {
+  return render(<I18nProvider initialLocale="en">{ui}</I18nProvider>);
+}
 
 beforeAll(() => {
   global.ResizeObserver = class {
@@ -12,7 +17,7 @@ beforeAll(() => {
 
 describe("TicketMessageComposer", () => {
   it("shows internal note toggle for owner/assignee", () => {
-    render(
+    renderWithProviders(
       <TicketMessageComposer
         currentUserId="u1"
         isOwnerOrAssignee={true}
@@ -23,7 +28,7 @@ describe("TicketMessageComposer", () => {
   });
 
   it("hides internal note toggle for regular users", () => {
-    render(
+    renderWithProviders(
       <TicketMessageComposer
         currentUserId="u1"
         isOwnerOrAssignee={false}
@@ -34,7 +39,7 @@ describe("TicketMessageComposer", () => {
   });
 
   it("submit button disabled when content is empty", () => {
-    render(
+    renderWithProviders(
       <TicketMessageComposer
         currentUserId="u1"
         isOwnerOrAssignee={false}
@@ -46,7 +51,7 @@ describe("TicketMessageComposer", () => {
 
   it("calls onSubmit with content and is_internal false by default", () => {
     const onSubmit = vi.fn();
-    render(
+    renderWithProviders(
       <TicketMessageComposer
         currentUserId="u1"
         isOwnerOrAssignee={true}

@@ -45,7 +45,7 @@ export default function CampaignsPage() {
         </div>
         <div className="flex gap-2">
           <Button asChild variant="outline">
-            <Link href="/campaigns/segments">{t("campaigns.segments")}</Link>
+            <Link href="/campaigns/segments">{t("campaigns.segments.title")}</Link>
           </Button>
           <Button asChild>
             <Link href="/campaigns/create">

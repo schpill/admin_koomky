@@ -54,11 +54,11 @@ export default function LeadsPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-3xl font-bold">{t("leads.title") || "Leads"}</h1>
+          <h1 className="text-3xl font-bold">{t("leads.title")}</h1>
           <p className="text-sm text-muted-foreground">
             {pipeline?.total_pipeline_value
-              ? `Pipeline Value: €${pipeline.total_pipeline_value.toLocaleString()}`
-              : "Manage your sales pipeline"}
+              ? t("leads.pipelineValue", { value: `€${pipeline.total_pipeline_value.toLocaleString()}` })
+              : t("leads.subtitle")}
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -68,7 +68,7 @@ export default function LeadsPage() {
             onClick={() => setViewMode("kanban")}
           >
             <LayoutGrid className="mr-2 h-4 w-4" />
-            Kanban
+            {t("leads.kanban")}
           </Button>
           <Button
             variant={viewMode === "list" ? "default" : "outline"}
@@ -76,12 +76,12 @@ export default function LeadsPage() {
             onClick={() => setViewMode("list")}
           >
             <List className="mr-2 h-4 w-4" />
-            List
+            {t("leads.list")}
           </Button>
           <Button asChild>
             <Link href="/leads/create">
               <Plus className="mr-2 h-4 w-4" />
-              {t("leads.addLead") || "Add Lead"}
+              {t("leads.addLead")}
             </Link>
           </Button>
         </div>
@@ -93,7 +93,7 @@ export default function LeadsPage() {
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
-                placeholder="Search leads..."
+                placeholder={t("leads.searchPlaceholder")}
                 className="pl-10"
                 value={filters.search || ""}
                 onChange={(e) => handleSearch(e.target.value)}
@@ -109,14 +109,14 @@ export default function LeadsPage() {
                 }))
               }
             >
-              <option value="">All Statuses</option>
-              <option value="new">New</option>
-              <option value="contacted">Contacted</option>
-              <option value="qualified">Qualified</option>
-              <option value="proposal_sent">Proposal Sent</option>
-              <option value="negotiating">Negotiating</option>
-              <option value="won">Won</option>
-              <option value="lost">Lost</option>
+              <option value="">{t("leads.allStatuses")}</option>
+              <option value="new">{t("leads.status.new")}</option>
+              <option value="contacted">{t("leads.status.contacted")}</option>
+              <option value="qualified">{t("leads.status.qualified")}</option>
+              <option value="proposal_sent">{t("leads.status.proposal_sent")}</option>
+              <option value="negotiating">{t("leads.status.negotiating")}</option>
+              <option value="won">{t("leads.status.won")}</option>
+              <option value="lost">{t("leads.status.lost")}</option>
             </select>
             <select
               className="h-10 rounded-md border border-input bg-background px-3 text-sm"
@@ -128,12 +128,12 @@ export default function LeadsPage() {
                 }))
               }
             >
-              <option value="">All Sources</option>
-              <option value="manual">Manual</option>
-              <option value="referral">Referral</option>
-              <option value="website">Website</option>
-              <option value="campaign">Campaign</option>
-              <option value="other">Other</option>
+              <option value="">{t("leads.allSources")}</option>
+              <option value="manual">{t("leads.source.manual")}</option>
+              <option value="referral">{t("leads.source.referral")}</option>
+              <option value="website">{t("leads.source.website")}</option>
+              <option value="campaign">{t("leads.source.campaign")}</option>
+              <option value="other">{t("leads.source.other")}</option>
             </select>
           </div>
         </CardContent>
@@ -145,7 +145,7 @@ export default function LeadsPage() {
             <div key={status} className="space-y-3">
               <div className="flex items-center justify-between rounded-lg bg-muted p-2">
                 <span className="text-sm font-medium capitalize">
-                  {status.replace("_", " ")}
+                  {t(`leads.status.${status}`)}
                 </span>
                 <Badge variant="secondary">
                   {pipeline.column_stats[status]?.count || 0}
@@ -188,24 +188,24 @@ export default function LeadsPage() {
           <CardContent className="p-0">
             {isLoading ? (
               <div className="p-4 text-center text-muted-foreground">
-                Loading...
+                {t("leads.loading")}
               </div>
             ) : leads.length === 0 ? (
               <div className="p-4 text-center text-muted-foreground">
-                No leads found
+                {t("leads.noLeads")}
               </div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b text-left">
-                      <th className="p-4">Name</th>
-                      <th className="p-4">Company</th>
-                      <th className="p-4">Status</th>
-                      <th className="p-4">Value</th>
-                      <th className="p-4">Probability</th>
-                      <th className="p-4">Close Date</th>
-                      <th className="p-4">Source</th>
+                      <th className="p-4">{t("leads.table.name")}</th>
+                      <th className="p-4">{t("leads.table.company")}</th>
+                      <th className="p-4">{t("leads.table.status")}</th>
+                      <th className="p-4">{t("leads.table.value")}</th>
+                      <th className="p-4">{t("leads.table.probability")}</th>
+                      <th className="p-4">{t("leads.table.closeDate")}</th>
+                      <th className="p-4">{t("leads.table.source")}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -224,7 +224,7 @@ export default function LeadsPage() {
                         </td>
                         <td className="p-4">
                           <Badge className={STATUS_COLORS[lead.status]}>
-                            {lead.status.replace("_", " ")}
+                            {t(`leads.status.${lead.status}`)}
                           </Badge>
                         </td>
                         <td className="p-4">

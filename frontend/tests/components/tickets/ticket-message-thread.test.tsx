@@ -1,6 +1,11 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import { TicketMessageThread } from "@/components/tickets/ticket-message-thread";
+import { I18nProvider } from "@/components/providers/i18n-provider";
+
+function renderWithProviders(ui: React.ReactElement) {
+  return render(<I18nProvider initialLocale="en">{ui}</I18nProvider>);
+}
 
 const publicMessage = {
   id: "m1",
@@ -26,7 +31,7 @@ const internalMessage = {
 
 describe("TicketMessageThread", () => {
   it("shows public messages for all users", () => {
-    render(
+    renderWithProviders(
       <TicketMessageThread
         messages={[publicMessage]}
         currentUserId="u3"
@@ -39,7 +44,7 @@ describe("TicketMessageThread", () => {
   });
 
   it("hides internal notes for non-owner/non-assignee", () => {
-    render(
+    renderWithProviders(
       <TicketMessageThread
         messages={[internalMessage]}
         currentUserId="u3"
@@ -54,7 +59,7 @@ describe("TicketMessageThread", () => {
   });
 
   it('shows internal notes for owner/assignee with "Internal note" badge', () => {
-    render(
+    renderWithProviders(
       <TicketMessageThread
         messages={[internalMessage]}
         currentUserId="u1"
@@ -70,7 +75,7 @@ describe("TicketMessageThread", () => {
   });
 
   it("shows edit/delete buttons only for own messages", () => {
-    render(
+    renderWithProviders(
       <TicketMessageThread
         messages={[publicMessage, internalMessage]}
         currentUserId="u1"
@@ -85,7 +90,7 @@ describe("TicketMessageThread", () => {
 
   it("calls onDelete when delete button clicked", () => {
     const onDelete = vi.fn();
-    render(
+    renderWithProviders(
       <TicketMessageThread
         messages={[publicMessage]}
         currentUserId="u1"

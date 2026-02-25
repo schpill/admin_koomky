@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Pencil, Trash2 } from "lucide-react";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 interface TicketMessage {
   id: string;
@@ -47,6 +48,7 @@ export function TicketMessageThread({
   onEdit,
   onDelete,
 }: TicketMessageThreadProps) {
+  const { t } = useI18n();
   const visibleMessages = messages.filter(
     (m) => !m.is_internal || isOwnerOrAssignee
   );
@@ -54,7 +56,7 @@ export function TicketMessageThread({
   if (visibleMessages.length === 0) {
     return (
       <p className="text-sm text-muted-foreground py-4 text-center">
-        No messages yet.
+        {t("tickets.message.noMessages")}
       </p>
     );
   }
@@ -76,7 +78,7 @@ export function TicketMessageThread({
               </div>
               <div>
                 <p className="text-sm font-medium">
-                  {message.user?.name ?? "Unknown"}
+                  {message.user?.name ?? t("tickets.message.unknown")}
                 </p>
                 <p className="text-xs text-muted-foreground">
                   {formatDate(message.created_at)}
@@ -84,7 +86,7 @@ export function TicketMessageThread({
               </div>
               {message.is_internal && (
                 <span className="rounded-full bg-yellow-200 px-2 py-0.5 text-xs font-medium text-yellow-800">
-                  Internal note
+                  {t("tickets.message.internalLabel")}
                 </span>
               )}
             </div>

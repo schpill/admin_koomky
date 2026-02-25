@@ -4,30 +4,22 @@ import { useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useLeadStore } from "@/lib/stores/leads";
 import { CurrencyAmount } from "@/components/shared/currency-amount";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 export default function LeadAnalyticsPage() {
-  const { analytics, fetchAnalytics, isLoading } = useLeadStore();
+  const { t } = useI18n();
+  const { analytics, fetchAnalytics } = useLeadStore();
 
   useEffect(() => {
     fetchAnalytics();
   }, [fetchAnalytics]);
 
-  const statusLabels: Record<string, string> = {
-    new: "New",
-    contacted: "Contacted",
-    qualified: "Qualified",
-    proposal_sent: "Proposal Sent",
-    negotiating: "Negotiating",
-    won: "Won",
-    lost: "Lost",
-  };
-
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Pipeline Analytics</h1>
+        <h1 className="text-3xl font-bold">{t("leads.analytics.title")}</h1>
         <p className="text-sm text-muted-foreground">
-          Track your sales performance
+          {t("leads.analytics.subtitle")}
         </p>
       </div>
 
@@ -35,7 +27,7 @@ export default function LeadAnalyticsPage() {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
-              Total Pipeline Value
+              {t("leads.analytics.totalPipelineValue")}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -51,7 +43,7 @@ export default function LeadAnalyticsPage() {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
-              Win Rate
+              {t("leads.analytics.winRate")}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -64,7 +56,7 @@ export default function LeadAnalyticsPage() {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
-              Average Deal Value
+              {t("leads.analytics.averageDealValue")}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -80,12 +72,12 @@ export default function LeadAnalyticsPage() {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
-              Avg Time to Close
+              {t("leads.analytics.avgTimeToClose")}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {analytics?.average_time_to_close || 0} days
+              {analytics?.average_time_to_close || 0} {t("leads.analytics.days")}
             </div>
           </CardContent>
         </Card>
@@ -94,7 +86,7 @@ export default function LeadAnalyticsPage() {
       <div className="grid gap-6 lg:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle>Leads by Status</CardTitle>
+            <CardTitle>{t("leads.analytics.leadsByStatus")}</CardTitle>
           </CardHeader>
           <CardContent>
             {analytics?.leads_by_status ? (
@@ -106,7 +98,7 @@ export default function LeadAnalyticsPage() {
                       className="flex items-center justify-between"
                     >
                       <span className="capitalize">
-                        {statusLabels[status] || status}
+                        {t(`leads.status.${status}`)}
                       </span>
                       <span className="font-medium">{count}</span>
                     </div>
@@ -114,14 +106,14 @@ export default function LeadAnalyticsPage() {
                 )}
               </div>
             ) : (
-              <p className="text-muted-foreground">No data available</p>
+              <p className="text-muted-foreground">{t("leads.analytics.noData")}</p>
             )}
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle>Pipeline by Source</CardTitle>
+            <CardTitle>{t("leads.analytics.pipelineBySource")}</CardTitle>
           </CardHeader>
           <CardContent>
             {analytics?.pipeline_by_source &&
@@ -133,9 +125,9 @@ export default function LeadAnalyticsPage() {
                     className="flex items-center justify-between"
                   >
                     <div>
-                      <span className="capitalize">{item.source}</span>
+                      <span className="capitalize">{t(`leads.source.${item.source}`)}</span>
                       <span className="ml-2 text-sm text-muted-foreground">
-                        ({item.count} leads)
+                        ({item.count} {t("leads.analytics.leads")})
                       </span>
                     </div>
                     <CurrencyAmount amount={item.total_value} currency="EUR" />
@@ -143,7 +135,7 @@ export default function LeadAnalyticsPage() {
                 ))}
               </div>
             ) : (
-              <p className="text-muted-foreground">No data available</p>
+              <p className="text-muted-foreground">{t("leads.analytics.noData")}</p>
             )}
           </CardContent>
         </Card>

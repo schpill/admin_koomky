@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { ArrowLeft, Pencil, Trash2, AlertTriangle } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 export default function TicketDetailPage({
   params,
@@ -37,6 +38,7 @@ export default function TicketDetailPage({
 }) {
   const { id } = use(params);
   const router = useRouter();
+  const { t } = useI18n();
   const currentUser = useAuthStore((state) => state.user);
   const currentUserId = currentUser?.id ?? "";
 
@@ -125,13 +127,13 @@ export default function TicketDetailPage({
   if (!ticket) {
     return (
       <div className="flex flex-col items-center justify-center p-8 py-16">
-        <p className="text-muted-foreground">Ticket not found.</p>
+        <p className="text-muted-foreground">{t("tickets.detail.notFound")}</p>
         <Button
           variant="outline"
           className="mt-4"
           onClick={() => router.push("/tickets")}
         >
-          Back to tickets
+          {t("tickets.detail.backToList")}
         </Button>
       </div>
     );
@@ -146,7 +148,7 @@ export default function TicketDetailPage({
         onClick={() => router.push("/tickets")}
       >
         <ArrowLeft className="mr-2 h-4 w-4" />
-        Back to Tickets
+        {t("tickets.detail.backToList")}
       </Button>
 
       {/* Header card */}
@@ -157,7 +159,7 @@ export default function TicketDetailPage({
             <div className="flex-1">
               <h1 className="text-xl font-semibold">{ticket.title}</h1>
               <p className="mt-1 text-sm text-muted-foreground">
-                #{ticket.id.slice(0, 8)} · Created{" "}
+                {t("tickets.detail.createdOn", { id: ticket.id.slice(0, 8) })}{" "}
                 {new Date(ticket.created_at).toLocaleDateString()}
               </p>
             </div>
@@ -170,24 +172,24 @@ export default function TicketDetailPage({
           {/* Meta grid */}
           <div className="grid grid-cols-2 gap-x-8 gap-y-2 text-sm sm:grid-cols-4">
             <div>
-              <span className="text-muted-foreground">Client</span>
+              <span className="text-muted-foreground">{t("tickets.detail.client")}</span>
               <p className="font-medium">{ticket.client?.name ?? "Divers"}</p>
             </div>
             <div>
-              <span className="text-muted-foreground">Project</span>
+              <span className="text-muted-foreground">{t("tickets.detail.project")}</span>
               <p className="font-medium">{ticket.project?.name ?? "\u2014"}</p>
             </div>
             <div>
-              <span className="text-muted-foreground">Owner</span>
+              <span className="text-muted-foreground">{t("tickets.detail.owner")}</span>
               <p className="font-medium">{ticket.owner?.name ?? "\u2014"}</p>
             </div>
             <div>
-              <span className="text-muted-foreground">Assignee</span>
+              <span className="text-muted-foreground">{t("tickets.detail.assignee")}</span>
               <p className="font-medium">{ticket.assignee?.name ?? "\u2014"}</p>
             </div>
             {ticket.deadline && (
               <div>
-                <span className="text-muted-foreground">Deadline</span>
+                <span className="text-muted-foreground">{t("tickets.detail.deadline")}</span>
                 <p
                   className={cn(
                     "font-medium",
@@ -203,7 +205,7 @@ export default function TicketDetailPage({
             )}
             {ticket.category && (
               <div>
-                <span className="text-muted-foreground">Category</span>
+                <span className="text-muted-foreground">{t("tickets.detail.category")}</span>
                 <p className="font-medium">{ticket.category}</p>
               </div>
             )}
@@ -232,7 +234,7 @@ export default function TicketDetailPage({
               size="sm"
               onClick={() => setShowStatusDialog(true)}
             >
-              Change Status
+              {t("tickets.detail.changeStatus")}
             </Button>
             {isOwner && (
               <>
@@ -242,7 +244,7 @@ export default function TicketDetailPage({
                   onClick={() => setShowEditDialog(true)}
                 >
                   <Pencil className="mr-1 h-3 w-3" />
-                  Edit
+                  {t("tickets.detail.edit")}
                 </Button>
                 <Button
                   variant="destructive"
@@ -250,7 +252,7 @@ export default function TicketDetailPage({
                   onClick={() => setShowDeleteDialog(true)}
                 >
                   <Trash2 className="mr-1 h-3 w-3" />
-                  Delete
+                  {t("tickets.detail.delete")}
                 </Button>
               </>
             )}
@@ -262,10 +264,10 @@ export default function TicketDetailPage({
       <Tabs defaultValue="conversation">
         <TabsList>
           <TabsTrigger value="conversation">
-            Conversation ({messages.length})
+            {t("tickets.detail.tabConversation", { count: String(messages.length) })}
           </TabsTrigger>
           <TabsTrigger value="attachments">
-            Attachments ({documents.length})
+            {t("tickets.detail.tabAttachments", { count: String(documents.length) })}
           </TabsTrigger>
         </TabsList>
 
@@ -279,7 +281,7 @@ export default function TicketDetailPage({
           />
           {editingMessage && (
             <div className="rounded-lg border bg-yellow-50 p-4 space-y-2">
-              <p className="text-sm font-medium">Editing message</p>
+              <p className="text-sm font-medium">{t("tickets.detail.editingMessage")}</p>
               <textarea
                 className="w-full rounded border p-2 text-sm"
                 defaultValue={editingMessage.content}
@@ -298,7 +300,7 @@ export default function TicketDetailPage({
               <div className="flex gap-2">
                 <Button
                   size="sm"
-                  onClick={async (e) => {
+                  onClick={async (e: React.MouseEvent<HTMLButtonElement>) => {
                     const ta = (
                       e.currentTarget.closest(".space-y-2") as HTMLElement
                     )?.querySelector("textarea");
@@ -312,14 +314,14 @@ export default function TicketDetailPage({
                     }
                   }}
                 >
-                  Save
+                  {t("tickets.detail.save")}
                 </Button>
                 <Button
                   size="sm"
                   variant="outline"
                   onClick={() => setEditingMessage(null)}
                 >
-                  Cancel
+                  {t("tickets.detail.cancel")}
                 </Button>
               </div>
             </div>
@@ -360,19 +362,18 @@ export default function TicketDetailPage({
       <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete ticket?</AlertDialogTitle>
+            <AlertDialogTitle>{t("tickets.detail.deleteDialog.title")}</AlertDialogTitle>
             <AlertDialogDescription>
-              This will permanently delete the ticket and all its messages.
-              Attached documents will be kept in the GED.
+              {t("tickets.detail.deleteDialog.description")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>{t("tickets.detail.deleteDialog.cancel")}</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDelete}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              Delete
+              {t("tickets.detail.deleteDialog.confirm")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

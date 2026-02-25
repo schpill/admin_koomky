@@ -1,6 +1,7 @@
 "use client";
 import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 interface TicketStats {
   total_tickets: number;
@@ -23,6 +24,7 @@ interface TicketStatsCardProps {
 }
 
 export function TicketStatsCard({ stats, isLoading }: TicketStatsCardProps) {
+  const { t } = useI18n();
   if (isLoading) {
     return (
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
@@ -38,19 +40,19 @@ export function TicketStatsCard({ stats, isLoading }: TicketStatsCardProps) {
   }
 
   const items = [
-    { label: "Open", value: stats?.total_open ?? 0, className: "" },
+    { label: t("tickets.stats.open"), value: stats?.total_open ?? 0, className: "" },
     {
-      label: "In Progress",
+      label: t("tickets.stats.in_progress"),
       value: stats?.total_in_progress ?? 0,
       className: "",
     },
     {
-      label: "Urgent",
+      label: t("tickets.stats.urgent"),
       value: stats?.total_urgent_priority ?? 0,
       className: "",
     },
     {
-      label: "Overdue",
+      label: t("tickets.stats.overdue"),
       value: stats?.total_overdue ?? 0,
       className:
         (stats?.total_overdue ?? 0) > 0 ? "text-red-600 font-semibold" : "",

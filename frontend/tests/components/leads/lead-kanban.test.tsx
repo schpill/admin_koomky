@@ -1,6 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import type { Lead } from "@/lib/stores/leads";
+import { I18nProvider } from "@/components/providers/i18n-provider";
+
+function renderWithProviders(ui: React.ReactElement) {
+  return render(<I18nProvider initialLocale="en">{ui}</I18nProvider>);
+}
 
 const fetchPipelineMock = vi.fn();
 const updateStatusMock = vi.fn();
@@ -79,7 +84,7 @@ describe("LeadKanban", () => {
 
   describe("rendering", () => {
     it("fetches pipeline on mount", async () => {
-      render(<LeadKanban />);
+      renderWithProviders(<LeadKanban />);
 
       await waitFor(() => {
         expect(fetchPipelineMock).toHaveBeenCalledTimes(1);
@@ -87,7 +92,7 @@ describe("LeadKanban", () => {
     });
 
     it("renders all active pipeline column headers", () => {
-      render(<LeadKanban />);
+      renderWithProviders(<LeadKanban />);
 
       expect(screen.getByText("New")).toBeInTheDocument();
       expect(screen.getByText("Contacted")).toBeInTheDocument();
@@ -97,7 +102,7 @@ describe("LeadKanban", () => {
     });
 
     it("does not render won or lost columns by default", () => {
-      render(<LeadKanban />);
+      renderWithProviders(<LeadKanban />);
 
       expect(screen.queryByText("Won")).not.toBeInTheDocument();
       expect(screen.queryByText("Lost")).not.toBeInTheDocument();
@@ -119,65 +124,65 @@ describe("LeadKanban", () => {
         isLoading: false,
       });
 
-      render(<LeadKanban showTerminalColumns />);
+      renderWithProviders(<LeadKanban showTerminalColumns />);
 
       expect(screen.getByText("Won")).toBeInTheDocument();
       expect(screen.getByText("Lost")).toBeInTheDocument();
     });
 
     it("renders lead cards with company name when present", () => {
-      render(<LeadKanban />);
+      renderWithProviders(<LeadKanban />);
 
       expect(screen.getByText("Acme Corp")).toBeInTheDocument();
     });
 
     it("renders lead full name when company name is absent", () => {
-      render(<LeadKanban />);
+      renderWithProviders(<LeadKanban />);
 
       expect(screen.getByText("Bob Smith")).toBeInTheDocument();
     });
 
     it("shows estimated value in lead card", () => {
-      render(<LeadKanban />);
+      renderWithProviders(<LeadKanban />);
 
       const amounts = screen.getAllByText("€5,000.00");
       expect(amounts.length).toBeGreaterThanOrEqual(1);
     });
 
     it("shows probability percentage in lead card", () => {
-      render(<LeadKanban />);
+      renderWithProviders(<LeadKanban />);
 
       expect(screen.getByText("60%")).toBeInTheDocument();
     });
 
     it("shows source badge on lead card", () => {
-      render(<LeadKanban />);
+      renderWithProviders(<LeadKanban />);
 
       const badges = screen.getAllByText("referral");
       expect(badges.length).toBeGreaterThanOrEqual(1);
     });
 
     it("shows column lead count badge", () => {
-      render(<LeadKanban />);
+      renderWithProviders(<LeadKanban />);
 
       const badges = screen.getAllByText("1");
       expect(badges.length).toBeGreaterThanOrEqual(2);
     });
 
     it("shows total pipeline value in header summary", () => {
-      render(<LeadKanban />);
+      renderWithProviders(<LeadKanban />);
 
       expect(screen.getByText("€7,000.00")).toBeInTheDocument();
     });
 
     it("shows total lead count in header summary", () => {
-      render(<LeadKanban />);
+      renderWithProviders(<LeadKanban />);
 
       expect(screen.getByText(/2\s+Leads/)).toBeInTheDocument();
     });
 
     it("shows empty state placeholder for columns with no leads", () => {
-      render(<LeadKanban />);
+      renderWithProviders(<LeadKanban />);
 
       const emptySlots = screen.getAllByText("No leads");
       expect(emptySlots.length).toBeGreaterThanOrEqual(3);
@@ -191,7 +196,7 @@ describe("LeadKanban", () => {
         isLoading: true,
       });
 
-      render(<LeadKanban />);
+      renderWithProviders(<LeadKanban />);
 
       expect(screen.getByText("Loading pipeline...")).toBeInTheDocument();
     });
@@ -204,7 +209,7 @@ describe("LeadKanban", () => {
         isLoading: false,
       });
 
-      render(<LeadKanban />);
+      renderWithProviders(<LeadKanban />);
 
       expect(
         screen.getByText("No pipeline data available")
@@ -232,14 +237,14 @@ describe("LeadKanban", () => {
         isLoading: false,
       });
 
-      render(<LeadKanban />);
+      renderWithProviders(<LeadKanban />);
 
       expect(screen.getByText("No Value Co")).toBeInTheDocument();
       expect(screen.queryByText("€0.00")).not.toBeInTheDocument();
     });
 
     it("renders lead link pointing to lead detail page", () => {
-      render(<LeadKanban />);
+      renderWithProviders(<LeadKanban />);
 
       const link = screen.getByRole("link", { name: "Acme Corp" });
       expect(link).toHaveAttribute("href", "/leads/lead_1");
@@ -248,7 +253,7 @@ describe("LeadKanban", () => {
 
   describe("column total value", () => {
     it("shows column total value when total_value is non-zero", () => {
-      render(<LeadKanban />);
+      renderWithProviders(<LeadKanban />);
 
       // €5,000.00 appears both in the column stat header and in the lead card
       const amounts = screen.getAllByText("€5,000.00");
@@ -259,7 +264,7 @@ describe("LeadKanban", () => {
   describe("drag and drop", () => {
     it("calls updateStatus when card is dropped in a different column", async () => {
       const onLeadClick = vi.fn();
-      render(<LeadKanban onLeadClick={onLeadClick} />);
+      renderWithProviders(<LeadKanban onLeadClick={onLeadClick} />);
 
       const card = screen
         .getByText("Acme Corp")
@@ -278,7 +283,7 @@ describe("LeadKanban", () => {
     });
 
     it("does not call updateStatus when dropped in the same column", async () => {
-      render(<LeadKanban />);
+      renderWithProviders(<LeadKanban />);
 
       const card = screen
         .getByText("Acme Corp")
@@ -296,7 +301,7 @@ describe("LeadKanban", () => {
     });
 
     it("clears dragged state after drag ends", () => {
-      render(<LeadKanban />);
+      renderWithProviders(<LeadKanban />);
 
       const card = screen
         .getByText("Acme Corp")
@@ -312,7 +317,7 @@ describe("LeadKanban", () => {
   describe("card interactions", () => {
     it("calls onLeadClick when card is clicked with handler", () => {
       const onLeadClick = vi.fn();
-      render(<LeadKanban onLeadClick={onLeadClick} />);
+      renderWithProviders(<LeadKanban onLeadClick={onLeadClick} />);
 
       const link = screen.getByRole("link", { name: "Acme Corp" });
       fireEvent.click(link);
@@ -324,7 +329,7 @@ describe("LeadKanban", () => {
 
     it("does not propagate to link navigation when onLeadClick is provided", () => {
       const onLeadClick = vi.fn();
-      render(<LeadKanban onLeadClick={onLeadClick} />);
+      renderWithProviders(<LeadKanban onLeadClick={onLeadClick} />);
 
       const link = screen.getByRole("link", { name: "Acme Corp" });
       const clickEvent = new MouseEvent("click", {
@@ -337,7 +342,7 @@ describe("LeadKanban", () => {
     });
 
     it("shows full_name subtitle when company_name is set", () => {
-      render(<LeadKanban />);
+      renderWithProviders(<LeadKanban />);
 
       const fullNameSubtitle = screen.queryByText("Alice Doe");
       expect(fullNameSubtitle).toBeInTheDocument();

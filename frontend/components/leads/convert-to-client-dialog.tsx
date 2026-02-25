@@ -15,6 +15,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { CurrencyAmount } from "@/components/shared/currency-amount";
 import { useLeadStore, Lead } from "@/lib/stores/leads";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 interface ConvertToClientDialogProps {
   open: boolean;
@@ -29,6 +30,7 @@ export function ConvertToClientDialog({
   lead,
   onSuccess,
 }: ConvertToClientDialogProps) {
+  const { t } = useI18n();
   const router = useRouter();
   const { convertToClient, isLoading } = useLeadStore();
   const [isConverting, setIsConverting] = useState(false);
@@ -44,8 +46,10 @@ export function ConvertToClientDialog({
       const result = await convertToClient(lead.id);
 
       if (result) {
-        toast.success("Lead converted to client successfully", {
-          description: `${lead.company_name || lead.full_name} is now a client.`,
+        toast.success(t("leads.convert.toasts.success"), {
+          description: t("leads.convert.toasts.successDesc", {
+            name: lead.company_name || lead.full_name,
+          }),
         });
 
         onOpenChange(false);
@@ -56,8 +60,8 @@ export function ConvertToClientDialog({
       }
     } catch (error) {
       const message =
-        error instanceof Error ? error.message : "Failed to convert lead";
-      toast.error("Conversion failed", {
+        error instanceof Error ? error.message : t("leads.convert.toasts.errorDesc");
+      toast.error(t("leads.convert.toasts.error"), {
         description: message,
       });
     } finally {
@@ -77,23 +81,22 @@ export function ConvertToClientDialog({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <UserPlus className="h-5 w-5" />
-            Convert Lead to Client
+            {t("leads.convert.title")}
           </DialogTitle>
           <DialogDescription>
-            This will create a new client from this lead. The lead will be
-            marked as won and linked to the new client record.
+            {t("leads.convert.description")}
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4 py-4">
           <div className="rounded-lg border bg-muted/50 p-4">
-            <h4 className="mb-3 text-sm font-medium">Lead Summary</h4>
+            <h4 className="mb-3 text-sm font-medium">{t("leads.convert.summary")}</h4>
             <div className="space-y-3">
               {lead.company_name && (
                 <div className="flex items-center gap-3">
                   <Building2 className="h-4 w-4 text-muted-foreground" />
                   <div>
-                    <p className="text-xs text-muted-foreground">Company</p>
+                    <p className="text-xs text-muted-foreground">{t("leads.convert.company")}</p>
                     <p className="font-medium">{lead.company_name}</p>
                   </div>
                 </div>
@@ -102,7 +105,7 @@ export function ConvertToClientDialog({
               <div className="flex items-center gap-3">
                 <User className="h-4 w-4 text-muted-foreground" />
                 <div>
-                  <p className="text-xs text-muted-foreground">Contact</p>
+                  <p className="text-xs text-muted-foreground">{t("leads.convert.contact")}</p>
                   <p className="font-medium">{lead.full_name}</p>
                 </div>
               </div>
@@ -112,7 +115,7 @@ export function ConvertToClientDialog({
                   <DollarSign className="h-4 w-4 text-muted-foreground" />
                   <div>
                     <p className="text-xs text-muted-foreground">
-                      Estimated Value
+                      {t("leads.convert.estimatedValue")}
                     </p>
                     <p className="font-medium">
                       <CurrencyAmount
@@ -126,14 +129,14 @@ export function ConvertToClientDialog({
 
               {lead.email && (
                 <div className="text-sm">
-                  <span className="text-muted-foreground">Email:</span>{" "}
+                  <span className="text-muted-foreground">{t("leads.convert.email")}</span>{" "}
                   <span>{lead.email}</span>
                 </div>
               )}
 
               {lead.phone && (
                 <div className="text-sm">
-                  <span className="text-muted-foreground">Phone:</span>{" "}
+                  <span className="text-muted-foreground">{t("leads.convert.phone")}</span>{" "}
                   <span>{lead.phone}</span>
                 </div>
               )}
@@ -141,9 +144,7 @@ export function ConvertToClientDialog({
           </div>
 
           <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-3 text-sm text-yellow-800">
-            <strong>Note:</strong> This action will change the lead status to
-            &quot;won&quot; and create a new client record. You can edit the
-            client details after conversion.
+            {t("leads.convert.note")}
           </div>
         </div>
 
@@ -153,7 +154,7 @@ export function ConvertToClientDialog({
             onClick={handleCancel}
             disabled={isConverting || isLoading}
           >
-            Cancel
+            {t("leads.convert.cancel")}
           </Button>
           <Button
             onClick={handleConvert}
@@ -163,12 +164,12 @@ export function ConvertToClientDialog({
             {isConverting || isLoading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Converting...
+                {t("leads.convert.converting")}
               </>
             ) : (
               <>
                 <UserPlus className="mr-2 h-4 w-4" />
-                Convert to Client
+                {t("leads.convert.confirm")}
               </>
             )}
           </Button>

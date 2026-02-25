@@ -8,8 +8,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useLeadStore } from "@/lib/stores/leads";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 export default function EditLeadPage() {
+  const { t } = useI18n();
   const params = useParams();
   const router = useRouter();
   const leadId = params.id as string;
@@ -55,7 +57,7 @@ export default function EditLeadPage() {
     e.preventDefault();
 
     if (!form.first_name || !form.last_name) {
-      toast.error("First name and last name are required");
+      toast.error(t("leads.form.nameRequired"));
       return;
     }
 
@@ -77,17 +79,17 @@ export default function EditLeadPage() {
       if (form.notes) payload.notes = form.notes;
 
       await updateLead(leadId, payload);
-      toast.success("Lead updated successfully");
+      toast.success(t("leads.form.toasts.updateSuccess"));
       router.push(`/leads/${leadId}`);
     } catch (error) {
-      toast.error((error as Error).message || "Failed to update lead");
+      toast.error((error as Error).message || t("leads.form.toasts.updateError"));
     }
   };
 
   if (!currentLead && !isLoading) {
     return (
       <div className="p-8 text-center text-muted-foreground">
-        Lead not found
+        {t("leads.leadNotFound")}
       </div>
     );
   }
@@ -95,19 +97,19 @@ export default function EditLeadPage() {
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Edit Lead</h1>
-        <p className="text-sm text-muted-foreground">Update lead information</p>
+        <h1 className="text-3xl font-bold">{t("leads.editLead")}</h1>
+        <p className="text-sm text-muted-foreground">{t("leads.editSubtitle")}</p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Lead Details</CardTitle>
+          <CardTitle>{t("leads.leadDetails")}</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="company_name">Company Name</Label>
+                <Label htmlFor="company_name">{t("leads.form.companyName")}</Label>
                 <Input
                   id="company_name"
                   value={form.company_name}
@@ -118,25 +120,25 @@ export default function EditLeadPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="source">Source</Label>
+                <Label htmlFor="source">{t("leads.form.source")}</Label>
                 <select
                   id="source"
                   className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
                   value={form.source}
                   onChange={(e) => setForm({ ...form, source: e.target.value })}
                 >
-                  <option value="manual">Manual</option>
-                  <option value="referral">Referral</option>
-                  <option value="website">Website</option>
-                  <option value="campaign">Campaign</option>
-                  <option value="other">Other</option>
+                  <option value="manual">{t("leads.source.manual")}</option>
+                  <option value="referral">{t("leads.source.referral")}</option>
+                  <option value="website">{t("leads.source.website")}</option>
+                  <option value="campaign">{t("leads.source.campaign")}</option>
+                  <option value="other">{t("leads.source.other")}</option>
                 </select>
               </div>
             </div>
 
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="first_name">First Name *</Label>
+                <Label htmlFor="first_name">{t("leads.form.firstName")}</Label>
                 <Input
                   id="first_name"
                   value={form.first_name}
@@ -148,7 +150,7 @@ export default function EditLeadPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="last_name">Last Name *</Label>
+                <Label htmlFor="last_name">{t("leads.form.lastName")}</Label>
                 <Input
                   id="last_name"
                   value={form.last_name}
@@ -163,7 +165,7 @@ export default function EditLeadPage() {
 
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">{t("leads.form.email")}</Label>
                 <Input
                   id="email"
                   type="email"
@@ -173,7 +175,7 @@ export default function EditLeadPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="phone">Phone</Label>
+                <Label htmlFor="phone">{t("leads.form.phone")}</Label>
                 <Input
                   id="phone"
                   value={form.phone}
@@ -185,7 +187,7 @@ export default function EditLeadPage() {
 
             <div className="grid gap-4 md:grid-cols-3">
               <div className="space-y-2">
-                <Label htmlFor="estimated_value">Estimated Value (€)</Label>
+                <Label htmlFor="estimated_value">{t("leads.form.estimatedValue")}</Label>
                 <Input
                   id="estimated_value"
                   type="number"
@@ -198,7 +200,7 @@ export default function EditLeadPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="probability">Probability (%)</Label>
+                <Label htmlFor="probability">{t("leads.form.probability")}</Label>
                 <Input
                   id="probability"
                   type="number"
@@ -212,7 +214,7 @@ export default function EditLeadPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="expected_close_date">Expected Close Date</Label>
+                <Label htmlFor="expected_close_date">{t("leads.form.expectedCloseDate")}</Label>
                 <Input
                   id="expected_close_date"
                   type="date"
@@ -225,13 +227,13 @@ export default function EditLeadPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="notes">Notes</Label>
+              <Label htmlFor="notes">{t("leads.form.notes")}</Label>
               <textarea
                 id="notes"
                 className="min-h-[100px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                 value={form.notes}
                 onChange={(e) => setForm({ ...form, notes: e.target.value })}
-                placeholder="Additional notes about this lead..."
+                placeholder={t("leads.form.notesPlaceholder")}
               />
             </div>
 
@@ -241,10 +243,10 @@ export default function EditLeadPage() {
                 variant="outline"
                 onClick={() => router.back()}
               >
-                Cancel
+                {t("leads.form.cancel")}
               </Button>
               <Button type="submit" disabled={isLoading}>
-                {isLoading ? "Saving..." : "Save Changes"}
+                {isLoading ? t("leads.form.saving") : t("leads.form.saveChanges")}
               </Button>
             </div>
           </form>

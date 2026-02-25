@@ -83,15 +83,15 @@ export default function LeadDetailPage() {
 
     try {
       await updateStatus(leadId, newStatus);
-      toast.success("Status updated successfully");
+      toast.success(t("leads.detail.toasts.statusUpdated"));
     } catch (error) {
-      toast.error((error as Error).message || "Failed to update status");
+      toast.error((error as Error).message || t("leads.detail.toasts.statusError"));
     }
   };
 
   const handleMarkAsLost = async () => {
     if (!lostReason.trim()) {
-      toast.error("Please provide a reason for losing this lead");
+      toast.error(t("leads.detail.lostReasonRequired"));
       return;
     }
 
@@ -99,35 +99,35 @@ export default function LeadDetailPage() {
       await updateStatus(leadId, "lost", lostReason);
       setShowLostDialog(false);
       setLostReason("");
-      toast.success("Lead marked as lost");
+      toast.success(t("leads.detail.toasts.markedAsLost"));
     } catch (error) {
-      toast.error((error as Error).message || "Failed to update status");
+      toast.error((error as Error).message || t("leads.detail.toasts.statusError"));
     }
   };
 
   const handleDelete = async () => {
-    if (!confirm("Are you sure you want to delete this lead?")) return;
+    if (!confirm(t("leads.detail.deleteConfirm"))) return;
 
     try {
       await deleteLead(leadId);
-      toast.success("Lead deleted successfully");
+      toast.success(t("leads.detail.toasts.deleted"));
       router.push("/leads");
     } catch (error) {
-      toast.error((error as Error).message || "Failed to delete lead");
+      toast.error((error as Error).message || t("leads.detail.toasts.deleteError"));
     }
   };
 
   const handleConvert = async () => {
-    if (!confirm("Convert this lead to a client?")) return;
+    if (!confirm(t("leads.detail.convertConfirm"))) return;
 
     try {
       const result = await convertToClient(leadId);
       if (result) {
-        toast.success("Lead converted to client successfully");
+        toast.success(t("leads.detail.toasts.converted"));
         router.push(`/clients/${result.client.id}`);
       }
     } catch (error) {
-      toast.error((error as Error).message || "Failed to convert lead");
+      toast.error((error as Error).message || t("leads.detail.toasts.convertError"));
     }
   };
 
@@ -148,21 +148,21 @@ export default function LeadDetailPage() {
       setActivityForm({ type: "note", content: "", scheduled_at: "" });
       setShowActivityForm(false);
       loadActivities();
-      toast.success("Activity logged successfully");
+      toast.success(t("leads.detail.toasts.activityLogged"));
     } catch (error) {
-      toast.error((error as Error).message || "Failed to log activity");
+      toast.error((error as Error).message || t("leads.detail.toasts.activityError"));
     }
   };
 
   if (!currentLead && !isLoading) {
     return (
       <div className="p-8 text-center text-muted-foreground">
-        Lead not found
+        {t("leads.leadNotFound")}
         <div className="mt-4">
           <Button asChild>
             <Link href="/leads">
               <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Leads
+              {t("leads.detail.backToLeads")}
             </Link>
           </Button>
         </div>
@@ -177,7 +177,7 @@ export default function LeadDetailPage() {
           <Button variant="ghost" asChild className="mb-2">
             <Link href="/leads">
               <ArrowLeft className="mr-2 h-4 w-4" />
-              Back
+              {t("leads.detail.back")}
             </Link>
           </Button>
           <h1 className="text-3xl font-bold">
@@ -185,7 +185,7 @@ export default function LeadDetailPage() {
           </h1>
           <div className="mt-2 flex items-center gap-2">
             <Badge className={STATUS_COLORS[currentLead?.status || "new"]}>
-              {currentLead?.status?.replace("_", " ")}
+              {currentLead?.status ? t(`leads.status.${currentLead.status}`) : ""}
             </Badge>
             {currentLead?.source && (
               <Badge variant="outline" className="capitalize">
@@ -198,18 +198,18 @@ export default function LeadDetailPage() {
           {currentLead?.can_convert && (
             <Button onClick={handleConvert}>
               <UserPlus className="mr-2 h-4 w-4" />
-              Convert to Client
+              {t("leads.detail.convertToClient")}
             </Button>
           )}
           <Button variant="outline" asChild>
             <Link href={`/leads/${leadId}/edit`}>
               <Edit className="mr-2 h-4 w-4" />
-              Edit
+              {t("leads.detail.edit")}
             </Link>
           </Button>
           <Button variant="destructive" onClick={handleDelete}>
             <Trash2 className="mr-2 h-4 w-4" />
-            Delete
+            {t("leads.detail.delete")}
           </Button>
         </div>
       </div>
@@ -218,30 +218,30 @@ export default function LeadDetailPage() {
         <div className="lg:col-span-2 space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>Details</CardTitle>
+              <CardTitle>{t("leads.detail.cardDetails")}</CardTitle>
             </CardHeader>
             <CardContent className="grid gap-4 md:grid-cols-2">
               <div>
-                <span className="text-sm text-muted-foreground">Contact</span>
+                <span className="text-sm text-muted-foreground">{t("leads.detail.contact")}</span>
                 <p className="font-medium">{currentLead?.full_name}</p>
               </div>
               <div>
-                <span className="text-sm text-muted-foreground">Company</span>
+                <span className="text-sm text-muted-foreground">{t("leads.detail.company")}</span>
                 <p className="font-medium">
                   {currentLead?.company_name || "-"}
                 </p>
               </div>
               <div>
-                <span className="text-sm text-muted-foreground">Email</span>
+                <span className="text-sm text-muted-foreground">{t("leads.detail.email")}</span>
                 <p className="font-medium">{currentLead?.email || "-"}</p>
               </div>
               <div>
-                <span className="text-sm text-muted-foreground">Phone</span>
+                <span className="text-sm text-muted-foreground">{t("leads.detail.phone")}</span>
                 <p className="font-medium">{currentLead?.phone || "-"}</p>
               </div>
               <div>
                 <span className="text-sm text-muted-foreground">
-                  Estimated Value
+                  {t("leads.detail.estimatedValue")}
                 </span>
                 <p className="font-medium">
                   {currentLead?.estimated_value ? (
@@ -256,7 +256,7 @@ export default function LeadDetailPage() {
               </div>
               <div>
                 <span className="text-sm text-muted-foreground">
-                  Probability
+                  {t("leads.detail.probability")}
                 </span>
                 <p className="font-medium">
                   {currentLead?.probability
@@ -266,14 +266,14 @@ export default function LeadDetailPage() {
               </div>
               <div>
                 <span className="text-sm text-muted-foreground">
-                  Expected Close Date
+                  {t("leads.detail.expectedCloseDate")}
                 </span>
                 <p className="font-medium">
                   {currentLead?.expected_close_date || "-"}
                 </p>
               </div>
               <div>
-                <span className="text-sm text-muted-foreground">Created</span>
+                <span className="text-sm text-muted-foreground">{t("leads.detail.created")}</span>
                 <p className="font-medium">
                   {currentLead?.created_at
                     ? new Date(currentLead.created_at).toLocaleDateString()
@@ -282,14 +282,14 @@ export default function LeadDetailPage() {
               </div>
               {currentLead?.notes && (
                 <div className="md:col-span-2">
-                  <span className="text-sm text-muted-foreground">Notes</span>
+                  <span className="text-sm text-muted-foreground">{t("leads.detail.notes")}</span>
                   <p className="font-medium">{currentLead.notes}</p>
                 </div>
               )}
               {currentLead?.lost_reason && (
                 <div className="md:col-span-2">
                   <span className="text-sm text-muted-foreground">
-                    Lost Reason
+                    {t("leads.detail.lostReason")}
                   </span>
                   <p className="font-medium text-red-600">
                     {currentLead.lost_reason}
@@ -301,10 +301,10 @@ export default function LeadDetailPage() {
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle>Activity Timeline</CardTitle>
+              <CardTitle>{t("leads.detail.activityTimeline")}</CardTitle>
               <Button size="sm" onClick={() => setShowActivityForm(true)}>
                 <Plus className="mr-2 h-4 w-4" />
-                Log Activity
+                {t("leads.detail.logActivity")}
               </Button>
             </CardHeader>
             <CardContent>
@@ -315,7 +315,7 @@ export default function LeadDetailPage() {
                 >
                   <div className="grid gap-3 md:grid-cols-2">
                     <div>
-                      <Label className="text-sm">Type</Label>
+                      <Label className="text-sm">{t("leads.detail.activityType")}</Label>
                       <select
                         className="mt-1 h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
                         value={activityForm.type}
@@ -326,16 +326,16 @@ export default function LeadDetailPage() {
                           })
                         }
                       >
-                        <option value="note">Note</option>
-                        <option value="call">Call</option>
-                        <option value="email_sent">Email Sent</option>
-                        <option value="meeting">Meeting</option>
-                        <option value="follow_up">Follow-up</option>
+                        <option value="note">{t("leads.activityType.note")}</option>
+                        <option value="call">{t("leads.activityType.call")}</option>
+                        <option value="email_sent">{t("leads.activityType.email_sent")}</option>
+                        <option value="meeting">{t("leads.activityType.meeting")}</option>
+                        <option value="follow_up">{t("leads.activityType.follow_up")}</option>
                       </select>
                     </div>
                     {activityForm.type === "follow_up" && (
                       <div>
-                        <Label className="text-sm">Scheduled At</Label>
+                        <Label className="text-sm">{t("leads.detail.activityScheduledAt")}</Label>
                         <Input
                           type="datetime-local"
                           className="mt-1"
@@ -353,7 +353,7 @@ export default function LeadDetailPage() {
                   </div>
                   <textarea
                     className="min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                    placeholder="Activity details..."
+                    placeholder={t("leads.detail.activityPlaceholder")}
                     value={activityForm.content}
                     onChange={(e) =>
                       setActivityForm({
@@ -369,10 +369,10 @@ export default function LeadDetailPage() {
                       size="sm"
                       onClick={() => setShowActivityForm(false)}
                     >
-                      Cancel
+                      {t("leads.detail.cancel")}
                     </Button>
                     <Button type="submit" size="sm">
-                      Save
+                      {t("leads.detail.save")}
                     </Button>
                   </div>
                 </form>
@@ -380,7 +380,7 @@ export default function LeadDetailPage() {
 
               {activities.length === 0 ? (
                 <p className="text-sm text-muted-foreground">
-                  No activities recorded yet
+                  {t("leads.detail.noActivities")}
                 </p>
               ) : (
                 <div className="space-y-4">
@@ -392,7 +392,7 @@ export default function LeadDetailPage() {
                       <div className="flex-1">
                         <div className="flex items-center justify-between">
                           <span className="font-medium capitalize">
-                            {activity.type.replace("_", " ")}
+                            {t(`leads.activityType.${activity.type}`)}
                           </span>
                           <span className="text-xs text-muted-foreground">
                             {new Date(activity.created_at).toLocaleString()}
@@ -405,7 +405,7 @@ export default function LeadDetailPage() {
                         )}
                         {activity.scheduled_at && (
                           <p className="text-xs text-blue-600">
-                            Scheduled:{" "}
+                            {t("leads.detail.scheduled")}{" "}
                             {new Date(activity.scheduled_at).toLocaleString()}
                           </p>
                         )}
@@ -421,7 +421,7 @@ export default function LeadDetailPage() {
         <div className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>Update Status</CardTitle>
+              <CardTitle>{t("leads.detail.updateStatus")}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
               {[
@@ -442,7 +442,7 @@ export default function LeadDetailPage() {
                   onClick={() => handleStatusChange(status)}
                   disabled={currentLead?.status === status}
                 >
-                  {status.replace("_", " ")}
+                  {t(`leads.status.${status}`)}
                 </Button>
               ))}
             </CardContent>
@@ -451,12 +451,12 @@ export default function LeadDetailPage() {
           {showLostDialog && (
             <Card className="border-red-200">
               <CardHeader>
-                <CardTitle className="text-red-600">Mark as Lost</CardTitle>
+                <CardTitle className="text-red-600">{t("leads.detail.markAsLost")}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <textarea
                   className="min-h-[100px] w-full rounded-md border border-red-300 bg-background px-3 py-2 text-sm"
-                  placeholder="Why did we lose this lead?"
+                  placeholder={t("leads.detail.lostReasonPlaceholder")}
                   value={lostReason}
                   onChange={(e) => setLostReason(e.target.value)}
                 />
@@ -465,10 +465,10 @@ export default function LeadDetailPage() {
                     variant="outline"
                     onClick={() => setShowLostDialog(false)}
                   >
-                    Cancel
+                    {t("leads.detail.cancel")}
                   </Button>
                   <Button variant="destructive" onClick={handleMarkAsLost}>
-                    Confirm
+                    {t("leads.detail.confirm")}
                   </Button>
                 </div>
               </CardContent>

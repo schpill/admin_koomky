@@ -2,6 +2,7 @@
 import { useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Download, Paperclip, Trash2, Upload } from "lucide-react";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 interface AttachmentsPanelProps {
   ticketId: string;
@@ -25,6 +26,7 @@ export function TicketAttachmentsPanel({
   onUpload,
   onAttach,
 }: AttachmentsPanelProps) {
+  const { t } = useI18n();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -45,7 +47,7 @@ export function TicketAttachmentsPanel({
           onClick={() => fileInputRef.current?.click()}
         >
           <Upload className="mr-2 h-4 w-4" />
-          Upload attachment
+          {t("tickets.attachments.upload")}
         </Button>
         <input
           ref={fileInputRef}
@@ -57,7 +59,7 @@ export function TicketAttachmentsPanel({
       </div>
 
       {documents.length === 0 ? (
-        <p className="text-sm text-muted-foreground">No attachments yet.</p>
+        <p className="text-sm text-muted-foreground">{t("tickets.attachments.noAttachments")}</p>
       ) : (
         <div className="space-y-2">
           {documents.map((doc: any) => (

@@ -10,6 +10,7 @@ import { CurrencyAmount } from "@/components/shared/currency-amount";
 import { useLeadStore, Lead } from "@/lib/stores/leads";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 const COLUMN_ORDER: Lead["status"][] = [
   "new",
@@ -21,33 +22,14 @@ const COLUMN_ORDER: Lead["status"][] = [
 
 const TERMINAL_COLUMNS: Lead["status"][] = ["won", "lost"];
 
-const STATUS_CONFIG: Record<
-  string,
-  { label: string; color: string; bgColor: string }
-> = {
-  new: { label: "New", color: "text-blue-700", bgColor: "bg-blue-50" },
-  contacted: {
-    label: "Contacted",
-    color: "text-yellow-700",
-    bgColor: "bg-yellow-50",
-  },
-  qualified: {
-    label: "Qualified",
-    color: "text-purple-700",
-    bgColor: "bg-purple-50",
-  },
-  proposal_sent: {
-    label: "Proposal Sent",
-    color: "text-orange-700",
-    bgColor: "bg-orange-50",
-  },
-  negotiating: {
-    label: "Negotiating",
-    color: "text-pink-700",
-    bgColor: "bg-pink-50",
-  },
-  won: { label: "Won", color: "text-green-700", bgColor: "bg-green-50" },
-  lost: { label: "Lost", color: "text-red-700", bgColor: "bg-red-50" },
+const STATUS_STYLE: Record<string, { color: string; bgColor: string }> = {
+  new: { color: "text-blue-700", bgColor: "bg-blue-50" },
+  contacted: { color: "text-yellow-700", bgColor: "bg-yellow-50" },
+  qualified: { color: "text-purple-700", bgColor: "bg-purple-50" },
+  proposal_sent: { color: "text-orange-700", bgColor: "bg-orange-50" },
+  negotiating: { color: "text-pink-700", bgColor: "bg-pink-50" },
+  won: { color: "text-green-700", bgColor: "bg-green-50" },
+  lost: { color: "text-red-700", bgColor: "bg-red-50" },
 };
 
 interface LeadKanbanProps {
@@ -59,6 +41,7 @@ export function LeadKanban({
   onLeadClick,
   showTerminalColumns = false,
 }: LeadKanbanProps) {
+  const { t } = useI18n();
   const { pipeline, fetchPipeline, updateStatus, isLoading } = useLeadStore();
   const [draggedLead, setDraggedLead] = useState<Lead | null>(null);
   const [dragOverStatus, setDragOverStatus] = useState<string | null>(null);
@@ -97,7 +80,7 @@ export function LeadKanban({
         toast.error(
           error instanceof Error
             ? error.message
-            : "Failed to update lead status"
+            : t("leads.detail.toasts.statusError")
         );
       }
 
@@ -113,7 +96,7 @@ export function LeadKanban({
   if (!pipeline && isLoading) {
     return (
       <div className="flex h-64 items-center justify-center text-muted-foreground">
-        Loading pipeline...
+        {t("leads.kanbanLoading")}
       </div>
     );
   }
@@ -121,7 +104,7 @@ export function LeadKanban({
   if (!pipeline) {
     return (
       <div className="flex h-64 items-center justify-center text-muted-foreground">
-        No pipeline data available
+        {t("leads.kanbanNoData")}
       </div>
     );
   }
@@ -137,7 +120,7 @@ export function LeadKanban({
                 (sum, stat) => sum + stat.count,
                 0
               )}{" "}
-              Leads
+              {t("leads.kanbanLeads")}
             </span>
           </div>
           <div className="flex items-center gap-2">
@@ -161,7 +144,7 @@ export function LeadKanban({
         )}
       >
         {columns.map((status) => {
-          const config = STATUS_CONFIG[status];
+          const config = STATUS_STYLE[status];
           const leads = pipeline.columns[status] || [];
           const stats = pipeline.column_stats[status];
           const isOver = dragOverStatus === status;
@@ -184,7 +167,7 @@ export function LeadKanban({
               >
                 <div className="flex items-center justify-between">
                   <span className={cn("text-sm font-medium", config.color)}>
-                    {config.label}
+                    {t(`leads.status.${status}`)}
                   </span>
                   <Badge variant="secondary" className="text-xs">
                     {stats?.count || 0}
@@ -200,7 +183,7 @@ export function LeadKanban({
               <div className="flex-1 space-y-2 overflow-y-auto p-2">
                 {leads.length === 0 ? (
                   <div className="flex h-20 items-center justify-center rounded border-2 border-dashed text-xs text-muted-foreground">
-                    No leads
+                    {t("leads.kanbanNoLeads")}
                   </div>
                 ) : (
                   leads.map((lead) => (
@@ -238,7 +221,7 @@ function LeadCard({
   onDragEnd,
   onClick,
 }: LeadCardProps) {
-  const config = STATUS_CONFIG[lead.status];
+  const config = STATUS_STYLE[lead.status];
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" || e.key === " ") {

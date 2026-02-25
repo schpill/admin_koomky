@@ -20,6 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { apiClient } from "@/lib/api";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 type TicketPriority = "low" | "normal" | "high" | "urgent";
 
@@ -64,6 +65,7 @@ export function TicketFormDialog({
   onSubmit,
   isLoading,
 }: TicketFormDialogProps) {
+  const { t } = useI18n();
   const [clients, setClients] = useState<any[]>([]);
   const [projects, setProjects] = useState<any[]>([]);
   const [selectedClientId, setSelectedClientId] = useState<string>(
@@ -139,7 +141,7 @@ export function TicketFormDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle>{ticket ? "Edit Ticket" : "New Ticket"}</DialogTitle>
+          <DialogTitle>{ticket ? t("tickets.form.titleEdit") : t("tickets.form.titleCreate")}</DialogTitle>
         </DialogHeader>
         <form
           onSubmit={handleSubmit(handleFormSubmit)}
@@ -147,12 +149,12 @@ export function TicketFormDialog({
         >
           <div className="space-y-2">
             <Label htmlFor="title">
-              Title <span className="text-red-500">*</span>
+              {t("tickets.form.fieldTitle")} <span className="text-red-500">*</span>
             </Label>
             <Input
               id="title"
-              {...register("title", { required: "Title is required" })}
-              placeholder="Ticket title"
+              {...register("title", { required: t("tickets.form.fieldTitleRequired") })}
+              placeholder={t("tickets.form.fieldTitlePlaceholder")}
             />
             {errors.title && (
               <p className="text-sm text-red-500">{errors.title.message}</p>
@@ -161,14 +163,14 @@ export function TicketFormDialog({
 
           <div className="space-y-2">
             <Label htmlFor="description">
-              Description <span className="text-red-500">*</span>
+              {t("tickets.form.fieldDescription")} <span className="text-red-500">*</span>
             </Label>
             <Textarea
               id="description"
               {...register("description", {
-                required: "Description is required",
+                required: t("tickets.form.fieldDescriptionRequired"),
               })}
-              placeholder="Describe the issue"
+              placeholder={t("tickets.form.fieldDescriptionPlaceholder")}
               rows={4}
             />
             {errors.description && (
@@ -180,7 +182,7 @@ export function TicketFormDialog({
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>Client</Label>
+              <Label>{t("tickets.form.fieldClient")}</Label>
               <Select
                 value={selectedClientId || "__none__"}
                 onValueChange={(v) => {
@@ -189,10 +191,10 @@ export function TicketFormDialog({
                 }}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="No client (Divers)" />
+                  <SelectValue placeholder={t("tickets.form.noClient")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="__none__">No client (Divers)</SelectItem>
+                  <SelectItem value="__none__">{t("tickets.form.noClient")}</SelectItem>
                   {clients.map((c: any) => (
                     <SelectItem key={c.id} value={c.id}>
                       {c.name}
@@ -203,7 +205,7 @@ export function TicketFormDialog({
             </div>
 
             <div className="space-y-2">
-              <Label>Project</Label>
+              <Label>{t("tickets.form.fieldProject")}</Label>
               <Select
                 disabled={!selectedClientId}
                 value={watch("project_id") ?? ""}
@@ -211,7 +213,7 @@ export function TicketFormDialog({
               >
                 <SelectTrigger>
                   <SelectValue
-                    placeholder={selectedClientId ? "Select project" : "Divers"}
+                    placeholder={selectedClientId ? t("tickets.form.selectProject") : "Divers"}
                   />
                 </SelectTrigger>
                 <SelectContent>
@@ -227,7 +229,7 @@ export function TicketFormDialog({
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>Priority</Label>
+              <Label>{t("tickets.form.fieldPriority")}</Label>
               <Select
                 value={watch("priority")}
                 onValueChange={(v) => setValue("priority", v as TicketPriority)}
@@ -236,44 +238,44 @@ export function TicketFormDialog({
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="low">Low</SelectItem>
-                  <SelectItem value="normal">Normal</SelectItem>
-                  <SelectItem value="high">High</SelectItem>
-                  <SelectItem value="urgent">Urgent</SelectItem>
+                  <SelectItem value="low">{t("tickets.priority.low")}</SelectItem>
+                  <SelectItem value="normal">{t("tickets.priority.normal")}</SelectItem>
+                  <SelectItem value="high">{t("tickets.priority.high")}</SelectItem>
+                  <SelectItem value="urgent">{t("tickets.priority.urgent")}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="assigned_to">Assignee (user ID)</Label>
+              <Label htmlFor="assigned_to">{t("tickets.form.fieldAssignee")}</Label>
               <Input
                 id="assigned_to"
                 {...register("assigned_to")}
-                placeholder="User ID"
+                placeholder={t("tickets.form.fieldAssigneePlaceholder")}
               />
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="category">Category</Label>
+              <Label htmlFor="category">{t("tickets.form.fieldCategory")}</Label>
               <Input
                 id="category"
                 {...register("category")}
-                placeholder="bug, billing, technical..."
+                placeholder={t("tickets.form.fieldCategoryPlaceholder")}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="deadline">Deadline</Label>
+              <Label htmlFor="deadline">{t("tickets.form.fieldDeadline")}</Label>
               <Input id="deadline" type="date" {...register("deadline")} />
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="tags">Tags (comma-separated)</Label>
+            <Label htmlFor="tags">{t("tickets.form.fieldTags")}</Label>
             <Input
               id="tags"
               {...register("tags")}
-              placeholder="tag1, tag2, tag3"
+              placeholder={t("tickets.form.fieldTagsPlaceholder")}
             />
           </div>
 
@@ -283,14 +285,14 @@ export function TicketFormDialog({
               variant="outline"
               onClick={() => onOpenChange(false)}
             >
-              Cancel
+              {t("tickets.form.cancel")}
             </Button>
             <Button type="submit" disabled={isLoading}>
               {isLoading
-                ? "Saving..."
+                ? t("tickets.form.saving")
                 : ticket
-                  ? "Save Changes"
-                  : "Create Ticket"}
+                  ? t("tickets.form.saveChanges")
+                  : t("tickets.form.create")}
             </Button>
           </DialogFooter>
         </form>

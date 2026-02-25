@@ -3,55 +3,66 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronRight, House } from "lucide-react";
-
-const segmentLabels: Record<string, string> = {
-  clients: "Clients",
-  projects: "Projects",
-  campaigns: "Campaigns",
-  invoices: "Invoices",
-  quotes: "Quotes",
-  "credit-notes": "Credit Notes",
-  reports: "Reports",
-  settings: "Settings",
-  profile: "Profile",
-  business: "Business",
-  notifications: "Notifications",
-  security: "Security",
-  create: "Create",
-  edit: "Edit",
-  analytics: "Analytics",
-  compare: "Compare",
-  segments: "Segments",
-  email: "Email",
-  sms: "SMS",
-  data: "Data",
-};
+import { useI18n } from "@/components/providers/i18n-provider";
 
 interface PageBreadcrumbsProps {
   pathname?: string;
 }
 
-function formatSegment(segment: string): string {
-  if (segmentLabels[segment]) {
-    return segmentLabels[segment];
-  }
-
-  // Keep ids and references readable without changing their meaning.
-  if (/^[a-z0-9-]{6,}$/i.test(segment)) {
-    return segment;
-  }
-
-  return segment
-    .split("-")
-    .map((part) =>
-      part.length > 0 ? part.charAt(0).toUpperCase() + part.slice(1) : part
-    )
-    .join(" ");
-}
-
 export function PageBreadcrumbs({ pathname }: PageBreadcrumbsProps) {
+  const { t } = useI18n();
   const routePathname = usePathname();
   const currentPath = pathname ?? routePathname;
+
+  const segmentLabels: Record<string, string> = {
+    // Top-level pages — reuse sidebar translations
+    clients: t("sidebar.clients"),
+    projects: t("sidebar.projects"),
+    campaigns: t("sidebar.campaigns"),
+    invoices: t("sidebar.invoices"),
+    quotes: t("sidebar.quotes"),
+    "credit-notes": t("sidebar.creditNotes"),
+    reports: t("sidebar.reports"),
+    settings: t("sidebar.settings"),
+    expenses: t("sidebar.expenses"),
+    calendar: t("sidebar.calendar"),
+    leads: t("sidebar.leads"),
+    documents: t("sidebar.documents"),
+    tickets: t("sidebar.tickets"),
+    accounting: t("sidebar.accounting"),
+    rag: t("sidebar.rag"),
+    // Sub-page segments
+    profile: t("breadcrumbs.profile"),
+    business: t("breadcrumbs.business"),
+    notifications: t("breadcrumbs.notifications"),
+    security: t("breadcrumbs.security"),
+    create: t("breadcrumbs.create"),
+    edit: t("breadcrumbs.edit"),
+    analytics: t("breadcrumbs.analytics"),
+    compare: t("breadcrumbs.compare"),
+    segments: t("breadcrumbs.segments"),
+    email: t("breadcrumbs.email"),
+    sms: t("breadcrumbs.sms"),
+    data: t("breadcrumbs.data"),
+  };
+
+  function formatSegment(segment: string): string {
+    if (segmentLabels[segment]) {
+      return segmentLabels[segment];
+    }
+
+    // Keep ids and references readable without changing their meaning.
+    if (/^[a-z0-9-]{6,}$/i.test(segment)) {
+      return segment;
+    }
+
+    return segment
+      .split("-")
+      .map((part) =>
+        part.length > 0 ? part.charAt(0).toUpperCase() + part.slice(1) : part
+      )
+      .join(" ");
+  }
 
   if (!currentPath || currentPath === "/") {
     return null;

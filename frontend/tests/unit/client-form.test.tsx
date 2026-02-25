@@ -62,7 +62,7 @@ describe("ClientForm", () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText(/Le nom doit contenir au moins 2 caracteres/i)
+        screen.getByText(/Le nom doit contenir au moins 2 caract/i)
       ).toBeInTheDocument();
     });
   });

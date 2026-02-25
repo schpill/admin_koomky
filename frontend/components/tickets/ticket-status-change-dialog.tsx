@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 type TicketStatus = "open" | "in_progress" | "pending" | "resolved" | "closed";
 
@@ -34,14 +35,6 @@ const STATUS_TRANSITIONS: Record<TicketStatus, TicketStatus[]> = {
   closed: ["open"],
 };
 
-const STATUS_LABELS: Record<TicketStatus, string> = {
-  open: "Open",
-  in_progress: "In Progress",
-  pending: "Pending",
-  resolved: "Resolved",
-  closed: "Closed",
-};
-
 interface TicketStatusChangeDialogProps {
   ticket: Ticket;
   open: boolean;
@@ -55,6 +48,7 @@ export function TicketStatusChangeDialog({
   onOpenChange,
   onStatusChange,
 }: TicketStatusChangeDialogProps) {
+  const { t } = useI18n();
   const validTransitions = STATUS_TRANSITIONS[ticket.status] ?? [];
   const [newStatus, setNewStatus] = useState<TicketStatus>(validTransitions[0]);
   const [comment, setComment] = useState("");
@@ -70,31 +64,31 @@ export function TicketStatusChangeDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Change Status</DialogTitle>
+          <DialogTitle>{t("tickets.statusChange.title")}</DialogTitle>
         </DialogHeader>
         <div className="space-y-4 py-2">
           <div className="space-y-2">
-            <Label>New status</Label>
+            <Label>{t("tickets.statusChange.newStatus")}</Label>
             <Select
               value={newStatus}
               onValueChange={(v) => setNewStatus(v as TicketStatus)}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Select status" />
+                <SelectValue placeholder={t("tickets.statusChange.selectStatus")} />
               </SelectTrigger>
               <SelectContent>
                 {validTransitions.map((s) => (
                   <SelectItem key={s} value={s}>
-                    {STATUS_LABELS[s]}
+                    {t(`tickets.status.${s}`)}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
           <div className="space-y-2">
-            <Label>Comment (optional)</Label>
+            <Label>{t("tickets.statusChange.comment")}</Label>
             <Textarea
-              placeholder="Add a comment — this will create a public message on the ticket"
+              placeholder={t("tickets.statusChange.commentPlaceholder")}
               value={comment}
               onChange={(e) => setComment(e.target.value)}
               rows={3}
@@ -103,10 +97,10 @@ export function TicketStatusChangeDialog({
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Cancel
+            {t("tickets.statusChange.cancel")}
           </Button>
           <Button onClick={handleSubmit} disabled={!newStatus}>
-            Change Status
+            {t("tickets.statusChange.confirm")}
           </Button>
         </DialogFooter>
       </DialogContent>

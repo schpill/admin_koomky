@@ -1,12 +1,17 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import { TicketAttachmentsPanel } from "@/components/tickets/ticket-attachments-panel";
+import { I18nProvider } from "@/components/providers/i18n-provider";
 
 const mockDoc = { id: "d1", title: "test.pdf", file_size: 1024 };
 
+function renderWithProviders(ui: React.ReactElement) {
+  return render(<I18nProvider initialLocale="en">{ui}</I18nProvider>);
+}
+
 describe("TicketAttachmentsPanel", () => {
   it("shows empty state when no documents", () => {
-    render(
+    renderWithProviders(
       <TicketAttachmentsPanel
         ticketId="t1"
         documents={[]}
@@ -19,7 +24,7 @@ describe("TicketAttachmentsPanel", () => {
   });
 
   it("renders document list", () => {
-    render(
+    renderWithProviders(
       <TicketAttachmentsPanel
         ticketId="t1"
         documents={[mockDoc]}
@@ -33,7 +38,7 @@ describe("TicketAttachmentsPanel", () => {
 
   it("calls onDetach when detach button clicked", () => {
     const onDetach = vi.fn();
-    render(
+    renderWithProviders(
       <TicketAttachmentsPanel
         ticketId="t1"
         documents={[mockDoc]}
@@ -47,7 +52,7 @@ describe("TicketAttachmentsPanel", () => {
   });
 
   it("renders upload button", () => {
-    render(
+    renderWithProviders(
       <TicketAttachmentsPanel
         ticketId="t1"
         documents={[]}
@@ -60,7 +65,7 @@ describe("TicketAttachmentsPanel", () => {
   });
 
   it("download link present for each document", () => {
-    render(
+    renderWithProviders(
       <TicketAttachmentsPanel
         ticketId="t1"
         documents={[mockDoc]}

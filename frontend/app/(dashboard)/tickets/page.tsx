@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { useI18n } from "@/components/providers/i18n-provider";
 import {
   Table,
   TableBody,
@@ -29,6 +30,7 @@ import { cn } from "@/lib/utils";
 
 export default function TicketsPage() {
   const router = useRouter();
+  const { t } = useI18n();
   const {
     tickets,
     stats,
@@ -115,12 +117,12 @@ export default function TicketsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Tickets</h1>
-          <p className="text-muted-foreground">Manage support tickets</p>
+          <h1 className="text-2xl font-bold tracking-tight">{t("tickets.title")}</h1>
+          <p className="text-muted-foreground">{t("tickets.subtitle")}</p>
         </div>
         <Button onClick={() => setShowCreateDialog(true)}>
           <Plus className="mr-2 h-4 w-4" />
-          New Ticket
+          {t("tickets.newTicket")}
         </Button>
       </div>
 
@@ -134,7 +136,7 @@ export default function TicketsPage() {
           <div className="relative">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
-              placeholder="Search tickets..."
+              placeholder={t("tickets.searchPlaceholder")}
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               className="pl-9"
@@ -143,7 +145,7 @@ export default function TicketsPage() {
 
           {/* Status filter */}
           <div className="space-y-2">
-            <p className="text-sm font-semibold">Status</p>
+            <p className="text-sm font-semibold">{t("tickets.filters.status")}</p>
             {(
               [
                 "open",
@@ -160,7 +162,7 @@ export default function TicketsPage() {
                   onCheckedChange={(v) => handleStatusFilter(s, !!v)}
                 />
                 <Label htmlFor={`status-${s}`} className="text-sm capitalize">
-                  {s.replace("_", " ")}
+                  {t(`tickets.status.${s}`)}
                 </Label>
               </div>
             ))}
@@ -168,7 +170,7 @@ export default function TicketsPage() {
 
           {/* Priority filter */}
           <div className="space-y-2">
-            <p className="text-sm font-semibold">Priority</p>
+            <p className="text-sm font-semibold">{t("tickets.filters.priority")}</p>
             {(["low", "normal", "high", "urgent"] as TicketPriority[]).map(
               (p) => (
                 <div key={p} className="flex items-center gap-2">
@@ -181,7 +183,7 @@ export default function TicketsPage() {
                     htmlFor={`priority-${p}`}
                     className="text-sm capitalize"
                   >
-                    {p}
+                    {t(`tickets.priority.${p}`)}
                   </Label>
                 </div>
               )
@@ -196,7 +198,7 @@ export default function TicketsPage() {
               onCheckedChange={(v) => handleOverdueFilter(!!v)}
             />
             <Label htmlFor="overdue" className="text-sm">
-              Overdue only
+              {t("tickets.overdueOnly")}
             </Label>
           </div>
         </aside>
@@ -214,13 +216,13 @@ export default function TicketsPage() {
             </div>
           ) : tickets.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 text-center">
-              <p className="text-muted-foreground">No tickets found.</p>
+              <p className="text-muted-foreground">{t("tickets.noTickets")}</p>
               <Button
                 variant="outline"
                 className="mt-4"
                 onClick={() => setShowCreateDialog(true)}
               >
-                Create your first ticket
+                {t("tickets.createFirst")}
               </Button>
             </div>
           ) : (
@@ -228,13 +230,13 @@ export default function TicketsPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Title</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Priority</TableHead>
-                    <TableHead>Client</TableHead>
-                    <TableHead>Assignee</TableHead>
-                    <TableHead>Deadline</TableHead>
-                    <TableHead>Created</TableHead>
+                    <TableHead>{t("tickets.table.title")}</TableHead>
+                    <TableHead>{t("tickets.table.status")}</TableHead>
+                    <TableHead>{t("tickets.table.priority")}</TableHead>
+                    <TableHead>{t("tickets.table.client")}</TableHead>
+                    <TableHead>{t("tickets.table.assignee")}</TableHead>
+                    <TableHead>{t("tickets.table.deadline")}</TableHead>
+                    <TableHead>{t("tickets.table.created")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -292,7 +294,7 @@ export default function TicketsPage() {
               {pagination && pagination.last_page > 1 && (
                 <div className="mt-4 flex items-center justify-between text-sm text-muted-foreground">
                   <span>
-                    Showing {tickets.length} of {pagination.total} tickets
+                    {t("tickets.showingOf", { count: String(tickets.length), total: String(pagination.total) })}
                   </span>
                   <div className="flex gap-2">
                     {Array.from(
