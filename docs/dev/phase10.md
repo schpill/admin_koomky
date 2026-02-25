@@ -1,6 +1,6 @@
 # Phase 10 — Task Tracking
 
-> **Status**: Planned
+> **Status**: Done
 > **Prerequisite**: Phase 9 fully merged and tagged `v1.5.0`
 > **Spec**: [docs/phases/phase10.md](../phases/phase10.md)
 
@@ -12,46 +12,46 @@
 
 | ID          | Task                                                                                                         | Status | Owner |
 |-------------|--------------------------------------------------------------------------------------------------------------|--------|-------|
-| P10-BE-INF-01 | Migration `enable_pgvector_extension` — `CREATE EXTENSION IF NOT EXISTS vector`                            | todo   |       |
-| P10-BE-INF-02 | Migration `create_document_chunks_table` — id, document_id, user_id, chunk_index, content, embedding vector(768), token_count, created_at + index HNSW | todo   |       |
-| P10-BE-INF-03 | Migration `add_embedding_status_to_documents` — colonne `embedding_status VARCHAR(20) nullable`             | todo   |       |
-| P10-BE-INF-04 | Ajouter `GEMINI_API_KEY`, `MCP_API_SECRET`, `MCP_KOOMKY_URL` dans `.env.example` + `docker-compose.yml` (services `api` et `mcp`) | todo   |       |
-| P10-BE-INF-05 | Ajouter dépendances Composer : `smalot/pdfparser`, `phpoffice/phpword`                                      | todo   |       |
-| P10-BE-INF-06 | Déclarer queue `embeddings` dans config Laravel (`config/queue.php`) + worker dans `docker-compose.yml`      | todo   |       |
+| P10-BE-INF-01 | Migration `enable_pgvector_extension` — `CREATE EXTENSION IF NOT EXISTS vector`                            | done   | dev   |
+| P10-BE-INF-02 | Migration `create_document_chunks_table` — id, document_id, user_id, chunk_index, content, embedding vector(768), token_count, created_at + index HNSW | done   | dev   |
+| P10-BE-INF-03 | Migration `add_embedding_status_to_documents` — colonne `embedding_status VARCHAR(20) nullable`             | done   | dev   |
+| P10-BE-INF-04 | Ajouter `GEMINI_API_KEY`, `MCP_API_SECRET`, `MCP_KOOMKY_URL` dans `.env.example` + `docker-compose.yml` (services `api` et `mcp`) | done   | dev   |
+| P10-BE-INF-05 | Ajouter dépendances Composer : `smalot/pdfparser`, `phpoffice/phpword`                                      | done   | dev   |
+| P10-BE-INF-06 | Déclarer queue `embeddings` dans config Laravel (`config/queue.php`) + worker dans `docker-compose.yml`      | done   | dev   |
 
 ### Backend — Services
 
 | ID          | Task                                                                                                         | Status | Owner |
 |-------------|--------------------------------------------------------------------------------------------------------------|--------|-------|
-| P10-BE-001  | Create `GeminiService` — `embed(string): float[]` via `text-embedding-004` + `generate(string, array): string` via `gemini-2.5-flash` + gestion erreurs API | todo   |       |
-| P10-BE-002  | Create `DocumentTextExtractorService` — extraction texte par MIME (PDF via smalot, DOCX via PhpWord, TXT/MD direct) + retourne `null` si non supporté | todo   |       |
-| P10-BE-003  | Create `DocumentChunkService` — découpage paragraphes, fusion < 100 tokens, split > 512 tokens, overlap 64 tokens | todo   |       |
-| P10-BE-004  | Create `DocumentEmbeddingService` — `indexDocument()`, `deleteDocumentChunks()`, `reindexDocument()`, gestion `embedding_status` | todo   |       |
-| P10-BE-005  | Create `ProcessDocumentEmbeddingJob` — ShouldQueue, queue `embeddings`, timeout 120s, tries 3, backoff [30, 120, 300] | todo   |       |
-| P10-BE-006  | Update `DocumentObserver` — `created` dispatch job si MIME indexable ; `updated` (re-upload) dispatch job ; `deleted` supprime chunks | todo   |       |
-| P10-BE-007  | Update `Document` model — cast + fillable `embedding_status`                                                 | todo   |       |
-| P10-BE-008  | Create `VectorSearchService` — `search(query, userId, topK, clientId?)` — embed query + requête pgvector cosinus + filtrage user_id/client_id | todo   |       |
-| P10-BE-009  | Create `RagService` — `answer(question, userId, clientId?)` — search top-5 + prompt construction + génération Gemini + retour answer/sources/tokens/latency | todo   |       |
-| P10-BE-010  | Create `RagController` — `POST /api/v1/rag/ask`, `GET /api/v1/rag/search`, `GET /api/v1/rag/status`, `POST /api/v1/rag/reindex/{id}` | todo   |       |
-| P10-BE-011  | Create `AskRagRequest` — validation question (requis, max 1000 chars) + client_id (optionnel, owned)         | todo   |       |
-| P10-BE-012  | Create `RagUsageLog` model + migration — log appels RAG (user_id, question, chunks_used, tokens_used, latency_ms) | todo   |       |
-| P10-BE-013  | Créer `McpTokenController` — `GET /api/v1/mcp/token` — émet PAT scope `mcp:read`                            | todo   |       |
-| P10-BE-014  | Créer `McpScopeGuard` middleware — vérifie scope `mcp:read` sur les routes RAG accessibles au MCP            | todo   |       |
+| P10-BE-001  | Create `GeminiService` — `embed(string): float[]` via `text-embedding-004` + `generate(string, array): string` via `gemini-2.5-flash` + gestion erreurs API | done   | dev   |
+| P10-BE-002  | Create `DocumentTextExtractorService` — extraction texte par MIME (PDF via smalot, DOCX via PhpWord, TXT/MD direct) + retourne `null` si non supporté | done   | dev   |
+| P10-BE-003  | Create `DocumentChunkService` — découpage paragraphes, fusion < 100 tokens, split > 512 tokens, overlap 64 tokens | done   | dev   |
+| P10-BE-004  | Create `DocumentEmbeddingService` — `indexDocument()`, `deleteDocumentChunks()`, `reindexDocument()`, gestion `embedding_status` | done   | dev   |
+| P10-BE-005  | Create `ProcessDocumentEmbeddingJob` — ShouldQueue, queue `embeddings`, timeout 120s, tries 3, backoff [30, 120, 300] | done   | dev   |
+| P10-BE-006  | Update `DocumentObserver` — `created` dispatch job si MIME indexable ; `updated` (re-upload) dispatch job ; `deleted` supprime chunks | done   | dev   |
+| P10-BE-007  | Update `Document` model — cast + fillable `embedding_status`                                                 | done   | dev   |
+| P10-BE-008  | Create `VectorSearchService` — `search(query, userId, topK, clientId?)` — embed query + requête pgvector cosinus + filtrage user_id/client_id | done   | dev   |
+| P10-BE-009  | Create `RagService` — `answer(question, userId, clientId?)` — search top-5 + prompt construction + génération Gemini + retour answer/sources/tokens/latency | done   | dev   |
+| P10-BE-010  | Create `RagController` — `POST /api/v1/rag/ask`, `GET /api/v1/rag/search`, `GET /api/v1/rag/status`, `POST /api/v1/rag/reindex/{id}` | done   | dev   |
+| P10-BE-011  | Create `AskRagRequest` — validation question (requis, max 1000 chars) + client_id (optionnel, owned)         | done   | dev   |
+| P10-BE-012  | Create `RagUsageLog` model + migration — log appels RAG (user_id, question, chunks_used, tokens_used, latency_ms) | done   | dev   |
+| P10-BE-013  | Créer `McpTokenController` — `GET /api/v1/mcp/token` — émet PAT scope `mcp:read`                            | done   | dev   |
+| P10-BE-014  | Créer `McpScopeGuard` middleware — vérifie scope `mcp:read` sur les routes RAG accessibles au MCP            | done   | dev   |
 
 ### Backend Tests (TDD)
 
 | ID          | Test File                                                              | Status | Owner |
 |-------------|------------------------------------------------------------------------|--------|-------|
-| P10-BT-001  | `tests/Unit/Services/GeminiServiceTest.php`                            | todo   |       |
-| P10-BT-002  | `tests/Unit/Services/DocumentTextExtractorServiceTest.php`             | todo   |       |
-| P10-BT-003  | `tests/Unit/Services/DocumentChunkServiceTest.php`                     | todo   |       |
-| P10-BT-004  | `tests/Unit/Services/DocumentEmbeddingServiceTest.php`                 | todo   |       |
-| P10-BT-005  | `tests/Unit/Services/VectorSearchServiceTest.php`                      | todo   |       |
-| P10-BT-006  | `tests/Unit/Services/RagServiceTest.php`                               | todo   |       |
-| P10-BT-007  | `tests/Unit/Jobs/ProcessDocumentEmbeddingJobTest.php`                  | todo   |       |
-| P10-BT-008  | `tests/Feature/Rag/RagAskTest.php`                                     | todo   |       |
-| P10-BT-009  | `tests/Feature/Rag/RagSearchTest.php`                                  | todo   |       |
-| P10-BT-010  | `tests/Feature/Rag/RagStatusTest.php`                                  | todo   |       |
+| P10-BT-001  | `tests/Unit/Services/GeminiServiceTest.php`                            | done   | dev   |
+| P10-BT-002  | `tests/Unit/Services/DocumentTextExtractorServiceTest.php`             | done   | dev   |
+| P10-BT-003  | `tests/Unit/Services/DocumentChunkServiceTest.php`                     | done   | dev   |
+| P10-BT-004  | `tests/Unit/Services/DocumentEmbeddingServiceTest.php`                 | done   | dev   |
+| P10-BT-005  | `tests/Unit/Services/VectorSearchServiceTest.php`                      | done   | dev   |
+| P10-BT-006  | `tests/Unit/Services/RagServiceTest.php`                               | done   | dev   |
+| P10-BT-007  | `tests/Unit/Jobs/ProcessDocumentEmbeddingJobTest.php`                  | done   | dev   |
+| P10-BT-008  | `tests/Feature/Rag/RagAskTest.php`                                     | done   | dev   |
+| P10-BT-009  | `tests/Feature/Rag/RagSearchTest.php`                                  | done   | dev   |
+| P10-BT-010  | `tests/Feature/Rag/RagStatusTest.php`                                  | done   | dev   |
 
 ---
 
@@ -61,31 +61,31 @@
 
 | ID           | Task                                                                                                                 | Status | Owner |
 |--------------|----------------------------------------------------------------------------------------------------------------------|--------|-------|
-| P10-MCP-INF-01 | Initialiser `mcp/` : `package.json`, `tsconfig.json` strict ESM, `Dockerfile` multi-stage node:20-slim             | todo   |       |
-| P10-MCP-INF-02 | Ajouter service `mcp` dans `docker-compose.yml` (port 3100, env GEMINI_API_KEY + MCP_API_SECRET + MCP_KOOMKY_URL)  | todo   |       |
+| P10-MCP-INF-01 | Initialiser `mcp/` : `package.json`, `tsconfig.json` strict ESM, `Dockerfile` multi-stage node:20-slim             | done   | dev   |
+| P10-MCP-INF-02 | Ajouter service `mcp` dans `docker-compose.yml` (port 3100, env GEMINI_API_KEY + MCP_API_SECRET + MCP_KOOMKY_URL)  | done   | dev   |
 
 ### MCP Tasks
 
 | ID           | Task                                                                                                                  | Status | Owner |
 |--------------|-----------------------------------------------------------------------------------------------------------------------|--------|-------|
-| P10-MCP-001  | Create `koomkyClient.ts` — client HTTP vers API Koomky avec auth `X-MCP-Secret` + méthodes ask/search/listTopics/getContext | todo   |       |
-| P10-MCP-002  | Create tool `search_documents` — input schema Zod, appel koomkyClient.search(), formatage résultats                  | todo   |       |
-| P10-MCP-003  | Create tool `ask_question` — input schema Zod, appel koomkyClient.ask(), retour answer + sources formatées           | todo   |       |
-| P10-MCP-004  | Create tool `list_topics` — agrégation tags + catégories documents indexés, triés alphabétiquement                   | todo   |       |
-| P10-MCP-005  | Create tool `get_document_context` — input schema Zod, retourne chunks d'un document spécifique                      | todo   |       |
-| P10-MCP-006  | Implémenter transport `stdio` (Claude Desktop) + transport `SSE` sur port 3100, sélection via `MCP_TRANSPORT` env    | todo   |       |
-| P10-MCP-007  | Create `server.ts` — enregistrement des 4 tools, gestion erreurs MCP, logging                                        | todo   |       |
-| P10-MCP-008  | Rédiger `docs/mcp/claude-desktop.md` — config JSON Claude Desktop, commande stdio, exemples d'usage                  | todo   |       |
+| P10-MCP-001  | Create `koomkyClient.ts` — client HTTP vers API Koomky avec auth `X-MCP-Secret` + méthodes ask/search/listTopics/getContext | done   | dev   |
+| P10-MCP-002  | Create tool `search_documents` — input schema Zod, appel koomkyClient.search(), formatage résultats                  | done   | dev   |
+| P10-MCP-003  | Create tool `ask_question` — input schema Zod, appel koomkyClient.ask(), retour answer + sources formatées           | done   | dev   |
+| P10-MCP-004  | Create tool `list_topics` — agrégation tags + catégories documents indexés, triés alphabétiquement                   | done   | dev   |
+| P10-MCP-005  | Create tool `get_document_context` — input schema Zod, retourne chunks d'un document spécifique                      | done   | dev   |
+| P10-MCP-006  | Implémenter transport `stdio` (Claude Desktop) + transport `SSE` sur port 3100, sélection via `MCP_TRANSPORT` env    | done   | dev   |
+| P10-MCP-007  | Create `server.ts` — enregistrement des 4 tools, gestion erreurs MCP, logging                                        | done   | dev   |
+| P10-MCP-008  | Rédiger `docs/mcp/claude-desktop.md` — config JSON Claude Desktop, commande stdio, exemples d'usage                  | done   | dev   |
 
 ### MCP Tests
 
 | ID           | Test File                                                  | Status | Owner |
 |--------------|------------------------------------------------------------|--------|-------|
-| P10-MT-001   | `mcp/src/__tests__/koomkyClient.test.ts`                   | todo   |       |
-| P10-MT-002   | `mcp/src/__tests__/tools/searchDocuments.test.ts`          | todo   |       |
-| P10-MT-003   | `mcp/src/__tests__/tools/askQuestion.test.ts`              | todo   |       |
-| P10-MT-004   | `mcp/src/__tests__/tools/listTopics.test.ts`               | todo   |       |
-| P10-MT-005   | `mcp/src/__tests__/server.test.ts`                         | todo   |       |
+| P10-MT-001   | `mcp/src/__tests__/koomkyClient.test.ts`                   | done   | dev   |
+| P10-MT-002   | `mcp/src/__tests__/tools/searchDocuments.test.ts`          | done   | dev   |
+| P10-MT-003   | `mcp/src/__tests__/tools/askQuestion.test.ts`              | done   | dev   |
+| P10-MT-004   | `mcp/src/__tests__/tools/listTopics.test.ts`               | done   | dev   |
+| P10-MT-005   | `mcp/src/__tests__/server.test.ts`                         | done   | dev   |
 
 ---
 
@@ -95,22 +95,22 @@
 
 | ID          | Task                                                                                                                  | Status | Owner |
 |-------------|-----------------------------------------------------------------------------------------------------------------------|--------|-------|
-| P10-FE-001  | Create `stores/rag.ts` — Zustand store (messages historique, loading, error, sources, askQuestion, searchDocuments, clearHistory) | todo   |       |
-| P10-FE-002  | Create `components/rag/chat-widget.tsx` — bulle chatbot portail client (historique, spinner, sources cliquables, disclaimer) | todo   |       |
-| P10-FE-003  | Intégrer `chat-widget.tsx` dans `app/(portal)/layout.tsx` — visible si documents RAG disponibles pour le client      | todo   |       |
-| P10-FE-004  | Update `app/(dashboard)/documents/[id]/page.tsx` — badge `embedding_status` + bouton "Relancer l'indexation" si `failed` | todo   |       |
-| P10-FE-005  | Create `app/(dashboard)/settings/rag/page.tsx` — liste documents indexés, stats globales, re-indexation par document et globale | todo   |       |
-| P10-FE-006  | Add "Intelligence documentaire" dans settings sidebar (après Webhooks)                                               | todo   |       |
+| P10-FE-001  | Create `stores/rag.ts` — Zustand store (messages historique, loading, error, sources, askQuestion, searchDocuments, clearHistory) | done   | dev   |
+| P10-FE-002  | Create `components/rag/chat-widget.tsx` — bulle chatbot portail client (historique, spinner, sources cliquables, disclaimer) | done   | dev   |
+| P10-FE-003  | Intégrer `chat-widget.tsx` dans `app/(portal)/layout.tsx` — visible si documents RAG disponibles pour le client      | done   | dev   |
+| P10-FE-004  | Update `app/(dashboard)/documents/[id]/page.tsx` — badge `embedding_status` + bouton "Relancer l'indexation" si `failed` | done   | dev   |
+| P10-FE-005  | Create `app/(dashboard)/settings/rag/page.tsx` — liste documents indexés, stats globales, re-indexation par document et globale | done   | dev   |
+| P10-FE-006  | Add "Intelligence documentaire" dans settings sidebar (après Webhooks)                                               | done   | dev   |
 
 ### Frontend Tests
 
 | ID          | Test File                                                         | Status | Owner |
 |-------------|-------------------------------------------------------------------|--------|-------|
-| P10-FT-001  | `tests/unit/stores/rag.test.ts`                                   | todo   |       |
-| P10-FT-002  | `tests/components/rag/chat-widget.test.tsx`                       | todo   |       |
-| P10-FT-003  | `tests/components/rag/embedding-status-badge.test.tsx`            | todo   |       |
-| P10-FT-004  | `tests/e2e/rag/rag-portal-chat.spec.ts`                           | todo   |       |
-| P10-FT-005  | `tests/e2e/rag/rag-admin-status.spec.ts`                          | todo   |       |
+| P10-FT-001  | `tests/unit/stores/rag.test.ts`                                   | done   | dev   |
+| P10-FT-002  | `tests/components/rag/chat-widget.test.tsx`                       | done   | dev   |
+| P10-FT-003  | `tests/components/rag/embedding-status-badge.test.tsx`            | done   | dev   |
+| P10-FT-004  | `tests/e2e/rag/rag-portal-chat.spec.ts`                           | done   | dev   |
+| P10-FT-005  | `tests/e2e/rag/rag-admin-status.spec.ts`                          | done   | dev   |
 
 ---
 

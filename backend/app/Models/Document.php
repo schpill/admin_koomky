@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravel\Scout\Searchable;
 
 class Document extends Model
@@ -38,6 +39,7 @@ class Document extends Model
         'tags',
         'last_sent_at',
         'last_sent_to',
+        'embedding_status',
     ];
 
     /**
@@ -51,6 +53,7 @@ class Document extends Model
         'last_sent_at' => 'datetime',
         'file_size' => 'integer',
         'version' => 'integer',
+        'embedding_status' => 'string',
     ];
 
     /**
@@ -71,6 +74,14 @@ class Document extends Model
     public function client(): BelongsTo
     {
         return $this->belongsTo(Client::class);
+    }
+
+    /**
+     * @return HasMany<DocumentChunk, $this>
+     */
+    public function chunks(): HasMany
+    {
+        return $this->hasMany(DocumentChunk::class);
     }
 
     /**

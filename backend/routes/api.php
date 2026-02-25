@@ -32,6 +32,7 @@ use App\Http\Controllers\Api\V1\LeadAnalyticsController;
 use App\Http\Controllers\Api\V1\LeadController;
 use App\Http\Controllers\Api\V1\LeadConversionController;
 use App\Http\Controllers\Api\V1\LeadPipelineController;
+use App\Http\Controllers\Api\V1\McpTokenController;
 use App\Http\Controllers\Api\V1\PaymentController;
 use App\Http\Controllers\Api\V1\PortalAccessTokenController;
 use App\Http\Controllers\Api\V1\PortalAuthController;
@@ -39,6 +40,7 @@ use App\Http\Controllers\Api\V1\PortalDashboardController;
 use App\Http\Controllers\Api\V1\PortalInvoiceController;
 use App\Http\Controllers\Api\V1\PortalPaymentController;
 use App\Http\Controllers\Api\V1\PortalQuoteController;
+use App\Http\Controllers\Api\V1\PortalRagController;
 use App\Http\Controllers\Api\V1\PortalSettingsController;
 use App\Http\Controllers\Api\V1\ProfitLossController;
 use App\Http\Controllers\Api\V1\ProjectController;
@@ -46,6 +48,7 @@ use App\Http\Controllers\Api\V1\ProjectExpenseController;
 use App\Http\Controllers\Api\V1\ProjectInvoiceController;
 use App\Http\Controllers\Api\V1\ProjectProfitabilityController;
 use App\Http\Controllers\Api\V1\QuoteController;
+use App\Http\Controllers\Api\V1\RagController;
 use App\Http\Controllers\Api\V1\RecurringInvoiceProfileController;
 use App\Http\Controllers\Api\V1\ReportController;
 use App\Http\Controllers\Api\V1\SearchController;
@@ -97,6 +100,10 @@ Route::prefix('v1')->group(function () {
             Route::get('/quotes/{quote}/pdf', [PortalQuoteController::class, 'pdf']);
             Route::post('/quotes/{quote}/accept', [PortalQuoteController::class, 'accept']);
             Route::post('/quotes/{quote}/reject', [PortalQuoteController::class, 'reject']);
+
+            Route::post('/rag/ask', [PortalRagController::class, 'ask']);
+            Route::get('/rag/search', [PortalRagController::class, 'search']);
+            Route::get('/rag/status', [PortalRagController::class, 'status']);
         });
     });
 
@@ -314,6 +321,24 @@ Route::prefix('v1')->group(function () {
         Route::post('documents/{document}/reupload', [DocumentController::class, 'reupload']);
         Route::get('documents/{document}/download', [DocumentController::class, 'download']);
         Route::post('documents/{document}/email', [DocumentController::class, 'sendEmail']);
+
+        // Phase 10 - RAG
+        Route::prefix('rag')->group(function () {
+            Route::post('ask', [RagController::class, 'ask']);
+            Route::get('search', [RagController::class, 'search']);
+            Route::get('status', [RagController::class, 'status']);
+            Route::post('reindex/{document}', [RagController::class, 'reindex']);
+        });
+
+        // Phase 10 - MCP PAT
+        Route::get('mcp/token', McpTokenController::class);
+
+        // Routes exposed to MCP clients with dedicated scope
+        Route::middleware('mcp-scope')->prefix('mcp')->group(function () {
+            Route::post('rag/ask', [RagController::class, 'ask']);
+            Route::get('rag/search', [RagController::class, 'search']);
+            Route::get('rag/status', [RagController::class, 'status']);
+        });
 
         // Tickets
         Route::get('tickets/stats', [TicketController::class, 'stats']);

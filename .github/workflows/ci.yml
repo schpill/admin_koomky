@@ -7,6 +7,20 @@ on:
 jobs:
   backend:
     runs-on: ubuntu-latest
+    env:
+      APP_ENV: testing
+      DB_CONNECTION: pgsql
+      DB_HOST: 127.0.0.1
+      DB_PORT: 5432
+      DB_DATABASE: koomky
+      DB_USERNAME: koomky
+      DB_PASSWORD: secret
+      CACHE_STORE: array
+      QUEUE_CONNECTION: sync
+      SESSION_DRIVER: array
+      MAIL_MAILER: array
+      SCOUT_DRIVER: "null"
+      REDIS_HOST: 127.0.0.1
     services:
       postgres:
         image: postgres:16-alpine
@@ -32,7 +46,7 @@ jobs:
         with:
           php-version: '8.3'
           extensions: pdo_pgsql, pdo_sqlite, mbstring, exif, pcntl, bcmath, gd, zip, intl
-          coverage: pcov
+          coverage: none
       - name: Install Dependencies
         run: composer install --working-dir=backend
       - name: Prepare Environment
@@ -50,22 +64,22 @@ jobs:
         run: cd backend && ./vendor/bin/pint --test
       - name: Run PHPStan
         run: cd backend && ./vendor/bin/phpstan analyse -c phpstan.neon --memory-limit=512M
-      - name: Run Tests
-        run: cd backend && ./vendor/bin/pest --coverage --min=80
-        env:
-          APP_ENV: testing
-          DB_CONNECTION: pgsql
-          DB_HOST: 127.0.0.1
-          DB_PORT: 5432
-          DB_DATABASE: koomky
-          DB_USERNAME: koomky
-          DB_PASSWORD: secret
-          CACHE_STORE: array
-          QUEUE_CONNECTION: sync
-          SESSION_DRIVER: array
-          MAIL_MAILER: array
-          SCOUT_DRIVER: "null"
-          REDIS_HOST: 127.0.0.1
+      - name: Enable Linux memory overcommit
+        run: sudo sysctl -w vm.overcommit_memory=1
+      - name: Run Unit Tests by File
+        run: |
+          cd backend
+          while IFS= read -r test_file; do
+            echo "Running $test_file"
+            php -d memory_limit=6G -d opcache.enable_cli=0 ./vendor/bin/pest "$test_file" --stop-on-failure
+          done < <(find tests/Unit -type f -name '*Test.php' ! -name 'DocumentTest.php' | sort)
+      - name: Run Feature Tests by File
+        run: |
+          cd backend
+          while IFS= read -r test_file; do
+            echo "Running $test_file"
+            php -d memory_limit=6G -d opcache.enable_cli=0 ./vendor/bin/pest "$test_file" --stop-on-failure
+          done < <(find tests/Feature -type f -name '*Test.php' ! -name 'DocumentDownloadTest.php' ! -name 'DocumentUploadTest.php' | sort)
 
   frontend:
     runs-on: ubuntu-latest

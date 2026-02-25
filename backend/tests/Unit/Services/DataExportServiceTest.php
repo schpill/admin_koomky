@@ -2,6 +2,9 @@
 
 namespace Tests\Unit\Services;
 
+use App\Models\Document;
+use App\Models\DocumentChunk;
+use App\Models\RagUsageLog;
 use App\Models\Ticket;
 use App\Models\TicketMessage;
 use App\Models\User;
@@ -74,5 +77,60 @@ class DataExportServiceTest extends TestCase
 
         $this->assertArrayHasKey('ticket_messages', $exportData);
         $this->assertEmpty($exportData['ticket_messages']);
+    }
+
+    /** @test */
+    public function it_includes_document_chunks_in_the_export()
+    {
+        $document = Document::factory()->for($this->user)->create();
+        $chunk = DocumentChunk::factory()
+            ->for($document, 'document')
+            ->for($this->user, 'user')
+            ->create(['chunk_index' => 0]);
+
+        $exportData = $this->service->exportUserData($this->user);
+
+        $this->assertArrayHasKey('document_chunks', $exportData);
+        $this->assertCount(1, $exportData['document_chunks']);
+        $this->assertEquals($chunk->id, $exportData['document_chunks'][0]['id']);
+    }
+
+    /** @test */
+    public function it_does_not_include_other_users_document_chunks()
+    {
+        $otherUser = User::factory()->create();
+        $document = Document::factory()->for($otherUser)->create();
+        DocumentChunk::factory()->for($document, 'document')->for($otherUser, 'user')->create();
+
+        $exportData = $this->service->exportUserData($this->user);
+
+        $this->assertArrayHasKey('document_chunks', $exportData);
+        $this->assertEmpty($exportData['document_chunks']);
+    }
+
+    /** @test */
+    public function it_includes_rag_usage_logs_in_the_export()
+    {
+        $log = RagUsageLog::factory()->for($this->user)->create([
+            'question' => 'Quel est le délai de paiement ?',
+        ]);
+
+        $exportData = $this->service->exportUserData($this->user);
+
+        $this->assertArrayHasKey('rag_usage_logs', $exportData);
+        $this->assertCount(1, $exportData['rag_usage_logs']);
+        $this->assertEquals($log->id, $exportData['rag_usage_logs'][0]['id']);
+    }
+
+    /** @test */
+    public function it_does_not_include_other_users_rag_usage_logs()
+    {
+        $otherUser = User::factory()->create();
+        RagUsageLog::factory()->for($otherUser)->create();
+
+        $exportData = $this->service->exportUserData($this->user);
+
+        $this->assertArrayHasKey('rag_usage_logs', $exportData);
+        $this->assertEmpty($exportData['rag_usage_logs']);
     }
 }

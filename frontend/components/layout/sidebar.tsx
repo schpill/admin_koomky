@@ -21,6 +21,7 @@ import {
   Target,
   Calculator,
   TicketCheck,
+  Brain,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -53,6 +54,12 @@ const secondaryNavigation = [
     key: "settings",
     href: "/settings/profile",
     icon: Settings,
+    external: false,
+  },
+  {
+    key: "rag",
+    href: "/settings/rag",
+    icon: Brain,
     external: false,
   },
   { key: "grafana", href: grafanaUrl, icon: ExternalLink, external: true },

@@ -8,6 +8,7 @@ use App\Models\Client;
 use App\Models\Contact;
 use App\Models\CreditNote;
 use App\Models\Document;
+use App\Models\DocumentChunk;
 use App\Models\Expense;
 use App\Models\ExpenseCategory;
 use App\Models\Invoice;
@@ -15,6 +16,7 @@ use App\Models\Lead;
 use App\Models\LeadActivity;
 use App\Models\Project;
 use App\Models\Quote;
+use App\Models\RagUsageLog;
 use App\Models\Segment;
 use App\Models\Tag;
 use App\Models\Ticket;
@@ -78,10 +80,6 @@ class DataExportService
             ->where('user_id', $user->id)
             ->get();
 
-        $documents = Document::query()
-            ->where('user_id', $user->id)
-            ->get();
-
         $tickets = Ticket::query()
             ->where('user_id', $user->id)
             ->get();
@@ -89,6 +87,14 @@ class DataExportService
         $ticketMessages = TicketMessage::query()
             ->whereHas('ticket', fn ($query) => $query->where('user_id', $user->id))
             ->where('is_internal', false)
+            ->get();
+
+        $documentChunks = DocumentChunk::query()
+            ->where('user_id', $user->id)
+            ->get(['id', 'document_id', 'chunk_index', 'token_count', 'created_at']);
+
+        $ragUsageLogs = RagUsageLog::query()
+            ->where('user_id', $user->id)
             ->get();
 
         return [
@@ -137,6 +143,8 @@ class DataExportService
                 ->get()
                 ->toArray(),
             'documents' => $documents->toArray(),
+            'document_chunks' => $documentChunks->toArray(),
+            'rag_usage_logs' => $ragUsageLogs->toArray(),
             'tickets' => $tickets->toArray(),
             'ticket_messages' => $ticketMessages->toArray(),
         ];
