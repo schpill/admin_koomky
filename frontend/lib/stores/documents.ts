@@ -106,7 +106,7 @@ export const useDocumentStore = create<DocumentState>((set, get) => ({
     try {
       const response = await apiClient.get<any>("/documents", { params });
       set({
-        documents: response.data.data,
+        documents: response.data.data ?? [],
         pagination: {
           current_page: response.data.current_page,
           last_page: response.data.last_page,

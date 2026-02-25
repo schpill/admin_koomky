@@ -28,7 +28,7 @@ export function RecentDocumentsWidget() {
     fetchDocuments({ per_page: 5, sort_by: "created_at", sort_order: "desc" });
   }, [fetchDocuments]);
 
-  const recentDocs = documents.slice(0, 5);
+  const recentDocs = (documents ?? []).slice(0, 5);
 
   return (
     <Card className="flex flex-col h-full shadow-sm hover:shadow-md transition-shadow">
