@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useProductsStore } from "@/stores/products";
+import { useProductsStore } from "@/lib/stores/products";
 import { Package, TrendingUp, Receipt } from "lucide-react";
 
 export function ProductStatsBar() {
