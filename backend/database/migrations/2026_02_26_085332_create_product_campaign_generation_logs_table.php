@@ -12,8 +12,19 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('product_campaign_generation_logs', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
+            $table->foreignUuid('product_id')->constrained('products')->cascadeOnDelete();
+            $table->foreignUuid('campaign_id')->nullable()->constrained('campaigns')->nullOnDelete();
+            $table->foreignUuid('user_id')->constrained('users')->cascadeOnDelete();
+            $table->string('model', 100);
+            $table->unsignedInteger('tokens_used')->nullable();
+            $table->unsignedInteger('latency_ms')->nullable();
+            $table->boolean('success');
+            $table->text('error_message')->nullable();
+            $table->timestamp('generated_at');
             $table->timestamps();
+
+            $table->index(['user_id', 'generated_at']);
         });
     }
 

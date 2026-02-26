@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('line_items', function (Blueprint $table) {
-            //
+            $table->foreignUuid('product_id')->nullable()->constrained('products')->nullOnDelete();
+            $table->index('product_id');
         });
     }
 
@@ -22,7 +23,9 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('line_items', function (Blueprint $table) {
-            //
+            $table->dropIndex(['product_id']);
+            $table->dropForeign(['product_id']);
+            $table->dropColumn('product_id');
         });
     }
 };
