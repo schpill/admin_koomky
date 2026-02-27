@@ -60,7 +60,7 @@ class SendReminderJob implements ShouldQueue
             ? rtrim((string) config('app.url'), '/').'/portal/auth/verify/'.$payLink->token
             : null;
 
-        Mail::to($client->email)->queue(new ReminderMail($invoice, $step, $resolvedPayLink));
+        Mail::to($client->email)->send(new ReminderMail($invoice, $step, $resolvedPayLink));
 
         ReminderDelivery::query()->updateOrCreate(
             [

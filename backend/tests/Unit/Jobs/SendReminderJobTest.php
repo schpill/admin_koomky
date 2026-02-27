@@ -21,7 +21,7 @@ beforeEach(function () {
     Queue::fake();
 });
 
-test('handle sends mail creates sent delivery and advances step', function () {
+test('handle sends mail once (no double queue), creates sent delivery and advances step', function () {
     Mail::fake();
 
     $user = User::factory()->create();
@@ -52,7 +52,7 @@ test('handle sends mail creates sent delivery and advances step', function () {
 
     (new SendReminderJob($schedule->id))->handle($service, $webhook);
 
-    Mail::assertQueued(ReminderMail::class);
+    Mail::assertSent(ReminderMail::class);
 
     $delivery = ReminderDelivery::query()
         ->where('invoice_id', $invoice->id)
