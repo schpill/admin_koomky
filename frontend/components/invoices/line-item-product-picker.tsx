@@ -49,19 +49,19 @@ export function LineItemProductPicker({
     fetchProducts({ isActive: true });
   }, [fetchProducts]);
 
-  const selectedProduct = products.find((p) => p.id === value);
+  const selectedProduct = products.find((p) => String(p.id) === value);
 
   const handleSelect = (productId: string) => {
-    const product = products.find((p) => p.id === productId);
+    const product = products.find((p) => String(p.id) === productId);
     if (product) {
       onChange(productId, {
-        id: product.id,
+        id: String(product.id),
         name: product.name,
-        price: parseFloat(product.price),
+        price: Number(product.price),
         currency_code: product.currency_code,
         type: product.type,
-        description: product.description,
-        vat_rate: parseFloat(product.vat_rate),
+        description: product.description ?? null,
+        vat_rate: Number(product.vat_rate),
       });
     }
     setOpen(false);
@@ -123,8 +123,8 @@ export function LineItemProductPicker({
             <CommandGroup>
               {products.map((product) => (
                 <CommandItem
-                  key={product.id}
-                  value={product.id}
+                  key={String(product.id)}
+                  value={String(product.id)}
                   onSelect={handleSelect}
                   className="flex items-center justify-between"
                 >
@@ -132,7 +132,9 @@ export function LineItemProductPicker({
                     <Check
                       className={cn(
                         "h-4 w-4",
-                        value === product.id ? "opacity-100" : "opacity-0"
+                        value === String(product.id)
+                          ? "opacity-100"
+                          : "opacity-0"
                       )}
                     />
                     <div className="flex flex-col">
@@ -142,7 +144,7 @@ export function LineItemProductPicker({
                       <div className="flex items-center gap-1">
                         <ProductTypeBadge type={product.type} size="sm" />
                         <span className="text-xs text-muted-foreground">
-                          {parseFloat(product.price).toLocaleString("fr-FR", {
+                          {Number(product.price).toLocaleString("fr-FR", {
                             style: "currency",
                             currency: product.currency_code,
                           })}
