@@ -22,6 +22,7 @@ import {
   Calculator,
   TicketCheck,
   Brain,
+  Package,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -32,6 +33,7 @@ import { useI18n } from "@/components/providers/i18n-provider";
 const navigation = [
   { key: "dashboard", href: "/", icon: LayoutDashboard },
   { key: "leads", href: "/leads", icon: Target },
+  { key: "products", href: "/products", icon: Package },
   { key: "documents", href: "/documents", icon: FileText },
   { key: "tickets", href: "/tickets", icon: TicketCheck },
   { key: "clients", href: "/clients", icon: Users },

@@ -11,7 +11,11 @@ use App\Models\Expense;
 use App\Models\Invoice;
 use App\Models\Lead;
 use App\Models\Payment;
+use App\Models\Product;
+use App\Models\ProductSale;
 use App\Models\Project;
+use App\Policies\ProductPolicy;
+use App\Policies\ProductSalePolicy;
 use App\Models\Quote;
 use App\Models\Task;
 use App\Models\Ticket;
@@ -29,6 +33,7 @@ use App\Observers\QuoteObserver;
 use App\Observers\TaskObserver;
 use App\Observers\TicketMessageObserver;
 use App\Observers\TicketObserver;
+use Illuminate\Support\Facades\Gate;
 use App\Services\ExchangeRates\ApiExchangeRateService;
 use App\Services\ExchangeRates\EcbExchangeRatesDriver;
 use App\Services\ExchangeRates\ExchangeRateDriver;
@@ -97,5 +102,9 @@ class AppServiceProvider extends ServiceProvider
                 ui: 'api/docs',
                 document: 'api/docs.json'
             );
+
+        // Register policies
+        Gate::policy(Product::class, ProductPolicy::class);
+        Gate::policy(ProductSale::class, ProductSalePolicy::class);
     }
 }

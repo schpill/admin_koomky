@@ -1,12 +1,14 @@
 import { ProductCampaignWizard } from "@/components/products/product-campaign-wizard";
 
 interface CampaignGeneratePageProps {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
-export default function CampaignGeneratePage({
+export default async function CampaignGeneratePage({
   params,
 }: CampaignGeneratePageProps) {
+  const { id } = await params;
+
   return (
     <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
       <div className="max-w-4xl mx-auto">
@@ -19,7 +21,7 @@ export default function CampaignGeneratePage({
           </p>
         </div>
 
-        <ProductCampaignWizard productId={params.id} />
+        <ProductCampaignWizard productId={id} />
       </div>
     </div>
   );

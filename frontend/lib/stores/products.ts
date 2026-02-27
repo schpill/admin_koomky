@@ -99,7 +99,16 @@ interface ProductsState {
 
 interface ProductsActions {
   // Products
-  fetchProducts: (page?: number) => Promise<void>;
+  fetchProducts: (
+    params?:
+      | number
+      | {
+          page?: number;
+          type?: Product["type"];
+          isActive?: boolean;
+          search?: string;
+        }
+  ) => Promise<void>;
   createProduct: (data: Partial<Product>) => Promise<Product>;
   updateProduct: (id: string, data: Partial<Product>) => Promise<Product>;
   deleteProduct: (id: string) => Promise<void>;
@@ -162,21 +171,34 @@ export const useProductsStore = create<ProductsStore>()(
     (set, get) => ({
       ...initialState,
 
-      fetchProducts: async (page = 1) => {
+      fetchProducts: async (params) => {
         const { filters } = get();
+        const options =
+          typeof params === "number"
+            ? { page: params }
+            : { page: params?.page ?? 1, ...params };
+        const page = options.page ?? 1;
+        const effectiveFilters = {
+          ...filters,
+          ...(options.type !== undefined ? { type: options.type } : {}),
+          ...(options.search !== undefined ? { search: options.search } : {}),
+          ...(options.isActive !== undefined
+            ? { is_active: options.isActive }
+            : {}),
+        };
         set({ isLoading: true, error: null });
 
         try {
-          const params = new URLSearchParams({
+          const queryParams = new URLSearchParams({
             page: page.toString(),
-            ...(filters.type && { type: filters.type }),
-            ...(filters.is_active !== undefined && {
-              is_active: filters.is_active.toString(),
+            ...(effectiveFilters.type && { type: effectiveFilters.type }),
+            ...(effectiveFilters.is_active !== undefined && {
+              is_active: effectiveFilters.is_active.toString(),
             }),
-            ...(filters.search && { search: filters.search }),
+            ...(effectiveFilters.search && { search: effectiveFilters.search }),
           });
 
-          const response = await fetch(`/api/v1/products?${params}`);
+          const response = await fetch(`/api/v1/products?${queryParams}`);
           if (!response.ok) throw new Error("Failed to fetch products");
 
           const { data, meta } = await response.json();

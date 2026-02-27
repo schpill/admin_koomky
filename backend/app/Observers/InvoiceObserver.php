@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Models\Invoice;
+use App\Models\ProductSale;
 use App\Services\ActivityService;
 use App\Services\Calendar\CalendarAutoEventService;
 use App\Services\WebhookDispatchService;
@@ -75,6 +76,77 @@ class InvoiceObserver
                 'previous_status' => $previousStatus,
             ]);
         }
+
+        // Create ProductSale records when invoice is paid
+        if ($newStatus === 'paid') {
+            $this->createProductSales($invoice);
+        }
+    }
+
+    /**
+     * Create ProductSale records for line items with products.
+     */
+    private function createProductSales(Invoice $invoice): void
+    {
+        foreach ($invoice->lineItems as $lineItem) {
+            if (! $lineItem->product_id) {
+                continue;
+            }
+
+            // Use firstOrCreate to prevent duplicates
+            ProductSale::firstOrCreate(
+                [
+                    'invoice_id' => $invoice->id,
+                    'product_id' => $lineItem->product_id,
+                ],
+                [
+                    'user_id' => $invoice->user_id,
+                    'client_id' => $invoice->client_id,
+                    'quantity' => $lineItem->quantity,
+                    'unit_price' => $lineItem->unit_price,
+                    'total_price' => $lineItem->total,
+                    'currency_code' => $invoice->currency,
+                    'status' => 'confirmed',
+                    'sold_at' => now(),
+                ]
+            );
+
+            // Dispatch product.sold webhook
+            $this->dispatchProductSoldWebhook($invoice, $lineItem);
+        }
+    }
+
+    /**
+     * Dispatch product.sold webhook.
+     */
+    private function dispatchProductSoldWebhook(Invoice $invoice, mixed $lineItem): void
+    {
+        $product = $lineItem->product;
+        if (! $product) {
+            return;
+        }
+
+        $sale = ProductSale::where('invoice_id', $invoice->id)
+            ->where('product_id', $lineItem->product_id)
+            ->first();
+
+        if (! $sale) {
+            return;
+        }
+
+        $data = [
+            'product_id' => $product->id,
+            'product_name' => $product->name,
+            'client_id' => $invoice->client_id,
+            'sale_id' => $sale->id,
+            'total_price' => (float) $sale->total_price,
+            'currency_code' => $sale->currency_code,
+            'sold_at' => $sale->sold_at?->toIso8601String(),
+        ];
+
+        /** @var WebhookDispatchService $service */
+        $service = app(WebhookDispatchService::class);
+        $service->dispatch('product.sold', $data, $invoice->user_id);
     }
 
     private function syncCounterFromNumber(string $number): void

@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 
 interface ProductTypeBadgeProps {
   type: "service" | "training" | "product" | "subscription";
+  size?: "sm" | "md";
 }
 
 const typeConfig = {
@@ -25,11 +26,12 @@ const typeConfig = {
   },
 };
 
-export function ProductTypeBadge({ type }: ProductTypeBadgeProps) {
+export function ProductTypeBadge({ type, size = "md" }: ProductTypeBadgeProps) {
   const config = typeConfig[type];
+  const sizeClass = size === "sm" ? "text-[10px] px-2 py-0" : "";
 
   return (
-    <Badge variant="secondary" className={config.className}>
+    <Badge variant="secondary" className={`${config.className} ${sizeClass}`}>
       {config.label}
     </Badge>
   );

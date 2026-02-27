@@ -6,9 +6,11 @@ use App\Models\Activity;
 use App\Models\Campaign;
 use App\Models\Client;
 use App\Models\Invoice;
+use App\Models\ProductSale;
 use App\Models\Project;
 use App\Models\RecurringInvoiceProfile;
 use App\Models\User;
+use Carbon\Carbon;
 use Closure;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
@@ -277,5 +279,55 @@ class DashboardService
         };
 
         return round($afterDiscount * $multiplier, 2);
+    }
+
+    /**
+     * Get top products widget data for the current month.
+     *
+     * @return array<string, mixed>
+     */
+    public function topProductsWidget(User $user): array
+    {
+        $from = Carbon::now()->startOfMonth();
+        $to = Carbon::now()->endOfMonth();
+
+        $topProducts = ProductSale::where('user_id', $user->id)
+            ->where('status', 'confirmed')
+            ->whereBetween('sold_at', [$from, $to])
+            ->with('product')
+            ->selectRaw('product_id, SUM(total_price) as revenue, COUNT(*) as sales_count')
+            ->groupBy('product_id')
+            ->orderByDesc('revenue')
+            ->limit(3)
+            ->get()
+            ->map(fn ($sale) => [
+                'id' => $sale->product_id,
+                'name' => $sale->product?->name ?? 'Produit supprimé',
+                'type' => $sale->product?->type?->value ?? 'unknown',
+                'sales_count' => (int) $sale->sales_count,
+                'revenue' => round((float) $sale->revenue, 2),
+                'currency_code' => $sale->product?->currency_code ?? 'EUR',
+            ])
+            ->toArray();
+
+        $totalRevenue = ProductSale::where('user_id', $user->id)
+            ->where('status', 'confirmed')
+            ->whereBetween('sold_at', [$from, $to])
+            ->sum('total_price');
+
+        $totalSales = ProductSale::where('user_id', $user->id)
+            ->where('status', 'confirmed')
+            ->whereBetween('sold_at', [$from, $to])
+            ->count();
+
+        return [
+            'products' => $topProducts,
+            'total_revenue' => round((float) $totalRevenue, 2),
+            'total_sales' => $totalSales,
+            'period' => [
+                'from' => $from->toIso8601String(),
+                'to' => $to->toIso8601String(),
+            ],
+        ];
     }
 }

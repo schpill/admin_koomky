@@ -6,6 +6,7 @@ import { useProductsStore } from "@/lib/stores/products";
 import { ProductTypeBadge } from "./product-type-badge";
 import { ProductSalesTable } from "./product-sales-table";
 import { ProductAnalyticsChart } from "./product-analytics-chart";
+import { CampaignGeneratorDialog } from "./campaign-generator-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -216,12 +217,11 @@ export function ProductDetail({ productId }: ProductDetailProps) {
                 <p className="text-muted-foreground">
                   Générez une campagne email IA personnalisée pour ce produit.
                 </p>
-                <Button asChild>
-                  <Link
-                    href={`/products/${product.id}/campaigns/generate`}
-                  >
+                <CampaignGeneratorDialog productId={product.id} />
+                <Button asChild variant="outline">
+                  <Link href={`/products/${product.id}/campaigns/generate`}>
                     <Sparkles className="mr-2 h-4 w-4" />
-                    Créer une campagne IA
+                    Ouvrir en page complète
                   </Link>
                 </Button>
               </div>

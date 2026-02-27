@@ -61,6 +61,8 @@ use App\Http\Controllers\Api\V1\TagController;
 use App\Http\Controllers\Api\V1\TaskController;
 use App\Http\Controllers\Api\V1\TicketController;
 use App\Http\Controllers\Api\V1\TicketDocumentController;
+use App\Http\Controllers\Api\V1\ProductCampaignController;
+use App\Http\Controllers\Api\V1\ProductController;
 use App\Http\Controllers\Api\V1\TicketMessageController;
 use App\Http\Controllers\Api\V1\TimeEntryController;
 use App\Http\Controllers\Api\V1\UserSettingsController;
@@ -355,5 +357,13 @@ Route::prefix('v1')->group(function () {
         Route::post('tickets/{ticket}/documents', [TicketDocumentController::class, 'store']);
         Route::delete('tickets/{ticket}/documents/{document}', [TicketDocumentController::class, 'detach']);
         Route::post('tickets/{ticket}/documents/attach', [TicketDocumentController::class, 'attach']);
+
+        // Products (Phase 11)
+        Route::get('products/analytics', [ProductController::class, 'globalAnalytics']);
+        Route::apiResource('products', ProductController::class);
+        Route::post('products/{product}/restore', [ProductController::class, 'restore']);
+        Route::get('products/{product}/sales', [ProductController::class, 'sales']);
+        Route::get('products/{product}/analytics', [ProductController::class, 'productAnalytics']);
+        Route::post('products/{product}/campaigns/generate', [ProductCampaignController::class, 'generate']);
     });
 });
