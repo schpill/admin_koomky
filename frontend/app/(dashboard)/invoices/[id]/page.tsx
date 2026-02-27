@@ -12,6 +12,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { InvoiceStatusBadge } from "@/components/invoices/invoice-status-badge";
 import { RecordPaymentModal } from "@/components/invoices/record-payment-modal";
 import { SendInvoiceModal } from "@/components/invoices/send-invoice-modal";
+import { InvoiceReminderPanel } from "@/components/reminders/invoice-reminder-panel";
 import { InvoicePdfPreview } from "@/components/invoices/invoice-pdf-preview";
 import { CurrencyAmount } from "@/components/shared/currency-amount";
 import { useInvoiceStore } from "@/lib/stores/invoices";
@@ -345,6 +346,15 @@ export default function InvoiceDetailPage() {
 
         <InvoicePdfPreview html={buildPreviewHtml(currentInvoice)} />
       </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Relances</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <InvoiceReminderPanel invoiceId={currentInvoice.id} />
+        </CardContent>
+      </Card>
 
       <SendInvoiceModal
         open={sendModalOpen}
