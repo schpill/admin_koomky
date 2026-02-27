@@ -12,6 +12,7 @@ Koomky is a self-hosted Freelance CRM built as a monorepo:
 
 ## Current Implementation Snapshot
 
+- **Phase 11 closed & merged to `main`** — PR #23 (`feature/phase-11-product-catalog-ai-campaigns`, merged 2026-02-27) delivers the full product catalog + AI campaign generation scope (v1.7.0), including backend/frontend test completion and CI hardening fixes.
 - **Phase 10 closed & merged to `main`** — PR #22 (`feature/phase-10-rag-mcp`, merged 2026-02-25) delivers the full RAG pipeline + MCP server (v1.6.0).
 - **Phase 10 scope delivered**:
   - Backend RAG pipeline: `GeminiService` (embed + generate via Gemini API), `DocumentTextExtractorService` (PDF/DOCX/TXT), `DocumentChunkService` (overlap chunking), `DocumentEmbeddingService`, `VectorSearchService` (pgvector cosine), `RagService` (top-5 + prompt + answer/sources/tokens/latency)
@@ -87,7 +88,7 @@ Koomky is a self-hosted Freelance CRM built as a monorepo:
 
 ## Task Tracking
 
-Task tracking files live in `docs/dev/phase{1,2,3,4,5,6}.md`. These are the **source of truth** for task progress across all contributors (humans and AI agents).
+Task tracking files live in `docs/dev/phase{1,2,3,4,5,6,7,8,9,10,11}.md`. These are the **source of truth** for task progress across all contributors (humans and AI agents).
 
 ### Status values
 
@@ -195,7 +196,7 @@ docker compose restart frontend   # régénère .next/ proprement en mode dev
 ## Reference Documents
 
 - `PRD.md` — Full product requirements (v1.1.0 baseline + v1.2/v1.3/v1.6 roadmap)
-- `docs/phases/phase{1,2,3,4,5,6,7,8,9,10}.md` — Detailed specs per phase
-- `docs/dev/phase{1,2,3,4,5,6,7,8,9,10}.md` — Task tracking per phase
+- `docs/phases/phase{1,2,3,4,5,6,7,8,9,10,11}.md` — Detailed specs per phase
+- `docs/dev/phase{1,2,3,4,5,6,7,8,9,10,11}.md` — Task tracking per phase
 - `docs/mcp/claude-desktop.md` — MCP server config for Claude Desktop
 - `scripts/validate-phase5.sh` — Automated local validation for Phase 5 gates
