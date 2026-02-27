@@ -79,7 +79,9 @@ test("invoice detail displays reminder panel with attach action", async ({
 
   await page.goto("/invoices/inv_1");
 
-  await expect(page.getByRole("heading", { name: "FAC-2026-0042" })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "FAC-2026-0042" })
+  ).toBeVisible();
   await expect(page.getByText("Relances")).toBeVisible();
   await expect(
     page.getByRole("button", { name: "Attacher une séquence" })
