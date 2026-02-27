@@ -13,7 +13,8 @@ export default function ReminderSequenceDetailPage() {
   const params = useParams<{ id: string }>();
   const id = params.id;
   const [previewOpen, setPreviewOpen] = useState(false);
-  const { sequences, fetchSequences, updateSequence, isLoading } = useReminderStore();
+  const { sequences, fetchSequences, updateSequence, isLoading } =
+    useReminderStore();
 
   useEffect(() => {
     fetchSequences();
@@ -43,10 +44,16 @@ export default function ReminderSequenceDetailPage() {
         <div>
           <h1 className="text-3xl font-bold">{sequence.name}</h1>
           <p className="text-sm text-muted-foreground">
-            {sequence.is_default ? "Séquence par défaut" : "Séquence personnalisée"}
+            {sequence.is_default
+              ? "Séquence par défaut"
+              : "Séquence personnalisée"}
           </p>
         </div>
-        <Button type="button" variant="outline" onClick={() => setPreviewOpen(true)}>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => setPreviewOpen(true)}
+        >
           Aperçu email
         </Button>
       </div>

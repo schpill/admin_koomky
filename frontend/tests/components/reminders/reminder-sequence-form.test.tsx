@@ -8,7 +8,9 @@ describe("ReminderSequenceForm", () => {
 
     render(<ReminderSequenceForm onSubmit={onSubmit} />);
 
-    fireEvent.change(screen.getByLabelText("Nom"), { target: { value: "Relance" } });
+    fireEvent.change(screen.getByLabelText("Nom"), {
+      target: { value: "Relance" },
+    });
     fireEvent.click(screen.getByText("Enregistrer"));
 
     expect(onSubmit).toHaveBeenCalled();

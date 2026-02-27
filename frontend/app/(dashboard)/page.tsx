@@ -244,8 +244,12 @@ export default function DashboardPage() {
               </p>
               <p className="text-sm text-muted-foreground">
                 <CurrencyAmount
-                  amount={Number(stats?.overdue_invoices_widget?.total_amount || 0)}
-                  currency={stats?.overdue_invoices_widget?.currency || baseCurrency}
+                  amount={Number(
+                    stats?.overdue_invoices_widget?.total_amount || 0
+                  )}
+                  currency={
+                    stats?.overdue_invoices_widget?.currency || baseCurrency
+                  }
                 />
               </p>
             </div>

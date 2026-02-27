@@ -11,14 +11,16 @@ describe("ReminderSequenceCard", () => {
 
     render(
       <ReminderSequenceCard
-        sequence={{
-          id: "s1",
-          user_id: "u1",
-          name: "Relance",
-          is_active: true,
-          is_default: false,
-          steps: [{ step_number: 1, delay_days: 3, subject: "A", body: "B" }],
-        } as any}
+        sequence={
+          {
+            id: "s1",
+            user_id: "u1",
+            name: "Relance",
+            is_active: true,
+            is_default: false,
+            steps: [{ step_number: 1, delay_days: 3, subject: "A", body: "B" }],
+          } as any
+        }
         onEdit={onEdit}
         onSetDefault={onSetDefault}
         onDelete={onDelete}

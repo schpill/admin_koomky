@@ -60,7 +60,12 @@ export function ReminderSequenceCard({
         >
           Définir par défaut
         </Button>
-        <Button type="button" variant="destructive" size="sm" onClick={onDelete}>
+        <Button
+          type="button"
+          variant="destructive"
+          size="sm"
+          onClick={onDelete}
+        >
           Supprimer
         </Button>
       </div>

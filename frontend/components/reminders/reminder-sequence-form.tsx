@@ -48,9 +48,13 @@ export function ReminderSequenceForm({
   onSubmit,
 }: ReminderSequenceFormProps) {
   const [name, setName] = useState(defaultValues?.name || "");
-  const [description, setDescription] = useState(defaultValues?.description || "");
+  const [description, setDescription] = useState(
+    defaultValues?.description || ""
+  );
   const [isActive, setIsActive] = useState(defaultValues?.is_active ?? true);
-  const [isDefault, setIsDefault] = useState(defaultValues?.is_default ?? false);
+  const [isDefault, setIsDefault] = useState(
+    defaultValues?.is_default ?? false
+  );
   const [steps, setSteps] = useState<ReminderStepInput[]>(
     defaultValues?.steps || defaultSteps
   );
@@ -90,7 +94,10 @@ export function ReminderSequenceForm({
       </div>
 
       <div className="space-y-2">
-        <label htmlFor="reminder-seq-description" className="text-sm font-medium">
+        <label
+          htmlFor="reminder-seq-description"
+          className="text-sm font-medium"
+        >
           Description
         </label>
         <Textarea

@@ -25,12 +25,18 @@ describe("useReminderStore", () => {
   });
 
   it("fetches and creates sequences", async () => {
-    (apiClient.get as any).mockResolvedValue({ data: [{ id: "s1", name: "A", steps: [] }] });
+    (apiClient.get as any).mockResolvedValue({
+      data: [{ id: "s1", name: "A", steps: [] }],
+    });
     await useReminderStore.getState().fetchSequences();
     expect(useReminderStore.getState().sequences).toHaveLength(1);
 
-    (apiClient.post as any).mockResolvedValue({ data: { id: "s2", name: "B", steps: [] } });
-    const created = await useReminderStore.getState().createSequence({ name: "B", steps: [] } as any);
+    (apiClient.post as any).mockResolvedValue({
+      data: { id: "s2", name: "B", steps: [] },
+    });
+    const created = await useReminderStore
+      .getState()
+      .createSequence({ name: "B", steps: [] } as any);
     expect(created.id).toBe("s2");
     expect(useReminderStore.getState().sequences[0].id).toBe("s2");
   });
@@ -40,7 +46,9 @@ describe("useReminderStore", () => {
     await useReminderStore.getState().fetchInvoiceReminder("inv_1");
     expect(useReminderStore.getState().invoiceReminder).toBeNull();
 
-    (apiClient.post as any).mockResolvedValueOnce({ data: { id: "r1", is_paused: false } });
+    (apiClient.post as any).mockResolvedValueOnce({
+      data: { id: "r1", is_paused: false },
+    });
     await useReminderStore.getState().attachSequence("inv_1", "seq_1");
     expect(useReminderStore.getState().invoiceReminder?.id).toBe("r1");
 

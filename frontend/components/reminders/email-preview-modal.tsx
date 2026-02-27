@@ -1,6 +1,11 @@
 "use client";
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import type { ReminderStepInput } from "@/lib/stores/reminders";
 
 interface EmailPreviewModalProps {
@@ -9,7 +14,11 @@ interface EmailPreviewModalProps {
   step: ReminderStepInput | null;
 }
 
-export function EmailPreviewModal({ open, onOpenChange, step }: EmailPreviewModalProps) {
+export function EmailPreviewModal({
+  open,
+  onOpenChange,
+  step,
+}: EmailPreviewModalProps) {
   const template = step?.body || "";
   const html = template
     .replaceAll("{{client_name}}", "Jean Dupont")
@@ -26,7 +35,10 @@ export function EmailPreviewModal({ open, onOpenChange, step }: EmailPreviewModa
         <DialogHeader>
           <DialogTitle>Aperçu email</DialogTitle>
         </DialogHeader>
-        <div className="rounded border p-4 text-sm" dangerouslySetInnerHTML={{ __html: html }} />
+        <div
+          className="rounded border p-4 text-sm"
+          dangerouslySetInnerHTML={{ __html: html }}
+        />
       </DialogContent>
     </Dialog>
   );

@@ -31,7 +31,10 @@ export function InvoiceReminderPanel({ invoiceId }: InvoiceReminderPanelProps) {
   }, [fetchSequences, fetchInvoiceReminder, invoiceId]);
 
   const sortedSteps = useMemo(
-    () => (invoiceReminder?.sequence?.steps || []).slice().sort((a, b) => a.step_number - b.step_number),
+    () =>
+      (invoiceReminder?.sequence?.steps || [])
+        .slice()
+        .sort((a, b) => a.step_number - b.step_number),
     [invoiceReminder?.sequence?.steps]
   );
 
@@ -51,7 +54,9 @@ export function InvoiceReminderPanel({ invoiceId }: InvoiceReminderPanelProps) {
   if (!invoiceReminder) {
     return (
       <div className="space-y-3">
-        <p className="text-sm text-muted-foreground">Aucune séquence attachée.</p>
+        <p className="text-sm text-muted-foreground">
+          Aucune séquence attachée.
+        </p>
         <div className="flex items-center gap-2">
           <select
             className="h-10 rounded-md border px-3 text-sm"
@@ -77,18 +82,41 @@ export function InvoiceReminderPanel({ invoiceId }: InvoiceReminderPanelProps) {
     <div className="space-y-4">
       <div className="flex flex-wrap items-center gap-2">
         <p className="text-sm">
-          Séquence: <span className="font-medium">{invoiceReminder.sequence?.name || "-"}</span>
+          Séquence:{" "}
+          <span className="font-medium">
+            {invoiceReminder.sequence?.name || "-"}
+          </span>
         </p>
-        <Button type="button" variant="outline" size="sm" onClick={() => pauseReminder(invoiceId)}>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={() => pauseReminder(invoiceId)}
+        >
           Pause
         </Button>
-        <Button type="button" variant="outline" size="sm" onClick={() => resumeReminder(invoiceId)}>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={() => resumeReminder(invoiceId)}
+        >
           Reprendre
         </Button>
-        <Button type="button" variant="outline" size="sm" onClick={() => skipStep(invoiceId)}>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={() => skipStep(invoiceId)}
+        >
           Sauter étape
         </Button>
-        <Button type="button" variant="destructive" size="sm" onClick={() => cancelReminder(invoiceId)}>
+        <Button
+          type="button"
+          variant="destructive"
+          size="sm"
+          onClick={() => cancelReminder(invoiceId)}
+        >
           Détacher
         </Button>
       </div>

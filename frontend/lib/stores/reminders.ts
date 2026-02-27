@@ -46,7 +46,9 @@ interface ReminderState {
   error: string | null;
 
   fetchSequences: () => Promise<void>;
-  createSequence: (data: Partial<ReminderSequence>) => Promise<ReminderSequence>;
+  createSequence: (
+    data: Partial<ReminderSequence>
+  ) => Promise<ReminderSequence>;
   updateSequence: (
     id: string,
     data: Partial<ReminderSequence>

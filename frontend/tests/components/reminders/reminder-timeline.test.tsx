@@ -6,8 +6,17 @@ describe("ReminderTimeline", () => {
   it("renders steps and statuses", () => {
     render(
       <ReminderTimeline
-        steps={[{ step_number: 1, delay_days: 3, subject: "Sujet", body: "Body" }]}
-        deliveries={[{ id: "d1", reminder_step_id: "x", status: "sent", step: { step_number: 1 } } as any]}
+        steps={[
+          { step_number: 1, delay_days: 3, subject: "Sujet", body: "Body" },
+        ]}
+        deliveries={[
+          {
+            id: "d1",
+            reminder_step_id: "x",
+            status: "sent",
+            step: { step_number: 1 },
+          } as any,
+        ]}
       />
     );
 

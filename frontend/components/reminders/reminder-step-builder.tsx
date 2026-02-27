@@ -22,9 +22,7 @@ export function ReminderStepBuilder({
     const next = value.map((step, stepIndex) =>
       stepIndex === index ? { ...step, [field]: nextValue } : step
     );
-    onChange(
-      next.map((step, idx) => ({ ...step, step_number: idx + 1 }))
-    );
+    onChange(next.map((step, idx) => ({ ...step, step_number: idx + 1 })));
   };
 
   const addStep = () => {
@@ -68,7 +66,9 @@ export function ReminderStepBuilder({
           </div>
           <div className="grid gap-3 md:grid-cols-2">
             <div>
-              <label className="text-xs text-muted-foreground">Délai (jours)</label>
+              <label className="text-xs text-muted-foreground">
+                Délai (jours)
+              </label>
               <Input
                 type="number"
                 min={1}
@@ -83,7 +83,9 @@ export function ReminderStepBuilder({
               <label className="text-xs text-muted-foreground">Objet</label>
               <Input
                 value={step.subject}
-                onChange={(event) => setStep(index, "subject", event.target.value)}
+                onChange={(event) =>
+                  setStep(index, "subject", event.target.value)
+                }
               />
             </div>
           </div>
@@ -98,7 +100,12 @@ export function ReminderStepBuilder({
         </div>
       ))}
 
-      <Button type="button" variant="outline" onClick={addStep} disabled={value.length >= 10}>
+      <Button
+        type="button"
+        variant="outline"
+        onClick={addStep}
+        disabled={value.length >= 10}
+      >
         + Ajouter étape
       </Button>
     </div>
