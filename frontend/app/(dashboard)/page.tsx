@@ -56,7 +56,7 @@ export default function DashboardPage() {
 
   useEffect(() => {
     fetchUrgentTickets({ priority: "urgent", status: "open" });
-  }, []);
+  }, [fetchUrgentTickets]);
 
   useEffect(() => {
     const from = new Date().toISOString().slice(0, 10);

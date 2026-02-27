@@ -86,7 +86,7 @@ export function LeadKanban({
 
       setDraggedLead(null);
     },
-    [draggedLead, updateStatus]
+    [draggedLead, t, updateStatus]
   );
 
   const columns = showTerminalColumns

@@ -87,7 +87,7 @@ export function ProductStatsBar() {
             {formatCurrency(globalAnalytics.total_revenue)}
           </div>
           <p className="text-xs text-muted-foreground">
-            Chiffre d'affaires total
+            Chiffre d&#39;affaires total
           </p>
         </CardContent>
       </Card>

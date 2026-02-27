@@ -17,7 +17,8 @@ export default async function CampaignGeneratePage({
             Générer une campagne email IA
           </h2>
           <p className="text-muted-foreground">
-            Créez automatiquement un email de prospection personnalisé avec l'IA
+            Créez automatiquement un email de prospection personnalisé avec
+            l&#39;IA
           </p>
         </div>
 

@@ -219,7 +219,7 @@ export function ProductCampaignWizard({
               className="w-full"
             >
               <Sparkles className="mr-2 h-4 w-4" />
-              Générer avec l'IA
+              Générer avec l&#39;IA
             </Button>
           </CardContent>
         </Card>
@@ -235,7 +235,7 @@ export function ProductCampaignWizard({
             <div className="flex flex-col items-center justify-center py-12 gap-4">
               <Loader2 className="h-12 w-12 animate-spin text-primary" />
               <p className="text-muted-foreground text-center">
-                L'IA génère votre campagne email personnalisée...
+                L&#39;IA génère votre campagne email personnalisée...
                 <br />
                 <span className="text-sm">
                   Cela peut prendre quelques secondes.
@@ -264,8 +264,8 @@ export function ProductCampaignWizard({
               <AlertTriangle className="h-4 w-4 mt-0.5 shrink-0" />
               <p className="text-sm">
                 <strong>Campagne créée en BROUILLON</strong> — Relisez et
-                modifiez le contenu avant d'envoyer. Une campagne en brouillon
-                n'est jamais envoyée sans validation manuelle.
+                modifiez le contenu avant d&#39;envoyer. Une campagne en
+                brouillon n&#39;est jamais envoyée sans validation manuelle.
               </p>
             </div>
 
