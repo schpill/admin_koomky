@@ -104,7 +104,7 @@ class Product extends Model
     /**
      * Scope a query to only include active products.
      *
-     * @param Builder<Product> $query
+     * @param  Builder<Product>  $query
      */
     public function scopeActive(Builder $query): void
     {
@@ -114,7 +114,7 @@ class Product extends Model
     /**
      * Scope a query to only include archived (soft deleted) products.
      *
-     * @param Builder<Product> $query
+     * @param  Builder<Product>  $query
      */
     public function scopeArchived(Builder $query): void
     {
@@ -124,7 +124,7 @@ class Product extends Model
     /**
      * Scope a query to only include products of a certain type.
      *
-     * @param Builder<Product> $query
+     * @param  Builder<Product>  $query
      */
     public function scopeByType(Builder $query, string $type): void
     {
@@ -134,7 +134,7 @@ class Product extends Model
     /**
      * Scope a query to only include products with a specific tag.
      *
-     * @param Builder<Product> $query
+     * @param  Builder<Product>  $query
      */
     public function scopeByTag(Builder $query, string $tag): void
     {

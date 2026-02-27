@@ -7,7 +7,6 @@ use App\Models\Product;
 use App\Models\ProductSale;
 use App\Models\User;
 use App\Services\ProductAnalyticsService;
-use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -20,7 +19,7 @@ class ProductAnalyticsServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->service = new ProductAnalyticsService();
+        $this->service = new ProductAnalyticsService;
     }
 
     public function test_product_stats_returns_correct_shape(): void

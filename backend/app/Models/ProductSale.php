@@ -108,7 +108,7 @@ class ProductSale extends Model
     /**
      * Scope a query to only include sales with a specific status.
      *
-     * @param Builder<ProductSale> $query
+     * @param  Builder<ProductSale>  $query
      */
     public function scopeByStatus(Builder $query, string $status): void
     {
@@ -118,7 +118,7 @@ class ProductSale extends Model
     /**
      * Scope a query to only include confirmed sales.
      *
-     * @param Builder<ProductSale> $query
+     * @param  Builder<ProductSale>  $query
      */
     public function scopeConfirmed(Builder $query): void
     {
@@ -128,7 +128,7 @@ class ProductSale extends Model
     /**
      * Scope a query to only include sales for a specific period.
      *
-     * @param Builder<ProductSale> $query
+     * @param  Builder<ProductSale>  $query
      */
     public function scopeForPeriod(Builder $query, Carbon $from, Carbon $to): void
     {

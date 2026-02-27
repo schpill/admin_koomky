@@ -16,8 +16,7 @@ class ProductCampaignController extends Controller
 {
     public function __construct(
         private readonly ProductCampaignGeneratorService $generatorService
-    ) {
-    }
+    ) {}
 
     /**
      * Generate a campaign from a product using AI.

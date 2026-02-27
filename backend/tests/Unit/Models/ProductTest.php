@@ -2,8 +2,6 @@
 
 namespace Tests\Unit\Models;
 
-use App\Enums\ProductPriceType;
-use App\Enums\ProductSaleStatus;
 use App\Enums\ProductType;
 use App\Models\Campaign;
 use App\Models\Product;
@@ -18,7 +16,7 @@ class ProductTest extends TestCase
 
     public function test_product_has_correct_fillable_attributes(): void
     {
-        $product = new Product();
+        $product = new Product;
 
         $this->assertEquals([
             'user_id',
@@ -42,7 +40,7 @@ class ProductTest extends TestCase
 
     public function test_product_has_correct_casts(): void
     {
-        $product = new Product();
+        $product = new Product;
         $casts = $product->getCasts();
 
         $this->assertArrayHasKey('price', $casts);
@@ -194,7 +192,7 @@ class ProductTest extends TestCase
 
     public function test_product_has_uuids(): void
     {
-        $product = new Product();
+        $product = new Product;
 
         $this->assertTrue(method_exists($product, 'getKeyType'));
         $this->assertEquals('string', $product->getKeyType());

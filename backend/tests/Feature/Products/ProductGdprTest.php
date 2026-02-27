@@ -25,7 +25,7 @@ class ProductGdprTest extends TestCase
             'sold_at' => now(),
         ]);
 
-        $service = new DataExportService();
+        $service = new DataExportService;
         $export = $service->exportUserData($user);
 
         $this->assertArrayHasKey('products', $export);
@@ -47,7 +47,7 @@ class ProductGdprTest extends TestCase
             'sold_at' => now()->subDays(5),
         ]);
 
-        $service = new DataExportService();
+        $service = new DataExportService;
         $export = $service->exportUserData($user);
 
         $saleExport = $export['product_sales'][0];
@@ -73,7 +73,7 @@ class ProductGdprTest extends TestCase
         $product2 = Product::factory()->for($user2)->create();
         ProductSale::factory()->for($product2)->for($user2)->create();
 
-        $service = new DataExportService();
+        $service = new DataExportService;
         $export = $service->exportUserData($user1);
 
         $this->assertCount(1, $export['products']);
@@ -87,7 +87,7 @@ class ProductGdprTest extends TestCase
         $product = Product::factory()->for($user)->create(['name' => 'Deleted Product']);
         $product->delete();
 
-        $service = new DataExportService();
+        $service = new DataExportService;
         $export = $service->exportUserData($user);
 
         $this->assertCount(1, $export['products']);
@@ -109,7 +109,7 @@ class ProductGdprTest extends TestCase
             'sold_at' => now(),
         ]);
 
-        $service = new DataExportService();
+        $service = new DataExportService;
         $export = $service->exportUserData($user);
 
         $saleExport = $export['product_sales'][0];

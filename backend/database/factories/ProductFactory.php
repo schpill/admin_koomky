@@ -33,7 +33,7 @@ class ProductFactory extends Factory
             'id' => (string) Str::uuid(),
             'user_id' => User::factory(),
             'name' => ucfirst($name),
-            'slug' => Str::slug($name) . '-' . $this->faker->unique()->randomNumber(5),
+            'slug' => Str::slug($name).'-'.$this->faker->unique()->randomNumber(5),
             'type' => $this->faker->randomElement($types),
             'description' => $this->faker->paragraphs(2, true),
             'short_description' => $this->faker->sentence(),

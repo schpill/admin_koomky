@@ -3,7 +3,6 @@
 use App\Models\Client;
 use App\Models\Invoice;
 use App\Models\Product;
-use App\Models\ProductSale;
 use App\Models\Quote;
 use App\Models\User;
 use App\Services\WebhookDispatchService;

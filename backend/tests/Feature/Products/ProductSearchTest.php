@@ -32,14 +32,14 @@ class ProductSearchTest extends TestCase
 
     public function test_product_has_searchable_trait(): void
     {
-        $product = new Product();
+        $product = new Product;
 
         $this->assertTrue(in_array(Searchable::class, class_uses_recursive($product)));
     }
 
     public function test_product_searchable_configuration_is_correct(): void
     {
-        $product = new Product();
+        $product = new Product;
 
         $config = $product->searchableConfiguration();
 
@@ -54,14 +54,14 @@ class ProductSearchTest extends TestCase
 
     public function test_filterable_attributes_method_returns_correct_values(): void
     {
-        $product = new Product();
+        $product = new Product;
 
         $this->assertEquals(['user_id', 'type', 'is_active'], $product->getFilterableAttributes());
     }
 
     public function test_sortable_attributes_method_returns_correct_values(): void
     {
-        $product = new Product();
+        $product = new Product;
 
         $this->assertEquals(['created_at', 'name', 'price'], $product->getSortableAttributes());
     }

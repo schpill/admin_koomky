@@ -19,8 +19,7 @@ class ProductController extends Controller
 {
     public function __construct(
         private readonly ProductAnalyticsService $analyticsService
-    ) {
-    }
+    ) {}
 
     /**
      * Display a listing of products.
@@ -93,7 +92,7 @@ class ProductController extends Controller
         $baseSlug = $data['slug'];
         $counter = 1;
         while (Product::where('slug', $data['slug'])->where('user_id', $user->id)->exists()) {
-            $data['slug'] = $baseSlug . '-' . $counter;
+            $data['slug'] = $baseSlug.'-'.$counter;
             $counter++;
         }
 
@@ -144,7 +143,7 @@ class ProductController extends Controller
                 ->where('user_id', $userId)
                 ->where('id', '!=', $product->id)
                 ->exists()) {
-                $data['slug'] = $baseSlug . '-' . $counter;
+                $data['slug'] = $baseSlug.'-'.$counter;
                 $counter++;
             }
         }

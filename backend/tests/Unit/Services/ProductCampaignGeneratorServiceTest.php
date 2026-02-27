@@ -19,6 +19,7 @@ class ProductCampaignGeneratorServiceTest extends TestCase
     use RefreshDatabase;
 
     private ProductCampaignGeneratorService $service;
+
     private $geminiService;
 
     protected function setUp(): void

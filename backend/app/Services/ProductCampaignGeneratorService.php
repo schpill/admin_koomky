@@ -16,8 +16,7 @@ class ProductCampaignGeneratorService
 {
     public function __construct(
         private readonly GeminiService $geminiService
-    ) {
-    }
+    ) {}
 
     /**
      * Generate a campaign from a product using AI.
@@ -66,7 +65,7 @@ class ProductCampaignGeneratorService
             // Create campaign in draft status
             $campaign = Campaign::create([
                 'user_id' => $user->id,
-                'name' => "Campagne {$product->name} - " . now()->format('d/m/Y'),
+                'name' => "Campagne {$product->name} - ".now()->format('d/m/Y'),
                 'segment_id' => $segment->id,
                 'template_id' => $template->id,
                 'status' => 'draft',
@@ -122,7 +121,7 @@ class ProductCampaignGeneratorService
     private function buildPrompt(Product $product, User $user): string
     {
         $userName = $user->name ?? $user->email;
-        $priceFormatted = number_format((float) $product->price, 2) . ' ' . $product->currency_code;
+        $priceFormatted = number_format((float) $product->price, 2).' '.$product->currency_code;
         $type = $product->type instanceof \BackedEnum ? $product->type->value : (string) $product->type;
 
         $duration = '';
