@@ -15,6 +15,7 @@ enum WebhookEvent: string
     case INVOICE_PAID = 'invoice.paid';
     case INVOICE_OVERDUE = 'invoice.overdue';
     case INVOICE_CANCELLED = 'invoice.cancelled';
+    case INVOICE_REMINDER_SENT = 'invoice.reminder_sent';
 
     // Quote events
     case QUOTE_CREATED = 'quote.created';
@@ -72,6 +73,7 @@ enum WebhookEvent: string
                 self::INVOICE_PAID->value,
                 self::INVOICE_OVERDUE->value,
                 self::INVOICE_CANCELLED->value,
+                self::INVOICE_REMINDER_SENT->value,
             ],
             'quotes' => [
                 self::QUOTE_CREATED->value,
@@ -116,6 +118,7 @@ enum WebhookEvent: string
             self::INVOICE_PAID => 'Invoice paid',
             self::INVOICE_OVERDUE => 'Invoice overdue',
             self::INVOICE_CANCELLED => 'Invoice cancelled',
+            self::INVOICE_REMINDER_SENT => 'Invoice reminder sent',
             self::QUOTE_CREATED => 'Quote created',
             self::QUOTE_SENT => 'Quote sent',
             self::QUOTE_ACCEPTED => 'Quote accepted',

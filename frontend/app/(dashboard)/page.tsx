@@ -232,6 +232,33 @@ export default function DashboardPage() {
         data={stats?.revenue_trend || []}
       />
 
+      {(stats?.overdue_invoices_widget?.count || 0) > 0 ? (
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base">Factures en retard</CardTitle>
+          </CardHeader>
+          <CardContent className="flex items-center justify-between gap-4">
+            <div>
+              <p className="text-2xl font-bold">
+                {stats?.overdue_invoices_widget?.count || 0}
+              </p>
+              <p className="text-sm text-muted-foreground">
+                <CurrencyAmount
+                  amount={Number(stats?.overdue_invoices_widget?.total_amount || 0)}
+                  currency={stats?.overdue_invoices_widget?.currency || baseCurrency}
+                />
+              </p>
+            </div>
+            <Link
+              href="/invoices?filter=overdue"
+              className="text-sm font-medium text-primary hover:underline"
+            >
+              Voir les factures
+            </Link>
+          </CardContent>
+        </Card>
+      ) : null}
+
       <div className="grid gap-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
         <PipelineSummaryWidget />
         <CampaignSummaryWidget

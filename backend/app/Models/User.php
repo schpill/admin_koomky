@@ -256,6 +256,30 @@ class User extends Authenticatable
     }
 
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\ReminderSequence, \App\Models\User>
+     */
+    public function reminderSequences(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(ReminderSequence::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\InvoiceReminderSchedule, \App\Models\User>
+     */
+    public function invoiceReminderSchedules(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(InvoiceReminderSchedule::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\ReminderDelivery, \App\Models\User>
+     */
+    public function reminderDeliveries(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(ReminderDelivery::class);
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\WebhookEndpoint, \App\Models\User>
      */
     public function webhookEndpoints(): \Illuminate\Database\Eloquent\Relations\HasMany

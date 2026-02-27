@@ -19,6 +19,7 @@ use App\Models\ProductSale;
 use App\Models\Project;
 use App\Models\Quote;
 use App\Models\RagUsageLog;
+use App\Models\ReminderDelivery;
 use App\Models\Segment;
 use App\Models\Tag;
 use App\Models\Ticket;
@@ -109,6 +110,11 @@ class DataExportService
             ->with(['product', 'client'])
             ->get();
 
+        $reminderDeliveries = ReminderDelivery::query()
+            ->where('user_id', $user->id)
+            ->with(['invoice', 'step'])
+            ->get();
+
         return [
             'exported_at' => now()->toIso8601String(),
             'user' => [
@@ -170,6 +176,16 @@ class DataExportService
                 'status' => $sale->status->value,
                 'sold_at' => $sale->sold_at?->toIso8601String(),
             ])->toArray(),
+            'reminder_deliveries' => $reminderDeliveries->map(fn (ReminderDelivery $delivery): array => [
+                'id' => $delivery->id,
+                'invoice_id' => $delivery->invoice_id,
+                'invoice_number' => $delivery->invoice?->number,
+                'step_number' => $delivery->step?->step_number,
+                'delay_days' => $delivery->step?->delay_days,
+                'sent_at' => $delivery->sent_at?->toIso8601String(),
+                'status' => $delivery->status,
+                'error_message' => $delivery->error_message,
+            ])->toArray(),
         ];
     }
 
@@ -194,8 +210,30 @@ class DataExportService
         );
 
         $zip->addFromString('export.json', $json);
+        $csvRows = ["invoice_number,step_number,delay_days,sent_at,status"];
+        foreach (($payload['reminder_deliveries'] ?? []) as $delivery) {
+            if (! is_array($delivery)) {
+                continue;
+            }
+
+            $csvRows[] = implode(',', [
+                $this->escapeCsv((string) ($delivery['invoice_number'] ?? '')),
+                $this->escapeCsv((string) ($delivery['step_number'] ?? '')),
+                $this->escapeCsv((string) ($delivery['delay_days'] ?? '')),
+                $this->escapeCsv((string) ($delivery['sent_at'] ?? '')),
+                $this->escapeCsv((string) ($delivery['status'] ?? '')),
+            ]);
+        }
+        $zip->addFromString('reminder_deliveries.csv', implode("\n", $csvRows));
         $zip->close();
 
         return $archivePath;
+    }
+
+    private function escapeCsv(string $value): string
+    {
+        $escaped = str_replace('"', '""', $value);
+
+        return '"'.$escaped.'"';
     }
 }

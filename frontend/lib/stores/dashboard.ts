@@ -63,6 +63,11 @@ interface DashboardStats {
     }>;
     base_currency: string;
   };
+  overdue_invoices_widget?: {
+    count: number;
+    total_amount: number;
+    currency: string;
+  };
 }
 
 interface DashboardState {

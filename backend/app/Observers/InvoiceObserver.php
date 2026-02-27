@@ -3,9 +3,12 @@
 namespace App\Observers;
 
 use App\Models\Invoice;
+use App\Models\InvoiceReminderSchedule;
 use App\Models\ProductSale;
+use App\Models\ReminderSequence;
 use App\Services\ActivityService;
 use App\Services\Calendar\CalendarAutoEventService;
+use App\Services\ReminderDispatchService;
 use App\Services\WebhookDispatchService;
 use Illuminate\Support\Facades\DB;
 
@@ -75,6 +78,14 @@ class InvoiceObserver
             $this->dispatchWebhook($invoice, $webhookEvent, [
                 'previous_status' => $previousStatus,
             ]);
+        }
+
+        if ($newStatus === 'overdue') {
+            $this->startReminderSchedule($invoice);
+        }
+
+        if (in_array($newStatus, ['paid', 'cancelled'], true)) {
+            app(ReminderDispatchService::class)->completeSchedule($invoice);
         }
 
         // Create ProductSale records when invoice is paid
@@ -217,5 +228,39 @@ class InvoiceObserver
         /** @var WebhookDispatchService $service */
         $service = app(WebhookDispatchService::class);
         $service->dispatch($event, $data, $userId);
+    }
+
+    private function startReminderSchedule(Invoice $invoice): void
+    {
+        $existingSchedule = InvoiceReminderSchedule::query()
+            ->where('invoice_id', $invoice->id)
+            ->exists();
+
+        if ($existingSchedule) {
+            return;
+        }
+
+        $defaultSequence = ReminderSequence::query()
+            ->where('user_id', $invoice->user_id)
+            ->active()
+            ->default()
+            ->with('steps')
+            ->first();
+
+        if (! $defaultSequence) {
+            return;
+        }
+
+        $firstStep = $defaultSequence->steps()->orderBy('step_number')->first();
+
+        InvoiceReminderSchedule::query()->create([
+            'invoice_id' => $invoice->id,
+            'sequence_id' => $defaultSequence->id,
+            'user_id' => $invoice->user_id,
+            'started_at' => $invoice->due_date,
+            'completed_at' => null,
+            'is_paused' => false,
+            'next_reminder_step_id' => $firstStep?->id,
+        ]);
     }
 }

@@ -26,6 +26,7 @@ use App\Http\Controllers\Api\V1\ExpenseController;
 use App\Http\Controllers\Api\V1\ExpenseReportController;
 use App\Http\Controllers\Api\V1\HealthController;
 use App\Http\Controllers\Api\V1\InvoiceController;
+use App\Http\Controllers\Api\V1\InvoiceReminderController;
 use App\Http\Controllers\Api\V1\InvoicingSettingsController;
 use App\Http\Controllers\Api\V1\LeadActivityController;
 use App\Http\Controllers\Api\V1\LeadAnalyticsController;
@@ -52,6 +53,7 @@ use App\Http\Controllers\Api\V1\ProjectProfitabilityController;
 use App\Http\Controllers\Api\V1\QuoteController;
 use App\Http\Controllers\Api\V1\RagController;
 use App\Http\Controllers\Api\V1\RecurringInvoiceProfileController;
+use App\Http\Controllers\Api\V1\ReminderSequenceController;
 use App\Http\Controllers\Api\V1\ReportController;
 use App\Http\Controllers\Api\V1\SearchController;
 use App\Http\Controllers\Api\V1\SegmentController;
@@ -223,6 +225,19 @@ Route::prefix('v1')->group(function () {
         Route::post('invoices/{invoice}/send', [InvoiceController::class, 'send']);
         Route::post('invoices/{invoice}/duplicate', [InvoiceController::class, 'duplicate']);
         Route::post('invoices/{invoice}/payments', [PaymentController::class, 'store']);
+        Route::get('invoices/{invoice}/reminder', [InvoiceReminderController::class, 'show']);
+        Route::post('invoices/{invoice}/reminder/attach', [InvoiceReminderController::class, 'attach']);
+        Route::post('invoices/{invoice}/reminder/pause', [InvoiceReminderController::class, 'pause']);
+        Route::post('invoices/{invoice}/reminder/resume', [InvoiceReminderController::class, 'resume']);
+        Route::post('invoices/{invoice}/reminder/skip', [InvoiceReminderController::class, 'skip']);
+        Route::delete('invoices/{invoice}/reminder', [InvoiceReminderController::class, 'cancel']);
+
+        Route::get('reminder-sequences', [ReminderSequenceController::class, 'index']);
+        Route::post('reminder-sequences', [ReminderSequenceController::class, 'store']);
+        Route::get('reminder-sequences/{sequence}', [ReminderSequenceController::class, 'show']);
+        Route::patch('reminder-sequences/{sequence}', [ReminderSequenceController::class, 'update']);
+        Route::delete('reminder-sequences/{sequence}', [ReminderSequenceController::class, 'destroy']);
+        Route::post('reminder-sequences/{sequence}/default', [ReminderSequenceController::class, 'setDefault']);
 
         // Recurring Invoices
         Route::apiResource('recurring-invoices', RecurringInvoiceProfileController::class);

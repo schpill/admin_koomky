@@ -6,6 +6,7 @@ use App\Models\Activity;
 use App\Models\Campaign;
 use App\Models\Client;
 use App\Models\Invoice;
+use App\Models\InvoiceReminderSchedule;
 use App\Models\ProductSale;
 use App\Models\Project;
 use App\Models\RecurringInvoiceProfile;
@@ -211,8 +212,28 @@ class DashboardService
                     'top_categories' => $topExpenseCategories,
                     'base_currency' => $baseCurrency,
                 ],
+                'overdue_invoices_widget' => $this->overdueInvoicesWidget($user),
             ];
         });
+    }
+
+    /**
+     * @return array{count:int,total_amount:float,currency:string}
+     */
+    public function overdueInvoicesWidget(User $user): array
+    {
+        $query = Invoice::query()
+            ->where('user_id', $user->id)
+            ->where('status', 'overdue')
+            ->whereHas('reminderSchedule', function ($scheduleQuery): void {
+                $scheduleQuery->whereNull('completed_at')->where('is_paused', false);
+            });
+
+        return [
+            'count' => (int) $query->count(),
+            'total_amount' => round((float) $query->sum('total'), 2),
+            'currency' => strtoupper((string) ($user->base_currency ?? 'EUR')),
+        ];
     }
 
     /**
