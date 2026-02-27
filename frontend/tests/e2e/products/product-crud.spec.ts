@@ -38,7 +38,9 @@ test.describe("Products CRUD", () => {
     });
 
     await page.goto("/products");
-    await expect(page.getByRole("heading", { name: "Catalogue" })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Catalogue" })
+    ).toBeVisible();
 
     await page.goto("/products/new");
     await expect(

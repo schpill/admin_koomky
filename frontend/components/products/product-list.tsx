@@ -131,9 +131,7 @@ export function ProductList() {
       {/* Product grid */}
       {products.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 text-center">
-          <p className="text-muted-foreground mb-4">
-            Aucun produit trouvé.
-          </p>
+          <p className="text-muted-foreground mb-4">Aucun produit trouvé.</p>
           <Button asChild variant="outline">
             <Link href="/products/new">
               <Plus className="mr-2 h-4 w-4" />

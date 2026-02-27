@@ -59,9 +59,13 @@ describe("useProductsStore", () => {
       }),
     } as Response);
 
-    await useProductsStore.getState().fetchProducts({ isActive: true, page: 1 });
+    await useProductsStore
+      .getState()
+      .fetchProducts({ isActive: true, page: 1 });
 
-    expect(fetchMock).toHaveBeenCalledWith("/api/v1/products?page=1&is_active=true");
+    expect(fetchMock).toHaveBeenCalledWith(
+      "/api/v1/products?page=1&is_active=true"
+    );
   });
 
   it("creates a product and refreshes the list", async () => {
@@ -128,6 +132,8 @@ describe("useProductsStore", () => {
       useProductsStore.getState().generateCampaign("prod_1", "seg_1")
     ).rejects.toThrow("Failed to generate campaign");
 
-    expect(useProductsStore.getState().error).toBe("Failed to generate campaign");
+    expect(useProductsStore.getState().error).toBe(
+      "Failed to generate campaign"
+    );
   });
 });

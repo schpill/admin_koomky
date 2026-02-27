@@ -24,7 +24,9 @@ describe("CampaignGeneratorDialog", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Créer une campagne" }));
 
-    expect(screen.getByText("Générer une campagne email IA")).toBeInTheDocument();
+    expect(
+      screen.getByText("Générer une campagne email IA")
+    ).toBeInTheDocument();
     expect(screen.getByTestId("wizard")).toHaveTextContent("Wizard for prod_1");
   });
 

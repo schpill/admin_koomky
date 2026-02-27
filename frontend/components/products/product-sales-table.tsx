@@ -12,10 +12,7 @@ interface ProductSalesTableProps {
 
 type SaleStatus = ProductSale["status"];
 
-const statusConfig: Record<
-  SaleStatus,
-  { label: string; className: string }
-> = {
+const statusConfig: Record<SaleStatus, { label: string; className: string }> = {
   pending: { label: "En attente", className: "bg-yellow-100 text-yellow-800" },
   confirmed: { label: "Confirmée", className: "bg-green-100 text-green-800" },
   delivered: { label: "Livrée", className: "bg-blue-100 text-blue-800" },
@@ -58,20 +55,23 @@ export function ProductSalesTable({
         >
           Tout
         </Button>
-        {(Object.entries(statusConfig) as [SaleStatus, (typeof statusConfig)[SaleStatus]][]).map(
-          ([status, config]) => (
-            <Button
-              key={status}
-              variant={statusFilter === status ? "default" : "outline"}
-              size="sm"
-              onClick={() =>
-                setStatusFilter(statusFilter === status ? null : status)
-              }
-            >
-              {config.label}
-            </Button>
-          )
-        )}
+        {(
+          Object.entries(statusConfig) as [
+            SaleStatus,
+            (typeof statusConfig)[SaleStatus],
+          ][]
+        ).map(([status, config]) => (
+          <Button
+            key={status}
+            variant={statusFilter === status ? "default" : "outline"}
+            size="sm"
+            onClick={() =>
+              setStatusFilter(statusFilter === status ? null : status)
+            }
+          >
+            {config.label}
+          </Button>
+        ))}
       </div>
 
       {/* Table */}

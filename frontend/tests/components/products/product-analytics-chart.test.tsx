@@ -5,7 +5,9 @@ import { ProductAnalyticsChart } from "@/components/products/product-analytics-c
 describe("ProductAnalyticsChart", () => {
   it("shows loading state", () => {
     render(<ProductAnalyticsChart data={[]} isLoading />);
-    expect(screen.queryByText("Aucune donnée disponible")).not.toBeInTheDocument();
+    expect(
+      screen.queryByText("Aucune donnée disponible")
+    ).not.toBeInTheDocument();
   });
 
   it("shows empty state", () => {
@@ -26,8 +28,12 @@ describe("ProductAnalyticsChart", () => {
     expect(screen.getByText("janv. 26")).toBeInTheDocument();
     expect(screen.getByText("févr. 26")).toBeInTheDocument();
     expect(
-      screen.getByText((content) => content.includes("1") && content.includes("000,00"))
+      screen.getByText(
+        (content) => content.includes("1") && content.includes("000,00")
+      )
     ).toBeInTheDocument();
-    expect(screen.getByText((content) => content.includes("500,00"))).toBeInTheDocument();
+    expect(
+      screen.getByText((content) => content.includes("500,00"))
+    ).toBeInTheDocument();
   });
 });

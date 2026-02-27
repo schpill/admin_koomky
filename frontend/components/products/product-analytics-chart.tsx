@@ -31,7 +31,9 @@ export function ProductAnalyticsChart({
   if (!data || data.length === 0) {
     return (
       <div className="flex items-center justify-center h-32">
-        <p className="text-muted-foreground text-sm">Aucune donnée disponible</p>
+        <p className="text-muted-foreground text-sm">
+          Aucune donnée disponible
+        </p>
       </div>
     );
   }
@@ -40,7 +42,10 @@ export function ProductAnalyticsChart({
 
   const formatMonth = (month: string) => {
     const date = new Date(month + "-01");
-    return date.toLocaleDateString("fr-FR", { year: "2-digit", month: "short" });
+    return date.toLocaleDateString("fr-FR", {
+      year: "2-digit",
+      month: "short",
+    });
   };
 
   return (

@@ -3,9 +3,13 @@ import { render, screen } from "@testing-library/react";
 import { ProductCard } from "@/components/products/product-card";
 
 vi.mock("next/link", () => ({
-  default: ({ href, children }: { href: string; children: React.ReactNode }) => (
-    <a href={href}>{children}</a>
-  ),
+  default: ({
+    href,
+    children,
+  }: {
+    href: string;
+    children: React.ReactNode;
+  }) => <a href={href}>{children}</a>,
 }));
 
 describe("ProductCard", () => {
@@ -29,7 +33,11 @@ describe("ProductCard", () => {
 
     expect(screen.getByText("Formation Laravel")).toBeInTheDocument();
     expect(screen.getByText("Formation avancée")).toBeInTheDocument();
-    expect(screen.getByText((content) => content.includes("1") && content.includes("200,00"))).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        (content) => content.includes("1") && content.includes("200,00")
+      )
+    ).toBeInTheDocument();
     expect(screen.getByText("3 jours")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /campagne ia/i })).toHaveAttribute(
       "href",
@@ -53,7 +61,9 @@ describe("ProductCard", () => {
     );
 
     expect(screen.getByText("Archivé")).toBeInTheDocument();
-    expect(screen.queryByRole("link", { name: /campagne ia/i })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("link", { name: /campagne ia/i })
+    ).not.toBeInTheDocument();
   });
 
   it("supports disabling campaign shortcut", () => {
@@ -72,6 +82,8 @@ describe("ProductCard", () => {
       />
     );
 
-    expect(screen.queryByRole("link", { name: /campagne ia/i })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("link", { name: /campagne ia/i })
+    ).not.toBeInTheDocument();
   });
 });

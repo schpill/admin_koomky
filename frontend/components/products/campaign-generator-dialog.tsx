@@ -40,8 +40,8 @@ export function CampaignGeneratorDialog({
         <DialogHeader>
           <DialogTitle>Générer une campagne email IA</DialogTitle>
           <DialogDescription>
-            Créez une campagne en brouillon à partir de ce produit avec le wizard
-            en 3 étapes.
+            Créez une campagne en brouillon à partir de ce produit avec le
+            wizard en 3 étapes.
           </DialogDescription>
         </DialogHeader>
 

@@ -21,6 +21,8 @@ test.describe("Product campaign generation", () => {
     await expect(
       page.getByRole("heading", { name: "Générer une campagne email IA" })
     ).toBeVisible();
-    await expect(page.getByText("Étape 1 — Choisir votre audience")).toBeVisible();
+    await expect(
+      page.getByText("Étape 1 — Choisir votre audience")
+    ).toBeVisible();
   });
 });

@@ -49,7 +49,9 @@ describe("ProductStatsBar", () => {
     expect(screen.getByText("Produits actifs")).toBeInTheDocument();
     expect(screen.getByText("2")).toBeInTheDocument();
     expect(
-      screen.getByText((content) => content.includes("1") && content.includes("500,00"))
+      screen.getByText(
+        (content) => content.includes("1") && content.includes("500,00")
+      )
     ).toBeInTheDocument();
     expect(screen.getByText("3")).toBeInTheDocument();
   });

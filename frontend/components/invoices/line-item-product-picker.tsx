@@ -87,7 +87,9 @@ export function LineItemProductPicker({
             {selectedProduct ? (
               <span className="truncate">{selectedProduct.name}</span>
             ) : (
-              <span className="text-muted-foreground">Sélectionner un produit...</span>
+              <span className="text-muted-foreground">
+                Sélectionner un produit...
+              </span>
             )}
           </div>
           <div className="flex items-center gap-1">
@@ -134,7 +136,9 @@ export function LineItemProductPicker({
                       )}
                     />
                     <div className="flex flex-col">
-                      <span className="text-sm font-medium">{product.name}</span>
+                      <span className="text-sm font-medium">
+                        {product.name}
+                      </span>
                       <div className="flex items-center gap-1">
                         <ProductTypeBadge type={product.type} size="sm" />
                         <span className="text-xs text-muted-foreground">

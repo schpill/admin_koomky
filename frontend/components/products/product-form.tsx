@@ -232,7 +232,7 @@ export function ProductForm({
             onValueChange={(v) =>
               setValue(
                 "duration_unit",
-                v as ProductFormValues["duration_unit"] ?? null
+                (v as ProductFormValues["duration_unit"]) ?? null
               )
             }
           >
@@ -251,11 +251,7 @@ export function ProductForm({
 
       <div className="space-y-2">
         <Label htmlFor="sku">SKU (optionnel)</Label>
-        <Input
-          id="sku"
-          placeholder="FORM-LARAVEL-001"
-          {...register("sku")}
-        />
+        <Input id="sku" placeholder="FORM-LARAVEL-001" {...register("sku")} />
       </div>
 
       <div className="flex gap-3">

@@ -12,7 +12,9 @@ test.describe("Product sale tracking", () => {
         body: JSON.stringify({
           status: "Success",
           data: {
-            top_products: [{ id: "prod_1", name: "Audit API", revenue: 900, sales_count: 3 }],
+            top_products: [
+              { id: "prod_1", name: "Audit API", revenue: 900, sales_count: 3 },
+            ],
             total_revenue: 900,
             total_sales: 3,
           },

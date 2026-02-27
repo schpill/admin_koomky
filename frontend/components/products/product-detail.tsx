@@ -80,9 +80,7 @@ export function ProductDetail({ productId }: ProductDetailProps) {
           <div className="flex items-center gap-3">
             <h1 className="text-3xl font-bold">{product.name}</h1>
             <ProductTypeBadge type={product.type} />
-            {!product.is_active && (
-              <Badge variant="secondary">Archivé</Badge>
-            )}
+            {!product.is_active && <Badge variant="secondary">Archivé</Badge>}
           </div>
           <div className="text-2xl font-semibold text-muted-foreground">
             {formatPrice(product.price)}{" "}

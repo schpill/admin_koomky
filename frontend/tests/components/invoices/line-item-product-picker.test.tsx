@@ -14,17 +14,31 @@ vi.mock("@/components/products/product-type-badge", () => ({
 }));
 
 vi.mock("@/components/ui/popover", () => ({
-  Popover: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-  PopoverTrigger: ({ children }: { children: React.ReactNode }) => <>{children}</>,
-  PopoverContent: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  Popover: ({ children }: { children: React.ReactNode }) => (
+    <div>{children}</div>
+  ),
+  PopoverTrigger: ({ children }: { children: React.ReactNode }) => (
+    <>{children}</>
+  ),
+  PopoverContent: ({ children }: { children: React.ReactNode }) => (
+    <div>{children}</div>
+  ),
 }));
 
 vi.mock("@/components/ui/command", () => ({
-  Command: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  Command: ({ children }: { children: React.ReactNode }) => (
+    <div>{children}</div>
+  ),
   CommandInput: () => <input aria-label="Rechercher un produit" />,
-  CommandList: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-  CommandEmpty: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-  CommandGroup: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  CommandList: ({ children }: { children: React.ReactNode }) => (
+    <div>{children}</div>
+  ),
+  CommandEmpty: ({ children }: { children: React.ReactNode }) => (
+    <div>{children}</div>
+  ),
+  CommandGroup: ({ children }: { children: React.ReactNode }) => (
+    <div>{children}</div>
+  ),
   CommandItem: ({
     children,
     value,

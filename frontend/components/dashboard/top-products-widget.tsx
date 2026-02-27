@@ -8,7 +8,8 @@ import { CurrencyAmount } from "@/components/shared/currency-amount";
 import Link from "next/link";
 
 export function TopProductsWidget() {
-  const { globalAnalytics, isLoading, fetchGlobalAnalytics } = useProductsStore();
+  const { globalAnalytics, isLoading, fetchGlobalAnalytics } =
+    useProductsStore();
 
   useEffect(() => {
     fetchGlobalAnalytics();
@@ -33,16 +34,11 @@ export function TopProductsWidget() {
         {isLoading ? (
           <div className="space-y-2">
             {Array.from({ length: 3 }).map((_, i) => (
-              <div
-                key={i}
-                className="h-8 animate-pulse rounded bg-gray-100"
-              />
+              <div key={i} className="h-8 animate-pulse rounded bg-gray-100" />
             ))}
           </div>
         ) : !hasSales ? (
-          <p className="text-sm text-muted-foreground">
-            Aucune vente ce mois
-          </p>
+          <p className="text-sm text-muted-foreground">Aucune vente ce mois</p>
         ) : (
           <>
             <div className="space-y-3">
@@ -54,15 +50,13 @@ export function TopProductsWidget() {
                   <div className="flex-1 truncate">
                     <p className="font-medium truncate">{product.name}</p>
                     <p className="text-xs text-muted-foreground">
-                      {product.sales_count} vente{product.sales_count > 1 ? 's' : ''}
+                      {product.sales_count} vente
+                      {product.sales_count > 1 ? "s" : ""}
                     </p>
                   </div>
                   <div className="flex items-center gap-1 text-sm font-medium">
                     <TrendingUp className="h-3 w-3 text-green-500" />
-                    <CurrencyAmount
-                      amount={product.revenue}
-                      currency="EUR"
-                    />
+                    <CurrencyAmount amount={product.revenue} currency="EUR" />
                   </div>
                 </div>
               ))}
