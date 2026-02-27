@@ -6,7 +6,6 @@ use App\Models\Activity;
 use App\Models\Campaign;
 use App\Models\Client;
 use App\Models\Invoice;
-use App\Models\InvoiceReminderSchedule;
 use App\Models\ProductSale;
 use App\Models\Project;
 use App\Models\RecurringInvoiceProfile;

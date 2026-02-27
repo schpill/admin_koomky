@@ -210,7 +210,7 @@ class DataExportService
         );
 
         $zip->addFromString('export.json', $json);
-        $csvRows = ["invoice_number,step_number,delay_days,sent_at,status"];
+        $csvRows = ['invoice_number,step_number,delay_days,sent_at,status'];
         foreach (($payload['reminder_deliveries'] ?? []) as $delivery) {
             if (! is_array($delivery)) {
                 continue;
