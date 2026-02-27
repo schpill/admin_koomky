@@ -55,10 +55,12 @@ class ReminderSequenceController extends Controller
                 'is_default' => $validated['is_default'] ?? false,
             ]);
 
-            $steps = collect($validated['steps'])
-                ->sortBy('step_number')
-                ->values()
-                ->all();
+            /** @var list<array<string, mixed>> $steps */
+            $steps = is_array($validated['steps']) ? $validated['steps'] : [];
+            usort(
+                $steps,
+                static fn (array $left, array $right): int => (int) ($left['step_number'] ?? 0) <=> (int) ($right['step_number'] ?? 0)
+            );
 
             $sequence->steps()->createMany($steps);
 
@@ -98,9 +100,13 @@ class ReminderSequenceController extends Controller
 
             if (isset($validated['steps']) && is_array($validated['steps'])) {
                 $sequence->steps()->delete();
-                $sequence->steps()->createMany(
-                    collect($validated['steps'])->sortBy('step_number')->values()->all()
+                /** @var list<array<string, mixed>> $steps */
+                $steps = $validated['steps'];
+                usort(
+                    $steps,
+                    static fn (array $left, array $right): int => (int) ($left['step_number'] ?? 0) <=> (int) ($right['step_number'] ?? 0)
                 );
+                $sequence->steps()->createMany($steps);
             }
         });
 

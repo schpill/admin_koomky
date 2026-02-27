@@ -75,7 +75,10 @@ class SendReminderJob implements ShouldQueue
             ]
         );
 
-        $dispatchService->advanceStep($schedule->fresh());
+        $refreshedSchedule = $schedule->fresh();
+        if ($refreshedSchedule) {
+            $dispatchService->advanceStep($refreshedSchedule);
+        }
 
         $webhookDispatchService->dispatch('invoice.reminder_sent', [
             'invoice_id' => $invoice->id,

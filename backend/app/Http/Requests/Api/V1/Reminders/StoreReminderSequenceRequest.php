@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Api\V1\Reminders;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Validator;
 
 class StoreReminderSequenceRequest extends FormRequest
 {
@@ -29,9 +30,9 @@ class StoreReminderSequenceRequest extends FormRequest
         ];
     }
 
-    public function withValidator($validator): void
+    public function withValidator(Validator $validator): void
     {
-        $validator->after(function ($validator): void {
+        $validator->after(function (Validator $validator): void {
             $steps = $this->input('steps', []);
             if (! is_array($steps)) {
                 return;

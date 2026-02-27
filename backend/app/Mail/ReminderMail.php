@@ -50,7 +50,7 @@ class ReminderMail extends Mailable implements ShouldQueue
 
     private function interpolate(string $template): string
     {
-        $clientName = (string) ($this->invoice->client?->name ?? 'Client');
+        $clientName = (string) $this->invoice->client->name;
         $daysOverdue = max(0, $this->invoice->due_date->startOfDay()->diffInDays(now()->startOfDay(), false));
 
         $replacements = [

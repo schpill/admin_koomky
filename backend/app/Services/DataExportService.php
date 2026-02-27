@@ -25,6 +25,7 @@ use App\Models\Tag;
 use App\Models\Ticket;
 use App\Models\TicketMessage;
 use App\Models\User;
+use DateTimeInterface;
 use RuntimeException;
 use ZipArchive;
 
@@ -110,10 +111,26 @@ class DataExportService
             ->with(['product', 'client'])
             ->get();
 
+        /** @var \Illuminate\Database\Eloquent\Collection<int, ReminderDelivery> $reminderDeliveries */
         $reminderDeliveries = ReminderDelivery::query()
             ->where('user_id', $user->id)
             ->with(['invoice', 'step'])
             ->get();
+
+        $reminderDeliveriesData = [];
+        foreach ($reminderDeliveries as $delivery) {
+            $sentAt = $delivery->sent_at;
+            $reminderDeliveriesData[] = [
+                'id' => $delivery->id,
+                'invoice_id' => $delivery->invoice_id,
+                'invoice_number' => $delivery->invoice?->number,
+                'step_number' => $delivery->step?->step_number,
+                'delay_days' => $delivery->step?->delay_days,
+                'sent_at' => $sentAt instanceof DateTimeInterface ? $sentAt->format(DateTimeInterface::ATOM) : (is_string($sentAt) ? $sentAt : null),
+                'status' => $delivery->status,
+                'error_message' => $delivery->error_message,
+            ];
+        }
 
         return [
             'exported_at' => now()->toIso8601String(),
@@ -176,16 +193,7 @@ class DataExportService
                 'status' => $sale->status->value,
                 'sold_at' => $sale->sold_at?->toIso8601String(),
             ])->toArray(),
-            'reminder_deliveries' => $reminderDeliveries->map(fn (ReminderDelivery $delivery): array => [
-                'id' => $delivery->id,
-                'invoice_id' => $delivery->invoice_id,
-                'invoice_number' => $delivery->invoice?->number,
-                'step_number' => $delivery->step?->step_number,
-                'delay_days' => $delivery->step?->delay_days,
-                'sent_at' => $delivery->sent_at?->toIso8601String(),
-                'status' => $delivery->status,
-                'error_message' => $delivery->error_message,
-            ])->toArray(),
+            'reminder_deliveries' => $reminderDeliveriesData,
         ];
     }
 
