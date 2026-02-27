@@ -82,6 +82,27 @@ test('it ensures unique slugs for same user', function () {
         ->assertJsonPath('data.slug', fn ($slug) => str_starts_with($slug, 'formation-laravel-'));
 });
 
+test('it allows same slug for different users', function () {
+    Product::factory()->create([
+        'user_id' => $this->otherUser->id,
+        'name' => 'Formation Laravel',
+        'slug' => 'formation-laravel',
+    ]);
+
+    $response = $this->actingAs($this->user)->postJson('/api/v1/products', [
+        'name' => 'Formation Laravel',
+        'type' => ProductType::Training->value,
+        'price' => 2000.00,
+        'price_type' => ProductPriceType::Fixed->value,
+        'vat_rate' => 20.00,
+        'currency_code' => 'EUR',
+        'is_active' => true,
+    ]);
+
+    $response->assertStatus(201)
+        ->assertJsonPath('data.slug', 'formation-laravel');
+});
+
 test('it returns product details', function () {
     $product = Product::factory()->create(['user_id' => $this->user->id]);
 

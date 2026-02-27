@@ -5,6 +5,7 @@ namespace Tests\Unit\Services;
 use App\Enums\ProductSaleStatus;
 use App\Models\Product;
 use App\Models\ProductSale;
+use App\Models\Quote;
 use App\Models\User;
 use App\Services\ProductAnalyticsService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -100,6 +101,39 @@ class ProductAnalyticsServiceTest extends TestCase
         $this->assertEquals(0, $stats['total_revenue']);
         $this->assertEquals(0, $stats['total_sales']);
         $this->assertEquals(0, $stats['avg_order_value']);
+    }
+
+    public function test_product_stats_calculates_quote_conversion_rate_from_quote_sales_only(): void
+    {
+        $user = User::factory()->create();
+        $product = Product::factory()->for($user)->create();
+        $quote1 = Quote::factory()->for($user)->create();
+        $quote2 = Quote::factory()->for($user)->create();
+
+        ProductSale::factory()->for($product)->for($user)->create([
+            'status' => ProductSaleStatus::Confirmed,
+            'quote_id' => $quote1->id,
+            'total_price' => 100.00,
+            'sold_at' => now(),
+        ]);
+
+        ProductSale::factory()->for($product)->for($user)->create([
+            'status' => ProductSaleStatus::Pending,
+            'quote_id' => $quote2->id,
+            'total_price' => 100.00,
+            'sold_at' => now(),
+        ]);
+
+        ProductSale::factory()->for($product)->for($user)->create([
+            'status' => ProductSaleStatus::Confirmed,
+            'quote_id' => null,
+            'total_price' => 200.00,
+            'sold_at' => now(),
+        ]);
+
+        $stats = $this->service->productStats($product);
+
+        $this->assertEquals(50.0, $stats['conversion_rate']);
     }
 
     public function test_product_stats_respects_date_range(): void

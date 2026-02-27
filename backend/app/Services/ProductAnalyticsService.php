@@ -39,11 +39,12 @@ class ProductAnalyticsService
         // Calculate average order value
         $avgOrderValue = $totalSales > 0 ? $totalRevenue / $totalSales : 0;
 
-        // Calculate conversion rate (confirmed / (confirmed + pending))
-        $totalQuotes = $confirmedQuery->whereNotNull('quote_id')->count();
-        $convertedQuotes = $totalQuotes;
-        $conversionRate = ($totalQuotes + $pendingSales) > 0
-            ? ($convertedQuotes / ($totalQuotes + $pendingSales)) * 100
+        // Calculate quote conversion rate: confirmed quote sales / all quote sales.
+        $quoteSalesQuery = (clone $query)->whereNotNull('quote_id');
+        $totalQuoteSales = $quoteSalesQuery->count();
+        $convertedQuoteSales = (clone $quoteSalesQuery)->byStatus('confirmed')->count();
+        $conversionRate = $totalQuoteSales > 0
+            ? ($convertedQuoteSales / $totalQuoteSales) * 100
             : 0;
 
         // Monthly breakdown (last 12 months)
@@ -144,6 +145,8 @@ class ProductAnalyticsService
 
         if ($driver === 'sqlite') {
             $monthRaw = DB::raw("strftime('%Y-%m', sold_at) as month");
+        } elseif ($driver === 'pgsql') {
+            $monthRaw = DB::raw("TO_CHAR(sold_at, 'YYYY-MM') as month");
         } else {
             $monthRaw = DB::raw("DATE_FORMAT(sold_at, '%Y-%m') as month");
         }
