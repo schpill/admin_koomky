@@ -7,6 +7,7 @@ use App\Models\Document;
 use App\Services\ActivityService;
 use App\Services\DocumentEmbeddingService;
 use App\Services\WebhookDispatchService;
+use Illuminate\Support\Facades\Storage;
 
 class DocumentObserver
 {
@@ -25,7 +26,7 @@ class DocumentObserver
 
         $this->dispatchWebhook($document, 'document.uploaded');
 
-        if ($this->isIndexableMime($document->mime_type)) {
+        if ($this->shouldQueueEmbedding($document)) {
             $document->update(['embedding_status' => 'pending']);
             ProcessDocumentEmbeddingJob::dispatch($document);
         }
@@ -48,7 +49,7 @@ class DocumentObserver
 
         $this->dispatchWebhook($document, 'document.updated');
 
-        if ($document->wasChanged('storage_path') && $this->isIndexableMime($document->mime_type)) {
+        if ($document->wasChanged('storage_path') && $this->shouldQueueEmbedding($document)) {
             $document->update(['embedding_status' => 'pending']);
             ProcessDocumentEmbeddingJob::dispatch($document);
         }
@@ -94,5 +95,14 @@ class DocumentObserver
             'text/markdown',
             'text/html',
         ], true);
+    }
+
+    private function shouldQueueEmbedding(Document $document): bool
+    {
+        if (! $this->isIndexableMime($document->mime_type)) {
+            return false;
+        }
+
+        return Storage::disk($document->storage_disk)->exists($document->storage_path);
     }
 }

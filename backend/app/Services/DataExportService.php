@@ -14,6 +14,8 @@ use App\Models\ExpenseCategory;
 use App\Models\Invoice;
 use App\Models\Lead;
 use App\Models\LeadActivity;
+use App\Models\Product;
+use App\Models\ProductSale;
 use App\Models\Project;
 use App\Models\Quote;
 use App\Models\RagUsageLog;
@@ -97,6 +99,16 @@ class DataExportService
             ->where('user_id', $user->id)
             ->get();
 
+        $products = Product::query()
+            ->where('user_id', $user->id)
+            ->withTrashed()
+            ->get();
+
+        $productSales = ProductSale::query()
+            ->where('user_id', $user->id)
+            ->with(['product', 'client'])
+            ->get();
+
         return [
             'exported_at' => now()->toIso8601String(),
             'user' => [
@@ -147,6 +159,17 @@ class DataExportService
             'rag_usage_logs' => $ragUsageLogs->toArray(),
             'tickets' => $tickets->toArray(),
             'ticket_messages' => $ticketMessages->toArray(),
+            'products' => $products->toArray(),
+            'product_sales' => $productSales->map(fn ($sale) => [
+                'id' => $sale->id,
+                'product_name' => $sale->product?->name,
+                'client_name' => $sale->client?->name,
+                'quantity' => $sale->quantity,
+                'total_price' => $sale->total_price,
+                'currency' => $sale->currency_code,
+                'status' => $sale->status->value,
+                'sold_at' => $sale->sold_at?->toIso8601String(),
+            ])->toArray(),
         ];
     }
 

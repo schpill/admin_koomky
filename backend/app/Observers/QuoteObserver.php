@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Models\ProductSale;
 use App\Models\Quote;
 use App\Services\ActivityService;
 use App\Services\WebhookDispatchService;
@@ -67,6 +68,41 @@ class QuoteObserver
             $this->dispatchWebhook($quote, $webhookEvent, [
                 'previous_status' => $previousStatus,
             ]);
+        }
+
+        // Create ProductSale records when quote is accepted
+        if ($newStatus === 'accepted') {
+            $this->createProductSales($quote);
+        }
+    }
+
+    /**
+     * Create ProductSale records for line items with products.
+     */
+    private function createProductSales(Quote $quote): void
+    {
+        foreach ($quote->lineItems as $lineItem) {
+            if (! $lineItem->product_id) {
+                continue;
+            }
+
+            // Use firstOrCreate to prevent duplicates
+            ProductSale::firstOrCreate(
+                [
+                    'quote_id' => $quote->id,
+                    'product_id' => $lineItem->product_id,
+                ],
+                [
+                    'user_id' => $quote->user_id,
+                    'client_id' => $quote->client_id,
+                    'quantity' => $lineItem->quantity,
+                    'unit_price' => $lineItem->unit_price,
+                    'total_price' => $lineItem->total,
+                    'currency_code' => $quote->currency,
+                    'status' => 'pending',
+                    'sold_at' => now(),
+                ]
+            );
         }
     }
 

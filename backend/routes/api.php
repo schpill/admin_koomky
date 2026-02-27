@@ -42,6 +42,8 @@ use App\Http\Controllers\Api\V1\PortalPaymentController;
 use App\Http\Controllers\Api\V1\PortalQuoteController;
 use App\Http\Controllers\Api\V1\PortalRagController;
 use App\Http\Controllers\Api\V1\PortalSettingsController;
+use App\Http\Controllers\Api\V1\ProductCampaignController;
+use App\Http\Controllers\Api\V1\ProductController;
 use App\Http\Controllers\Api\V1\ProfitLossController;
 use App\Http\Controllers\Api\V1\ProjectController;
 use App\Http\Controllers\Api\V1\ProjectExpenseController;
@@ -355,5 +357,13 @@ Route::prefix('v1')->group(function () {
         Route::post('tickets/{ticket}/documents', [TicketDocumentController::class, 'store']);
         Route::delete('tickets/{ticket}/documents/{document}', [TicketDocumentController::class, 'detach']);
         Route::post('tickets/{ticket}/documents/attach', [TicketDocumentController::class, 'attach']);
+
+        // Products (Phase 11)
+        Route::get('products/analytics', [ProductController::class, 'globalAnalytics']);
+        Route::apiResource('products', ProductController::class);
+        Route::post('products/{product}/restore', [ProductController::class, 'restore']);
+        Route::get('products/{product}/sales', [ProductController::class, 'sales']);
+        Route::get('products/{product}/analytics', [ProductController::class, 'productAnalytics']);
+        Route::post('products/{product}/campaigns/generate', [ProductCampaignController::class, 'generate']);
     });
 });

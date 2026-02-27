@@ -11,6 +11,7 @@ import { RecurringInvoicesWidget } from "@/components/dashboard/recurring-invoic
 import { CalendarWidget } from "@/components/dashboard/calendar-widget";
 import { PipelineSummaryWidget } from "@/components/dashboard/pipeline-summary-widget";
 import { RecentDocumentsWidget } from "@/components/dashboard/recent-documents-widget";
+import { TopProductsWidget } from "@/components/dashboard/top-products-widget";
 import { CurrencyAmount } from "@/components/shared/currency-amount";
 import { useDashboardStore } from "@/lib/stores/dashboard";
 import { useCalendarStore } from "@/lib/stores/calendar";
@@ -55,7 +56,7 @@ export default function DashboardPage() {
 
   useEffect(() => {
     fetchUrgentTickets({ priority: "urgent", status: "open" });
-  }, []);
+  }, [fetchUrgentTickets]);
 
   useEffect(() => {
     const from = new Date().toISOString().slice(0, 10);
@@ -276,6 +277,9 @@ export default function DashboardPage() {
       <div className="grid gap-6 grid-cols-1 lg:grid-cols-3">
         <div className="lg:col-span-1">
           <RecentDocumentsWidget />
+        </div>
+        <div className="lg:col-span-1">
+          <TopProductsWidget />
         </div>
         <div className="lg:col-span-1">
           <Card>
