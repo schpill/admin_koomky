@@ -81,10 +81,12 @@ class ProductAnalyticsService
 
         // Get top products
         $topProducts = $this->topProducts($user, 5, $from, $to);
+        $activeProductsCount = Product::where('user_id', $user->id)->active()->count();
 
         return [
             'total_revenue' => round($totalRevenue, 2),
             'total_sales' => $totalSales,
+            'active_products' => $activeProductsCount,
             'top_products' => $topProducts->map(function ($product): array {
                 $salesRevenue = (float) ($product->getAttribute('sales_revenue') ?? 0);
                 $salesCount = (int) ($product->getAttribute('sales_count') ?? 0);

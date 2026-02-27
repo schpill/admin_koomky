@@ -11,6 +11,7 @@ use App\Models\Product;
 use App\Models\User;
 use App\Services\ProductAnalyticsService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -161,15 +162,13 @@ class ProductController extends Controller
     /**
      * Soft delete the specified product.
      */
-    public function destroy(Product $product): JsonResponse
+    public function destroy(Product $product): Response
     {
         $this->authorize('delete', $product);
 
         $product->delete();
 
-        return response()->json([
-            'message' => 'Product archived successfully',
-        ], 204);
+        return response()->noContent();
     }
 
     /**

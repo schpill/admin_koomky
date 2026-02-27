@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -36,6 +37,13 @@ return new class extends Migration
             CREATE UNIQUE INDEX product_sales_invoice_product_unique
             ON product_sales (invoice_id, product_id)
             WHERE invoice_id IS NOT NULL
+        ');
+
+        // Partial unique index: unique (quote_id, product_id) WHERE quote_id IS NOT NULL
+        DB::statement('
+            CREATE UNIQUE INDEX product_sales_quote_product_unique
+            ON product_sales (quote_id, product_id)
+            WHERE quote_id IS NOT NULL
         ');
     }
 

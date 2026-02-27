@@ -88,6 +88,8 @@ class InvoiceObserver
      */
     private function createProductSales(Invoice $invoice): void
     {
+        $invoice->loadMissing('lineItems.product');
+
         foreach ($invoice->lineItems as $lineItem) {
             if (! $lineItem->product_id) {
                 continue;

@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
@@ -10,11 +11,32 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (! Schema::hasTable('products')) {
+            return;
+        }
+
         $driver = DB::getDriverName();
 
         if (in_array($driver, ['mysql', 'mariadb'], true)) {
-            DB::statement('ALTER TABLE products DROP INDEX products_slug_unique');
-            DB::statement('ALTER TABLE products ADD UNIQUE products_user_id_slug_unique (user_id, slug)');
+            $slugUniqueExists = DB::selectOne(
+                "SELECT COUNT(1) AS cnt FROM information_schema.statistics
+                 WHERE table_schema = DATABASE()
+                 AND table_name = 'products'
+                 AND index_name = 'products_slug_unique'"
+            );
+            if ((int) ($slugUniqueExists->cnt ?? 0) > 0) {
+                DB::statement('ALTER TABLE products DROP INDEX products_slug_unique');
+            }
+
+            $userSlugUniqueExists = DB::selectOne(
+                "SELECT COUNT(1) AS cnt FROM information_schema.statistics
+                 WHERE table_schema = DATABASE()
+                 AND table_name = 'products'
+                 AND index_name = 'products_user_id_slug_unique'"
+            );
+            if ((int) ($userSlugUniqueExists->cnt ?? 0) === 0) {
+                DB::statement('ALTER TABLE products ADD UNIQUE products_user_id_slug_unique (user_id, slug)');
+            }
 
             return;
         }
@@ -28,11 +50,32 @@ return new class extends Migration
      */
     public function down(): void
     {
+        if (! Schema::hasTable('products')) {
+            return;
+        }
+
         $driver = DB::getDriverName();
 
         if (in_array($driver, ['mysql', 'mariadb'], true)) {
-            DB::statement('ALTER TABLE products DROP INDEX products_user_id_slug_unique');
-            DB::statement('ALTER TABLE products ADD UNIQUE products_slug_unique (slug)');
+            $userSlugUniqueExists = DB::selectOne(
+                "SELECT COUNT(1) AS cnt FROM information_schema.statistics
+                 WHERE table_schema = DATABASE()
+                 AND table_name = 'products'
+                 AND index_name = 'products_user_id_slug_unique'"
+            );
+            if ((int) ($userSlugUniqueExists->cnt ?? 0) > 0) {
+                DB::statement('ALTER TABLE products DROP INDEX products_user_id_slug_unique');
+            }
+
+            $slugUniqueExists = DB::selectOne(
+                "SELECT COUNT(1) AS cnt FROM information_schema.statistics
+                 WHERE table_schema = DATABASE()
+                 AND table_name = 'products'
+                 AND index_name = 'products_slug_unique'"
+            );
+            if ((int) ($slugUniqueExists->cnt ?? 0) === 0) {
+                DB::statement('ALTER TABLE products ADD UNIQUE products_slug_unique (slug)');
+            }
 
             return;
         }

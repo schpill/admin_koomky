@@ -34,6 +34,7 @@ describe("ProductStatsBar", () => {
           { id: "1", name: "Produit A", revenue: 1000, sales_count: 2 },
           { id: "2", name: "Produit B", revenue: 500, sales_count: 1 },
         ],
+        active_products: 12,
         total_revenue: 1500,
         total_sales: 3,
       },
@@ -47,7 +48,7 @@ describe("ProductStatsBar", () => {
     });
 
     expect(screen.getByText("Produits actifs")).toBeInTheDocument();
-    expect(screen.getByText("2")).toBeInTheDocument();
+    expect(screen.getByText("12")).toBeInTheDocument();
     expect(
       screen.getByText(
         (content) => content.includes("1") && content.includes("500,00")

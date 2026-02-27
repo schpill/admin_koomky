@@ -69,7 +69,7 @@ export function ProductStatsBar() {
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">
-            {globalAnalytics.top_products?.length || 0}
+            {globalAnalytics.active_products || 0}
           </div>
           <p className="text-xs text-muted-foreground">
             Produits dans le catalogue

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('user_id')->constrained('users')->cascadeOnDelete();
             $table->string('name', 255);
-            $table->string('slug', 255)->unique();
+            $table->string('slug', 255);
             $table->string('type', 50);
             $table->text('description')->nullable();
             $table->string('short_description', 500)->nullable();
@@ -34,6 +34,7 @@ return new class extends Migration
 
             $table->index(['user_id', 'is_active']);
             $table->index(['user_id', 'type']);
+            $table->unique(['user_id', 'slug']);
         });
     }
 

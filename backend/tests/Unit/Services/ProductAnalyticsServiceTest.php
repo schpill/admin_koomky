@@ -189,6 +189,7 @@ class ProductAnalyticsServiceTest extends TestCase
 
         $this->assertArrayHasKey('total_revenue', $stats);
         $this->assertArrayHasKey('total_sales', $stats);
+        $this->assertArrayHasKey('active_products', $stats);
         $this->assertArrayHasKey('top_products', $stats);
         $this->assertIsArray($stats['top_products']);
     }
@@ -214,6 +215,17 @@ class ProductAnalyticsServiceTest extends TestCase
 
         $this->assertEquals(300.00, $stats['total_revenue']);
         $this->assertEquals(2, $stats['total_sales']);
+    }
+
+    public function test_global_stats_counts_only_active_products(): void
+    {
+        $user = User::factory()->create();
+        Product::factory()->for($user)->active()->count(2)->create();
+        Product::factory()->for($user)->archived()->count(1)->create();
+
+        $stats = $this->service->globalStats($user);
+
+        $this->assertEquals(2, $stats['active_products']);
     }
 
     public function test_global_stats_does_not_include_other_users_sales(): void

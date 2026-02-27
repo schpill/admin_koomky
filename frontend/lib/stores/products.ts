@@ -93,6 +93,7 @@ interface ProductsState {
     }>;
     total_revenue: number;
     total_sales: number;
+    active_products: number;
   } | null;
   analyticsLoading: boolean;
 }
