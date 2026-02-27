@@ -300,14 +300,20 @@ class DashboardService
             ->orderByDesc('revenue')
             ->limit(3)
             ->get()
-            ->map(fn ($sale) => [
-                'id' => $sale->product_id,
-                'name' => $sale->product?->name ?? 'Produit supprimé',
-                'type' => $sale->product?->type?->value ?? 'unknown',
-                'sales_count' => (int) $sale->sales_count,
-                'revenue' => round((float) $sale->revenue, 2),
-                'currency_code' => $sale->product?->currency_code ?? 'EUR',
-            ])
+            ->map(function (ProductSale $sale): array {
+                $salesCount = (int) ($sale->getAttribute('sales_count') ?? 0);
+                $revenue = (float) ($sale->getAttribute('revenue') ?? 0);
+                $product = $sale->product;
+
+                return [
+                    'id' => $sale->product_id,
+                    'name' => $product ? $product->name : 'Produit supprimé',
+                    'type' => $product ? $product->type->value : 'unknown',
+                    'sales_count' => $salesCount,
+                    'revenue' => round($revenue, 2),
+                    'currency_code' => $product ? $product->currency_code : 'EUR',
+                ];
+            })
             ->toArray();
 
         $totalRevenue = ProductSale::where('user_id', $user->id)

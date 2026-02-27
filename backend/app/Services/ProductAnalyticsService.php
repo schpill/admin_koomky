@@ -85,12 +85,15 @@ class ProductAnalyticsService
             'total_revenue' => round($totalRevenue, 2),
             'total_sales' => $totalSales,
             'top_products' => $topProducts->map(function ($product): array {
+                $salesRevenue = (float) ($product->getAttribute('sales_revenue') ?? 0);
+                $salesCount = (int) ($product->getAttribute('sales_count') ?? 0);
+
                 return [
                     'id' => $product->id,
                     'name' => $product->name,
                     'type' => $product->type,
-                    'revenue' => round($product->sales_revenue, 2),
-                    'sales_count' => $product->sales_count,
+                    'revenue' => round($salesRevenue, 2),
+                    'sales_count' => $salesCount,
                 ];
             })->toArray(),
         ];
@@ -158,7 +161,7 @@ class ProductAnalyticsService
             ->orderBy('month')
             ->get()
             ->keyBy(function ($item): string {
-                return $item->month;
+                return (string) $item->getAttribute('month');
             });
 
         $breakdown = [];
@@ -166,13 +169,16 @@ class ProductAnalyticsService
 
         while ($currentDate <= $endDate) {
             $monthKey = $currentDate->format('Y-m');
+            /** @var ProductSale|null $monthData */
             $monthData = $sales->get($monthKey);
+            $monthRevenue = $monthData ? (float) ($monthData->getAttribute('revenue') ?? 0) : 0.0;
+            $monthCount = $monthData ? (int) ($monthData->getAttribute('count') ?? 0) : 0;
 
             $breakdown[] = [
                 'month' => $currentDate->format('M Y'),
                 'month_iso' => $monthKey,
-                'revenue' => round((float) ($monthData?->revenue ?? 0), 2),
-                'sales_count' => (int) ($monthData?->count ?? 0),
+                'revenue' => round($monthRevenue, 2),
+                'sales_count' => $monthCount,
             ];
 
             $currentDate->addMonth();

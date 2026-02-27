@@ -8,9 +8,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Products\StoreProductCampaignRequest;
 use App\Models\Product;
 use App\Models\Segment;
+use App\Models\User;
 use App\Services\ProductCampaignGeneratorService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Auth;
 
 class ProductCampaignController extends Controller
 {
@@ -25,8 +25,12 @@ class ProductCampaignController extends Controller
     {
         $this->authorize('view', $product);
 
-        $user = Auth::user();
-        $segment = Segment::findOrFail($request->validated('segment_id'));
+        $user = $request->user();
+        if (! $user instanceof User) {
+            abort(401);
+        }
+        /** @var Segment $segment */
+        $segment = Segment::query()->findOrFail($request->validated('segment_id'));
 
         // Verify segment belongs to user
         if ($segment->user_id !== $user->id) {

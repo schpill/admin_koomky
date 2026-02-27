@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Products\StoreProductRequest;
 use App\Http\Requests\Api\V1\Products\UpdateProductRequest;
 use App\Models\Product;
+use App\Models\User;
 use App\Services\ProductAnalyticsService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -261,7 +262,10 @@ class ProductController extends Controller
      */
     public function globalAnalytics(Request $request): JsonResponse
     {
-        $user = Auth::user();
+        $user = $request->user();
+        if (! $user instanceof User) {
+            abort(401);
+        }
 
         $from = $request->input('from') ? Carbon::parse($request->input('from')) : null;
         $to = $request->input('to') ? Carbon::parse($request->input('to')) : null;

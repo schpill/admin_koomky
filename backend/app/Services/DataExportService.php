@@ -167,7 +167,7 @@ class DataExportService
                 'quantity' => $sale->quantity,
                 'total_price' => $sale->total_price,
                 'currency' => $sale->currency_code,
-                'status' => $sale->status instanceof \BackedEnum ? $sale->status->value : $sale->status,
+                'status' => $sale->status->value,
                 'sold_at' => $sale->sold_at?->toIso8601String(),
             ])->toArray(),
         ];

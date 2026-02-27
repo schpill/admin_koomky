@@ -157,7 +157,7 @@ class Product extends Model
             'short_description' => $this->short_description,
             'tags' => $this->tags,
             'price' => $this->price,
-            'price_type' => $this->price_type?->value,
+            'price_type' => $this->price_type->value,
             'currency_code' => $this->currency_code,
             'is_active' => $this->is_active,
             'created_at' => $this->created_at?->timestamp,

@@ -122,7 +122,7 @@ class ProductCampaignGeneratorService
     {
         $userName = $user->name ?? $user->email;
         $priceFormatted = number_format((float) $product->price, 2).' '.$product->currency_code;
-        $type = $product->type instanceof \BackedEnum ? $product->type->value : (string) $product->type;
+        $type = $product->type->value;
 
         $duration = '';
         if ($product->duration && $product->duration_unit) {
