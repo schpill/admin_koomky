@@ -50,6 +50,9 @@ use App\Http\Controllers\Api\V1\ProjectController;
 use App\Http\Controllers\Api\V1\ProjectExpenseController;
 use App\Http\Controllers\Api\V1\ProjectInvoiceController;
 use App\Http\Controllers\Api\V1\ProjectProfitabilityController;
+use App\Http\Controllers\Api\V1\ProjectTemplates\ProjectTemplateController;
+use App\Http\Controllers\Api\V1\ProjectTemplates\ProjectTemplateInstantiateController;
+use App\Http\Controllers\Api\V1\ProjectTemplates\ProjectTemplateSaveController;
 use App\Http\Controllers\Api\V1\QuoteController;
 use App\Http\Controllers\Api\V1\RagController;
 use App\Http\Controllers\Api\V1\RecurringInvoiceProfileController;
@@ -67,6 +70,7 @@ use App\Http\Controllers\Api\V1\TicketController;
 use App\Http\Controllers\Api\V1\TicketDocumentController;
 use App\Http\Controllers\Api\V1\TicketMessageController;
 use App\Http\Controllers\Api\V1\TimeEntryController;
+use App\Http\Controllers\Api\V1\Timer\LiveTimerController;
 use App\Http\Controllers\Api\V1\UserSettingsController;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
@@ -172,6 +176,7 @@ Route::prefix('v1')->group(function () {
         Route::prefix('projects/{project}')->group(function () {
             Route::post('generate-invoice', [ProjectInvoiceController::class, 'generate']);
             Route::get('expenses', [ProjectExpenseController::class, 'index']);
+            Route::post('save-as-template', [ProjectTemplateSaveController::class, 'store']);
 
             // Tasks
             Route::get('tasks', [TaskController::class, 'index']);
@@ -380,5 +385,17 @@ Route::prefix('v1')->group(function () {
         Route::get('products/{product}/sales', [ProductController::class, 'sales']);
         Route::get('products/{product}/analytics', [ProductController::class, 'productAnalytics']);
         Route::post('products/{product}/campaigns/generate', [ProductCampaignController::class, 'generate']);
+
+        // Phase 13 - Live Timer
+        Route::get('timer/active', [LiveTimerController::class, 'active']);
+        Route::post('timer/start', [LiveTimerController::class, 'start']);
+        Route::post('timer/stop', [LiveTimerController::class, 'stop']);
+        Route::delete('timer/cancel', [LiveTimerController::class, 'cancel']);
+
+        // Phase 13 - Project Templates
+        Route::apiResource('project-templates', ProjectTemplateController::class)
+            ->parameters(['project-templates' => 'template']);
+        Route::post('project-templates/{template}/duplicate', [ProjectTemplateController::class, 'duplicate']);
+        Route::post('project-templates/{template}/instantiate', [ProjectTemplateInstantiateController::class, 'store']);
     });
 });

@@ -67,7 +67,7 @@ export default function ProfitLossReportPage() {
         );
       })
       .finally(() => setLoading(false));
-  }, [dateFrom, dateTo]);
+  }, [dateFrom, dateTo, t]);
 
   const currency = useMemo(
     () => report?.base_currency || "EUR",

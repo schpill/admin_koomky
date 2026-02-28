@@ -73,6 +73,17 @@ describe("useCalendarStore", () => {
     expect(apiClient.get).toHaveBeenNthCalledWith(2, "/calendar-connections");
   });
 
+  it("falls back to an empty event list for malformed payloads", async () => {
+    (apiClient.get as any).mockResolvedValue({
+      data: {},
+    });
+
+    await useCalendarStore.getState().fetchEvents();
+
+    expect(useCalendarStore.getState().events).toEqual([]);
+    expect(useCalendarStore.getState().error).toBeNull();
+  });
+
   it("creates updates and deletes calendar events", async () => {
     (apiClient.post as any).mockResolvedValueOnce({
       data: {

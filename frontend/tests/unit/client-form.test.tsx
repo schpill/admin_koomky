@@ -1,9 +1,10 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import type { ReactElement } from "react";
 import { ClientForm } from "@/components/clients/client-form";
 import { vi, expect, test, describe } from "vitest";
 import { I18nProvider } from "@/components/providers/i18n-provider";
 
-function renderWithI18n(ui: JSX.Element) {
+function renderWithI18n(ui: ReactElement) {
   return render(<I18nProvider initialLocale="fr">{ui}</I18nProvider>);
 }
 

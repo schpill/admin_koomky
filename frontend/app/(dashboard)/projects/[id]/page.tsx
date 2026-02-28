@@ -37,6 +37,7 @@ import {
   type TimeEntryFormValues,
 } from "@/components/projects/time-entry-form";
 import { ProjectInvoices } from "@/components/projects/project-invoices";
+import { SaveAsTemplateDialog } from "@/components/project-templates/save-as-template-dialog";
 import {
   useProjectStore,
   type ProjectTask,
@@ -97,6 +98,7 @@ export default function ProjectDetailPage() {
   const [selectedTask, setSelectedTask] = useState<ProjectTask | null>(null);
   const [projectExpenses, setProjectExpenses] = useState<ProjectExpense[]>([]);
   const [isExpensesLoading, setExpensesLoading] = useState(false);
+  const [isSaveTemplateOpen, setSaveTemplateOpen] = useState(false);
 
   useEffect(() => {
     if (!projectId) {
@@ -248,12 +250,17 @@ export default function ProjectDetailPage() {
         </div>
 
         <Dialog open={isTaskDialogOpen} onOpenChange={setTaskDialogOpen}>
-          <DialogTrigger asChild>
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              {t("projects.detail.addTask")}
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={() => setSaveTemplateOpen(true)}>
+              Sauvegarder comme template
             </Button>
-          </DialogTrigger>
+            <DialogTrigger asChild>
+              <Button>
+                <Plus className="mr-2 h-4 w-4" />
+                {t("projects.detail.addTask")}
+              </Button>
+            </DialogTrigger>
+          </div>
           <DialogContent>
             <DialogHeader>
               <DialogTitle>{t("projects.detail.createTask")}</DialogTitle>
@@ -329,6 +336,13 @@ export default function ProjectDetailPage() {
           </DialogContent>
         </Dialog>
       </div>
+
+      <SaveAsTemplateDialog
+        open={isSaveTemplateOpen}
+        onOpenChange={setSaveTemplateOpen}
+        projectId={projectId}
+        projectName={currentProject.name}
+      />
 
       <ProjectOverview project={currentProject} />
 

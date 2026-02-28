@@ -3,6 +3,12 @@ import { describe, expect, it, vi } from "vitest";
 import { TaskKanbanBoard } from "@/components/projects/task-kanban-board";
 import type { ProjectTask, TaskStatus } from "@/lib/stores/projects";
 
+vi.mock("@/components/timer/task-timer-button", () => ({
+  TaskTimerButton: ({ taskId }: { taskId: string }) => (
+    <div data-testid={`task-timer-button-${taskId}`} />
+  ),
+}));
+
 const tasks: ProjectTask[] = [
   {
     id: "t1",
@@ -40,6 +46,8 @@ describe("TaskKanbanBoard", () => {
     expect(screen.getByText(/To do/)).toBeInTheDocument();
     expect(screen.getByText(/In progress/)).toBeInTheDocument();
     expect(screen.getByText("Write specs")).toBeInTheDocument();
+    expect(screen.getByTestId("task-timer-button-t1")).toBeInTheDocument();
+    expect(screen.getByTestId("task-timer-button-t2")).toBeInTheDocument();
   });
 
   it("moves task on drag and drop", () => {

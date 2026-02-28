@@ -33,7 +33,7 @@ export default function ExpenseDetailPage() {
       );
       router.push("/expenses");
     });
-  }, [expenseId, fetchExpense, router]);
+  }, [expenseId, fetchExpense, router, t]);
 
   const expense = currentExpense as Expense | null;
 

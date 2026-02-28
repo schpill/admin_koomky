@@ -51,7 +51,7 @@ export default function ProjectProfitabilityReportPage() {
         );
       })
       .finally(() => setLoading(false));
-  }, [dateFrom, dateTo]);
+  }, [dateFrom, dateTo, t]);
 
   const sortedRows = useMemo(
     () => [...rows].sort((a, b) => b.profit - a.profit),

@@ -98,7 +98,7 @@ export default function EditExpensePage() {
         );
         router.push("/expenses");
       });
-  }, [expenseId, fetchExpense, router]);
+  }, [expenseId, fetchExpense, router, t]);
 
   const submit = async (event: FormEvent) => {
     event.preventDefault();

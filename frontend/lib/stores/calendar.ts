@@ -151,7 +151,7 @@ export const useCalendarStore = create<CalendarState>((set, get) => ({
         }
       );
       set({
-        events: response.data || [],
+        events: Array.isArray(response.data) ? response.data : [],
         isLoading: false,
       });
     } catch (error) {

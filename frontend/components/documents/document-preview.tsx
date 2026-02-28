@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import {
   FileText,
   Download,
@@ -32,6 +33,7 @@ export function DocumentPreview({ document }: DocumentPreviewProps) {
       setError(null);
       setContent(null);
       setImageUrl(null);
+      let nextImageUrl: string | null = null;
 
       try {
         if (document.document_type === "image") {
@@ -42,8 +44,8 @@ export function DocumentPreview({ document }: DocumentPreviewProps) {
               responseType: "blob",
             }
           );
-          const url = URL.createObjectURL(new Blob([response.data as any]));
-          setImageUrl(url);
+          nextImageUrl = URL.createObjectURL(new Blob([response.data as any]));
+          setImageUrl(nextImageUrl);
         } else if (
           document.document_type === "text" ||
           document.document_type === "script"
@@ -71,18 +73,26 @@ export function DocumentPreview({ document }: DocumentPreviewProps) {
       } finally {
         setIsLoading(false);
       }
+
+      return nextImageUrl;
     };
 
     if (["image", "text", "script"].includes(document.document_type)) {
-      fetchPreview();
+      let objectUrl: string | null = null;
+
+      fetchPreview().then((createdImageUrl) => {
+        objectUrl = createdImageUrl || null;
+      });
+
+      return () => {
+        if (objectUrl) {
+          URL.revokeObjectURL(objectUrl);
+        }
+      };
     } else {
       setIsLoading(false);
     }
-
-    return () => {
-      if (imageUrl) URL.revokeObjectURL(imageUrl);
-    };
-  }, [document.id, document.document_type]);
+  }, [document.document_type, document.id]);
 
   const handleDownload = () => {
     downloadDocument(document.id);
@@ -135,9 +145,12 @@ export function DocumentPreview({ document }: DocumentPreviewProps) {
   if (document.document_type === "image" && imageUrl) {
     return (
       <div className="flex min-h-[400px] w-full items-center justify-center rounded-lg border bg-muted/10 p-4">
-        <img
+        <Image
           src={imageUrl}
           alt={document.title}
+          width={1600}
+          height={1200}
+          unoptimized
           className="max-h-[600px] max-w-full rounded-md shadow-sm object-contain"
         />
       </div>

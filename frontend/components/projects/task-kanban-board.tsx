@@ -3,6 +3,7 @@
 import { useMemo, useState, type DragEvent } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { TaskTimerButton } from "@/components/timer/task-timer-button";
 import { cn } from "@/lib/utils";
 import type { ProjectTask, TaskStatus } from "@/lib/stores/projects";
 
@@ -128,11 +129,21 @@ export function TaskKanbanBoard({
                     <h4 className="line-clamp-2 text-sm font-medium">
                       {task.title}
                     </h4>
-                    <Badge
-                      variant={priorityVariant[task.priority] ?? "secondary"}
+                    <div
+                      className="flex items-center gap-2"
+                      onClick={(event) => event.stopPropagation()}
                     >
-                      {task.priority}
-                    </Badge>
+                      <TaskTimerButton
+                        taskId={task.id}
+                        projectId={task.project_id}
+                        taskName={task.title}
+                      />
+                      <Badge
+                        variant={priorityVariant[task.priority] ?? "secondary"}
+                      >
+                        {task.priority}
+                      </Badge>
+                    </div>
                   </div>
                   {task.due_date && (
                     <p className="mt-2 text-xs text-muted-foreground">

@@ -68,6 +68,10 @@ interface DashboardStats {
     total_amount: number;
     currency: string;
   };
+  time_tracked_today_widget?: {
+    minutes_today: number;
+    entries_count: number;
+  };
 }
 
 interface DashboardState {

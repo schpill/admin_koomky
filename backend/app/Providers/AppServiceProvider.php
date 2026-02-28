@@ -14,6 +14,7 @@ use App\Models\Payment;
 use App\Models\Product;
 use App\Models\ProductSale;
 use App\Models\Project;
+use App\Models\ProjectTemplate;
 use App\Models\Quote;
 use App\Models\ReminderSequence;
 use App\Models\Task;
@@ -34,6 +35,7 @@ use App\Observers\TicketMessageObserver;
 use App\Observers\TicketObserver;
 use App\Policies\ProductPolicy;
 use App\Policies\ProductSalePolicy;
+use App\Policies\ProjectTemplatePolicy;
 use App\Policies\ReminderSequencePolicy;
 use App\Services\ExchangeRates\ApiExchangeRateService;
 use App\Services\ExchangeRates\EcbExchangeRatesDriver;
@@ -109,5 +111,6 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Product::class, ProductPolicy::class);
         Gate::policy(ProductSale::class, ProductSalePolicy::class);
         Gate::policy(ReminderSequence::class, ReminderSequencePolicy::class);
+        Gate::policy(ProjectTemplate::class, ProjectTemplatePolicy::class);
     }
 }

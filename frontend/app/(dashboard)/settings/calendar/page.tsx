@@ -37,7 +37,7 @@ export default function CalendarSettingsPage() {
     fetchAutoEventRules().catch(() => {
       toast.error(t("settings.calendarSettings.toasts.loadFailed"));
     });
-  }, [fetchConnections, fetchAutoEventRules]);
+  }, [fetchConnections, fetchAutoEventRules, t]);
 
   useEffect(() => {
     setAutoProjectDeadlines(autoEventRules.project_deadlines);

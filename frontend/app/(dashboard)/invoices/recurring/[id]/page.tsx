@@ -39,7 +39,7 @@ export default function RecurringInvoiceDetailPage() {
       );
       router.push("/invoices/recurring");
     });
-  }, [fetchProfile, profileId, router]);
+  }, [fetchProfile, profileId, router, t]);
 
   const runAction = async (
     action: () => Promise<unknown>,
