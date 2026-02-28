@@ -1,8 +1,22 @@
 # Phase 13 — Task Tracking
 
-> **Status**: todo
+> **Status**: done
 > **Prerequisite**: Phase 12 fully merged and tagged `v1.8.0`
 > **Spec**: [docs/phases/phase13.md](../phases/phase13.md)
+> **Completed on**: February 28, 2026
+> **Delivery**: PR #25 merged into `main`
+
+---
+
+## Completion Summary
+
+La phase 13 est livree et mergee sur `main`.
+
+- Sprint 40: backend timer live livre avec tests et webhook.
+- Sprint 41: backend templates livre avec tests unitaires et feature.
+- Sprint 42: frontend timer + templates livre avec integrations, tests unitaires, composants, E2E et CI verte.
+
+Les tableaux ci-dessous restent la checklist de suivi originale de la phase.
 
 ---
 
