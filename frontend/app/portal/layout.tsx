@@ -37,6 +37,7 @@ export default function PortalLayout({
     PortalDashboardBrandingPayload["branding"] | null
   >(null);
   const [ragAvailable, setRagAvailable] = useState(false);
+  const sessionExpiresAt = session?.expires_at;
 
   useEffect(() => {
     const currentSession = getPortalSession();
@@ -70,12 +71,12 @@ export default function PortalLayout({
 
         setBranding(response.data?.branding || null);
 
-        if (response.data?.client) {
+        if (response.data?.client && typeof sessionExpiresAt === "number") {
           savePortalSession({
             portal_token: session.portal_token,
             expires_in: Math.max(
               1,
-              Math.floor((session.expires_at - Date.now()) / 1000)
+              Math.floor((sessionExpiresAt - Date.now()) / 1000)
             ),
             client: response.data.client,
           });
@@ -89,7 +90,7 @@ export default function PortalLayout({
     return () => {
       cancelled = true;
     };
-  }, [isAuthRoute, session?.portal_token]);
+  }, [isAuthRoute, session?.portal_token, sessionExpiresAt]);
 
   useEffect(() => {
     if (isAuthRoute || !session?.portal_token) {

@@ -42,7 +42,7 @@ export default function EditRecurringInvoicePage() {
       );
       router.push("/invoices/recurring");
     });
-  }, [fetchProfile, profileId, router]);
+  }, [fetchProfile, profileId, router, t]);
 
   const handleSubmit = async (payload: RecurringInvoiceProfilePayload) => {
     try {

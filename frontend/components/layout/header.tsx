@@ -8,6 +8,7 @@ import { CommandPalette } from "@/components/search/command-palette";
 import { LocaleSwitcher } from "@/components/layout/locale-switcher";
 import { useI18n } from "@/components/providers/i18n-provider";
 import { NotificationBell } from "@/components/layout/notification-bell";
+import { TimerBadge } from "@/components/timer/timer-badge";
 
 interface HeaderProps {
   onOpenNavigation?: () => void;
@@ -70,6 +71,7 @@ export function Header({ onOpenNavigation, onOpenShortcuts }: HeaderProps) {
           <span className="sr-only">{t("header.toggleTheme")}</span>
         </Button>
 
+        <TimerBadge />
         <NotificationBell />
 
         <Button variant="ghost" size="icon" className="brand-control">

@@ -117,7 +117,7 @@ export default function ReportsPage() {
     };
 
     load();
-  }, [query]);
+  }, [query, t]);
 
   const exportReport = async (type: string, format: "csv" | "pdf") => {
     const params = new URLSearchParams({

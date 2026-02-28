@@ -16,6 +16,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $description
  * @property bool $is_billed
  * @property \Illuminate\Support\Carbon|null $billed_at
+ * @property \Illuminate\Support\Carbon|null $started_at
+ * @property bool $is_running
  */
 class TimeEntry extends Model
 {
@@ -31,6 +33,8 @@ class TimeEntry extends Model
         'description',
         'is_billed',
         'billed_at',
+        'started_at',
+        'is_running',
     ];
 
     /**
@@ -42,7 +46,29 @@ class TimeEntry extends Model
             'date' => 'date',
             'is_billed' => 'boolean',
             'billed_at' => 'datetime',
+            'started_at' => 'datetime',
+            'is_running' => 'boolean',
         ];
+    }
+
+    /**
+     * Scope to get only running time entries.
+     */
+    public function scopeRunning($query)
+    {
+        return $query->where('is_running', true);
+    }
+
+    /**
+     * Compute duration in minutes from started_at to now.
+     */
+    public function computeDurationMinutes(): int
+    {
+        if (!$this->started_at) {
+            return 0;
+        }
+
+        return (int) ceil(now()->diffInSeconds($this->started_at) / 60);
     }
 
     /**

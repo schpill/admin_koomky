@@ -30,7 +30,7 @@ export default function InvoicingSettingsPage() {
         (error as Error).message || t("settings.invoicing.toasts.loadFailed")
       );
     });
-  }, [fetchInvoicingSettings]);
+  }, [fetchInvoicingSettings, t]);
 
   useEffect(() => {
     if (!invoicingSettings) {

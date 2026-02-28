@@ -24,6 +24,7 @@ import {
   Brain,
   Package,
   Bell,
+  LayoutTemplate,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -57,6 +58,12 @@ const secondaryNavigation = [
     key: "settings",
     href: "/settings/profile",
     icon: Settings,
+    external: false,
+  },
+  {
+    key: "projectTemplates",
+    href: "/settings/project-templates",
+    icon: LayoutTemplate,
     external: false,
   },
   {

@@ -52,7 +52,7 @@ export default function TicketsPage() {
   useEffect(() => {
     fetchTickets();
     fetchStats();
-  }, []);
+  }, [fetchStats, fetchTickets]);
 
   // Debounced search
   useEffect(() => {
@@ -61,7 +61,7 @@ export default function TicketsPage() {
       fetchTickets({ q: searchInput || undefined, ...filters });
     }, 300);
     return () => clearTimeout(timer);
-  }, [searchInput]);
+  }, [fetchTickets, filters, searchInput, setSearchQuery]);
 
   const handleStatusFilter = (status: TicketStatus, checked: boolean) => {
     const newFilters = {

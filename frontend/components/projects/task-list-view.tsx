@@ -8,6 +8,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { TaskTimerButton } from "@/components/timer/task-timer-button";
 import type { ProjectTask, TaskStatus } from "@/lib/stores/projects";
 
 interface TaskListViewProps {
@@ -29,6 +30,7 @@ export function TaskListView({
             <th className="px-4 py-3 font-medium">Title</th>
             <th className="px-4 py-3 font-medium">Priority</th>
             <th className="px-4 py-3 font-medium">Due date</th>
+            <th className="px-4 py-3 font-medium">Timer</th>
             <th className="px-4 py-3 font-medium">Status</th>
           </tr>
         </thead>
@@ -65,6 +67,18 @@ export function TaskListView({
                   event.stopPropagation();
                 }}
               >
+                <TaskTimerButton
+                  taskId={task.id}
+                  projectId={task.project_id}
+                  taskName={task.title}
+                />
+              </td>
+              <td
+                className="px-4 py-3"
+                onClick={(event) => {
+                  event.stopPropagation();
+                }}
+              >
                 <Select
                   value={task.status}
                   onValueChange={(value) =>
@@ -88,7 +102,7 @@ export function TaskListView({
           {tasks.length === 0 && (
             <tr>
               <td
-                colSpan={4}
+                colSpan={5}
                 className="px-4 py-6 text-center text-muted-foreground"
               >
                 No tasks yet

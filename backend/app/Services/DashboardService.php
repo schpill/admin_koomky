@@ -9,6 +9,7 @@ use App\Models\Invoice;
 use App\Models\ProductSale;
 use App\Models\Project;
 use App\Models\RecurringInvoiceProfile;
+use App\Models\TimeEntry;
 use App\Models\User;
 use Carbon\Carbon;
 use Closure;
@@ -212,6 +213,7 @@ class DashboardService
                     'base_currency' => $baseCurrency,
                 ],
                 'overdue_invoices_widget' => $this->overdueInvoicesWidget($user),
+                'time_tracked_today_widget' => $this->timeTrackedTodayWidget($user),
             ];
         });
     }
@@ -299,6 +301,30 @@ class DashboardService
         };
 
         return round($afterDiscount * $multiplier, 2);
+    }
+
+    /**
+     * Get time tracked today widget data.
+     *
+     * @return array<string, mixed>
+     */
+    public function timeTrackedTodayWidget(User $user): array
+    {
+        $today = now()->toDateString();
+
+        $entries = TimeEntry::query()
+            ->where('user_id', $user->id)
+            ->whereDate('date', $today)
+            ->where('is_running', false)
+            ->get();
+
+        $minutesToday = (int) $entries->sum('duration_minutes');
+        $entriesCount = $entries->count();
+
+        return [
+            'minutes_today' => $minutesToday,
+            'entries_count' => $entriesCount,
+        ];
     }
 
     /**

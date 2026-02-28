@@ -54,8 +54,8 @@ export const useClientStore = create<ClientState>((set, get) => ({
     try {
       const response = await apiClient.get<any>("/clients", { params });
       set({
-        clients: response.data.data,
-        pagination: response.data.meta,
+        clients: Array.isArray(response.data?.data) ? response.data.data : [],
+        pagination: response.data?.meta ?? null,
         isLoading: false,
       });
     } catch (error) {

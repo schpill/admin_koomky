@@ -36,6 +36,10 @@ vi.mock("@/components/layout/notification-bell", () => ({
   NotificationBell: () => <div data-testid="notification-bell" />,
 }));
 
+vi.mock("@/components/timer/timer-badge", () => ({
+  TimerBadge: () => <div data-testid="timer-badge" />,
+}));
+
 describe("Header", () => {
   it("calls mobile navigation and shortcuts callbacks", () => {
     const onOpenNavigation = vi.fn();
@@ -53,5 +57,6 @@ describe("Header", () => {
 
     expect(onOpenNavigation).toHaveBeenCalledOnce();
     expect(onOpenShortcuts).toHaveBeenCalledOnce();
+    expect(screen.getByTestId("timer-badge")).toBeInTheDocument();
   });
 });

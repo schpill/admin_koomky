@@ -133,12 +133,12 @@ export const useTicketStore = create<TicketState>((set, get) => ({
     try {
       const response = await apiClient.get<any>("/tickets", { params });
       set({
-        tickets: response.data.data,
+        tickets: Array.isArray(response.data?.data) ? response.data.data : [],
         pagination: {
-          current_page: response.data.current_page,
-          last_page: response.data.last_page,
-          per_page: response.data.per_page,
-          total: response.data.total,
+          current_page: response.data?.current_page ?? 1,
+          last_page: response.data?.last_page ?? 1,
+          per_page: response.data?.per_page ?? 0,
+          total: response.data?.total ?? 0,
         },
         isLoading: false,
       });

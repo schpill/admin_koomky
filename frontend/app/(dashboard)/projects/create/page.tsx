@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -21,7 +21,9 @@ import {
 } from "@/components/ui/select";
 import { useProjectStore } from "@/lib/stores/projects";
 import { useClientStore } from "@/lib/stores/clients";
+import { useProjectTemplatesStore } from "@/lib/stores/project-templates";
 import { useI18n } from "@/components/providers/i18n-provider";
+import { InstantiateTemplateDialog } from "@/components/project-templates/instantiate-template-dialog";
 
 const schema = z
   .object({
@@ -66,6 +68,11 @@ export default function CreateProjectPage() {
   const router = useRouter();
   const { createProject } = useProjectStore();
   const { clients, fetchClients } = useClientStore();
+  const { templates, fetchTemplates } = useProjectTemplatesStore();
+  const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(
+    null
+  );
+  const [showInstantiateDialog, setShowInstantiateDialog] = useState(false);
 
   const {
     register,
@@ -84,7 +91,12 @@ export default function CreateProjectPage() {
 
   useEffect(() => {
     fetchClients();
-  }, [fetchClients]);
+    fetchTemplates();
+  }, [fetchClients, fetchTemplates]);
+
+  const selectedTemplate = templates.find(
+    (template) => template.id === selectedTemplateId
+  );
 
   const onSubmit = async (values: FormValues) => {
     try {
@@ -125,6 +137,68 @@ export default function CreateProjectPage() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <div className="space-y-2">
+              <Label>Utiliser un template</Label>
+              <Select
+                value={selectedTemplateId ?? "none"}
+                onValueChange={(value) => {
+                  const nextTemplateId = value === "none" ? null : value;
+                  setSelectedTemplateId(nextTemplateId);
+                  const template = templates.find(
+                    (item) => item.id === nextTemplateId
+                  );
+
+                  if (!template) {
+                    return;
+                  }
+
+                  setValue(
+                    "billing_type",
+                    template.billing_type === "fixed" ? "fixed" : "hourly"
+                  );
+                  setValue(
+                    "hourly_rate",
+                    template.default_hourly_rate || undefined
+                  );
+                  setValue(
+                    "estimated_hours",
+                    template.estimated_hours || undefined
+                  );
+                  setValue("name", template.name);
+                }}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Sélectionner un template" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">Aucun template</SelectItem>
+                  {templates.map((template) => (
+                    <SelectItem key={template.id} value={template.id}>
+                      {template.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {selectedTemplate ? (
+                <div className="rounded-md border bg-muted/30 p-3 text-sm">
+                  <p className="font-medium">{selectedTemplate.name}</p>
+                  <p className="text-muted-foreground">
+                    {selectedTemplate.tasks_count} tâche
+                    {selectedTemplate.tasks_count > 1 ? "s" : ""}
+                  </p>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="mt-3"
+                    onClick={() => setShowInstantiateDialog(true)}
+                  >
+                    Instancier ce template
+                  </Button>
+                </div>
+              ) : null}
+            </div>
+
             <div className="space-y-2">
               <Label htmlFor="name">{t("projects.create.projectName")}</Label>
               <Input id="name" {...register("name")} />
@@ -271,6 +345,16 @@ export default function CreateProjectPage() {
           </form>
         </CardContent>
       </Card>
+
+      <InstantiateTemplateDialog
+        templateId={selectedTemplateId}
+        open={showInstantiateDialog}
+        onOpenChange={setShowInstantiateDialog}
+        onSuccess={(projectId) => {
+          setShowInstantiateDialog(false);
+          router.push(`/projects/${projectId}`);
+        }}
+      />
     </div>
   );
 }

@@ -3,6 +3,8 @@
 use App\Models\Client;
 use App\Models\Invoice;
 use App\Models\Project;
+use App\Models\Task;
+use App\Models\TimeEntry;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -56,4 +58,47 @@ test('dashboard returns enhanced financial metrics trend and upcoming deadlines'
         ->assertJsonCount(12, 'data.revenue_trend');
 
     expect($response->json('data.upcoming_deadlines'))->toHaveCount(1);
+});
+
+test('dashboard returns the time tracked today widget', function () {
+    $user = User::factory()->create();
+    $client = Client::factory()->create(['user_id' => $user->id]);
+    $project = Project::factory()->create([
+        'user_id' => $user->id,
+        'client_id' => $client->id,
+    ]);
+    $task = Task::factory()->create([
+        'project_id' => $project->id,
+    ]);
+
+    TimeEntry::factory()->create([
+        'user_id' => $user->id,
+        'task_id' => $task->id,
+        'date' => now()->toDateString(),
+        'duration_minutes' => 45,
+        'is_running' => false,
+    ]);
+
+    TimeEntry::factory()->create([
+        'user_id' => $user->id,
+        'task_id' => $task->id,
+        'date' => now()->toDateString(),
+        'duration_minutes' => 30,
+        'is_running' => false,
+    ]);
+
+    TimeEntry::factory()->create([
+        'user_id' => $user->id,
+        'task_id' => $task->id,
+        'date' => now()->toDateString(),
+        'duration_minutes' => 15,
+        'is_running' => true,
+    ]);
+
+    $response = $this->actingAs($user, 'sanctum')
+        ->getJson('/api/v1/dashboard');
+
+    $response->assertStatus(200)
+        ->assertJsonPath('data.time_tracked_today_widget.minutes_today', 75)
+        ->assertJsonPath('data.time_tracked_today_widget.entries_count', 2);
 });

@@ -12,6 +12,7 @@ import { CalendarWidget } from "@/components/dashboard/calendar-widget";
 import { PipelineSummaryWidget } from "@/components/dashboard/pipeline-summary-widget";
 import { RecentDocumentsWidget } from "@/components/dashboard/recent-documents-widget";
 import { TopProductsWidget } from "@/components/dashboard/top-products-widget";
+import { TimeTrackedTodayWidget } from "@/components/dashboard/time-tracked-today-widget";
 import { CurrencyAmount } from "@/components/shared/currency-amount";
 import { useDashboardStore } from "@/lib/stores/dashboard";
 import { useCalendarStore } from "@/lib/stores/calendar";
@@ -44,6 +45,7 @@ export default function DashboardPage() {
     isLoading: ticketsLoading,
     fetchTickets: fetchUrgentTickets,
   } = useTicketStore();
+  const urgentOpenTickets = Array.isArray(urgentTickets) ? urgentTickets : [];
   const baseCurrency = stats?.base_currency || "EUR";
   const { t } = useI18n();
   const setNotifications = useNotificationStore(
@@ -196,6 +198,11 @@ export default function DashboardPage() {
         />
       </div>
 
+      <TimeTrackedTodayWidget
+        minutesToday={stats?.time_tracked_today_widget?.minutes_today || 0}
+        entriesCount={stats?.time_tracked_today_widget?.entries_count || 0}
+      />
+
       <Card>
         <CardHeader>
           <CardTitle>Top expense categories</CardTitle>
@@ -330,13 +337,13 @@ export default function DashboardPage() {
                     />
                   ))}
                 </div>
-              ) : urgentTickets.length === 0 ? (
+              ) : urgentOpenTickets.length === 0 ? (
                 <p className="text-sm text-muted-foreground">
                   No urgent open tickets
                 </p>
               ) : (
                 <div className="space-y-3">
-                  {urgentTickets.slice(0, 5).map((ticket) => {
+                  {urgentOpenTickets.slice(0, 5).map((ticket) => {
                     const deadlineOverdue =
                       ticket.deadline &&
                       ticket.status !== "resolved" &&

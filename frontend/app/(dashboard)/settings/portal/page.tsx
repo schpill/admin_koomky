@@ -66,7 +66,7 @@ export default function PortalSettingsPage() {
         );
       })
       .finally(() => setLoading(false));
-  }, []);
+  }, [t]);
 
   const submit = async (event: FormEvent) => {
     event.preventDefault();

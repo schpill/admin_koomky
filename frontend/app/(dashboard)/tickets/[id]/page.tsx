@@ -67,7 +67,7 @@ export default function TicketDetailPage({
 
   useEffect(() => {
     fetchTicket(id);
-  }, [id]);
+  }, [fetchTicket, id]);
 
   const isOwner = ticket?.user_id === currentUserId;
   const isAssignee = ticket?.assigned_to === currentUserId;

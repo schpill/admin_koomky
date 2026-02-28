@@ -32,7 +32,7 @@ export default function ExpenseReportPage() {
         (error as Error).message || t("expenses.report.toasts.loadFailed")
       );
     });
-  }, [dateFrom, dateTo, fetchReport]);
+  }, [dateFrom, dateTo, fetchReport, t]);
 
   const topCategories = useMemo(
     () => [...(report?.by_category || [])].sort((a, b) => b.total - a.total),
