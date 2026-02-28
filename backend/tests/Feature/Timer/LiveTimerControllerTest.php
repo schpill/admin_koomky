@@ -2,6 +2,8 @@
 
 namespace Tests\Feature\Timer;
 
+use App\Models\Client;
+use App\Models\Project;
 use App\Models\Task;
 use App\Models\TimeEntry;
 use App\Models\User;
@@ -16,11 +18,23 @@ class LiveTimerControllerTest extends TestCase
 
     protected Task $task;
 
+    protected Project $project;
+
     protected function setUp(): void
     {
         parent::setUp();
         $this->user = User::factory()->create();
-        $this->task = Task::factory()->create();
+        /** @var Client $client */
+        $client = Client::factory()->create([
+            'user_id' => $this->user->id,
+        ]);
+        $this->project = Project::factory()->create([
+            'user_id' => $this->user->id,
+            'client_id' => $client->id,
+        ]);
+        $this->task = Task::factory()->create([
+            'project_id' => $this->project->id,
+        ]);
     }
 
     public function test_get_active_returns_204_when_no_timer(): void
