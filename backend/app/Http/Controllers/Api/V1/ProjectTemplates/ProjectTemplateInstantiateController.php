@@ -25,6 +25,7 @@ class ProjectTemplateInstantiateController extends Controller
         $this->authorize('view', $template);
 
         $user = $request->user();
+        assert($user instanceof \App\Models\User);
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'client_id' => [
@@ -39,6 +40,7 @@ class ProjectTemplateInstantiateController extends Controller
         ]);
 
         $client = Client::query()->findOrFail($validated['client_id']);
+        assert($client instanceof Client);
 
         $project = $this->templateService->instantiate(
             $template,

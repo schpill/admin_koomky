@@ -57,7 +57,7 @@ class ProjectTemplate extends Model
     }
 
     /**
-     * @return HasMany<ProjectTemplateTask>
+     * @return HasMany<ProjectTemplateTask, $this>
      */
     public function templateTasks(): HasMany
     {

@@ -45,7 +45,7 @@ class ProjectTemplateService
     /**
      * Instantiate a new project from a template.
      *
-     * @param  array{name?: string, client_id?: string, start_date?: string, deadline?: string}  $data
+     * @param  array{client_id:string, name?: string, start_date?: string|null, deadline?: string|null}  $data
      */
     public function instantiate(ProjectTemplate $template, array $data, User $user): Project
     {

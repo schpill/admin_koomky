@@ -43,6 +43,7 @@ class LiveTimerService
             throw new \RuntimeException('No active timer found for this user.');
         }
 
+        assert($activeEntry->started_at !== null);
         $durationMinutes = $activeEntry->computeDurationMinutes();
 
         $activeEntry->update([
@@ -51,7 +52,9 @@ class LiveTimerService
             'date' => $activeEntry->started_at->toDateString(),
         ]);
 
-        return $activeEntry->fresh();
+        $activeEntry->refresh();
+
+        return $activeEntry;
     }
 
     /**

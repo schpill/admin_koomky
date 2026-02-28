@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Api\V1\Timer;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Validator;
 
 class StoreLiveTimerRequest extends FormRequest
 {
@@ -30,13 +31,14 @@ class StoreLiveTimerRequest extends FormRequest
     /**
      * Configure the validator instance.
      */
-    public function withValidator($validator): void
+    public function withValidator(Validator $validator): void
     {
         $validator->after(function ($validator) {
             $taskId = $this->task_id;
 
             if ($taskId) {
                 $user = $this->user();
+                assert($user instanceof \App\Models\User);
                 $task = \App\Models\Task::where('id', $taskId)
                     ->whereHas('project', function ($query) use ($user) {
                         $query->where('user_id', $user->id);

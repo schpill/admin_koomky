@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -61,8 +62,11 @@ class ProjectTemplateTask extends Model
 
     /**
      * Scope to order tasks by sort_order.
+     *
+     * @param  Builder<ProjectTemplateTask>  $query
+     * @return Builder<ProjectTemplateTask>
      */
-    public function scopeOrdered($query)
+    public function scopeOrdered(Builder $query): Builder
     {
         return $query->orderBy('sort_order');
     }

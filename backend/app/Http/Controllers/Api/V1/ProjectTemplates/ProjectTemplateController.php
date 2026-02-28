@@ -17,7 +17,10 @@ class ProjectTemplateController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $templates = ProjectTemplate::where('user_id', $request->user()->id)
+        $user = $request->user();
+        assert($user instanceof \App\Models\User);
+
+        $templates = ProjectTemplate::where('user_id', $user->id)
             ->with('templateTasks')
             ->withCount('templateTasks')
             ->orderBy('created_at', 'desc')
@@ -184,6 +187,8 @@ class ProjectTemplateController extends Controller
      */
     private function formatTemplate(ProjectTemplate $template): array
     {
+        assert($template->created_at !== null);
+
         return [
             'id' => $template->id,
             'name' => $template->name,

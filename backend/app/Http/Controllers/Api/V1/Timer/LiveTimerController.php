@@ -24,6 +24,7 @@ class LiveTimerController extends Controller
     public function active(Request $request): JsonResponse
     {
         $user = $request->user();
+        assert($user instanceof \App\Models\User);
         $activeEntry = $this->timerService->active($user);
 
         if (! $activeEntry) {
@@ -31,6 +32,9 @@ class LiveTimerController extends Controller
         }
 
         $activeEntry->load(['task', 'task.project']);
+        assert($activeEntry->task instanceof Task);
+        assert($activeEntry->task->project instanceof \App\Models\Project);
+        assert($activeEntry->started_at !== null);
 
         return response()->json([
             'data' => [
@@ -51,7 +55,10 @@ class LiveTimerController extends Controller
     public function start(StoreLiveTimerRequest $request): JsonResponse
     {
         $user = $request->user();
-        $task = Task::findOrFail($request->validated('task_id'));
+        assert($user instanceof \App\Models\User);
+        $task = Task::query()->with('project')->findOrFail($request->validated('task_id'));
+        assert($task instanceof Task);
+        assert($task->project instanceof \App\Models\Project);
 
         // Check project ownership via policy
         $this->authorize('update', $task->project);
@@ -63,6 +70,9 @@ class LiveTimerController extends Controller
         );
 
         $timeEntry->load(['task', 'task.project']);
+        assert($timeEntry->task instanceof Task);
+        assert($timeEntry->task->project instanceof \App\Models\Project);
+        assert($timeEntry->started_at !== null);
 
         return response()->json([
             'data' => [
@@ -83,6 +93,7 @@ class LiveTimerController extends Controller
     public function stop(Request $request): JsonResponse
     {
         $user = $request->user();
+        assert($user instanceof \App\Models\User);
         $activeEntry = $this->timerService->active($user);
 
         if (! $activeEntry) {
@@ -93,6 +104,9 @@ class LiveTimerController extends Controller
 
         $timeEntry = $this->timerService->stop($user);
         $timeEntry->load(['task', 'task.project']);
+        assert($timeEntry->task instanceof Task);
+        assert($timeEntry->task->project instanceof \App\Models\Project);
+        assert($timeEntry->started_at !== null);
 
         // Dispatch webhook
         $this->webhookService->dispatch('time.timer_stopped', [
@@ -125,6 +139,7 @@ class LiveTimerController extends Controller
     public function cancel(Request $request): JsonResponse
     {
         $user = $request->user();
+        assert($user instanceof \App\Models\User);
         $this->timerService->cancel($user);
 
         return response()->json(null, Response::HTTP_NO_CONTENT);

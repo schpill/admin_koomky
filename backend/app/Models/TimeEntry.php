@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -53,8 +54,11 @@ class TimeEntry extends Model
 
     /**
      * Scope to get only running time entries.
+     *
+     * @param  Builder<TimeEntry>  $query
+     * @return Builder<TimeEntry>
      */
-    public function scopeRunning($query)
+    public function scopeRunning(Builder $query): Builder
     {
         return $query->where('is_running', true);
     }
