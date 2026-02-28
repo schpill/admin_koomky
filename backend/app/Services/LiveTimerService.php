@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Models\Task;
 use App\Models\TimeEntry;
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
 
 class LiveTimerService
 {
@@ -40,7 +39,7 @@ class LiveTimerService
     {
         $activeEntry = $this->active($user);
 
-        if (!$activeEntry) {
+        if (! $activeEntry) {
             throw new \RuntimeException('No active timer found for this user.');
         }
 

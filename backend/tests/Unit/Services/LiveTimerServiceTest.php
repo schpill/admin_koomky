@@ -3,7 +3,6 @@
 namespace Tests\Unit\Services;
 
 use App\Models\Task;
-use App\Models\TimeEntry;
 use App\Models\User;
 use App\Services\LiveTimerService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -18,7 +17,7 @@ class LiveTimerServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->service = new LiveTimerService();
+        $this->service = new LiveTimerService;
     }
 
     public function test_start_creates_time_entry_with_running_flag(): void

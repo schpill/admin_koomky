@@ -54,7 +54,7 @@ class ProjectTemplateController extends Controller
         ]);
 
         // Create template tasks if provided
-        if (!empty($validated['tasks'])) {
+        if (! empty($validated['tasks'])) {
             foreach ($validated['tasks'] as $index => $taskData) {
                 ProjectTemplateTask::create([
                     'template_id' => $template->id,
@@ -150,7 +150,7 @@ class ProjectTemplateController extends Controller
 
         $newTemplate = ProjectTemplate::create([
             'user_id' => $template->user_id,
-            'name' => $template->name . ' (Copie)',
+            'name' => $template->name.' (Copie)',
             'description' => $template->description,
             'billing_type' => $template->billing_type,
             'default_hourly_rate' => $template->default_hourly_rate,

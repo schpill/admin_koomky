@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api\V1\Timer;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Timer\StoreLiveTimerRequest;
 use App\Models\Task;
-use App\Models\TimeEntry;
 use App\Services\LiveTimerService;
 use App\Services\WebhookDispatchService;
 use Illuminate\Http\JsonResponse;
@@ -27,7 +26,7 @@ class LiveTimerController extends Controller
         $user = $request->user();
         $activeEntry = $this->timerService->active($user);
 
-        if (!$activeEntry) {
+        if (! $activeEntry) {
             return response()->json(['message' => 'No active timer'], Response::HTTP_NO_CONTENT);
         }
 
@@ -86,7 +85,7 @@ class LiveTimerController extends Controller
         $user = $request->user();
         $activeEntry = $this->timerService->active($user);
 
-        if (!$activeEntry) {
+        if (! $activeEntry) {
             return response()->json([
                 'message' => 'No active timer to stop.',
             ], Response::HTTP_UNPROCESSABLE_ENTITY);

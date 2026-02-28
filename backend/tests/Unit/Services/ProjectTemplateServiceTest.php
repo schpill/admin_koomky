@@ -21,7 +21,7 @@ class ProjectTemplateServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->service = new ProjectTemplateService();
+        $this->service = new ProjectTemplateService;
     }
 
     public function test_create_from_project_copies_fields(): void

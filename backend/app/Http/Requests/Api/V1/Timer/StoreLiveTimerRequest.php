@@ -43,7 +43,7 @@ class StoreLiveTimerRequest extends FormRequest
                     })
                     ->exists();
 
-                if (!$task) {
+                if (! $task) {
                     $validator->errors()->add('task_id', 'The selected task does not exist or does not belong to your projects.');
                 }
             }

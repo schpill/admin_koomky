@@ -64,7 +64,7 @@ class TimeEntry extends Model
      */
     public function computeDurationMinutes(): int
     {
-        if (!$this->started_at) {
+        if (! $this->started_at) {
             return 0;
         }
 

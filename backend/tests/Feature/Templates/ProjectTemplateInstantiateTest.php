@@ -14,7 +14,9 @@ class ProjectTemplateInstantiateTest extends TestCase
     use RefreshDatabase;
 
     protected User $user;
+
     protected Client $client;
+
     protected ProjectTemplate $template;
 
     protected function setUp(): void

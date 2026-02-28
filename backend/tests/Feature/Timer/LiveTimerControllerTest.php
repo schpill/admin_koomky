@@ -13,6 +13,7 @@ class LiveTimerControllerTest extends TestCase
     use RefreshDatabase;
 
     protected User $user;
+
     protected Task $task;
 
     protected function setUp(): void
