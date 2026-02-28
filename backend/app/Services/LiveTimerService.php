@@ -14,8 +14,10 @@ class LiveTimerService
      */
     public function start(User $user, Task $task, ?string $description = null): TimeEntry
     {
-        // Stop any existing running timer for this user
-        $this->stop($user);
+        // Stop any existing running timer for this user.
+        if ($this->active($user)) {
+            $this->stop($user);
+        }
 
         $timeEntry = TimeEntry::create([
             'user_id' => $user->id,

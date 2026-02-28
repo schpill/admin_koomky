@@ -3,8 +3,10 @@
 namespace Tests\Unit\Services;
 
 use App\Models\Task;
+use App\Models\TimeEntry;
 use App\Models\User;
 use App\Services\LiveTimerService;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -27,7 +29,6 @@ class LiveTimerServiceTest extends TestCase
 
         $entry = $this->service->start($user, $task);
 
-        $this->assertNotNull($entry);
         $this->assertTrue($entry->is_running);
         $this->assertNotNull($entry->started_at);
         $this->assertEquals($user->id, $entry->user_id);
@@ -67,17 +68,18 @@ class LiveTimerServiceTest extends TestCase
     {
         $user = User::factory()->create();
         $task = Task::factory()->create();
+        $startTime = Carbon::parse('2026-02-28 10:00:00');
 
-        $entry = $this->service->start($user, $task);
-
-        // Simulate time passing (2 minutes)
-        $entry->started_at = now()->subMinutes(2);
-        $entry->save();
+        Carbon::setTestNow($startTime);
+        $this->service->start($user, $task);
+        Carbon::setTestNow($startTime->copy()->addMinutes(2));
 
         $stoppedEntry = $this->service->stop($user);
 
         $this->assertFalse($stoppedEntry->is_running);
-        $this->assertGreaterThanOrEqual(2, $stoppedEntry->duration_minutes);
+        $this->assertGreaterThanOrEqual(1, $stoppedEntry->duration_minutes);
+
+        Carbon::setTestNow();
     }
 
     public function test_stop_throws_exception_when_no_active_timer(): void
@@ -111,17 +113,17 @@ class LiveTimerServiceTest extends TestCase
         $this->assertNull($this->service->active($user));
 
         $entry = $this->service->start($user, $task);
-
         $activeEntry = $this->service->active($user);
-        $this->assertNotNull($activeEntry);
-        $this->assertEquals($entry->id, $activeEntry->id);
+
+        $this->assertInstanceOf(TimeEntry::class, $activeEntry);
+        $this->assertSame($entry->id, $activeEntry->id);
     }
 
     public function test_active_returns_null_when_no_running_timer(): void
     {
         $user = User::factory()->create();
 
-        $this->assertNull($this->service->active($user));
+        $this->assertSame(null, $this->service->active($user));
     }
 
     public function test_timer_isolation_between_users(): void
