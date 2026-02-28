@@ -65,22 +65,25 @@ test.describe("Project template instantiation", () => {
       });
     });
 
-    await page.route("**/api/v1/project-templates/template-1/instantiate", async (route) => {
-      await route.fulfill({
-        status: 201,
-        contentType: "application/json",
-        body: JSON.stringify({
-          status: "Success",
-          message: "Created",
-          data: {
-            id: "project-1",
-            name: "Client rollout",
-            client_id: "client-1",
-            tasks_count: 1,
-          },
-        }),
-      });
-    });
+    await page.route(
+      "**/api/v1/project-templates/template-1/instantiate",
+      async (route) => {
+        await route.fulfill({
+          status: 201,
+          contentType: "application/json",
+          body: JSON.stringify({
+            status: "Success",
+            message: "Created",
+            data: {
+              id: "project-1",
+              name: "Client rollout",
+              client_id: "client-1",
+              tasks_count: 1,
+            },
+          }),
+        });
+      }
+    );
 
     await page.goto("/settings/project-templates");
 

@@ -72,7 +72,10 @@ export function ProjectTemplateForm({
   const tasks = watch("tasks") ?? [];
 
   return (
-    <form onSubmit={handleSubmit((values) => onSubmit(values))} className="space-y-6">
+    <form
+      onSubmit={handleSubmit((values) => onSubmit(values))}
+      className="space-y-6"
+    >
       <div className="space-y-2">
         <Label htmlFor="template-name">Nom du template</Label>
         <Input id="template-name" {...register("name")} />
@@ -83,7 +86,11 @@ export function ProjectTemplateForm({
 
       <div className="space-y-2">
         <Label htmlFor="template-description">Description</Label>
-        <Textarea id="template-description" rows={3} {...register("description")} />
+        <Textarea
+          id="template-description"
+          rows={3}
+          {...register("description")}
+        />
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
@@ -143,7 +150,9 @@ export function ProjectTemplateForm({
 
       <ProjectTemplateTaskBuilder
         value={tasks as ProjectTemplateTaskInput[]}
-        onChange={(nextTasks) => setValue("tasks", nextTasks, { shouldDirty: true })}
+        onChange={(nextTasks) =>
+          setValue("tasks", nextTasks, { shouldDirty: true })
+        }
       />
 
       <div className="flex justify-end">

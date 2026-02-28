@@ -251,10 +251,7 @@ export default function ProjectDetailPage() {
 
         <Dialog open={isTaskDialogOpen} onOpenChange={setTaskDialogOpen}>
           <div className="flex gap-2">
-            <Button
-              variant="outline"
-              onClick={() => setSaveTemplateOpen(true)}
-            >
+            <Button variant="outline" onClick={() => setSaveTemplateOpen(true)}>
               Sauvegarder comme template
             </Button>
             <DialogTrigger asChild>

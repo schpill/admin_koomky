@@ -144,7 +144,11 @@ export function InstantiateTemplateDialog({
           </div>
 
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+            >
               Annuler
             </Button>
             <Button type="submit" disabled={isSubmitting}>

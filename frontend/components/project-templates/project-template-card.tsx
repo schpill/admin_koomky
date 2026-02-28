@@ -2,7 +2,14 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { LayoutTemplate, MoreVertical, Edit, Copy, Trash2, Play } from "lucide-react";
+import {
+  LayoutTemplate,
+  MoreVertical,
+  Edit,
+  Copy,
+  Trash2,
+  Play,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -26,7 +33,10 @@ interface ProjectTemplateCardProps {
   onInstantiate?: (templateId: string) => void;
 }
 
-export function ProjectTemplateCard({ template, onInstantiate }: ProjectTemplateCardProps) {
+export function ProjectTemplateCard({
+  template,
+  onInstantiate,
+}: ProjectTemplateCardProps) {
   const router = useRouter();
   const { deleteTemplate, duplicateTemplate } = useProjectTemplatesStore();
   const [isDeleting, setIsDeleting] = useState(false);
@@ -86,15 +96,26 @@ export function ProjectTemplateCard({ template, onInstantiate }: ProjectTemplate
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" forceMount>
-              <DropdownMenuItem onClick={() => router.push(`/settings/project-templates/${template.id}`)}>
+              <DropdownMenuItem
+                onClick={() =>
+                  router.push(`/settings/project-templates/${template.id}`)
+                }
+              >
                 <Edit className="mr-2 h-4 w-4" />
                 Modifier
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleDuplicate} disabled={isDuplicating}>
+              <DropdownMenuItem
+                onClick={handleDuplicate}
+                disabled={isDuplicating}
+              >
                 <Copy className="mr-2 h-4 w-4" />
                 {isDuplicating ? "Duplication..." : "Dupliquer"}
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleDelete} className="text-red-600" disabled={isDeleting}>
+              <DropdownMenuItem
+                onClick={handleDelete}
+                className="text-red-600"
+                disabled={isDeleting}
+              >
                 <Trash2 className="mr-2 h-4 w-4" />
                 {isDeleting ? "Suppression..." : "Supprimer"}
               </DropdownMenuItem>
@@ -104,7 +125,9 @@ export function ProjectTemplateCard({ template, onInstantiate }: ProjectTemplate
       </CardHeader>
       <CardContent>
         {template.description && (
-          <p className="mb-3 text-sm text-muted-foreground line-clamp-2">{template.description}</p>
+          <p className="mb-3 text-sm text-muted-foreground line-clamp-2">
+            {template.description}
+          </p>
         )}
 
         <div className="flex items-center justify-between">
@@ -115,7 +138,8 @@ export function ProjectTemplateCard({ template, onInstantiate }: ProjectTemplate
               </Badge>
             )}
             <span className="text-sm text-muted-foreground">
-              {template.tasks_count} tâche{template.tasks_count !== 1 ? "s" : ""}
+              {template.tasks_count} tâche
+              {template.tasks_count !== 1 ? "s" : ""}
             </span>
           </div>
 

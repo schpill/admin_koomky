@@ -120,11 +120,18 @@ export default function ProjectTemplateDetailPage() {
           )}
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={() => setIsEditing((value) => !value)}>
+          <Button
+            variant="outline"
+            onClick={() => setIsEditing((value) => !value)}
+          >
             <Pencil className="mr-2 h-4 w-4" />
             {isEditing ? "Annuler l'édition" : "Modifier"}
           </Button>
-          <Button variant="outline" onClick={handleDuplicate} disabled={isDuplicating}>
+          <Button
+            variant="outline"
+            onClick={handleDuplicate}
+            disabled={isDuplicating}
+          >
             <Copy className="mr-2 h-4 w-4" />
             {isDuplicating ? "Duplication..." : "Dupliquer"}
           </Button>
@@ -132,7 +139,11 @@ export default function ProjectTemplateDetailPage() {
             <Play className="mr-2 h-4 w-4" />
             Utiliser
           </Button>
-          <Button variant="destructive" onClick={handleDelete} disabled={isDeleting}>
+          <Button
+            variant="destructive"
+            onClick={handleDelete}
+            disabled={isDeleting}
+          >
             <Trash2 className="mr-2 h-4 w-4" />
             {isDeleting ? "Suppression..." : "Supprimer"}
           </Button>
@@ -177,76 +188,82 @@ export default function ProjectTemplateDetailPage() {
           </CardContent>
         </Card>
       ) : (
-      <div className="grid gap-6 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>Informations</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Type de facturation</span>
-              <Badge variant="outline">
-                {template.billing_type === "hourly" ? "Horaire" : template.billing_type === "fixed" ? "Forfait" : "—"}
-              </Badge>
-            </div>
-            {template.default_hourly_rate && (
+        <div className="grid gap-6 md:grid-cols-2">
+          <Card>
+            <CardHeader>
+              <CardTitle>Informations</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Taux horaire</span>
-                <span>{template.default_hourly_rate} €</span>
+                <span className="text-muted-foreground">
+                  Type de facturation
+                </span>
+                <Badge variant="outline">
+                  {template.billing_type === "hourly"
+                    ? "Horaire"
+                    : template.billing_type === "fixed"
+                      ? "Forfait"
+                      : "—"}
+                </Badge>
               </div>
-            )}
-            {template.estimated_hours && (
+              {template.default_hourly_rate && (
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Taux horaire</span>
+                  <span>{template.default_hourly_rate} €</span>
+                </div>
+              )}
+              {template.estimated_hours && (
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Heures estimées</span>
+                  <span>{template.estimated_hours}h</span>
+                </div>
+              )}
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Heures estimées</span>
-                <span>{template.estimated_hours}h</span>
+                <span className="text-muted-foreground">Nombre de tâches</span>
+                <span>{template.tasks?.length || 0}</span>
               </div>
-            )}
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Nombre de tâches</span>
-              <span>{template.tasks?.length || 0}</span>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Tâches</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {template.tasks && template.tasks.length > 0 ? (
-              <ul className="space-y-3">
-                {template.tasks.map((task, index) => (
-                  <li key={task.id} className="flex items-start gap-3">
-                    <span className="flex h-6 w-6 items-center justify-center rounded-full bg-muted text-xs">
-                      {index + 1}
-                    </span>
-                    <div className="flex-1">
-                      <p className="font-medium">{task.title}</p>
-                      {task.description && (
-                        <p className="text-sm text-muted-foreground line-clamp-1">
-                          {task.description}
-                        </p>
-                      )}
-                      <div className="mt-1 flex gap-2">
-                        <Badge variant="secondary" className="text-xs">
-                          {task.priority}
-                        </Badge>
-                        {task.estimated_hours && (
-                          <span className="text-xs text-muted-foreground">
-                            {task.estimated_hours}h
-                          </span>
+          <Card>
+            <CardHeader>
+              <CardTitle>Tâches</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {template.tasks && template.tasks.length > 0 ? (
+                <ul className="space-y-3">
+                  {template.tasks.map((task, index) => (
+                    <li key={task.id} className="flex items-start gap-3">
+                      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-muted text-xs">
+                        {index + 1}
+                      </span>
+                      <div className="flex-1">
+                        <p className="font-medium">{task.title}</p>
+                        {task.description && (
+                          <p className="text-sm text-muted-foreground line-clamp-1">
+                            {task.description}
+                          </p>
                         )}
+                        <div className="mt-1 flex gap-2">
+                          <Badge variant="secondary" className="text-xs">
+                            {task.priority}
+                          </Badge>
+                          {task.estimated_hours && (
+                            <span className="text-xs text-muted-foreground">
+                              {task.estimated_hours}h
+                            </span>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-muted-foreground text-sm">Aucune tâche</p>
-            )}
-          </CardContent>
-        </Card>
-      </div>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-muted-foreground text-sm">Aucune tâche</p>
+              )}
+            </CardContent>
+          </Card>
+        </div>
       )}
 
       <InstantiateTemplateDialog

@@ -4,7 +4,12 @@ import { Play, Square } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTimerStore } from "@/lib/stores/timer";
 import { toast } from "sonner";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface TaskTimerButtonProps {
   taskId: string;
@@ -12,8 +17,18 @@ interface TaskTimerButtonProps {
   taskName: string;
 }
 
-export function TaskTimerButton({ taskId, projectId, taskName }: TaskTimerButtonProps) {
-  const { isRunning, taskId: activeTaskId, startTimer, stopTimer, isLoading } = useTimerStore();
+export function TaskTimerButton({
+  taskId,
+  projectId,
+  taskName,
+}: TaskTimerButtonProps) {
+  const {
+    isRunning,
+    taskId: activeTaskId,
+    startTimer,
+    stopTimer,
+    isLoading,
+  } = useTimerStore();
 
   const isThisTaskActive = isRunning && activeTaskId === taskId;
   const isOtherTaskActive = isRunning && activeTaskId !== taskId;
@@ -43,7 +58,11 @@ export function TaskTimerButton({ taskId, projectId, taskName }: TaskTimerButton
       className={`h-8 w-8 p-0 ${isThisTaskActive ? "bg-red-600 hover:bg-red-700" : ""}`}
       onClick={handleClick}
       disabled={isLoading || isOtherTaskActive}
-      title={isOtherTaskActive ? "Un timer est déjà actif sur une autre tâche" : undefined}
+      title={
+        isOtherTaskActive
+          ? "Un timer est déjà actif sur une autre tâche"
+          : undefined
+      }
     >
       {isThisTaskActive ? (
         <Square className="h-4 w-4" />

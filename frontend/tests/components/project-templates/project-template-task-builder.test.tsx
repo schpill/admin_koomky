@@ -20,7 +20,9 @@ describe("ProjectTemplateTaskBuilder", () => {
   it("adds a new task", () => {
     const onChange = vi.fn();
 
-    render(<ProjectTemplateTaskBuilder value={initialTasks} onChange={onChange} />);
+    render(
+      <ProjectTemplateTaskBuilder value={initialTasks} onChange={onChange} />
+    );
 
     fireEvent.click(screen.getByRole("button", { name: /ajouter une tâche/i }));
 
@@ -35,9 +37,13 @@ describe("ProjectTemplateTaskBuilder", () => {
   it("removes a task", () => {
     const onChange = vi.fn();
 
-    render(<ProjectTemplateTaskBuilder value={initialTasks} onChange={onChange} />);
+    render(
+      <ProjectTemplateTaskBuilder value={initialTasks} onChange={onChange} />
+    );
 
-    fireEvent.click(screen.getByRole("button", { name: /supprimer la tâche 1/i }));
+    fireEvent.click(
+      screen.getByRole("button", { name: /supprimer la tâche 1/i })
+    );
 
     expect(onChange).toHaveBeenCalledWith([]);
   });

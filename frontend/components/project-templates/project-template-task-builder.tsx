@@ -152,9 +152,7 @@ function SortableTaskItem({
                 onUpdate(
                   task.id,
                   "estimated_hours",
-                  event.target.value === ""
-                    ? null
-                    : Number(event.target.value)
+                  event.target.value === "" ? null : Number(event.target.value)
                 )
               }
             />

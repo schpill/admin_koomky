@@ -15,7 +15,8 @@ function formatElapsedTime(seconds: number): string {
 }
 
 export function TimerDropdown() {
-  const { activeEntry, elapsedSeconds, isLoading, stopTimer, cancelTimer } = useTimerStore();
+  const { activeEntry, elapsedSeconds, isLoading, stopTimer, cancelTimer } =
+    useTimerStore();
   const [isStopping, setIsStopping] = useState(false);
   const [isCancelling, setIsCancelling] = useState(false);
 
@@ -58,7 +59,9 @@ export function TimerDropdown() {
         <div className="flex items-center justify-between">
           <div>
             <p className="font-medium">{activeEntry.task_name}</p>
-            <p className="text-sm text-muted-foreground">{activeEntry.project_name}</p>
+            <p className="text-sm text-muted-foreground">
+              {activeEntry.project_name}
+            </p>
           </div>
           <div className="text-right">
             <p className="font-mono text-2xl font-bold text-red-600">
@@ -67,7 +70,9 @@ export function TimerDropdown() {
           </div>
         </div>
         {activeEntry.description && (
-          <p className="mt-2 text-sm text-muted-foreground">{activeEntry.description}</p>
+          <p className="mt-2 text-sm text-muted-foreground">
+            {activeEntry.description}
+          </p>
         )}
       </div>
 

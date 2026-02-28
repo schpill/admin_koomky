@@ -76,7 +76,8 @@ export function SaveAsTemplateDialog({
         <DialogHeader>
           <DialogTitle>Sauvegarder comme template</DialogTitle>
           <DialogDescription>
-            Enregistrez ce projet comme base réutilisable pour de futurs projets.
+            Enregistrez ce projet comme base réutilisable pour de futurs
+            projets.
           </DialogDescription>
         </DialogHeader>
 

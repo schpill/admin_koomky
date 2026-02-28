@@ -2,7 +2,9 @@ import { expect, test } from "@playwright/test";
 import { mockProtectedApi, seedAuthenticatedSession } from "../helpers/session";
 
 test.describe("Project template CRUD", () => {
-  test("creates a project template from the dedicated form", async ({ page }) => {
+  test("creates a project template from the dedicated form", async ({
+    page,
+  }) => {
     await seedAuthenticatedSession(page);
     await mockProtectedApi(page);
 

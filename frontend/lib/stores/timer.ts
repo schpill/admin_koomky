@@ -21,7 +21,11 @@ interface TimerState {
   error: string | null;
 
   fetchActive: () => Promise<void>;
-  startTimer: (taskId: string, projectId: string, description?: string) => Promise<void>;
+  startTimer: (
+    taskId: string,
+    projectId: string,
+    description?: string
+  ) => Promise<void>;
   stopTimer: () => Promise<void>;
   cancelTimer: () => Promise<void>;
   tick: () => void;
@@ -102,7 +106,11 @@ export const useTimerStore = create<TimerState>((set, get) => ({
     }
   },
 
-  startTimer: async (taskId: string, projectId: string, description?: string) => {
+  startTimer: async (
+    taskId: string,
+    projectId: string,
+    description?: string
+  ) => {
     set({ isLoading: true, error: null });
     try {
       const response = await apiClient.post<ActiveTimerEntry>("/timer/start", {

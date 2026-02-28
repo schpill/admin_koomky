@@ -13,7 +13,9 @@ export default function ProjectTemplatesPage() {
   const router = useRouter();
   const { templates, isLoading, fetchTemplates } = useProjectTemplatesStore();
   const templateItems = Array.isArray(templates) ? templates : [];
-  const [instantiateTemplateId, setInstantiateTemplateId] = useState<string | null>(null);
+  const [instantiateTemplateId, setInstantiateTemplateId] = useState<
+    string | null
+  >(null);
 
   useEffect(() => {
     fetchTemplates();
@@ -47,7 +49,9 @@ export default function ProjectTemplatesPage() {
           <p className="mb-4 text-muted-foreground">
             Créez votre premier template de projet pour gagner du temps
           </p>
-          <Button onClick={() => router.push("/settings/project-templates/new")}>
+          <Button
+            onClick={() => router.push("/settings/project-templates/new")}
+          >
             <Plus className="mr-2 h-4 w-4" />
             Créer un template
           </Button>
