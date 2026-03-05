@@ -270,6 +270,25 @@ export default function DashboardPage() {
         </Card>
       ) : null}
 
+      {(stats?.prospects_imported_month || 0) > 0 ? (
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base">Prospects du mois</CardTitle>
+          </CardHeader>
+          <CardContent className="flex items-center justify-between">
+            <p className="text-2xl font-bold">
+              {stats?.prospects_imported_month || 0}
+            </p>
+            <Link
+              href="/prospects"
+              className="text-sm font-medium text-primary hover:underline"
+            >
+              Voir les prospects
+            </Link>
+          </CardContent>
+        </Card>
+      ) : null}
+
       <div className="grid gap-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
         <PipelineSummaryWidget />
         <CampaignSummaryWidget

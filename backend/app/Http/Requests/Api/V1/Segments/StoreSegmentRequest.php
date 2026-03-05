@@ -32,6 +32,8 @@ class StoreSegmentRequest extends FormRequest
                 'project_status',
                 'revenue',
                 'location',
+                'industry',
+                'department',
                 'created_at',
                 'custom',
                 'custom_field',

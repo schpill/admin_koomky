@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -23,6 +24,8 @@ use Laravel\Scout\Searchable;
  * @property string|null $city
  * @property string|null $zip_code
  * @property string|null $country
+ * @property string|null $industry
+ * @property string|null $department
  * @property string|null $preferred_currency
  * @property string $status
  * @property string|null $notes
@@ -49,6 +52,8 @@ class Client extends Model
         'city',
         'zip_code',
         'country',
+        'industry',
+        'department',
         'preferred_currency',
         'notes',
         'status',
@@ -170,10 +175,39 @@ class Client extends Model
             'reference' => $this->reference,
             'notes' => $this->notes,
             'status' => $this->status,
+            'industry' => $this->industry,
+            'department' => $this->department,
             'tags' => $this->tags()->pluck('name')->values()->all(),
             'user_id' => $this->user_id,
             'created_at' => $this->created_at?->toDateTimeString(),
             'deleted_at' => $this->deleted_at?->toDateTimeString(),
         ];
+    }
+
+    /**
+     * @param  Builder<Client>  $query
+     * @return Builder<Client>
+     */
+    public function scopeByIndustry(Builder $query, string $industry): Builder
+    {
+        return $query->where('industry', $industry);
+    }
+
+    /**
+     * @param  Builder<Client>  $query
+     * @return Builder<Client>
+     */
+    public function scopeByDepartment(Builder $query, string $department): Builder
+    {
+        return $query->where('department', $department);
+    }
+
+    /**
+     * @param  Builder<Client>  $query
+     * @return Builder<Client>
+     */
+    public function scopeProspects(Builder $query): Builder
+    {
+        return $query->where('status', 'prospect');
     }
 }

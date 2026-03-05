@@ -9,11 +9,13 @@ use App\Models\Tag;
 use App\Models\User;
 use App\Services\SegmentFilterEngine;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 
 uses(TestCase::class, RefreshDatabase::class);
 
 beforeEach(function () {
+    Queue::fake();
     $this->engine = app(SegmentFilterEngine::class);
 
     $this->makeContact = function (User $user, array $clientAttributes = [], array $contactAttributes = []): Contact {
@@ -476,4 +478,56 @@ test('throws exception when criterion entry is not an array', function () {
             ['criteria' => ['invalid']],
         ],
     ])->get())->toThrow(InvalidArgumentException::class);
+});
+
+test('filters contacts by industry and department criteria', function () {
+    $user = User::factory()->create();
+
+    $matching = ($this->makeContact)($user, ['industry' => 'Wedding Planner', 'department' => '60']);
+    ($this->makeContact)($user, ['industry' => 'Photographer', 'department' => '75']);
+
+    $industryFilters = [
+        'groups' => [[
+            'criteria' => [[
+                'type' => 'industry',
+                'operator' => 'equals',
+                'value' => 'Wedding Planner',
+            ]],
+        ]],
+    ];
+    $industryResults = $this->engine->apply($user, $industryFilters)->pluck('id')->all();
+    expect($industryResults)->toContain($matching->id);
+
+    $departmentFilters = [
+        'groups' => [[
+            'criteria' => [[
+                'type' => 'department',
+                'operator' => 'in',
+                'value' => ['60', '80'],
+            ]],
+        ]],
+    ];
+    $departmentResults = $this->engine->apply($user, $departmentFilters)->pluck('id')->all();
+    expect($departmentResults)->toContain($matching->id);
+});
+
+test('supports combined industry and department criteria with and combinator', function () {
+    $user = User::factory()->create();
+
+    $matching = ($this->makeContact)($user, ['industry' => 'Wedding Planner', 'department' => '60']);
+    ($this->makeContact)($user, ['industry' => 'Wedding Planner', 'department' => '80']);
+
+    $filters = [
+        'group_boolean' => 'and',
+        'criteria_boolean' => 'and',
+        'groups' => [[
+            'criteria' => [
+                ['type' => 'industry', 'operator' => 'equals', 'value' => 'Wedding Planner'],
+                ['type' => 'department', 'operator' => 'equals', 'value' => '60'],
+            ],
+        ]],
+    ];
+
+    $results = $this->engine->apply($user, $filters)->pluck('id')->all();
+    expect($results)->toContain($matching->id);
 });

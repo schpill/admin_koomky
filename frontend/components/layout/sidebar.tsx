@@ -39,6 +39,8 @@ const navigation = [
   { key: "documents", href: "/documents", icon: FileText },
   { key: "tickets", href: "/tickets", icon: TicketCheck },
   { key: "clients", href: "/clients", icon: Users },
+  { key: "prospects", href: "/prospects", icon: Users },
+  { key: "prospectImport", href: "/prospects/import", icon: Users },
   { key: "projects", href: "/projects", icon: FolderKanban },
   { key: "campaigns", href: "/campaigns", icon: Megaphone },
   { key: "invoices", href: "/invoices", icon: FileText },

@@ -27,6 +27,8 @@ class ClientResource extends JsonResource
             'city' => $this->resource->city,
             'zip_code' => $this->resource->zip_code,
             'country' => $this->resource->country,
+            'industry' => $this->resource->industry,
+            'department' => $this->resource->department,
             'preferred_currency' => $this->resource->preferred_currency,
             'status' => $this->resource->status,
             'notes' => $this->resource->notes,

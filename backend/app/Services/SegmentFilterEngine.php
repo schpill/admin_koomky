@@ -73,10 +73,88 @@ class SegmentFilterEngine
             'project_status' => $this->applyProjectStatusCriterion($query, $criterion),
             'revenue' => $this->applyRevenueCriterion($query, $criterion),
             'location' => $this->applyLocationCriterion($query, $criterion),
+            'industry' => $this->applyIndustryCriterion($query, $criterion),
+            'department' => $this->applyDepartmentCriterion($query, $criterion),
             'created_at' => $this->applyCreatedAtCriterion($query, $criterion),
             'custom', 'custom_field' => $this->applyCustomFieldCriterion($query, $criterion),
             default => throw new InvalidArgumentException('Unsupported filter type: '.$type),
         };
+    }
+
+    /**
+     * @param  array<string, mixed>  $criterion
+     * @param  Builder<Contact>  $query
+     */
+    private function applyIndustryCriterion(Builder $query, array $criterion): void
+    {
+        $operator = (string) ($criterion['operator'] ?? '');
+        $value = $criterion['value'] ?? null;
+
+        if (($operator === 'equals' || $operator === 'not_equals') && is_string($value)) {
+            $comparison = $operator === 'equals' ? '=' : '!=';
+            $query->whereHas('client', function (Builder $clientQuery) use ($comparison, $value): void {
+                $clientQuery->where('industry', $comparison, $value);
+            });
+
+            return;
+        }
+
+        if ($operator === 'contains' && is_string($value)) {
+            $query->whereHas('client', function (Builder $clientQuery) use ($value): void {
+                $clientQuery->where('industry', 'like', '%'.$value.'%');
+            });
+
+            return;
+        }
+
+        if ($operator === 'in' && is_array($value)) {
+            /** @var list<string> $values */
+            $values = array_values(array_filter($value, 'is_string'));
+
+            $query->whereHas('client', function (Builder $clientQuery) use ($values): void {
+                $clientQuery->whereIn('industry', $values);
+            });
+
+            return;
+        }
+
+        throw new InvalidArgumentException('Invalid industry filter operator or value.');
+    }
+
+    /**
+     * @param  array<string, mixed>  $criterion
+     * @param  Builder<Contact>  $query
+     */
+    private function applyDepartmentCriterion(Builder $query, array $criterion): void
+    {
+        $operator = (string) ($criterion['operator'] ?? '');
+        $value = $criterion['value'] ?? null;
+
+        if (($operator === 'equals' || $operator === 'not_equals') && is_string($value)) {
+            $comparison = $operator === 'equals' ? '=' : '!=';
+            $query->whereHas('client', function (Builder $clientQuery) use ($comparison, $value): void {
+                $clientQuery->where('department', $comparison, $value);
+            });
+
+            return;
+        }
+
+        if (($operator === 'in' || $operator === 'not_in') && is_array($value)) {
+            /** @var list<string> $values */
+            $values = array_values(array_filter($value, 'is_string'));
+
+            $query->whereHas('client', function (Builder $clientQuery) use ($operator, $values): void {
+                if ($operator === 'not_in') {
+                    $clientQuery->whereNotIn('department', $values);
+                } else {
+                    $clientQuery->whereIn('department', $values);
+                }
+            });
+
+            return;
+        }
+
+        throw new InvalidArgumentException('Invalid department filter operator or value.');
     }
 
     /**

@@ -19,6 +19,8 @@ class ClientFactory extends Factory
             'city' => $this->faker->city(),
             'zip_code' => $this->faker->postcode(),
             'country' => $this->faker->country(),
+            'industry' => $this->faker->randomElement(['Wedding Planner', 'Photographer', 'Caterer']),
+            'department' => $this->faker->randomElement(['60', '75', '33']),
             'preferred_currency' => null,
             'status' => 'active',
         ];

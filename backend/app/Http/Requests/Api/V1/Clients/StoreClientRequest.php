@@ -4,6 +4,7 @@ namespace App\Http\Requests\Api\V1\Clients;
 
 use App\Support\InputSanitizer;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreClientRequest extends FormRequest
 {
@@ -25,8 +26,11 @@ class StoreClientRequest extends FormRequest
             'city' => ['nullable', 'string', 'max:100'],
             'zip_code' => ['nullable', 'string', 'max:20'],
             'country' => ['nullable', 'string', 'max:100'],
+            'industry' => ['nullable', 'string', 'max:255'],
+            'department' => ['nullable', 'string', 'max:10'],
             'preferred_currency' => ['nullable', 'string', 'size:3'],
             'notes' => ['nullable', 'string'],
+            'status' => ['nullable', 'string', Rule::in(['active', 'inactive', 'archived', 'lead', 'prospect'])],
         ];
     }
 
@@ -39,6 +43,8 @@ class StoreClientRequest extends FormRequest
             'city',
             'zip_code',
             'country',
+            'industry',
+            'department',
             'preferred_currency',
             'notes',
         ]);

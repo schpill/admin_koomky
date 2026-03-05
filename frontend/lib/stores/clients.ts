@@ -12,6 +12,8 @@ export interface Client {
   city?: string | null;
   zip_code?: string | null;
   country?: string | null;
+  industry?: string | null;
+  department?: string | null;
   preferred_currency?: string | null;
   notes?: string | null;
   created_at: string;

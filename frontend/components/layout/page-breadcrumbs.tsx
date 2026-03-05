@@ -17,6 +17,7 @@ export function PageBreadcrumbs({ pathname }: PageBreadcrumbsProps) {
   const segmentLabels: Record<string, string> = {
     // Top-level pages — reuse sidebar translations
     clients: t("sidebar.clients"),
+    prospects: t("sidebar.prospects"),
     projects: t("sidebar.projects"),
     campaigns: t("sidebar.campaigns"),
     invoices: t("sidebar.invoices"),

@@ -25,6 +25,7 @@ use App\Http\Controllers\Api\V1\ExpenseCategoryController;
 use App\Http\Controllers\Api\V1\ExpenseController;
 use App\Http\Controllers\Api\V1\ExpenseReportController;
 use App\Http\Controllers\Api\V1\HealthController;
+use App\Http\Controllers\Api\V1\ImportSessionController;
 use App\Http\Controllers\Api\V1\InvoiceController;
 use App\Http\Controllers\Api\V1\InvoiceReminderController;
 use App\Http\Controllers\Api\V1\InvoicingSettingsController;
@@ -53,6 +54,7 @@ use App\Http\Controllers\Api\V1\ProjectProfitabilityController;
 use App\Http\Controllers\Api\V1\ProjectTemplates\ProjectTemplateController;
 use App\Http\Controllers\Api\V1\ProjectTemplates\ProjectTemplateInstantiateController;
 use App\Http\Controllers\Api\V1\ProjectTemplates\ProjectTemplateSaveController;
+use App\Http\Controllers\Api\V1\ProspectMetaController;
 use App\Http\Controllers\Api\V1\QuoteController;
 use App\Http\Controllers\Api\V1\RagController;
 use App\Http\Controllers\Api\V1\RecurringInvoiceProfileController;
@@ -170,6 +172,17 @@ Route::prefix('v1')->group(function () {
         Route::post('clients/import/csv', [ClientController::class, 'importCsv']);
         Route::post('clients/{client}/restore', [ClientController::class, 'restore']);
         Route::apiResource('clients', ClientController::class);
+        Route::get('prospects/industries', [ProspectMetaController::class, 'industries']);
+        Route::get('prospects/departments', [ProspectMetaController::class, 'departments']);
+
+        Route::get('import-sessions', [ImportSessionController::class, 'index']);
+        Route::post('import-sessions', [ImportSessionController::class, 'store']);
+        Route::get('import-sessions/{session}', [ImportSessionController::class, 'show']);
+        Route::patch('import-sessions/{session}', [ImportSessionController::class, 'update']);
+        Route::post('import-sessions/{session}/process', [ImportSessionController::class, 'process']);
+        Route::get('import-sessions/{session}/errors', [ImportSessionController::class, 'errors']);
+        Route::get('import-sessions/{session}/errors/export', [ImportSessionController::class, 'exportErrors']);
+        Route::delete('import-sessions/{session}', [ImportSessionController::class, 'destroy']);
 
         // Projects
         Route::apiResource('projects', ProjectController::class);

@@ -41,6 +41,12 @@ class ClientController extends Controller
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
+        if ($request->filled('industry')) {
+            $query->where('industry', $request->string('industry')->toString());
+        }
+        if ($request->filled('department')) {
+            $query->where('department', $request->string('department')->toString());
+        }
 
         // Include trashed
         if ($request->boolean('trashed')) {
@@ -51,7 +57,7 @@ class ClientController extends Controller
         $sortField = $request->input('sort_by', 'created_at');
         $sortOrder = $request->input('sort_order', 'desc');
 
-        $allowedSortFields = ['name', 'reference', 'email', 'status', 'created_at'];
+        $allowedSortFields = ['name', 'reference', 'email', 'status', 'industry', 'department', 'created_at'];
         if (in_array($sortField, $allowedSortFields)) {
             $query->orderBy($sortField, $sortOrder === 'asc' ? 'asc' : 'desc');
         } else {
@@ -141,7 +147,7 @@ class ClientController extends Controller
             if ($handle === false) {
                 return;
             }
-            fputcsv($handle, ['Reference', 'Name', 'Email', 'Phone', 'City', 'Country', 'Status']);
+            fputcsv($handle, ['Reference', 'Name', 'Email', 'Phone', 'City', 'Country', 'Industry', 'Department', 'Status']);
 
             foreach ($clients as $client) {
                 fputcsv($handle, [
@@ -151,6 +157,8 @@ class ClientController extends Controller
                     $client->phone,
                     $client->city,
                     $client->country,
+                    $client->industry,
+                    $client->department,
                     $client->status,
                 ]);
             }
@@ -203,7 +211,7 @@ class ClientController extends Controller
             $values = array_combine($normalizedHeader, array_slice($row, 0, count($normalizedHeader)));
 
             $status = $this->csvValue($values, 'status');
-            if (! in_array($status, ['active', 'inactive', 'archived'], true)) {
+            if (! in_array($status, ['active', 'inactive', 'archived', 'lead', 'prospect'], true)) {
                 $status = 'active';
             }
 
@@ -216,6 +224,8 @@ class ClientController extends Controller
                 'city' => $this->csvValue($values, 'city'),
                 'country' => $this->csvValue($values, 'country'),
                 'zip_code' => $this->csvValue($values, 'zip_code'),
+                'industry' => $this->csvValue($values, 'industry'),
+                'department' => $this->csvValue($values, 'department'),
                 'status' => $status,
             ]);
             $count++;
