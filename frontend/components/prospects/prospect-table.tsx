@@ -57,7 +57,9 @@ export function ProspectTable({
             <td>{prospect.email || "-"}</td>
             <td className="space-x-2">
               <button onClick={() => onConvert(prospect.id)}>Convertir</button>
-              <button onClick={() => onCreateCampaign(prospect.id)}>Créer campagne</button>
+              <button onClick={() => onCreateCampaign(prospect.id)}>
+                Créer campagne
+              </button>
             </td>
           </tr>
         ))}

@@ -11,7 +11,9 @@ describe("StepUpload", () => {
     const file = new File(["a"], "prospects.csv", { type: "text/csv" });
     fireEvent.change(input, { target: { files: [file] } });
 
-    fireEvent.click(screen.getByRole("button", { name: /Analyser le fichier/i }));
+    fireEvent.click(
+      screen.getByRole("button", { name: /Analyser le fichier/i })
+    );
     expect(onAnalyze).toHaveBeenCalled();
   });
 });

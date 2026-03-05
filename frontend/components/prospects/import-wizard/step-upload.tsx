@@ -46,7 +46,9 @@ export function StepUpload({ isUploading, onAnalyze }: StepUploadProps) {
         onChange={handleFile}
       />
 
-      {file ? <p className="text-sm">Fichier sélectionné: {file.name}</p> : null}
+      {file ? (
+        <p className="text-sm">Fichier sélectionné: {file.name}</p>
+      ) : null}
       {error ? <p className="text-sm text-destructive">{error}</p> : null}
 
       <Button

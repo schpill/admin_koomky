@@ -18,19 +18,23 @@ export function StepResults({
   isProcessing,
   onExportErrors,
 }: StepResultsProps) {
-  const statusText = isProcessing ? "En cours..." : session?.status || "En attente";
+  const statusText = isProcessing
+    ? "En cours..."
+    : session?.status || "En attente";
 
   return (
     <div className="space-y-4">
       <div>
         <p>Statut: {statusText}</p>
         <p>
-          Progression: {session?.processed_rows || 0}/{session?.total_rows || 0} ({progress}
+          Progression: {session?.processed_rows || 0}/{session?.total_rows || 0}{" "}
+          ({progress}
           %)
         </p>
       </div>
 
-      {session && (session.status === "completed" || session.status === "failed") ? (
+      {session &&
+      (session.status === "completed" || session.status === "failed") ? (
         <div className="rounded border p-3 text-sm">
           <p>Importés: {session.success_rows}</p>
           <p>Erreurs: {session.error_rows}</p>

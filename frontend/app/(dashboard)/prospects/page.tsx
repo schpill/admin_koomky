@@ -52,12 +52,25 @@ export default function ProspectsPage() {
         </div>
       </div>
 
-      <ProspectFilters value={filters} onChange={(next) => fetchProspects(next)} />
+      <ProspectFilters
+        value={filters}
+        onChange={(next) => fetchProspects(next)}
+      />
 
       {selectedIds.length > 0 ? (
         <div className="space-x-2">
-          <Button variant="outline" onClick={() => bulkUpdateStatus(selectedIds, "active")}>Passer en clients</Button>
-          <Button variant="outline" onClick={() => bulkAddTags(selectedIds, [])}>Ajouter tags</Button>
+          <Button
+            variant="outline"
+            onClick={() => bulkUpdateStatus(selectedIds, "active")}
+          >
+            Passer en clients
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => bulkAddTags(selectedIds, [])}
+          >
+            Ajouter tags
+          </Button>
           <Button
             variant="outline"
             onClick={async () => {

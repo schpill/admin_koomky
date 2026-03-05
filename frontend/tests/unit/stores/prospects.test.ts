@@ -36,9 +36,13 @@ describe("useProspectStore", () => {
     expect(useProspectStore.getState().clients).toHaveLength(1);
 
     (apiClient.put as any).mockResolvedValue({ data: {} });
-    (apiClient.get as any).mockResolvedValueOnce({ data: { data: [], meta: { total: 0, current_page: 1 } } });
+    (apiClient.get as any).mockResolvedValueOnce({
+      data: { data: [], meta: { total: 0, current_page: 1 } },
+    });
     await useProspectStore.getState().convertToClient("cli_1");
 
-    expect(apiClient.put).toHaveBeenCalledWith("/clients/cli_1", { status: "active" });
+    expect(apiClient.put).toHaveBeenCalledWith("/clients/cli_1", {
+      status: "active",
+    });
   });
 });

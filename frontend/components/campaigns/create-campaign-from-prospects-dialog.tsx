@@ -35,10 +35,18 @@ export function CreateCampaignFromProspectsDialog({
     try {
       const criteria: any[] = [];
       if (filters.industry) {
-        criteria.push({ type: "industry", operator: "equals", value: filters.industry });
+        criteria.push({
+          type: "industry",
+          operator: "equals",
+          value: filters.industry,
+        });
       }
       if (filters.department) {
-        criteria.push({ type: "department", operator: "equals", value: filters.department });
+        criteria.push({
+          type: "department",
+          operator: "equals",
+          value: filters.department,
+        });
       }
 
       const segment = await createSegment({
@@ -66,7 +74,8 @@ export function CreateCampaignFromProspectsDialog({
         <AlertDialogHeader>
           <AlertDialogTitle>Créer une campagne ciblée</AlertDialogTitle>
           <AlertDialogDescription>
-            Générer un segment depuis les filtres actifs puis ouvrir la création de campagne.
+            Générer un segment depuis les filtres actifs puis ouvrir la création
+            de campagne.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

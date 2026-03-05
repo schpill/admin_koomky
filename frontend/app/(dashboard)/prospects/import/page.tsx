@@ -46,13 +46,19 @@ export default function ProspectImportPage() {
 
       <div className="flex flex-wrap gap-2">
         {[1, 2, 3, 4].map((item) => (
-          <Button key={item} variant={step === item ? "default" : "outline"} onClick={() => setStep(item)}>
+          <Button
+            key={item}
+            variant={step === item ? "default" : "outline"}
+            onClick={() => setStep(item)}
+          >
             Etape {item}
           </Button>
         ))}
       </div>
 
-      {step === 1 ? <StepUpload isUploading={isUploading} onAnalyze={uploadFile} /> : null}
+      {step === 1 ? (
+        <StepUpload isUploading={isUploading} onAnalyze={uploadFile} />
+      ) : null}
 
       {step === 2 ? (
         <StepMapping

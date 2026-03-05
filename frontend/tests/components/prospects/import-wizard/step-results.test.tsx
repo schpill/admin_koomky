@@ -16,7 +16,12 @@ describe("StepResults", () => {
         }}
         progress={100}
         errors={[
-          { id: "e1", row_number: 3, raw_data: {}, error_message: "Email invalide" },
+          {
+            id: "e1",
+            row_number: 3,
+            raw_data: {},
+            error_message: "Email invalide",
+          },
         ]}
         isProcessing={false}
         onExportErrors={vi.fn().mockResolvedValue(undefined)}

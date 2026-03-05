@@ -47,7 +47,12 @@ export const useProspectStore = create<ProspectState>((set, get) => ({
 
   fetchProspects: async (filters = {}) => {
     const merged = { ...get().filters, ...filters, status: "prospect" };
-    set({ isLoading: true, error: null, filters: merged, page: merged.page || 1 });
+    set({
+      isLoading: true,
+      error: null,
+      filters: merged,
+      page: merged.page || 1,
+    });
 
     try {
       const response = await apiClient.get<any>("/clients", {
@@ -73,17 +78,25 @@ export const useProspectStore = create<ProspectState>((set, get) => ({
   },
 
   bulkUpdateStatus: async (ids, status) => {
-    await Promise.all(ids.map((id) => apiClient.put(`/clients/${id}`, { status })));
+    await Promise.all(
+      ids.map((id) => apiClient.put(`/clients/${id}`, { status }))
+    );
     await get().fetchProspects();
   },
 
   bulkAddTags: async (ids, tagIds) => {
-    await Promise.all(ids.map((id) => apiClient.post(`/clients/${id}/tags`, { tag_ids: tagIds })));
+    await Promise.all(
+      ids.map((id) =>
+        apiClient.post(`/clients/${id}/tags`, { tag_ids: tagIds })
+      )
+    );
     await get().fetchProspects();
   },
 
   exportCsv: async () => {
-    const response = await apiClient.get<Blob>("/clients/export/csv", { responseType: "blob" });
+    const response = await apiClient.get<Blob>("/clients/export/csv", {
+      responseType: "blob",
+    });
     return response.data;
   },
 }));

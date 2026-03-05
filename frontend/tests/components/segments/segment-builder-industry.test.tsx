@@ -9,13 +9,19 @@ describe("SegmentBuilder industry/department", () => {
         value={{
           group_boolean: "and",
           criteria_boolean: "or",
-          groups: [{ criteria: [{ type: "tag", operator: "equals", value: "vip" }] }],
+          groups: [
+            { criteria: [{ type: "tag", operator: "equals", value: "vip" }] },
+          ],
         }}
         onChange={vi.fn()}
       />
     );
 
-    expect(screen.getByRole("option", { name: "industry" })).toBeInTheDocument();
-    expect(screen.getByRole("option", { name: "department" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("option", { name: "industry" })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("option", { name: "department" })
+    ).toBeInTheDocument();
   });
 });

@@ -45,7 +45,10 @@ export function StepOptions({
           onChange={(event) =>
             onChange({
               tags,
-              defaultStatus: event.target.value as "prospect" | "lead" | "active",
+              defaultStatus: event.target.value as
+                | "prospect"
+                | "lead"
+                | "active",
               duplicateStrategy,
             })
           }
@@ -62,7 +65,9 @@ export function StepOptions({
           <input
             type="radio"
             checked={duplicateStrategy === "skip"}
-            onChange={() => onChange({ tags, defaultStatus, duplicateStrategy: "skip" })}
+            onChange={() =>
+              onChange({ tags, defaultStatus, duplicateStrategy: "skip" })
+            }
           />
           Ignorer
         </label>
@@ -70,7 +75,9 @@ export function StepOptions({
           <input
             type="radio"
             checked={duplicateStrategy === "update"}
-            onChange={() => onChange({ tags, defaultStatus, duplicateStrategy: "update" })}
+            onChange={() =>
+              onChange({ tags, defaultStatus, duplicateStrategy: "update" })
+            }
           />
           Mettre à jour
         </label>

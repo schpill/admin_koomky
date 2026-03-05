@@ -6,7 +6,11 @@ describe("ConvertToClientDialog", () => {
   it("confirms conversion", () => {
     const onConfirm = vi.fn();
     render(
-      <ConvertToClientDialog open onOpenChange={() => {}} onConfirm={onConfirm} />
+      <ConvertToClientDialog
+        open
+        onOpenChange={() => {}}
+        onConfirm={onConfirm}
+      />
     );
 
     fireEvent.click(screen.getByText(/Confirmer/i));

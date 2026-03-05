@@ -13,7 +13,9 @@ describe("ProspectFilters", () => {
     const onChange = vi.fn();
     render(<ProspectFilters value={{}} onChange={onChange} />);
 
-    await waitFor(() => expect(screen.getByPlaceholderText(/Rechercher/i)).toBeInTheDocument());
+    await waitFor(() =>
+      expect(screen.getByPlaceholderText(/Rechercher/i)).toBeInTheDocument()
+    );
 
     fireEvent.change(screen.getByPlaceholderText(/Rechercher/i), {
       target: { value: "acme" },

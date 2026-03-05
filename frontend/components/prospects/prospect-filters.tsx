@@ -32,7 +32,9 @@ export function ProspectFilters({ value, onChange }: ProspectFiltersProps) {
         list="industry-options"
         placeholder="Secteur"
         value={value.industry || ""}
-        onChange={(event) => onChange({ ...value, industry: event.target.value })}
+        onChange={(event) =>
+          onChange({ ...value, industry: event.target.value })
+        }
       />
       <datalist id="industry-options">
         {industries.map((industry) => (
@@ -42,7 +44,9 @@ export function ProspectFilters({ value, onChange }: ProspectFiltersProps) {
 
       <select
         value={value.department || ""}
-        onChange={(event) => onChange({ ...value, department: event.target.value || undefined })}
+        onChange={(event) =>
+          onChange({ ...value, department: event.target.value || undefined })
+        }
       >
         <option value="">Tous les départements</option>
         {FRENCH_DEPARTMENTS.map((department) => (
