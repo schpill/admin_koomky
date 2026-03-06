@@ -2,16 +2,16 @@
 
 namespace App\Services;
 
-use App\Models\CampaignRecipient;
 use App\Models\Contact;
 use App\Models\User;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class ContactSendTimeService
 {
     public function getOptimalHour(Contact $contact, User $user): ?int
     {
-        $hours = CampaignRecipient::query()
+        $hours = DB::table('campaign_recipients')
             ->selectRaw('strftime(\'%H\', opened_at) as opened_hour, count(*) as aggregate')
             ->join('campaigns', 'campaigns.id', '=', 'campaign_recipients.campaign_id')
             ->where('campaign_recipients.contact_id', $contact->id)
@@ -22,7 +22,7 @@ class ContactSendTimeService
             ->orderBy('opened_hour')
             ->get();
 
-        if ($hours->sum('aggregate') < 3) {
+        if ((int) $hours->sum('aggregate') < 3) {
             return null;
         }
 
@@ -40,7 +40,7 @@ class ContactSendTimeService
             $candidate->addDay();
         }
 
-        $delay = $now->diffInSeconds($candidate, false);
+        $delay = (int) $now->diffInSeconds($candidate, false);
         $maxDelay = max(1, $windowHours) * 3600;
 
         return $delay >= 0 && $delay <= $maxDelay ? $delay : 0;

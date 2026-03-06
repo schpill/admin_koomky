@@ -146,7 +146,6 @@ class PersonalizationService
             '<=' => $left <= $right,
             '>' => $left > $right,
             '<' => $left < $right,
-            default => false,
         };
     }
 
@@ -198,7 +197,7 @@ class PersonalizationService
         $depth = 1;
         $elsePosition = null;
 
-        while ($depth > 0) {
+        while (true) {
             $nextIf = strpos($content, '{{#if', $cursor);
             $nextElse = strpos($content, '{{else}}', $cursor);
             $nextEnd = strpos($content, '{{/if}}', $cursor);
@@ -230,26 +229,26 @@ class PersonalizationService
                 continue;
             }
 
-            if ($type === 'end') {
-                $depth--;
-
-                if ($depth === 0) {
-                    $truthyStart = $conditionEnd + 2;
-                    $truthyEnd = $elsePosition ?? $position;
-                    $falsyStart = $elsePosition !== null ? $elsePosition + 8 : null;
-
-                    return [
-                        'truthy' => substr($content, $truthyStart, $truthyEnd - $truthyStart),
-                        'falsy' => $falsyStart !== null ? substr($content, $falsyStart, $position - $falsyStart) : null,
-                        'end' => $position + 7,
-                    ];
-                }
-
-                $cursor = $position + 7;
+            if ($type !== 'end') {
+                return null;
             }
-        }
 
-        return null;
+            $depth--;
+
+            if ($depth === 0) {
+                $truthyStart = $conditionEnd + 2;
+                $truthyEnd = $elsePosition ?? $position;
+                $falsyStart = $elsePosition !== null ? $elsePosition + 8 : null;
+
+                return [
+                    'truthy' => substr($content, $truthyStart, $truthyEnd - $truthyStart),
+                    'falsy' => $falsyStart !== null ? substr($content, $falsyStart, $position - $falsyStart) : null,
+                    'end' => $position + 7,
+                ];
+            }
+
+            $cursor = $position + 7;
+        }
     }
 
     /**
