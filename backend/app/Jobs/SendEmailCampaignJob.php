@@ -26,8 +26,7 @@ class SendEmailCampaignJob implements ShouldQueue
         SegmentFilterEngine $segmentFilterEngine,
         ?ContactSendTimeService $contactSendTimeService = null,
         ?ContactScoreService $contactScoreService = null,
-    ): void
-    {
+    ): void {
         $contactSendTimeService ??= app(ContactSendTimeService::class);
         $contactScoreService ??= app(ContactScoreService::class);
 
