@@ -6,7 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { WorkflowBuilder } from "@/components/workflows/workflow-builder";
 import { WorkflowEnrollmentsTable } from "@/components/workflows/workflow-enrollments-table";
-import { useWorkflowsStore, type Workflow, type WorkflowStep } from "@/lib/stores/workflows";
+import {
+  useWorkflowsStore,
+  type Workflow,
+  type WorkflowStep,
+} from "@/lib/stores/workflows";
 
 function cloneWorkflow(workflow: Workflow): Workflow {
   return {

@@ -219,7 +219,9 @@ export const useWorkflowsStore = create<WorkflowsState>((set, get) => ({
   },
 
   activateWorkflow: async (id) => {
-    const response = await apiClient.patch<Workflow>(`/workflows/${id}/activate`);
+    const response = await apiClient.patch<Workflow>(
+      `/workflows/${id}/activate`
+    );
     const workflow = response.data as Workflow;
     set({
       currentWorkflow:

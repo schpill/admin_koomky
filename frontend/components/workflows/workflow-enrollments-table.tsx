@@ -59,7 +59,9 @@ export function WorkflowEnrollmentsTable({
                 </div>
               </TableCell>
               <TableCell>{enrollment.status}</TableCell>
-              <TableCell>{enrollment.current_step?.type || "Completed"}</TableCell>
+              <TableCell>
+                {enrollment.current_step?.type || "Completed"}
+              </TableCell>
               <TableCell>{enrollment.enrolled_at || "-"}</TableCell>
               <TableCell className="flex gap-2">
                 {enrollment.status === "paused" ? (

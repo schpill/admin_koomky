@@ -36,9 +36,7 @@ export default function WorkflowsPage() {
           {isLoading && workflows.length === 0 ? (
             <p className="text-sm text-muted-foreground">Loading...</p>
           ) : workflows.length === 0 ? (
-            <p className="text-sm text-muted-foreground">
-              No workflows yet.
-            </p>
+            <p className="text-sm text-muted-foreground">No workflows yet.</p>
           ) : (
             workflows.map((workflow) => (
               <div
@@ -58,7 +56,8 @@ export default function WorkflowsPage() {
                     {workflow.active_enrollments_count || 0}
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    Completion rate: {Number(workflow.completion_rate || 0).toFixed(2)}%
+                    Completion rate:{" "}
+                    {Number(workflow.completion_rate || 0).toFixed(2)}%
                   </p>
                 </div>
                 <Badge variant="secondary">{workflow.status}</Badge>

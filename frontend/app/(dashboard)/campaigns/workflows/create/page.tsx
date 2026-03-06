@@ -16,8 +16,12 @@ function normalizeStep(
   return {
     type: step.type,
     config: step.config || {},
-    next_step_id: step.next_step_id ? idMap.get(step.next_step_id) || null : null,
-    else_step_id: step.else_step_id ? idMap.get(step.else_step_id) || null : null,
+    next_step_id: step.next_step_id
+      ? idMap.get(step.next_step_id) || null
+      : null,
+    else_step_id: step.else_step_id
+      ? idMap.get(step.else_step_id) || null
+      : null,
     position_x: step.position_x || 0,
     position_y: step.position_y || 0,
   };
@@ -57,7 +61,10 @@ export default function CreateWorkflowPage() {
     const idMap = new Map<string, string>();
 
     for (const step of workflow.steps) {
-      const createdStep = await createStep(created.id, normalizeStep(step, idMap));
+      const createdStep = await createStep(
+        created.id,
+        normalizeStep(step, idMap)
+      );
       if (step.id && createdStep?.id) {
         idMap.set(step.id, createdStep.id);
       }

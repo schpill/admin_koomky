@@ -95,7 +95,9 @@ export function WorkflowBuilder({
     onChange({
       ...value,
       entry_step_id:
-        value.entry_step_id === stepId ? nextSteps[0]?.id || null : value.entry_step_id,
+        value.entry_step_id === stepId
+          ? nextSteps[0]?.id || null
+          : value.entry_step_id,
       steps: nextSteps,
     });
 
@@ -142,7 +144,8 @@ export function WorkflowBuilder({
                 onChange={(event) =>
                   onChange({
                     ...value,
-                    trigger_type: event.target.value as Workflow["trigger_type"],
+                    trigger_type: event.target
+                      .value as Workflow["trigger_type"],
                   })
                 }
               >
