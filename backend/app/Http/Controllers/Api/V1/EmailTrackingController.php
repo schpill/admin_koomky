@@ -25,6 +25,10 @@ class EmailTrackingController extends Controller
                 'opened_at' => now(),
                 'status' => in_array($recipient->status, ['sent', 'delivered'], true) ? 'opened' : $recipient->status,
             ]);
+
+            if ($recipient->variant_id !== null) {
+                $recipient->variant()->increment('open_count');
+            }
         }
 
         $pixel = base64_decode('R0lGODlhAQABAIABAP///wAAACwAAAAAAQABAAACAkQBADs=', true) ?: '';
@@ -44,6 +48,10 @@ class EmailTrackingController extends Controller
                 'clicked_at' => now(),
                 'status' => 'clicked',
             ]);
+
+            if ($recipient->variant_id !== null) {
+                $recipient->variant()->increment('click_count');
+            }
         }
 
         $url = (string) $request->query('url', '/');

@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Campaign;
 use App\Models\CampaignRecipient;
+use App\Models\CampaignVariant;
 use App\Models\User;
 use Carbon\Carbon;
 use Carbon\CarbonInterface;
@@ -49,6 +50,7 @@ class CampaignAnalyticsService
             'bounce_rate' => $bounceRate,
             'failure_reasons' => $this->failureReasons($recipients),
             'time_series' => $this->timeSeries($recipients),
+            'ab_variants' => $this->abVariants($campaign),
         ];
     }
 
@@ -140,5 +142,30 @@ class CampaignAnalyticsService
         }
 
         return null;
+    }
+
+    /**
+     * @return array<int, array{label:string,sent_count:int,open_count:int,click_count:int,open_rate:float,click_rate:float,is_winner:bool}>
+     */
+    private function abVariants(Campaign $campaign): array
+    {
+        if (! $campaign->isAbTest()) {
+            return [];
+        }
+
+        /** @var \Illuminate\Support\Collection<int, CampaignVariant> $variants */
+        $variants = $campaign->variants()->orderBy('label')->get();
+
+        return $variants->map(function (CampaignVariant $variant) use ($campaign): array {
+            return [
+                'label' => (string) $variant->label,
+                'sent_count' => (int) $variant->sent_count,
+                'open_count' => (int) $variant->open_count,
+                'click_count' => (int) $variant->click_count,
+                'open_rate' => $variant->openRate(),
+                'click_rate' => $variant->clickRate(),
+                'is_winner' => $campaign->ab_winner_variant_id === $variant->id,
+            ];
+        })->values()->all();
     }
 }

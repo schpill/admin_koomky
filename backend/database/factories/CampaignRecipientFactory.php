@@ -19,6 +19,7 @@ class CampaignRecipientFactory extends Factory
         return [
             'campaign_id' => Campaign::factory(),
             'contact_id' => Contact::factory(),
+            'variant_id' => null,
             'email' => $this->faker->safeEmail(),
             'phone' => '+33'.$this->faker->numerify('6########'),
             'status' => $this->faker->randomElement(['pending', 'sent', 'delivered']),

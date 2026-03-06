@@ -11,7 +11,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TemplateSelector } from "@/components/campaigns/template-selector";
 import { CampaignPreview } from "@/components/campaigns/campaign-preview";
 import { TestSendModal } from "@/components/campaigns/test-send-modal";
+import { AbTestConfig } from "@/components/campaigns/ab-test-config";
+import { PersonalizationVariablesPanel } from "@/components/campaigns/personalization-variables-panel";
 import { useCampaignStore } from "@/lib/stores/campaigns";
+import type { CampaignVariant } from "@/lib/stores/campaigns";
 import { useSegmentStore } from "@/lib/stores/segments";
 import { useI18n } from "@/components/providers/i18n-provider";
 
@@ -84,6 +87,18 @@ export default function CreateCampaignPage() {
   const [content, setContent] = useState("");
   const [selectedTemplateId, setSelectedTemplateId] = useState("");
   const [scheduledAt, setScheduledAt] = useState("");
+  const [isAbTest, setIsAbTest] = useState(false);
+  const [variants, setVariants] = useState<CampaignVariant[]>([
+    { label: "A", subject: "", content: "", send_percent: 50 },
+    { label: "B", subject: "", content: "", send_percent: 50 },
+  ]);
+  const [winnerCriteria, setWinnerCriteria] = useState<
+    "open_rate" | "click_rate" | "manual"
+  >("open_rate");
+  const [autoSelectAfterHours, setAutoSelectAfterHours] = useState<
+    number | null
+  >(24);
+  const [activeField, setActiveField] = useState<string | null>(null);
 
   useEffect(() => {
     fetchTemplates().catch(() => undefined);
@@ -117,15 +132,122 @@ export default function CreateCampaignPage() {
     }
   }, [selectedTemplate, type]);
 
+  useEffect(() => {
+    if (type !== "email") {
+      setIsAbTest(false);
+    }
+  }, [type]);
+
+  const previewVariantA =
+    variants.find((variant) => variant.label === "A") || variants[0];
+
   const payload = {
     name,
     type,
     segment_id: segmentId || null,
-    subject: type === "email" ? subject : null,
-    content,
+    subject:
+      type === "email"
+        ? isAbTest
+          ? previewVariantA?.subject || null
+          : subject
+        : null,
+    content:
+      type === "email" && isAbTest
+        ? previewVariantA?.content || "<p>Variant A</p>"
+        : content,
     template_id: selectedTemplateId || null,
     scheduled_at: scheduledAt || null,
     status: scheduledAt ? "scheduled" : "draft",
+    is_ab_test: type === "email" ? isAbTest : false,
+    variants: type === "email" && isAbTest ? variants : undefined,
+    ab_winner_criteria: type === "email" && isAbTest ? winnerCriteria : null,
+    ab_auto_select_after_hours:
+      type === "email" && isAbTest && winnerCriteria !== "manual"
+        ? autoSelectAfterHours
+        : null,
+  };
+
+  const updateVariant = (
+    label: "A" | "B",
+    field: "subject" | "content" | "send_percent",
+    value: string | number
+  ) => {
+    if (field === "send_percent") {
+      const numeric = Math.max(1, Math.min(99, Number(value || 0)));
+      const oppositeLabel = label === "A" ? "B" : "A";
+
+      setVariants((current) =>
+        current.map((variant) => {
+          if (variant.label === label) {
+            return { ...variant, send_percent: numeric };
+          }
+          if (variant.label === oppositeLabel) {
+            return { ...variant, send_percent: 100 - numeric };
+          }
+          return variant;
+        })
+      );
+      return;
+    }
+
+    setVariants((current) =>
+      current.map((variant) => {
+        if (variant.label !== label) {
+          return variant;
+        }
+
+        return {
+          ...variant,
+          [field]: String(value),
+        };
+      })
+    );
+  };
+
+  const handleInsertVariable = (token: string) => {
+    if (!activeField) {
+      setContent((current) => `${current}${token}`);
+      return;
+    }
+
+    if (activeField === "subject") {
+      setSubject((current) => `${current}${token}`);
+      return;
+    }
+
+    if (activeField === "content") {
+      setContent((current) => `${current}${token}`);
+      return;
+    }
+
+    if (activeField.startsWith("variant-A-subject")) {
+      updateVariant(
+        "A",
+        "subject",
+        `${previewVariantA?.subject || ""}${token}`
+      );
+      return;
+    }
+
+    if (activeField.startsWith("variant-A-content")) {
+      updateVariant(
+        "A",
+        "content",
+        `${previewVariantA?.content || ""}${token}`
+      );
+      return;
+    }
+
+    if (activeField.startsWith("variant-B-subject")) {
+      const variantB = variants.find((variant) => variant.label === "B");
+      updateVariant("B", "subject", `${variantB?.subject || ""}${token}`);
+      return;
+    }
+
+    if (activeField.startsWith("variant-B-content")) {
+      const variantB = variants.find((variant) => variant.label === "B");
+      updateVariant("B", "content", `${variantB?.content || ""}${token}`);
+    }
   };
 
   const ensureDraftExists = async () => {
@@ -166,6 +288,8 @@ export default function CreateCampaignPage() {
   };
 
   const handleTestSend = async (destination: {
+    emails?: string[];
+    phones?: string[];
     email?: string;
     phone?: string;
   }) => {
@@ -268,22 +392,45 @@ export default function CreateCampaignPage() {
               onSelect={setSelectedTemplateId}
             />
 
-            {type === "email" && (
-              <div className="space-y-2">
-                <Label htmlFor="campaign-subject">
-                  {t("campaigns.create.subject")}
-                </Label>
-                <Input
-                  id="campaign-subject"
-                  value={subject}
-                  onChange={(event) => setSubject(event.target.value)}
-                  placeholder={t("campaigns.create.subjectPlaceholder")}
+            {type === "email" ? (
+              <div className="grid gap-4 lg:grid-cols-3">
+                <div className="space-y-4 lg:col-span-2">
+                  <AbTestConfig
+                    enabled={isAbTest}
+                    onToggle={setIsAbTest}
+                    variants={variants}
+                    onChangeVariant={updateVariant}
+                    winnerCriteria={winnerCriteria}
+                    onWinnerCriteriaChange={setWinnerCriteria}
+                    autoSelectAfterHours={autoSelectAfterHours}
+                    onAutoSelectAfterHoursChange={setAutoSelectAfterHours}
+                    onFocusField={setActiveField}
+                  />
+
+                  {!isAbTest ? (
+                    <>
+                      <div className="space-y-2">
+                        <Label htmlFor="campaign-subject">
+                          {t("campaigns.create.subject")}
+                        </Label>
+                        <Input
+                          id="campaign-subject"
+                          value={subject}
+                          onFocus={() => setActiveField("subject")}
+                          onChange={(event) => setSubject(event.target.value)}
+                          placeholder={t("campaigns.create.subjectPlaceholder")}
+                        />
+                      </div>
+                      <div onFocusCapture={() => setActiveField("content")}>
+                        <EmailEditor value={content} onChange={setContent} />
+                      </div>
+                    </>
+                  ) : null}
+                </div>
+                <PersonalizationVariablesPanel
+                  onInsert={handleInsertVariable}
                 />
               </div>
-            )}
-
-            {type === "email" ? (
-              <EmailEditor value={content} onChange={setContent} />
             ) : (
               <SmsComposer value={content} onChange={setContent} />
             )}
@@ -295,8 +442,14 @@ export default function CreateCampaignPage() {
         <div className="space-y-4">
           {type === "email" ? (
             <CampaignPreview
-              subject={subject}
-              content={content}
+              subject={
+                isAbTest ? (previewVariantA?.subject ?? "Variante A") : subject
+              }
+              content={
+                isAbTest
+                  ? (previewVariantA?.content ?? "<p>Variante A</p>")
+                  : content
+              }
               recipients={sampleRecipients}
             />
           ) : (

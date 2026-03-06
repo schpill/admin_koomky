@@ -10,6 +10,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CampaignPreview } from "@/components/campaigns/campaign-preview";
 import { RecipientStatusTable } from "@/components/campaigns/recipient-status-table";
 import { TestSendModal } from "@/components/campaigns/test-send-modal";
+import { AbTestResults } from "@/components/campaigns/ab-test-results";
+import { PersonalizationVariablesPanel } from "@/components/campaigns/personalization-variables-panel";
 import { useCampaignStore } from "@/lib/stores/campaigns";
 import { useI18n } from "@/components/providers/i18n-provider";
 
@@ -25,6 +27,9 @@ export default function CampaignDetailPage() {
     duplicateCampaign,
     sendCampaign,
     testSendCampaign,
+    fetchCampaignAnalytics,
+    analytics,
+    selectAbWinner,
   } = useCampaignStore();
 
   useEffect(() => {
@@ -36,6 +41,14 @@ export default function CampaignDetailPage() {
       toast.error((error as Error).message || "Unable to load campaign");
     });
   }, [campaignId, fetchCampaign]);
+
+  useEffect(() => {
+    if (!campaignId) {
+      return;
+    }
+
+    fetchCampaignAnalytics(campaignId).catch(() => undefined);
+  }, [campaignId, fetchCampaignAnalytics]);
 
   if (!currentCampaign || currentCampaign.id !== campaignId) {
     return (
@@ -112,6 +125,29 @@ export default function CampaignDetailPage() {
           />
         </CardContent>
       </Card>
+
+      <PersonalizationVariablesPanel />
+
+      {currentCampaign.is_ab_test && analytics?.ab_variants?.length ? (
+        <AbTestResults
+          campaign={currentCampaign}
+          variants={analytics.ab_variants}
+          isSubmitting={isLoading}
+          onSelectWinner={async (label) => {
+            const variant = currentCampaign.variants?.find(
+              (entry) => entry.label === label
+            );
+            if (!variant?.id) {
+              toast.error("Variant not found");
+              return;
+            }
+
+            await selectAbWinner(currentCampaign.id, variant.id);
+            await fetchCampaignAnalytics(currentCampaign.id);
+            toast.success("Winner selected");
+          }}
+        />
+      ) : null}
 
       <Card>
         <CardHeader>

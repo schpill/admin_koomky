@@ -131,6 +131,11 @@ class DashboardService
             $activeCampaignsCount = $campaignsLast30Days
                 ->whereIn('status', ['scheduled', 'sending', 'paused'])
                 ->count();
+            $activeAbTestsCount = Campaign::query()
+                ->where('user_id', $userId)
+                ->where('status', 'sending')
+                ->where('is_ab_test', true)
+                ->count();
 
             $campaignRates = $campaignsLast30Days->map(function (Campaign $campaign): array {
                 $metrics = $this->campaignAnalyticsService->forCampaign($campaign);
@@ -196,6 +201,7 @@ class DashboardService
                 'recurring_upcoming_due_profiles' => $recurringUpcomingProfiles,
                 'recurring_estimated_revenue_month' => $recurringEstimatedRevenue,
                 'active_campaigns_count' => $activeCampaignsCount,
+                'active_ab_tests_count' => $activeAbTestsCount,
                 'average_campaign_open_rate' => $averageOpenRate,
                 'average_campaign_click_rate' => $averageClickRate,
                 'prospects_imported_month' => Client::query()

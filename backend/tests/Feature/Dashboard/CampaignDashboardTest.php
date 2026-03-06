@@ -17,6 +17,13 @@ test('dashboard includes campaign summary metrics', function () {
         'created_at' => now()->subDays(5),
     ]);
 
+    Campaign::factory()->create([
+        'user_id' => $user->id,
+        'status' => 'sending',
+        'type' => 'email',
+        'is_ab_test' => true,
+    ]);
+
     CampaignRecipient::factory()->count(2)->create([
         'campaign_id' => $campaign->id,
         'status' => 'opened',
@@ -34,7 +41,8 @@ test('dashboard includes campaign summary metrics', function () {
     $response = $this->actingAs($user, 'sanctum')->getJson('/api/v1/dashboard');
 
     $response->assertStatus(200)
-        ->assertJsonPath('data.active_campaigns_count', 1)
+        ->assertJsonPath('data.active_campaigns_count', 2)
+        ->assertJsonPath('data.active_ab_tests_count', 1)
         ->assertJsonStructure([
             'status',
             'message',

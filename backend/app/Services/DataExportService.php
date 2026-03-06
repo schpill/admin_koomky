@@ -63,7 +63,7 @@ class DataExportService
 
         $campaigns = Campaign::query()
             ->where('user_id', $user->id)
-            ->with(['recipients'])
+            ->with(['recipients', 'variants'])
             ->get();
 
         $expenseCategories = ExpenseCategory::query()
@@ -182,6 +182,20 @@ class DataExportService
             'quotes' => $quotes->toArray(),
             'credit_notes' => $creditNotes->toArray(),
             'campaigns' => $campaigns->toArray(),
+            'campaign_variants' => $campaigns
+                ->flatMap(fn (Campaign $campaign) => $campaign->variants->map(fn ($variant) => [
+                    'id' => $variant->id,
+                    'campaign_id' => $campaign->id,
+                    'label' => $variant->label,
+                    'subject' => $variant->subject,
+                    'content' => $variant->content,
+                    'send_percent' => (int) $variant->send_percent,
+                    'sent_count' => (int) $variant->sent_count,
+                    'open_count' => (int) $variant->open_count,
+                    'click_count' => (int) $variant->click_count,
+                ]))
+                ->values()
+                ->all(),
             'campaign_templates' => CampaignTemplate::query()
                 ->where('user_id', $user->id)
                 ->get()

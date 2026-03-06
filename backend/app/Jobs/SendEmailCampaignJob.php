@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Models\Activity;
 use App\Models\Campaign;
 use App\Models\CampaignRecipient;
+use App\Models\CampaignVariant;
 use App\Models\Client;
 use App\Models\Contact;
 use App\Notifications\CampaignCompletedNotification;
@@ -20,7 +21,7 @@ class SendEmailCampaignJob implements ShouldQueue
 
     public function handle(SegmentFilterEngine $segmentFilterEngine): void
     {
-        $campaign = Campaign::query()->with(['user', 'segment'])->find($this->campaignId);
+        $campaign = Campaign::query()->with(['user', 'segment', 'variants'])->find($this->campaignId);
 
         if (! $campaign || $campaign->type !== 'email') {
             return;
@@ -43,27 +44,47 @@ class SendEmailCampaignJob implements ShouldQueue
             });
 
         $contacts = $contactsQuery
+            ->select('contacts.*')
+            ->distinct()
             ->emailSubscribed()
             ->whereNotNull('email')
             ->orderBy('contacts.id')
-            ->cursor();
+            ->get()
+            ->values();
+
+        $variantAssignments = $this->resolveVariantAssignments($campaign, $contacts->count());
 
         $throttleRate = $this->resolveThrottleRate(
             $campaign->settings['throttle_rate_per_minute'] ?? null,
             100
         );
         $interval = 60 / $throttleRate;
-        $index = 0;
 
-        foreach ($contacts as $contact) {
+        foreach ($contacts as $index => $contact) {
+            $email = is_string($contact->email) ? trim($contact->email) : '';
+            if ($email === '') {
+                continue;
+            }
+
+            $variant = $variantAssignments[$index] ?? null;
+
             /** @var CampaignRecipient $recipient */
-            $recipient = CampaignRecipient::query()->create([
-                'campaign_id' => $campaign->id,
-                'contact_id' => $contact->id,
-                'email' => $contact->email,
-                'phone' => $contact->phone,
-                'status' => 'pending',
-            ]);
+            $recipient = CampaignRecipient::query()->firstOrCreate(
+                [
+                    'campaign_id' => $campaign->id,
+                    'email' => $email,
+                ],
+                [
+                    'contact_id' => $contact->id,
+                    'variant_id' => $variant?->id,
+                    'phone' => $contact->phone,
+                    'status' => 'pending',
+                ]
+            );
+
+            if (! $recipient->wasRecentlyCreated) {
+                continue;
+            }
 
             $delaySeconds = (int) floor($index * $interval);
 
@@ -79,11 +100,15 @@ class SendEmailCampaignJob implements ShouldQueue
                     'campaign_id' => $campaign->id,
                     'campaign_type' => $campaign->type,
                     'contact_id' => $contact->id,
+                    'variant_id' => $variant?->id,
                     'channel' => 'email',
                 ],
             ]);
+        }
 
-            $index++;
+        if ($campaign->isAbTest() && is_numeric($campaign->ab_auto_select_after_hours) && (int) $campaign->ab_auto_select_after_hours > 0) {
+            SelectAbWinnerJob::dispatch($campaign->id)
+                ->delay(now()->addHours((int) $campaign->ab_auto_select_after_hours));
         }
 
         $campaign->update([
@@ -106,5 +131,42 @@ class SendEmailCampaignJob implements ShouldQueue
         }
 
         return $defaultRate;
+    }
+
+    /**
+     * @return array<int, CampaignVariant|null>
+     */
+    private function resolveVariantAssignments(Campaign $campaign, int $recipientCount): array
+    {
+        if (! $campaign->isAbTest()) {
+            return array_fill(0, $recipientCount, null);
+        }
+
+        /** @var \Illuminate\Support\Collection<int, CampaignVariant> $variants */
+        $variants = $campaign->variants->sortBy('label')->values();
+        if ($variants->count() !== 2) {
+            return array_fill(0, $recipientCount, null);
+        }
+
+        $variantA = $variants->firstWhere('label', 'A') ?? $variants->get(0);
+        $variantB = $variants->firstWhere('label', 'B') ?? $variants->get(1);
+        if (! $variantA instanceof CampaignVariant || ! $variantB instanceof CampaignVariant) {
+            return array_fill(0, $recipientCount, null);
+        }
+
+        $indexes = range(0, max(0, $recipientCount - 1));
+        shuffle($indexes);
+
+        $threshold = (int) round(($recipientCount * $variantA->send_percent) / 100);
+        $assigned = array_fill(0, $recipientCount, $variantB);
+
+        for ($i = 0; $i < $threshold; $i++) {
+            if (! isset($indexes[$i])) {
+                break;
+            }
+            $assigned[$indexes[$i]] = $variantA;
+        }
+
+        return $assigned;
     }
 }

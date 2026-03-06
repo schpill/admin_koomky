@@ -26,6 +26,18 @@ export interface CampaignAttachment {
   size_bytes: number;
 }
 
+export interface CampaignVariant {
+  id?: string;
+  campaign_id?: string;
+  label: "A" | "B";
+  subject?: string | null;
+  content?: string | null;
+  send_percent: number;
+  sent_count?: number;
+  open_count?: number;
+  click_count?: number;
+}
+
 export interface Campaign {
   id: string;
   name: string;
@@ -33,6 +45,11 @@ export interface Campaign {
   status: CampaignStatus;
   subject?: string | null;
   content: string;
+  is_ab_test?: boolean;
+  ab_winner_variant_id?: string | null;
+  ab_winner_selected_at?: string | null;
+  ab_winner_criteria?: "open_rate" | "click_rate" | "manual" | null;
+  ab_auto_select_after_hours?: number | null;
   segment_id?: string | null;
   template_id?: string | null;
   scheduled_at?: string | null;
@@ -42,6 +59,17 @@ export interface Campaign {
   recipients_count?: number;
   recipients?: Array<Record<string, unknown>>;
   attachments?: CampaignAttachment[];
+  variants?: CampaignVariant[];
+}
+
+export interface CampaignAbVariantAnalytics {
+  label: "A" | "B";
+  sent_count: number;
+  open_count: number;
+  click_count: number;
+  open_rate: number;
+  click_rate: number;
+  is_winner: boolean;
 }
 
 export interface CampaignAnalytics {
@@ -59,6 +87,7 @@ export interface CampaignAnalytics {
   bounce_rate?: number;
   failure_reasons?: Array<{ reason: string; count: number }>;
   time_series: Array<{ hour: string; opens: number; clicks: number }>;
+  ab_variants?: CampaignAbVariantAnalytics[];
 }
 
 interface Pagination {
@@ -92,8 +121,14 @@ interface CampaignState {
   duplicateCampaign: (id: string) => Promise<Campaign | null>;
   testSendCampaign: (
     id: string,
-    payload: { email?: string; phone?: string }
+    payload: {
+      emails?: string[];
+      phones?: string[];
+      email?: string;
+      phone?: string;
+    }
   ) => Promise<void>;
+  selectAbWinner: (campaignId: string, variantId: string) => Promise<Campaign>;
 
   fetchTemplates: () => Promise<void>;
   createTemplate: (
@@ -315,6 +350,31 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
     try {
       await apiClient.post(`/campaigns/${id}/test`, payload);
       set({ isLoading: false });
+    } catch (error) {
+      set({ error: (error as Error).message, isLoading: false });
+      throw error;
+    }
+  },
+
+  selectAbWinner: async (campaignId, variantId) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await apiClient.post<any>(
+        `/campaigns/${campaignId}/ab/select-winner`,
+        { variant_id: variantId }
+      );
+      const campaign = response.data as Campaign;
+
+      set({
+        campaigns: upsertCampaign(get().campaigns, campaign),
+        currentCampaign:
+          get().currentCampaign?.id === campaignId
+            ? campaign
+            : get().currentCampaign,
+        isLoading: false,
+      });
+
+      return campaign;
     } catch (error) {
       set({ error: (error as Error).message, isLoading: false });
       throw error;

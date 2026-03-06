@@ -43,6 +43,7 @@ interface DashboardStats {
   recurring_upcoming_due_profiles: RecurringUpcomingProfile[];
   recurring_estimated_revenue_month: number;
   active_campaigns_count: number;
+  active_ab_tests_count?: number;
   average_campaign_open_rate: number;
   average_campaign_click_rate: number;
   prospects_imported_month?: number;

@@ -24,7 +24,7 @@ class SendCampaignEmailJob implements ShouldQueue
         MailConfigService $mailConfigService
     ): void {
         $recipient = CampaignRecipient::query()
-            ->with(['campaign.user', 'contact.client'])
+            ->with(['campaign.user', 'contact.client', 'variant'])
             ->find($this->recipientId);
 
         if (! $recipient || ! $recipient->campaign || ! is_string($recipient->email) || $recipient->email === '') {
@@ -42,8 +42,17 @@ class SendCampaignEmailJob implements ShouldQueue
             return;
         }
 
-        $subject = $personalizationService->render((string) ($campaign->subject ?? ''), $contact);
-        $body = $personalizationService->render((string) $campaign->content, $contact);
+        $variant = $recipient->variant;
+        $rawSubject = $campaign->subject ?? '';
+        $rawBody = $campaign->content;
+
+        if ($variant !== null) {
+            $rawSubject = $variant->subject ?? $rawSubject;
+            $rawBody = $variant->content ?? $rawBody;
+        }
+
+        $subject = $personalizationService->render((string) $rawSubject, $contact);
+        $body = $personalizationService->render((string) $rawBody, $contact);
 
         $token = $tokenService->encode($recipient->id);
         $body = $this->rewriteLinks($body, $token);
@@ -64,6 +73,10 @@ class SendCampaignEmailJob implements ShouldQueue
             'status' => 'sent',
             'sent_at' => now(),
         ]);
+
+        if ($variant !== null) {
+            $variant->increment('sent_count');
+        }
     }
 
     private function rewriteLinks(string $html, string $token): string
