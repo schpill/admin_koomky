@@ -33,8 +33,8 @@ class WarmupGuardService
     {
         $today = now()->toDateString();
         $lastResetValue = $user->warmup_last_reset_at;
-        $lastReset = is_string($lastResetValue)
-            ? $lastResetValue
+        $lastReset = $lastResetValue !== null
+            ? substr((string) $lastResetValue, 0, 10)
             : null;
 
         if ($lastReset === $today) {
