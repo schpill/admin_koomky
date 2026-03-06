@@ -21,6 +21,7 @@ use App\Http\Controllers\Api\V1\DashboardController;
 use App\Http\Controllers\Api\V1\DataExportController;
 use App\Http\Controllers\Api\V1\DataImportController;
 use App\Http\Controllers\Api\V1\DocumentController;
+use App\Http\Controllers\Api\V1\DripSequenceController;
 use App\Http\Controllers\Api\V1\ExpenseCategoryController;
 use App\Http\Controllers\Api\V1\ExpenseController;
 use App\Http\Controllers\Api\V1\ExpenseReportController;
@@ -66,6 +67,7 @@ use App\Http\Controllers\Api\V1\Settings\PersonalAccessTokenController as Settin
 use App\Http\Controllers\Api\V1\Settings\WebhookDeliveryController;
 use App\Http\Controllers\Api\V1\Settings\WebhookEndpointController;
 use App\Http\Controllers\Api\V1\StripeWebhookController;
+use App\Http\Controllers\Api\V1\SuppressionListController;
 use App\Http\Controllers\Api\V1\TagController;
 use App\Http\Controllers\Api\V1\TaskController;
 use App\Http\Controllers\Api\V1\TicketController;
@@ -238,6 +240,17 @@ Route::prefix('v1')->group(function () {
         Route::get('campaigns/{campaign}/analytics', [CampaignAnalyticsController::class, 'show']);
         Route::get('campaigns/{campaign}/analytics/export', [CampaignAnalyticsController::class, 'export']);
         Route::apiResource('campaign-templates', CampaignTemplateController::class)->only(['index', 'store', 'update', 'destroy']);
+        Route::get('suppression-list', [SuppressionListController::class, 'index']);
+        Route::post('suppression-list', [SuppressionListController::class, 'store']);
+        Route::delete('suppression-list/{entry}', [SuppressionListController::class, 'destroy']);
+        Route::post('suppression-list/import', [SuppressionListController::class, 'import']);
+        Route::get('suppression-list/export', [SuppressionListController::class, 'export']);
+        Route::apiResource('drip-sequences', DripSequenceController::class);
+        Route::post('drip-sequences/{dripSequence}/enroll', [DripSequenceController::class, 'enroll']);
+        Route::post('drip-sequences/{dripSequence}/enroll-segment', [DripSequenceController::class, 'enrollSegment']);
+        Route::patch('drip-enrollments/{dripEnrollment}/pause', [DripSequenceController::class, 'pause']);
+        Route::patch('drip-enrollments/{dripEnrollment}/resume', [DripSequenceController::class, 'resume']);
+        Route::patch('drip-enrollments/{dripEnrollment}/cancel', [DripSequenceController::class, 'cancel']);
 
         // Invoices
         Route::apiResource('invoices', InvoiceController::class);

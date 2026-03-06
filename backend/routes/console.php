@@ -1,5 +1,6 @@
 <?php
 
+use App\Jobs\AdvanceDripEnrollmentsJob;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
@@ -14,6 +15,8 @@ Schedule::command('quotes:mark-expired')->dailyAt('01:10');
 Schedule::command('exchange-rates:fetch')->dailyAt('02:00');
 Schedule::command('calendar:sync')->everyFifteenMinutes();
 Schedule::command('campaigns:dispatch-scheduled')->everyMinute();
+Schedule::job(new AdvanceDripEnrollmentsJob)->everyFiveMinutes();
 Schedule::command('queue:monitor-failures')->everyFiveMinutes();
 Schedule::command('reminders:dispatch')->dailyAt('08:00');
 Schedule::command('import-sessions:prune')->weekly();
+Schedule::command('drip-enrollments:prune')->weekly();

@@ -7,6 +7,7 @@ import { MetricCard } from "@/components/dashboard/metric-card";
 import { RecentActivityWidget } from "@/components/dashboard/recent-activity-widget";
 import { UpcomingDeadlinesWidget } from "@/components/dashboard/upcoming-deadlines-widget";
 import { CampaignSummaryWidget } from "@/components/dashboard/campaign-summary-widget";
+import { DripSummaryWidget } from "@/components/dashboard/drip-summary-widget";
 import { RecurringInvoicesWidget } from "@/components/dashboard/recurring-invoices-widget";
 import { CalendarWidget } from "@/components/dashboard/calendar-widget";
 import { PipelineSummaryWidget } from "@/components/dashboard/pipeline-summary-widget";
@@ -20,6 +21,7 @@ import { useTicketStore } from "@/lib/stores/tickets";
 import { TicketPriorityBadge } from "@/components/tickets/ticket-priority-badge";
 import { useI18n } from "@/components/providers/i18n-provider";
 import { useNotificationStore } from "@/lib/stores/notifications";
+import { useDripSequencesStore } from "@/lib/stores/drip-sequences";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 import { AlertTriangle } from "lucide-react";
@@ -48,6 +50,7 @@ export default function DashboardPage() {
   const urgentOpenTickets = Array.isArray(urgentTickets) ? urgentTickets : [];
   const baseCurrency = stats?.base_currency || "EUR";
   const { t } = useI18n();
+  const { sequences, fetchSequences } = useDripSequencesStore();
   const setNotifications = useNotificationStore(
     (state) => state.setNotifications
   );
@@ -55,6 +58,10 @@ export default function DashboardPage() {
   useEffect(() => {
     fetchStats();
   }, [fetchStats]);
+
+  useEffect(() => {
+    fetchSequences().catch(() => undefined);
+  }, [fetchSequences]);
 
   useEffect(() => {
     fetchUrgentTickets({ priority: "urgent", status: "open" });
@@ -202,6 +209,19 @@ export default function DashboardPage() {
         minutesToday={stats?.time_tracked_today_widget?.minutes_today || 0}
         entriesCount={stats?.time_tracked_today_widget?.entries_count || 0}
       />
+
+      {sequences.length > 0 ? (
+        <DripSummaryWidget
+          sequencesCount={sequences.length}
+          activeEnrollments={sequences.reduce(
+            (total, sequence) =>
+              total +
+              sequence.enrollments.filter((item) => item.status === "active")
+                .length,
+            0
+          )}
+        />
+      ) : null}
 
       <Card>
         <CardHeader>

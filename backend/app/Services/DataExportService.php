@@ -9,6 +9,9 @@ use App\Models\Contact;
 use App\Models\CreditNote;
 use App\Models\Document;
 use App\Models\DocumentChunk;
+use App\Models\DripEnrollment;
+use App\Models\DripSequence;
+use App\Models\DripStep;
 use App\Models\Expense;
 use App\Models\ExpenseCategory;
 use App\Models\ImportSession;
@@ -22,6 +25,7 @@ use App\Models\Quote;
 use App\Models\RagUsageLog;
 use App\Models\ReminderDelivery;
 use App\Models\Segment;
+use App\Models\SuppressedEmail;
 use App\Models\Tag;
 use App\Models\Ticket;
 use App\Models\TicketMessage;
@@ -64,6 +68,19 @@ class DataExportService
         $campaigns = Campaign::query()
             ->where('user_id', $user->id)
             ->with(['recipients', 'variants'])
+            ->get();
+
+        $dripSequences = DripSequence::query()
+            ->where('user_id', $user->id)
+            ->with(['steps', 'enrollments'])
+            ->get();
+
+        $dripEnrollments = DripEnrollment::query()
+            ->whereIn('sequence_id', $dripSequences->pluck('id'))
+            ->get();
+
+        $suppressedEmails = SuppressedEmail::query()
+            ->where('user_id', $user->id)
             ->get();
 
         $expenseCategories = ExpenseCategory::query()
@@ -200,6 +217,13 @@ class DataExportService
                 ->where('user_id', $user->id)
                 ->get()
                 ->toArray(),
+            'drip_sequences' => $dripSequences->toArray(),
+            'drip_steps' => DripStep::query()
+                ->whereIn('sequence_id', $dripSequences->pluck('id'))
+                ->get()
+                ->toArray(),
+            'drip_enrollments' => $dripEnrollments->toArray(),
+            'suppressed_emails' => $suppressedEmails->toArray(),
             'segments' => Segment::query()
                 ->where('user_id', $user->id)
                 ->get()

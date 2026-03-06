@@ -25,6 +25,8 @@ class CampaignRecipient extends Model
         'opened_at',
         'clicked_at',
         'bounced_at',
+        'bounce_count',
+        'bounce_type',
         'failed_at',
         'failure_reason',
         'metadata',
@@ -42,6 +44,7 @@ class CampaignRecipient extends Model
             'clicked_at' => 'datetime',
             'bounced_at' => 'datetime',
             'failed_at' => 'datetime',
+            'bounce_count' => 'integer',
             'metadata' => 'array',
         ];
     }

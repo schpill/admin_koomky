@@ -7,6 +7,7 @@ use App\Models\Client;
 use App\Models\Contact;
 use App\Models\CreditNote;
 use App\Models\Document;
+use App\Models\DripSequence;
 use App\Models\Expense;
 use App\Models\ImportSession;
 use App\Models\Invoice;
@@ -18,9 +19,11 @@ use App\Models\Project;
 use App\Models\ProjectTemplate;
 use App\Models\Quote;
 use App\Models\ReminderSequence;
+use App\Models\SuppressedEmail;
 use App\Models\Task;
 use App\Models\Ticket;
 use App\Models\TicketMessage;
+use App\Observers\CampaignRecipientObserver;
 use App\Observers\ClientObserver;
 use App\Observers\ContactObserver;
 use App\Observers\CreditNoteObserver;
@@ -34,11 +37,13 @@ use App\Observers\QuoteObserver;
 use App\Observers\TaskObserver;
 use App\Observers\TicketMessageObserver;
 use App\Observers\TicketObserver;
+use App\Policies\DripSequencePolicy;
 use App\Policies\ImportSessionPolicy;
 use App\Policies\ProductPolicy;
 use App\Policies\ProductSalePolicy;
 use App\Policies\ProjectTemplatePolicy;
 use App\Policies\ReminderSequencePolicy;
+use App\Policies\SuppressedEmailPolicy;
 use App\Services\ExchangeRates\ApiExchangeRateService;
 use App\Services\ExchangeRates\EcbExchangeRatesDriver;
 use App\Services\ExchangeRates\ExchangeRateDriver;
@@ -90,6 +95,7 @@ class AppServiceProvider extends ServiceProvider
 
         Client::observe(ClientObserver::class);
         Contact::observe(ContactObserver::class);
+        \App\Models\CampaignRecipient::observe(CampaignRecipientObserver::class);
         Project::observe(ProjectObserver::class);
         Task::observe(TaskObserver::class);
         Invoice::observe(InvoiceObserver::class);
@@ -115,5 +121,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(ReminderSequence::class, ReminderSequencePolicy::class);
         Gate::policy(ProjectTemplate::class, ProjectTemplatePolicy::class);
         Gate::policy(ImportSession::class, ImportSessionPolicy::class);
+        Gate::policy(SuppressedEmail::class, SuppressedEmailPolicy::class);
+        Gate::policy(DripSequence::class, DripSequencePolicy::class);
     }
 }

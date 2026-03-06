@@ -17,6 +17,9 @@ export function AnalyticsSummaryCards({
     { label: "Sent", value: analytics.sent_count || 0 },
     { label: "Delivered", value: analytics.delivered_count || 0 },
     { label: "Bounced", value: analytics.bounced_count || 0 },
+    { label: "Hard bounces", value: analytics.hard_bounce_count || 0 },
+    { label: "Soft bounces", value: analytics.soft_bounce_count || 0 },
+    { label: "Suppressed", value: analytics.suppressed_count || 0 },
   ];
 
   return (
