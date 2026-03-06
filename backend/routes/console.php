@@ -1,8 +1,8 @@
 <?php
 
 use App\Jobs\AdvanceDripEnrollmentsJob;
-use App\Jobs\ResetWarmupCountersJob;
 use App\Jobs\RecalculateExpiredScoresJob;
+use App\Jobs\ResetWarmupCountersJob;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;

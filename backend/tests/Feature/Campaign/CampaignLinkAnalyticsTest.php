@@ -94,6 +94,6 @@ test('campaign links endpoint returns per-url stats sorted by clicks and csv exp
 
     expect($content)
         ->toContain("url,total_clicks,unique_clicks,click_rate\n")
-        ->toContain("https://example.com/a,2,2,100")
-        ->toContain("https://example.com/b,1,1,50");
+        ->toContain('https://example.com/a,2,2,100')
+        ->toContain('https://example.com/b,1,1,50');
 });
