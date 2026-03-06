@@ -70,7 +70,9 @@ export default function WarmupPage() {
                 <p className="text-xs uppercase tracking-wide text-muted-foreground">
                   Day
                 </p>
-                <p className="text-lg font-semibold">{currentPlan.current_day}</p>
+                <p className="text-lg font-semibold">
+                  {currentPlan.current_day}
+                </p>
               </div>
               <div>
                 <p className="text-xs uppercase tracking-wide text-muted-foreground">
@@ -91,7 +93,10 @@ export default function WarmupPage() {
                   Pause
                 </Button>
               ) : (
-                <Button onClick={() => resumePlan(currentPlan.id)} disabled={isLoading}>
+                <Button
+                  onClick={() => resumePlan(currentPlan.id)}
+                  disabled={isLoading}
+                >
                   Resume
                 </Button>
               )}
@@ -114,7 +119,8 @@ export default function WarmupPage() {
                 <div>
                   <p className="font-medium">{plan.name}</p>
                   <p className="text-sm text-muted-foreground">
-                    {plan.status} · day {plan.current_day} · limit {plan.current_daily_limit}
+                    {plan.status} · day {plan.current_day} · limit{" "}
+                    {plan.current_daily_limit}
                   </p>
                 </div>
               </div>

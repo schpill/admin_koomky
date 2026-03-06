@@ -39,7 +39,9 @@ export default function CampaignAnalyticsPage() {
         setLinkStats(response.data || []);
       })
       .catch((error) => {
-        toast.error((error as Error).message || "Unable to load link analytics");
+        toast.error(
+          (error as Error).message || "Unable to load link analytics"
+        );
       });
   }, [campaignId, fetchCampaignAnalytics]);
 
@@ -87,12 +89,15 @@ export default function CampaignAnalyticsPage() {
     try {
       const baseUrl =
         process.env.NEXT_PUBLIC_API_URL || "http://localhost/api/v1";
-      const response = await fetch(`${baseUrl}/campaigns/${campaignId}/links/export`, {
-        headers: {
-          Accept: "text/csv",
-          Authorization: accessToken ? `Bearer ${accessToken}` : "",
-        },
-      });
+      const response = await fetch(
+        `${baseUrl}/campaigns/${campaignId}/links/export`,
+        {
+          headers: {
+            Accept: "text/csv",
+            Authorization: accessToken ? `Bearer ${accessToken}` : "",
+          },
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Unable to export link analytics");
@@ -106,7 +111,9 @@ export default function CampaignAnalyticsPage() {
       anchor.click();
       URL.revokeObjectURL(url);
     } catch (error) {
-      toast.error((error as Error).message || "Unable to export link analytics");
+      toast.error(
+        (error as Error).message || "Unable to export link analytics"
+      );
     }
   };
 

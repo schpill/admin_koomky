@@ -13,7 +13,10 @@ export function WarmupStatusWidget({
   currentDailyLimit,
   sentToday,
 }: WarmupStatusWidgetProps) {
-  const progress = currentDailyLimit > 0 ? Math.min(100, (sentToday / currentDailyLimit) * 100) : 0;
+  const progress =
+    currentDailyLimit > 0
+      ? Math.min(100, (sentToday / currentDailyLimit) * 100)
+      : 0;
 
   return (
     <Card>

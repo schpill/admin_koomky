@@ -59,7 +59,9 @@ export const useWarmupPlansStore = create<WarmupPlansState>((set, get) => ({
       const response = await apiClient.get<WarmupPlan[]>("/warmup-plans");
       set({
         plans: response.data || [],
-        currentPlan: (response.data || []).find((plan) => plan.status === "active") ?? null,
+        currentPlan:
+          (response.data || []).find((plan) => plan.status === "active") ??
+          null,
         isLoading: false,
       });
     } catch (error) {
@@ -71,7 +73,10 @@ export const useWarmupPlansStore = create<WarmupPlansState>((set, get) => ({
   createPlan: async (payload) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await apiClient.post<WarmupPlan>("/warmup-plans", payload);
+      const response = await apiClient.post<WarmupPlan>(
+        "/warmup-plans",
+        payload
+      );
       const plan = response.data;
       set({
         plans: upsertPlan(get().plans, plan),
@@ -88,7 +93,10 @@ export const useWarmupPlansStore = create<WarmupPlansState>((set, get) => ({
   updatePlan: async (id, payload) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await apiClient.put<WarmupPlan>(`/warmup-plans/${id}`, payload);
+      const response = await apiClient.put<WarmupPlan>(
+        `/warmup-plans/${id}`,
+        payload
+      );
       const plan = response.data;
       set({
         plans: upsertPlan(get().plans, plan),
@@ -121,7 +129,9 @@ export const useWarmupPlansStore = create<WarmupPlansState>((set, get) => ({
   pausePlan: async (id) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await apiClient.patch<WarmupPlan>(`/warmup-plans/${id}/pause`);
+      const response = await apiClient.patch<WarmupPlan>(
+        `/warmup-plans/${id}/pause`
+      );
       const plan = response.data;
       set({
         plans: upsertPlan(get().plans, plan),
@@ -138,7 +148,9 @@ export const useWarmupPlansStore = create<WarmupPlansState>((set, get) => ({
   resumePlan: async (id) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await apiClient.patch<WarmupPlan>(`/warmup-plans/${id}/resume`);
+      const response = await apiClient.patch<WarmupPlan>(
+        `/warmup-plans/${id}/resume`
+      );
       const plan = response.data;
       set({
         plans: upsertPlan(get().plans, plan),

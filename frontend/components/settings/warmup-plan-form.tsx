@@ -59,7 +59,9 @@ export function WarmupPlanForm({
             id="warmup-start"
             type="number"
             value={dailyVolumeStart}
-            onChange={(event) => setDailyVolumeStart(Number(event.target.value))}
+            onChange={(event) =>
+              setDailyVolumeStart(Number(event.target.value))
+            }
           />
         </div>
         <div className="space-y-2">
@@ -77,7 +79,9 @@ export function WarmupPlanForm({
             id="warmup-increment"
             type="number"
             value={incrementPercent}
-            onChange={(event) => setIncrementPercent(Number(event.target.value))}
+            onChange={(event) =>
+              setIncrementPercent(Number(event.target.value))
+            }
           />
         </div>
       </div>
