@@ -12,7 +12,7 @@
 
 | ID              | Task                                                                                                                                                                          | Status | Owner |
 |-----------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------|-------|
-| P15-BE-INF-00   | Migration `add_unique_contact_constraint_to_campaign_recipients_table` — Contrainte unique `(campaign_id, contact_id)`. Filet de sécurité DB-level contre les doublons.        | todo   | —     |
+| P15-BE-INF-00   | Migration `add_unique_email_constraint_to_campaign_recipients_table` — Contrainte unique `(campaign_id, email)`. Garantit qu'une adresse email ne peut apparaître qu'une seule fois par campagne.                  | todo   | —     |
 
 ### Backend Tasks
 
@@ -22,7 +22,7 @@
 | P15-BE-002  | Extend `CampaignController::testSend()` — Validation `emails[]` (1–5 items). Résolution via `renderPreview()`. Boucle d'envoi multi-adresses.                                                                   | todo   | —     |
 | P15-BE-003  | Extend `CampaignTestMail` — Accepter `renderedBody` et `renderedSubject` pré-résolus.                                                                                                                           | todo   | —     |
 | P15-BE-004  | Create `StoreCampaignTestRequest` — `emails[]` (1–5, email max 255), `phones[]` (1–3, string max 20).                                                                                                           | todo   | —     |
-| P15-BE-004b | Extend `SendEmailCampaignJob` — Déduplication : `->distinct()` sur query contacts + `CampaignRecipient::firstOrCreate(['campaign_id', 'contact_id'])`. Un contact matchant N critères du segment → 1 seul email. | todo   | —     |
+| P15-BE-004b | Extend `SendEmailCampaignJob` — Déduplication par email : `->distinct()` sur query contacts + `CampaignRecipient::firstOrCreate(['campaign_id', 'email'])`. Chaque adresse email ne reçoit qu'un seul envoi par campagne (même contact multi-tags, même deux contacts distincts à la même adresse). | todo   | —     |
 
 ### Backend Tests (TDD)
 

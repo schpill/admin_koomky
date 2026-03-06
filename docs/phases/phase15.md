@@ -129,8 +129,12 @@ Deux couches de protection complémentaires :
 
 | Couche | Mécanisme | Avantage |
 |--------|-----------|----------|
-| Base de données | Contrainte unique `(campaign_id, contact_id)` sur `campaign_recipients` | Filet de sécurité absolu, empêche tout doublon même en cas de race condition |
-| Application | `->distinct()` sur la query contacts dans `SendEmailCampaignJob` + `firstOrCreate(['campaign_id', 'contact_id'])` au lieu de `create()` | Évite les exceptions DB, silencieux sur les tentatives de doublon |
+| Base de données | Contrainte unique `(campaign_id, email)` sur `campaign_recipients` | Filet absolu : même si deux contacts *différents* partagent la même adresse (import en doublon), un seul email part |
+| Application | `->distinct()` sur la query contacts dans `SendEmailCampaignJob` + `firstOrCreate(['campaign_id' => …, 'email' => …], […autres champs…])` au lieu de `create()` | Évite les exceptions DB, silencieux sur les tentatives de doublon |
+
+La clé de déduplication est l'**adresse email**, pas le `contact_id`. Cela couvre :
+- Un contact matchant N critères du même segment (tags "coiffeur" ET "barbier")
+- Deux contacts distincts ayant la même adresse email (doublon d'import)
 
 **Périmètre** : s'applique à toutes les campagnes email (A/B et non-A/B). Ne concerne pas les doublons *inter-campagnes* — si un prospect est ciblé par deux campagnes distinctes sur des sujets différents, il reçoit les deux emails normalement.
 
@@ -205,7 +209,7 @@ Frontend : champ de saisie multi-valeurs (tags input) dans `TestSendModal`, avec
 
 | Migration | Description |
 |-----------|-------------|
-| `add_unique_contact_constraint_to_campaign_recipients_table` | Contrainte unique `(campaign_id, contact_id)` sur `campaign_recipients`. Protège au niveau DB contre tout doublon de destinataire au sein d'une même campagne, quelle qu'en soit l'origine (race condition, bug applicatif, segment mal construit). |
+| `add_unique_email_constraint_to_campaign_recipients_table` | Contrainte unique `(campaign_id, email)` sur `campaign_recipients`. Garantit qu'une adresse email ne peut apparaître qu'une seule fois par campagne, quelle que soit l'origine du doublon : même contact matchant N critères, ou deux contacts distincts partageant la même adresse. |
 
 #### 6.1.1 Backend — Services & Controller
 
@@ -215,7 +219,7 @@ Frontend : champ de saisie multi-valeurs (tags input) dans `TestSendModal`, avec
 | P15-BE-002  | Extend `CampaignController::testSend()` — Remplacer la validation `email` string unique par `emails` array (required, min 1, max 5 items, chaque item `email|max:255`). Résoudre subject et body via `PersonalizationService::renderPreview()` avant envoi. Boucler sur chaque adresse. | FR-TEST |
 | P15-BE-003  | Extend `CampaignTestMail` — Accepter un `string $renderedBody` et `string $renderedSubject` pré-résolus. Modifier `build()` pour les utiliser. | FR-TEST |
 | P15-BE-004  | Create `StoreCampaignTestRequest` — Règles email : `emails` required array, min:1, max:5, `emails.*` rule `email|max:255`. Règles SMS : `phones` array, min:1, max:3, `phones.*` string max:20. | FR-TEST |
-| P15-BE-004b | Extend `SendEmailCampaignJob` — Déduplication des destinataires : (1) ajouter `->distinct()` sur la query contacts avant le cursor ; (2) remplacer `CampaignRecipient::create()` par `CampaignRecipient::firstOrCreate(['campaign_id' => …, 'contact_id' => …], […autres champs…])` — un contact matchant N critères du segment n'est créé qu'une fois et ne reçoit qu'un seul email par campagne. | FR-DEDUP |
+| P15-BE-004b | Extend `SendEmailCampaignJob` — Déduplication par email : (1) ajouter `->distinct()` sur la query contacts avant le cursor ; (2) remplacer `CampaignRecipient::create()` par `CampaignRecipient::firstOrCreate(['campaign_id' => …, 'email' => …], […autres champs…])` — chaque adresse email ne reçoit qu'un seul envoi par campagne, peu importe le nombre de critères correspondants ou de contacts partageant cette adresse. | FR-DEDUP |
 
 #### 6.1.2 Backend Tests — Personnalisation & Test (TDD)
 
@@ -223,7 +227,7 @@ Frontend : champ de saisie multi-valeurs (tags input) dans `TestSendModal`, avec
 |-----------|-----------|
 | `tests/Unit/Services/PersonalizationServiceTest.php` (extension) | `renderPreview()` remplace `{{first_name}}` par "Marie", `{{client.industry}}` par "Wedding Planner", `{{client.department}}` par "75", `{{client.address}}` par "12 rue de la Paix", `{{client.zip_code}}` par "75001", variable inconnue → chaîne vide ; `render()` — `{{client.industry}}` résolu depuis client réel, `{{client.department}}` résolu, `{{client.address}}` résolu, `{{client.zip_code}}` résolu |
 | `tests/Feature/Campaigns/CampaignTestSendTest.php` | `POST /campaigns/{id}/test` avec `emails[3]` → 200 (3 envois), 0 emails → 422, 6 emails → 422, adresse malformée → 422, subject/body reçus avec valeurs fictives (pas de `{{first_name}}` brut), ownership 403 |
-| `tests/Feature/Campaigns/CampaignDeduplicateRecipientsTest.php` | Contact matchant 2 critères du segment → 1 seul `CampaignRecipient` créé + 1 seul email envoyé ; `CampaignRecipient::firstOrCreate()` appelé deux fois pour le même contact+campaign → 2ème appel silencieux (pas d'exception) ; contrainte unique DB rejette un `INSERT` direct en doublon |
+| `tests/Feature/Campaigns/CampaignDeduplicateRecipientsTest.php` | Contact matchant 2 critères du segment → 1 seul `CampaignRecipient` créé + 1 seul email envoyé ; deux contacts distincts avec le même email → 1 seul `CampaignRecipient` créé + 1 seul email envoyé ; `firstOrCreate()` sur même `(campaign_id, email)` → 2ème appel silencieux (pas d'exception) ; contrainte unique DB rejette un `INSERT` direct en doublon d'email |
 
 ---
 
