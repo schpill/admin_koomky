@@ -575,6 +575,11 @@ function extractDynamicContentErrors(error: unknown): string[] {
   }
 
   return Object.entries(errors)
-    .filter(([field]) => field === "content" || field === "subject" || field.startsWith("variants."))
+    .filter(
+      ([field]) =>
+        field === "content" ||
+        field === "subject" ||
+        field.startsWith("variants.")
+    )
     .flatMap(([, value]) => (Array.isArray(value) ? value : [String(value)]));
 }

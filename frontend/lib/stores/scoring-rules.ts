@@ -55,7 +55,10 @@ export const useScoringRuleStore = create<ScoringRuleState>((set, get) => ({
   createRule: async (data) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await apiClient.post<ScoringRule>("/scoring-rules", data);
+      const response = await apiClient.post<ScoringRule>(
+        "/scoring-rules",
+        data
+      );
       const rule = response.data;
       set({
         rules: upsertRule(get().rules, rule),

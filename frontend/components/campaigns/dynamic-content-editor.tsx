@@ -19,9 +19,7 @@ const ATTRIBUTE_OPTIONS = [
 
 const OPERATOR_OPTIONS = ["==", "!=", ">=", "<=", ">", "<"];
 
-export function DynamicContentEditor({
-  onInsert,
-}: DynamicContentEditorProps) {
+export function DynamicContentEditor({ onInsert }: DynamicContentEditorProps) {
   const buildSnippet = (formData: FormData) => {
     const attribute = String(formData.get("attribute") || "contact.first_name");
     const operator = String(formData.get("operator") || "==");
@@ -79,7 +77,11 @@ export function DynamicContentEditor({
         </div>
         <div className="space-y-2">
           <Label htmlFor="dynamic-value">Value</Label>
-          <Input id="dynamic-value" name="value" defaultValue="Wedding Planner" />
+          <Input
+            id="dynamic-value"
+            name="value"
+            defaultValue="Wedding Planner"
+          />
         </div>
       </div>
 

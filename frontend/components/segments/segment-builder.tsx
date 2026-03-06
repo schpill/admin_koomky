@@ -311,7 +311,9 @@ export function SegmentBuilder({
                               : event.target.value,
                         })
                       }
-                      type={criterion.type === "email_score" ? "number" : "text"}
+                      type={
+                        criterion.type === "email_score" ? "number" : "text"
+                      }
                     />
                   </div>
 

@@ -23,8 +23,9 @@ test.describe("Campaign STO", () => {
     await page.getByLabel("Enable send time optimization").check();
     await page.fill("#sto-window-hours", "12");
 
-    await expect(page.getByText(/contacts currently have a known optimal hour/i))
-      .toBeVisible();
+    await expect(
+      page.getByText(/contacts currently have a known optimal hour/i)
+    ).toBeVisible();
   });
 });
 

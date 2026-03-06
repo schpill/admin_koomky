@@ -22,8 +22,9 @@ describe("StoConfig", () => {
       target: { value: "12" },
     });
 
-    expect(screen.getByText(/12 contacts currently have a known optimal hour/i))
-      .toBeInTheDocument();
+    expect(
+      screen.getByText(/12 contacts currently have a known optimal hour/i)
+    ).toBeInTheDocument();
     expect(onEnabledChange).toHaveBeenCalled();
     expect(onWindowHoursChange).toHaveBeenCalledWith(12);
   });

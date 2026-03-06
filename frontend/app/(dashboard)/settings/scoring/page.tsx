@@ -39,7 +39,9 @@ export default function ScoringSettingsPage() {
         }
       } else {
         for (const rule of rules) {
-          const defaults = DEFAULT_RULES.find((item) => item.event === rule.event);
+          const defaults = DEFAULT_RULES.find(
+            (item) => item.event === rule.event
+          );
           if (!defaults) continue;
           await updateRule(rule.id, {
             points: defaults.points,
@@ -88,9 +90,11 @@ export default function ScoringSettingsPage() {
                   value={rule.points}
                   onChange={(event) => {
                     const nextPoints = Number(event.target.value || 0);
-                    void updateRule(rule.id, { points: nextPoints }).catch(() => {
-                      toast.error("Unable to update rule");
-                    });
+                    void updateRule(rule.id, { points: nextPoints }).catch(
+                      () => {
+                        toast.error("Unable to update rule");
+                      }
+                    );
                   }}
                 />
               </div>
