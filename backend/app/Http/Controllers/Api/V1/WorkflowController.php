@@ -44,7 +44,9 @@ class WorkflowController extends Controller
             ...$this->validateWorkflowPayload($request, false),
         ]);
 
-        return $this->success($this->serializeWorkflow($workflow->load(['steps', 'enrollments.contact'])), 'Workflow created successfully', 201);
+        $workflow->load(['steps', 'enrollments.contact']);
+
+        return $this->success($this->serializeWorkflow($workflow), 'Workflow created successfully', 201);
     }
 
     public function show(Workflow $workflow): JsonResponse
@@ -59,8 +61,9 @@ class WorkflowController extends Controller
         Gate::authorize('update', $workflow);
 
         $workflow->update($this->validateWorkflowPayload($request, true));
+        $workflow->refresh()->load(['steps', 'enrollments.contact']);
 
-        return $this->success($this->serializeWorkflow($workflow->fresh(['steps', 'enrollments.contact'])), 'Workflow updated successfully');
+        return $this->success($this->serializeWorkflow($workflow), 'Workflow updated successfully');
     }
 
     public function destroy(Workflow $workflow): JsonResponse
@@ -81,8 +84,9 @@ class WorkflowController extends Controller
         }
 
         $workflow->update(['status' => 'active']);
+        $workflow->refresh()->load(['steps', 'enrollments.contact']);
 
-        return $this->success($this->serializeWorkflow($workflow->fresh(['steps', 'enrollments.contact'])), 'Workflow activated successfully');
+        return $this->success($this->serializeWorkflow($workflow), 'Workflow activated successfully');
     }
 
     public function pause(Workflow $workflow): JsonResponse
@@ -90,8 +94,9 @@ class WorkflowController extends Controller
         Gate::authorize('pause', $workflow);
 
         $workflow->update(['status' => 'paused']);
+        $workflow->refresh()->load(['steps', 'enrollments.contact']);
 
-        return $this->success($this->serializeWorkflow($workflow->fresh(['steps', 'enrollments.contact'])), 'Workflow paused successfully');
+        return $this->success($this->serializeWorkflow($workflow), 'Workflow paused successfully');
     }
 
     public function storeStep(Request $request, Workflow $workflow): JsonResponse

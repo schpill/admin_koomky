@@ -74,10 +74,13 @@ class ContactScoreService
             'email_score_updated_at' => now(),
         ])->save();
 
-        $this->workflowTriggerService->evaluateTriggers('score_threshold', $contact->fresh(), [
-            'previous_score' => $previousScore,
-            'score' => $score,
-        ]);
+        $freshContact = $contact->fresh();
+        if ($freshContact instanceof Contact) {
+            $this->workflowTriggerService->evaluateTriggers('score_threshold', $freshContact, [
+                'previous_score' => $previousScore,
+                'score' => $score,
+            ]);
+        }
 
         return $score;
     }

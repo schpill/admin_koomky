@@ -27,7 +27,8 @@ class WorkflowTriggerService
             ->get();
 
         foreach ($workflows as $workflow) {
-            $config = (array) ($workflow->trigger_config ?? []);
+            $triggerConfig = $workflow->trigger_config;
+            $config = is_array($triggerConfig) ? $triggerConfig : [];
             if (! $this->matchesTrigger($event, $config, $contact, $context)) {
                 continue;
             }

@@ -48,6 +48,7 @@ class SendWorkflowEmailJob implements ShouldQueue
 
         $contact = $enrollment->contact;
         $user = $enrollment->workflow->user;
+        /** @var array<string, mixed> $config */
         $config = (array) $step->config;
 
         if (! is_string($contact->email) || $contact->email === '') {

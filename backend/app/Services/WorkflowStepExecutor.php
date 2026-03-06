@@ -49,7 +49,6 @@ class WorkflowStepExecutor
             'enroll_drip' => $this->enrollInDrip($step, $contact, $config),
             'update_field' => $this->updateField($step, $contact, $config),
             'end' => null,
-            default => throw new InvalidArgumentException("Unsupported workflow step type [{$step->type}]."),
         };
     }
 
@@ -122,10 +121,13 @@ class WorkflowStepExecutor
             'email_score_updated_at' => now(),
         ])->save();
 
-        $this->workflowTriggerService->evaluateTriggers('score_threshold', $contact->fresh(), [
-            'previous_score' => $previousScore,
-            'score' => (int) $contact->fresh()->email_score,
-        ]);
+        $freshContact = $contact->fresh();
+        if ($freshContact instanceof Contact) {
+            $this->workflowTriggerService->evaluateTriggers('score_threshold', $freshContact, [
+                'previous_score' => $previousScore,
+                'score' => (int) $freshContact->email_score,
+            ]);
+        }
 
         return $step->next_step_id;
     }
@@ -133,7 +135,7 @@ class WorkflowStepExecutor
     private function attachTag(WorkflowStep $step, Contact $contact, string $tagName): ?string
     {
         $client = $contact->client;
-        if ($client === null || $client->user_id === null || $tagName === '') {
+        if ($client === null || $tagName === '') {
             return $step->next_step_id;
         }
 
@@ -150,7 +152,7 @@ class WorkflowStepExecutor
     private function detachTag(WorkflowStep $step, Contact $contact, string $tagName): ?string
     {
         $client = $contact->client;
-        if ($client === null || $client->user_id === null || $tagName === '') {
+        if ($client === null || $tagName === '') {
             return $step->next_step_id;
         }
 

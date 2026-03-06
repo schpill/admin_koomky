@@ -20,7 +20,8 @@ class CheckSegmentMembershipJob implements ShouldQueue
             ->get();
 
         foreach ($workflows as $workflow) {
-            $segmentId = $workflow->trigger_config['segment_id'] ?? null;
+            $triggerConfig = $workflow->trigger_config;
+            $segmentId = is_array($triggerConfig) ? ($triggerConfig['segment_id'] ?? null) : null;
             if (! is_string($segmentId)) {
                 continue;
             }

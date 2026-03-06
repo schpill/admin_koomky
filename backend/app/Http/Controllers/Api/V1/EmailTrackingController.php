@@ -42,9 +42,12 @@ class EmailTrackingController extends Controller
 
             if ($recipient->contact !== null) {
                 $this->contactScoreService->recordEvent($recipient->contact, 'email_opened', $recipient->campaign);
-                $this->workflowTriggerService->evaluateTriggers('email_opened', $recipient->contact->fresh(), [
-                    'campaign_id' => $recipient->campaign_id,
-                ]);
+                $contact = $recipient->contact->fresh();
+                if ($contact !== null) {
+                    $this->workflowTriggerService->evaluateTriggers('email_opened', $contact, [
+                        'campaign_id' => $recipient->campaign_id,
+                    ]);
+                }
             }
 
             if ($recipient->campaign !== null) {
@@ -98,10 +101,13 @@ class EmailTrackingController extends Controller
 
             if ($recipient->contact !== null && $isFirstClickForUrl) {
                 $this->contactScoreService->recordEvent($recipient->contact, 'email_clicked', $recipient->campaign);
-                $this->workflowTriggerService->evaluateTriggers('email_clicked', $recipient->contact->fresh(), [
-                    'campaign_id' => $recipient->campaign_id,
-                    'url' => $url,
-                ]);
+                $contact = $recipient->contact->fresh();
+                if ($contact !== null) {
+                    $this->workflowTriggerService->evaluateTriggers('email_clicked', $contact, [
+                        'campaign_id' => $recipient->campaign_id,
+                        'url' => $url,
+                    ]);
+                }
             }
         }
 
