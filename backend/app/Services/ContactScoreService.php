@@ -10,6 +10,10 @@ use Illuminate\Support\Collection;
 
 class ContactScoreService
 {
+    public function __construct(
+        private readonly WorkflowTriggerService $workflowTriggerService,
+    ) {}
+
     /**
      * @var array<string, array{points:int, expiry_days:int|null}>
      */
@@ -55,17 +59,25 @@ class ContactScoreService
 
     public function recalculate(Contact $contact): int
     {
-        $score = (int) ContactScoreEvent::query()
+        $previousScore = (int) $contact->email_score;
+        $scoreQuery = ContactScoreEvent::query()
             ->where('contact_id', $contact->id)
             ->where(function ($query): void {
                 $query->whereNull('expires_at')->orWhere('expires_at', '>', now());
-            })
-            ->sum('points');
+            });
+        $hasEvents = $scoreQuery->exists();
+        $eventScore = (int) $scoreQuery->sum('points');
+        $score = $hasEvents ? $eventScore : $previousScore;
 
         $contact->forceFill([
             'email_score' => $score,
             'email_score_updated_at' => now(),
         ])->save();
+
+        $this->workflowTriggerService->evaluateTriggers('score_threshold', $contact->fresh(), [
+            'previous_score' => $previousScore,
+            'score' => $score,
+        ]);
 
         return $score;
     }

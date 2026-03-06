@@ -1,6 +1,8 @@
 <?php
 
 use App\Jobs\AdvanceDripEnrollmentsJob;
+use App\Jobs\AdvanceWorkflowEnrollmentsJob;
+use App\Jobs\CheckSegmentMembershipJob;
 use App\Jobs\RecalculateExpiredScoresJob;
 use App\Jobs\ResetWarmupCountersJob;
 use Illuminate\Foundation\Inspiring;
@@ -24,3 +26,6 @@ Schedule::job(new RecalculateExpiredScoresJob)->dailyAt('03:00');
 Schedule::job(new ResetWarmupCountersJob)->dailyAt('00:01');
 Schedule::command('import-sessions:prune')->weekly();
 Schedule::command('drip-enrollments:prune')->weekly();
+Schedule::job(new AdvanceWorkflowEnrollmentsJob)->everyFiveMinutes();
+Schedule::job(new CheckSegmentMembershipJob)->daily();
+Schedule::command('workflow-enrollments:prune')->weekly();

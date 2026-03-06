@@ -20,6 +20,7 @@ export function PageBreadcrumbs({ pathname }: PageBreadcrumbsProps) {
     prospects: t("sidebar.prospects"),
     projects: t("sidebar.projects"),
     campaigns: t("sidebar.campaigns"),
+    workflows: t("sidebar.workflows"),
     invoices: t("sidebar.invoices"),
     quotes: t("sidebar.quotes"),
     "credit-notes": t("sidebar.creditNotes"),
