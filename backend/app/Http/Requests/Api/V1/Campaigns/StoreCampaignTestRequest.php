@@ -13,6 +13,28 @@ class StoreCampaignTestRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation(): void
+    {
+        $emails = $this->input('emails');
+        $phones = $this->input('phones');
+        $email = $this->input('email');
+        $phone = $this->input('phone');
+
+        $payload = [];
+
+        if ($emails === null && is_string($email) && $email !== '') {
+            $payload['emails'] = [$email];
+        }
+
+        if ($phones === null && is_string($phone) && $phone !== '') {
+            $payload['phones'] = [$phone];
+        }
+
+        if ($payload !== []) {
+            $this->merge($payload);
+        }
+    }
+
     /**
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
