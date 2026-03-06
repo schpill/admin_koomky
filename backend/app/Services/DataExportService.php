@@ -6,6 +6,7 @@ use App\Models\Campaign;
 use App\Models\CampaignLinkClick;
 use App\Models\CampaignTemplate;
 use App\Models\Client;
+use App\Models\CommunicationPreference;
 use App\Models\Contact;
 use App\Models\ContactScoreEvent;
 use App\Models\CreditNote;
@@ -78,6 +79,10 @@ class DataExportService
             ->get();
 
         $campaignLinkClicks = CampaignLinkClick::query()
+            ->where('user_id', $user->id)
+            ->get();
+
+        $communicationPreferences = CommunicationPreference::query()
             ->where('user_id', $user->id)
             ->get();
 
@@ -236,6 +241,7 @@ class DataExportService
             'credit_notes' => $creditNotes->toArray(),
             'campaigns' => $campaigns->toArray(),
             'campaign_link_clicks' => $campaignLinkClicks->toArray(),
+            'communication_preferences' => $communicationPreferences->toArray(),
             'campaign_variants' => $campaigns
                 ->flatMap(fn (Campaign $campaign) => $campaign->variants->map(fn ($variant) => [
                     'id' => $variant->id,

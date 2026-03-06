@@ -786,6 +786,7 @@ export const messages: Record<Locale, MessageTree> = {
       analyticsPage: {
         title: "Analytique de campagne",
         exportCsv: "Exporter en CSV",
+        exportPdf: "Exporter en PDF",
         chart: "Graphique d'engagement",
         loading: "Chargement de l'analytique...",
       },
@@ -2564,6 +2565,7 @@ export const messages: Record<Locale, MessageTree> = {
       analyticsPage: {
         title: "Campaign analytics",
         exportCsv: "Export CSV",
+        exportPdf: "Export PDF",
         chart: "Engagement chart",
         loading: "Loading analytics...",
       },

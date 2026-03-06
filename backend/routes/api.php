@@ -249,6 +249,9 @@ Route::prefix('v1')->group(function () {
         Route::apiResource('campaigns', CampaignController::class);
         Route::get('campaigns/{campaign}/links', [CampaignController::class, 'links']);
         Route::get('campaigns/{campaign}/links/export', [CampaignController::class, 'exportLinks']);
+        Route::get('campaigns/{campaign}/report', [CampaignController::class, 'report']);
+        Route::get('campaigns/{campaign}/report/csv', [CampaignController::class, 'reportCsv']);
+        Route::get('campaigns/{campaign}/report/pdf', [CampaignController::class, 'reportPdf']);
         Route::post('campaigns/{campaign}/send', [CampaignController::class, 'send']);
         Route::post('campaigns/{campaign}/pause', [CampaignController::class, 'pause']);
         Route::post('campaigns/{campaign}/duplicate', [CampaignController::class, 'duplicate']);

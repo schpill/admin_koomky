@@ -31,6 +31,7 @@ export default function PortalLayout({
   const pathname = usePathname();
   const router = useRouter();
   const isAuthRoute = pathname.startsWith("/portal/auth");
+  const isSignedPreferenceRoute = pathname.startsWith("/portal/preferences/");
 
   const [session, setSession] = useState<PortalSession | null>(null);
   const [branding, setBranding] = useState<
@@ -42,7 +43,7 @@ export default function PortalLayout({
   useEffect(() => {
     const currentSession = getPortalSession();
 
-    if (isAuthRoute) {
+    if (isAuthRoute || isSignedPreferenceRoute) {
       setSession(currentSession);
       return;
     }
@@ -53,10 +54,10 @@ export default function PortalLayout({
     }
 
     setSession(currentSession);
-  }, [isAuthRoute, pathname, router]);
+  }, [isAuthRoute, isSignedPreferenceRoute, pathname, router]);
 
   useEffect(() => {
-    if (isAuthRoute || !session?.portal_token) {
+    if (isAuthRoute || isSignedPreferenceRoute || !session?.portal_token) {
       return;
     }
 
@@ -90,10 +91,10 @@ export default function PortalLayout({
     return () => {
       cancelled = true;
     };
-  }, [isAuthRoute, session?.portal_token, sessionExpiresAt]);
+  }, [isAuthRoute, isSignedPreferenceRoute, session?.portal_token, sessionExpiresAt]);
 
   useEffect(() => {
-    if (isAuthRoute || !session?.portal_token) {
+    if (isAuthRoute || isSignedPreferenceRoute || !session?.portal_token) {
       return;
     }
 
@@ -107,7 +108,7 @@ export default function PortalLayout({
       .catch(() => {
         setRagAvailable(false);
       });
-  }, [isAuthRoute, session?.portal_token]);
+  }, [isAuthRoute, isSignedPreferenceRoute, session?.portal_token]);
 
   const logout = async () => {
     const clearRagHistory = useRagStore.getState().clearHistory;
@@ -123,7 +124,7 @@ export default function PortalLayout({
     router.push("/portal/auth");
   };
 
-  if (isAuthRoute) {
+  if (isAuthRoute || isSignedPreferenceRoute) {
     return (
       <main className="min-h-screen bg-background px-4 py-8 sm:px-6 lg:px-8">
         <div className="mx-auto w-full max-w-lg">{children}</div>

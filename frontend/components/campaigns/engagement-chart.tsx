@@ -1,7 +1,8 @@
 "use client";
 
 interface EngagementPoint {
-  hour: string;
+  hour?: string;
+  date?: string;
   opens: number;
   clicks: number;
 }
@@ -24,8 +25,10 @@ export function EngagementChart({ data }: EngagementChartProps) {
       ) : (
         <div className="space-y-3">
           {data.map((point) => (
-            <div key={point.hour} className="space-y-1">
-              <p className="text-xs text-muted-foreground">{point.hour}</p>
+            <div key={point.hour || point.date} className="space-y-1">
+              <p className="text-xs text-muted-foreground">
+                {point.date || point.hour}
+              </p>
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
                   <span className="w-14 text-xs">Opens</span>

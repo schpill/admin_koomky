@@ -15,6 +15,10 @@ import { AbTestConfig } from "@/components/campaigns/ab-test-config";
 import { DynamicContentEditor } from "@/components/campaigns/dynamic-content-editor";
 import { PersonalizationVariablesPanel } from "@/components/campaigns/personalization-variables-panel";
 import { StoConfig } from "@/components/campaigns/sto-config";
+import {
+  DeliverabilityBadge,
+  type DeliverabilityIssue,
+} from "@/components/campaigns/deliverability-badge";
 import { useCampaignStore } from "@/lib/stores/campaigns";
 import type { CampaignVariant } from "@/lib/stores/campaigns";
 import { useSegmentStore } from "@/lib/stores/segments";
@@ -103,6 +107,9 @@ export default function CreateCampaignPage() {
   const [activeField, setActiveField] = useState<string | null>(null);
   const [useSto, setUseSto] = useState(false);
   const [stoWindowHours, setStoWindowHours] = useState(24);
+  const [emailCategory, setEmailCategory] = useState<
+    "newsletter" | "promotional" | "transactional"
+  >("promotional");
   const [dynamicContentErrors, setDynamicContentErrors] = useState<string[]>(
     []
   );
@@ -174,7 +181,43 @@ export default function CreateCampaignPage() {
       type === "email" && isAbTest && winnerCriteria !== "manual"
         ? autoSelectAfterHours
         : null,
+    email_category: type === "email" ? emailCategory : undefined,
   };
+
+  const deliverability = useMemo(() => {
+    const issues: DeliverabilityIssue[] = [];
+    let score = 100;
+
+    if (type !== "email") {
+      return { score, issues };
+    }
+
+    const normalizedSubject = subject.toLowerCase();
+    if (
+      normalizedSubject.includes("free") ||
+      normalizedSubject.includes("urgent") ||
+      subject.includes("!!!")
+    ) {
+      score -= 20;
+      issues.push({
+        severity: "warning",
+        message: "Subject contains potential spam language.",
+      });
+    }
+
+    if (
+      !content.toLowerCase().includes("unsubscribe") &&
+      !content.toLowerCase().includes("preferences")
+    ) {
+      score -= 20;
+      issues.push({
+        severity: "error",
+        message: "Add an unsubscribe or preferences link.",
+      });
+    }
+
+    return { score: Math.max(0, score), issues };
+  }, [content, subject, type]);
 
   const updateVariant = (
     label: "A" | "B",
@@ -370,6 +413,29 @@ export default function CreateCampaignPage() {
                 </select>
               </div>
 
+              {type === "email" ? (
+                <div className="space-y-2">
+                  <Label htmlFor="campaign-category">Email category</Label>
+                  <select
+                    id="campaign-category"
+                    value={emailCategory}
+                    onChange={(event) =>
+                      setEmailCategory(
+                        event.target.value as
+                          | "newsletter"
+                          | "promotional"
+                          | "transactional"
+                      )
+                    }
+                    className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
+                  >
+                    <option value="newsletter">Newsletter</option>
+                    <option value="promotional">Promotional</option>
+                    <option value="transactional">Transactional</option>
+                  </select>
+                </div>
+              ) : null}
+
               <div className="space-y-2">
                 <Label htmlFor="campaign-segment">
                   {t("campaigns.create.segment")}
@@ -518,13 +584,19 @@ export default function CreateCampaignPage() {
             </div>
 
             {type === "email" ? (
-              <StoConfig
-                enabled={useSto}
-                windowHours={stoWindowHours}
-                knownContactsCount={0}
-                onEnabledChange={setUseSto}
-                onWindowHoursChange={setStoWindowHours}
-              />
+              <div className="space-y-4">
+                <StoConfig
+                  enabled={useSto}
+                  windowHours={stoWindowHours}
+                  knownContactsCount={0}
+                  onEnabledChange={setUseSto}
+                  onWindowHoursChange={setStoWindowHours}
+                />
+                <DeliverabilityBadge
+                  score={deliverability.score}
+                  issues={deliverability.issues}
+                />
+              </div>
             ) : null}
 
             <div className="flex flex-wrap justify-end gap-2">

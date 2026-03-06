@@ -31,6 +31,7 @@ class StoreCampaignRequest extends FormRequest
         return [
             'name' => [$required, 'string', 'max:255'],
             'type' => [$required, Rule::in(['email', 'sms'])],
+            'email_category' => ['nullable', Rule::in(['newsletter', 'promotional', 'transactional'])],
             'is_ab_test' => ['nullable', 'boolean'],
             'segment_id' => [
                 'nullable',

@@ -10,6 +10,7 @@ use App\Models\DripStep;
 use App\Services\EmailTrackingTokenService;
 use App\Services\MailConfigService;
 use App\Services\PersonalizationService;
+use App\Services\PreferenceCenterService;
 use App\Services\SuppressionService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
@@ -29,8 +30,10 @@ class SendDripStepEmailJob implements ShouldQueue
         PersonalizationService $personalizationService,
         EmailTrackingTokenService $tokenService,
         MailConfigService $mailConfigService,
+        ?PreferenceCenterService $preferenceCenterService = null,
         ?SuppressionService $suppressionService = null
     ): void {
+        $preferenceCenterService ??= app(PreferenceCenterService::class);
         $suppressionService ??= app(SuppressionService::class);
 
         $enrollment = DripEnrollment::query()
@@ -57,12 +60,20 @@ class SendDripStepEmailJob implements ShouldQueue
             return;
         }
 
+        $emailCategory = (string) data_get($step->template?->settings, 'email_category', 'promotional');
+        if (! $preferenceCenterService->isAllowed($contact, $emailCategory)) {
+            $enrollment->update(['status' => 'cancelled']);
+
+            return;
+        }
+
         $campaign = Campaign::query()->create([
             'user_id' => $user->id,
             'segment_id' => null,
             'template_id' => $step->template_id,
             'name' => $enrollment->sequence->name.' - Step '.$step->position,
             'type' => 'email',
+            'email_category' => $emailCategory,
             'status' => 'sent',
             'subject' => $step->subject,
             'content' => $step->content,

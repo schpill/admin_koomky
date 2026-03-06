@@ -55,7 +55,7 @@ export default function CampaignAnalyticsPage() {
       const baseUrl =
         process.env.NEXT_PUBLIC_API_URL || "http://localhost/api/v1";
       const response = await fetch(
-        `${baseUrl}/campaigns/${campaignId}/analytics/export`,
+        `${baseUrl}/campaigns/${campaignId}/report/csv`,
         {
           headers: {
             Accept: "text/csv",
@@ -72,11 +72,46 @@ export default function CampaignAnalyticsPage() {
       const url = URL.createObjectURL(blob);
       const anchor = document.createElement("a");
       anchor.href = url;
-      anchor.download = `campaign-${campaignId}-analytics.csv`;
+      anchor.download = `campaign-${campaignId}-report.csv`;
       anchor.click();
       URL.revokeObjectURL(url);
     } catch (error) {
       toast.error((error as Error).message || "Unable to export analytics");
+    }
+  };
+
+  const exportPdf = async () => {
+    if (!campaignId) {
+      toast.error("Missing campaign id");
+      return;
+    }
+
+    try {
+      const baseUrl =
+        process.env.NEXT_PUBLIC_API_URL || "http://localhost/api/v1";
+      const response = await fetch(
+        `${baseUrl}/campaigns/${campaignId}/report/pdf`,
+        {
+          headers: {
+            Accept: "application/pdf",
+            Authorization: accessToken ? `Bearer ${accessToken}` : "",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Unable to export report PDF");
+      }
+
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = `campaign-${campaignId}-report.pdf`;
+      anchor.click();
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      toast.error((error as Error).message || "Unable to export report PDF");
     }
   };
 
@@ -137,9 +172,14 @@ export default function CampaignAnalyticsPage() {
           </p>
         </div>
 
-        <Button variant="outline" onClick={exportCsv}>
-          {t("campaigns.analyticsPage.exportCsv")}
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={exportCsv}>
+            {t("campaigns.analyticsPage.exportCsv")}
+          </Button>
+          <Button variant="outline" onClick={exportPdf}>
+            {t("campaigns.analyticsPage.exportPdf")}
+          </Button>
+        </div>
       </div>
 
       <AnalyticsSummaryCards analytics={analytics} />

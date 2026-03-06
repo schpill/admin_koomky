@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property string $id
@@ -16,6 +17,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $email
  * @property string|null $phone
  * @property string|null $position
+ * @property string|null $timezone
  * @property int $email_score
  * @property \Illuminate\Support\Carbon|null $email_score_updated_at
  * @property bool $is_primary
@@ -41,6 +43,7 @@ class Contact extends Model
         'email',
         'phone',
         'position',
+        'timezone',
         'email_score',
         'email_score_updated_at',
         'is_primary',
@@ -71,6 +74,14 @@ class Contact extends Model
     public function client(): BelongsTo
     {
         return $this->belongsTo(Client::class);
+    }
+
+    /**
+     * @return HasMany<CommunicationPreference, Contact>
+     */
+    public function communicationPreferences(): HasMany
+    {
+        return $this->hasMany(CommunicationPreference::class);
     }
 
     /**

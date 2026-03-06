@@ -13,6 +13,8 @@ use App\Models\CampaignAttachment;
 use App\Models\CampaignVariant;
 use App\Models\User;
 use App\Services\CampaignAnalyticsService;
+use App\Services\CampaignReportService;
+use App\Services\DeliverabilityScoreService;
 use App\Services\DynamicContentValidatorService;
 use App\Services\MailConfigService;
 use App\Services\PersonalizationService;
@@ -34,6 +36,8 @@ class CampaignController extends Controller
         private readonly PersonalizationService $personalizationService,
         private readonly DynamicContentValidatorService $dynamicContentValidatorService,
         private readonly CampaignAnalyticsService $campaignAnalyticsService,
+        private readonly CampaignReportService $campaignReportService,
+        private readonly DeliverabilityScoreService $deliverabilityScoreService,
     ) {}
 
     public function index(Request $request): JsonResponse
@@ -92,6 +96,7 @@ class CampaignController extends Controller
                 'template_id' => $validated['template_id'] ?? null,
                 'name' => $validated['name'],
                 'type' => $validated['type'],
+                'email_category' => $validated['email_category'] ?? 'promotional',
                 'status' => $validated['status'] ?? 'draft',
                 'subject' => $resolvedSubject !== '' ? $resolvedSubject : null,
                 'content' => $resolvedContent,
@@ -110,7 +115,11 @@ class CampaignController extends Controller
             return $campaign;
         });
 
-        return $this->success($campaign->load(['segment', 'template', 'attachments', 'variants', 'winnerVariant']), 'Campaign created successfully', 201);
+        return $this->success(
+            $this->campaignResponsePayload($campaign->load(['segment', 'template', 'attachments', 'variants', 'winnerVariant'])),
+            'Campaign created successfully',
+            201
+        );
     }
 
     public function show(Campaign $campaign): JsonResponse
@@ -152,7 +161,10 @@ class CampaignController extends Controller
             return $campaign;
         });
 
-        return $this->success($campaign->load(['segment', 'template', 'attachments', 'variants', 'winnerVariant']), 'Campaign updated successfully');
+        return $this->success(
+            $this->campaignResponsePayload($campaign->load(['segment', 'template', 'attachments', 'variants', 'winnerVariant'])),
+            'Campaign updated successfully'
+        );
     }
 
     public function destroy(Campaign $campaign): JsonResponse
@@ -162,6 +174,27 @@ class CampaignController extends Controller
         $campaign->delete();
 
         return $this->success(null, 'Campaign deleted successfully');
+    }
+
+    public function report(Campaign $campaign): JsonResponse
+    {
+        Gate::authorize('view', $campaign);
+
+        return $this->success($this->campaignReportService->getFullReport($campaign), 'Campaign report retrieved successfully');
+    }
+
+    public function reportCsv(Campaign $campaign): \Symfony\Component\HttpFoundation\StreamedResponse
+    {
+        Gate::authorize('view', $campaign);
+
+        return $this->campaignReportService->exportCsv($campaign);
+    }
+
+    public function reportPdf(Campaign $campaign): \Illuminate\Http\Response
+    {
+        Gate::authorize('view', $campaign);
+
+        return $this->campaignReportService->exportPdf($campaign);
     }
 
     public function send(Campaign $campaign): JsonResponse
@@ -213,6 +246,7 @@ class CampaignController extends Controller
                 'template_id' => $campaign->template_id,
                 'name' => $campaign->name.' Copy',
                 'type' => $campaign->type,
+                'email_category' => $campaign->email_category,
                 'status' => 'draft',
                 'subject' => $campaign->subject,
                 'content' => $campaign->content,
@@ -270,6 +304,20 @@ class CampaignController extends Controller
         }
 
         return $this->success(null, 'Test campaign sent successfully');
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function campaignResponsePayload(Campaign $campaign): array
+    {
+        $payload = $campaign->toArray();
+        $payload['deliverability'] = $this->deliverabilityScoreService->analyze(
+            (string) ($campaign->subject ?? ''),
+            (string) $campaign->content
+        );
+
+        return $payload;
     }
 
     public function links(Campaign $campaign): JsonResponse

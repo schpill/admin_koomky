@@ -10,6 +10,7 @@ use App\Models\WorkflowStep;
 use App\Services\EmailTrackingTokenService;
 use App\Services\MailConfigService;
 use App\Services\PersonalizationService;
+use App\Services\PreferenceCenterService;
 use App\Services\SuppressionService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
@@ -35,8 +36,10 @@ class SendWorkflowEmailJob implements ShouldQueue
         PersonalizationService $personalizationService,
         EmailTrackingTokenService $tokenService,
         MailConfigService $mailConfigService,
+        ?PreferenceCenterService $preferenceCenterService,
         SuppressionService $suppressionService,
     ): void {
+        $preferenceCenterService ??= app(PreferenceCenterService::class);
         $enrollment = WorkflowEnrollment::query()
             ->with(['workflow.user', 'contact.client'])
             ->find($this->workflowEnrollmentId);
@@ -63,12 +66,20 @@ class SendWorkflowEmailJob implements ShouldQueue
             return;
         }
 
+        $emailCategory = (string) ($config['email_category'] ?? 'promotional');
+        if (! $preferenceCenterService->isAllowed($contact, $emailCategory)) {
+            $enrollment->update(['status' => 'cancelled']);
+
+            return;
+        }
+
         $campaign = Campaign::query()->create([
             'user_id' => $user->id,
             'segment_id' => null,
             'template_id' => $config['template_id'] ?? null,
             'name' => $enrollment->workflow->name.' - Workflow step',
             'type' => 'email',
+            'email_category' => $emailCategory,
             'status' => 'sent',
             'subject' => (string) ($config['subject'] ?? 'Workflow'),
             'content' => (string) ($config['content'] ?? ''),

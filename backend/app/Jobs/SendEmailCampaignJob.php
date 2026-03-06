@@ -13,6 +13,7 @@ use App\Models\SuppressedEmail;
 use App\Notifications\CampaignCompletedNotification;
 use App\Services\ContactScoreService;
 use App\Services\ContactSendTimeService;
+use App\Services\PreferenceCenterService;
 use App\Services\SegmentFilterEngine;
 use App\Services\WarmupGuardService;
 use App\Services\WebhookDispatchService;
@@ -29,11 +30,13 @@ class SendEmailCampaignJob implements ShouldQueue
         SegmentFilterEngine $segmentFilterEngine,
         ?ContactSendTimeService $contactSendTimeService = null,
         ?ContactScoreService $contactScoreService = null,
+        ?PreferenceCenterService $preferenceCenterService = null,
         ?WarmupGuardService $warmupGuardService = null,
         ?WebhookDispatchService $webhookDispatchService = null,
     ): void {
         $contactSendTimeService ??= app(ContactSendTimeService::class);
         $contactScoreService ??= app(ContactScoreService::class);
+        $preferenceCenterService ??= app(PreferenceCenterService::class);
         $warmupGuardService ??= app(WarmupGuardService::class);
         $webhookDispatchService ??= app(WebhookDispatchService::class);
 
@@ -91,6 +94,10 @@ class SendEmailCampaignJob implements ShouldQueue
                 continue;
             }
 
+            if (! $preferenceCenterService->isAllowed($contact, (string) $campaign->email_category)) {
+                continue;
+            }
+
             if ($suppressedEmails->has(mb_strtolower($email))) {
                 continue;
             }
@@ -128,7 +135,11 @@ class SendEmailCampaignJob implements ShouldQueue
                 if ($optimalHour !== null) {
                     $delaySeconds = max(
                         $delaySeconds,
-                        $contactSendTimeService->getNextSendDelay($optimalHour, max(1, (int) $campaign->sto_window_hours))
+                        $contactSendTimeService->getNextSendDelay(
+                            $optimalHour,
+                            max(1, (int) $campaign->sto_window_hours),
+                            $contact->timezone
+                        )
                     );
                 }
             }

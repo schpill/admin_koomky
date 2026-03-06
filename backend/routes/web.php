@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\V1\CampaignWebhookController;
 use App\Http\Controllers\Api\V1\EmailTrackingController;
+use App\Http\Controllers\PreferenceCenterController;
 use App\Http\Controllers\PrometheusController;
 use App\Http\Controllers\SmsWebhookController;
 use App\Http\Controllers\UnsubscribeController;
@@ -15,6 +16,10 @@ Route::get('/metrics', PrometheusController::class);
 
 Route::get('/unsubscribe/{contact}', UnsubscribeController::class)
     ->name('unsubscribe');
+Route::get('/portal/preferences/{contact}', [PreferenceCenterController::class, 'show'])
+    ->name('portal.preferences.show');
+Route::post('/portal/preferences/{contact}', [PreferenceCenterController::class, 'update'])
+    ->name('portal.preferences.update');
 
 Route::get('/t/open/{token}', [EmailTrackingController::class, 'open']);
 Route::get('/t/click/{token}', [EmailTrackingController::class, 'click']);
