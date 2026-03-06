@@ -55,14 +55,14 @@
 
 | ID          | Task                                                                                                                                                                                                            | Status | Owner |
 |-------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------|-------|
-| P16-BE-011  | Create `DrippSequence` model — `HasUuids`, `HasFactory`. Fillable, casts settings array. Relations `user()`, `steps()` ordered by position, `enrollments()`. Scopes `active()`, `forUser()`.                   | todo   | —     |
-| P16-BE-012  | Create `DripStep` model — `HasUuids`, `HasFactory`. Fillable, casts. Relations `sequence()`, `template()`. Méthode `evaluateCondition(DrippEnrollment $enrollment): bool`.                                      | todo   | —     |
-| P16-BE-013  | Create `DrippEnrollment` model — `HasUuids`, `HasFactory`. Fillable, casts. Relations `sequence()`, `contact()`. Scopes `active()`, `dueForProcessing()`.                                                       | todo   | —     |
-| P16-BE-014  | Create `DripEnrollmentService` — `enroll(Contact, DrippSequence)`, `enrollSegment(Segment, DrippSequence): int`. Vérifie suppression list + double enrollment.                                                   | todo   | —     |
+| P16-BE-011  | Create `DripSequence` model — `HasUuids`, `HasFactory`. Fillable, casts settings array. Relations `user()`, `steps()` ordered by position, `enrollments()`. Scopes `active()`, `forUser()`.                   | todo   | —     |
+| P16-BE-012  | Create `DripStep` model — `HasUuids`, `HasFactory`. Fillable, casts. Relations `sequence()`, `template()`. Méthode `evaluateCondition(DripEnrollment $enrollment): bool`.                                      | todo   | —     |
+| P16-BE-013  | Create `DripEnrollment` model — `HasUuids`, `HasFactory`. Fillable, casts. Relations `sequence()`, `contact()`. Scopes `active()`, `dueForProcessing()`.                                                       | todo   | —     |
+| P16-BE-014  | Create `DripEnrollmentService` — `enroll(Contact, DripSequence)`, `enrollSegment(Segment, DripSequence): int`. Vérifie suppression list + double enrollment.                                                   | todo   | —     |
 | P16-BE-015  | Create `SendDripStepEmailJob` — Vérifie suppression list. Envoie email. Crée `CampaignRecipient`. Met à jour enrollment (position++, last_processed_at, completed si fin).                                       | todo   | —     |
 | P16-BE-016  | Create `AdvanceDripEnrollmentsJob` — Schedulé toutes les 5 min. Charge enrollments `dueForProcessing()`. Évalue condition, dispatch `SendDripStepEmailJob` si OK.                                               | todo   | —     |
-| P16-BE-017  | Create `DrippSequenceController` — CRUD + `enroll` (POST), `enrollSegment` (POST), `pause`/`resume`/`cancel` (PATCH enrollment). Routes API v1.                                                                 | todo   | —     |
-| P16-BE-018  | Create `DrippSequencePolicy` — ownership + actions enroll/pause/resume/cancel.                                                                                                                                  | todo   | —     |
+| P16-BE-017  | Create `DripSequenceController` — CRUD + `enroll` (POST), `enrollSegment` (POST), `pause`/`resume`/`cancel` (PATCH enrollment). Routes API v1.                                                                 | todo   | —     |
+| P16-BE-018  | Create `DripSequencePolicy` — ownership + actions enroll/pause/resume/cancel.                                                                                                                                  | todo   | —     |
 | P16-BE-019  | PHPStan level 8 + Pint.                                                                                                                                                                                         | todo   | —     |
 
 ### Backend Tests (TDD)
@@ -71,8 +71,8 @@
 |-------------|----------------------------------------------------------------------------------------------|--------|-------|
 | P16-BT-005  | `tests/Unit/Services/DripEnrollmentServiceTest.php`                                          | todo   | —     |
 | P16-BT-006  | `tests/Unit/Jobs/AdvanceDripEnrollmentsJobTest.php`                                          | todo   | —     |
-| P16-BT-007  | `tests/Feature/Drip/DrippSequenceCrudTest.php`                                               | todo   | —     |
-| P16-BT-008  | `tests/Feature/Drip/DrippSequenceSendTest.php`                                               | todo   | —     |
+| P16-BT-007  | `tests/Feature/Drip/DripSequenceCrudTest.php`                                               | todo   | —     |
+| P16-BT-008  | `tests/Feature/Drip/DripSequenceSendTest.php`                                               | todo   | —     |
 
 ---
 
@@ -114,7 +114,7 @@
 
 | ID          | Task                                                                                                                                                           | Status | Owner |
 |-------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|--------|-------|
-| P16-BE-020  | Extend `DataExportService` — Inclure `DrippEnrollment` + `SuppressedEmail` dans l'export GDPR.                                                                 | todo   | —     |
+| P16-BE-020  | Extend `DataExportService` — Inclure `DripEnrollment` + `SuppressedEmail` dans l'export GDPR.                                                                 | todo   | —     |
 | P16-BE-021  | Add command `drip-enrollments:prune` — Supprime enrollments completed/cancelled > 90 jours. Planifiée hebdomadairement.                                         | todo   | —     |
 | P16-BE-022  | PHPStan level 8 + Pint sur tous les fichiers du sprint.                                                                                                         | todo   | —     |
 
@@ -128,8 +128,8 @@
 
 | ID          | Test File                                                                                    | Status | Owner |
 |-------------|----------------------------------------------------------------------------------------------|--------|-------|
-| P16-BT-009  | `tests/Feature/Drip/DrippSequenceGdprTest.php`                                               | todo   | —     |
-| P16-BT-010  | `tests/Feature/Drip/DrippEnrollmentPruneTest.php`                                            | todo   | —     |
+| P16-BT-009  | `tests/Feature/Drip/DripSequenceGdprTest.php`                                               | todo   | —     |
+| P16-BT-010  | `tests/Feature/Drip/DripEnrollmentPruneTest.php`                                            | todo   | —     |
 
 ---
 

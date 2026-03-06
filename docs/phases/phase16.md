@@ -43,7 +43,7 @@
 
 | Besoin | Gap actuel | Solution Phase 16 |
 |--------|-----------|-------------------|
-| Séquences multi-étapes | Les campagnes sont one-shot | `DrippSequence` + `DripStep` models + orchestration job |
+| Séquences multi-étapes | Les campagnes sont one-shot | `DripSequence` + `DripStep` models + orchestration job |
 | Déclencheurs comportementaux | Aucun suivi post-envoi pour re-cibler | Conditions sur `opened_at`/`clicked_at` dans le job d'avancement |
 | Suppression list centralisée | Un désabonné dans campagne A peut recevoir campagne B | Table `suppressed_emails` + check systématique dans tous les jobs |
 | Hard bounce management | `bounced_at` tracé mais aucune action | Observer `CampaignRecipient` → blacklist automatique sur bounce |
@@ -69,10 +69,10 @@
 
 ```
 Enrollment :
-1. Déclencheur → DripEnrollmentService::enroll(Contact $contact, DrippSequence $sequence)
+1. Déclencheur → DripEnrollmentService::enroll(Contact $contact, DripSequence $sequence)
    - Vérifie que contact n'est pas déjà enrolled (statut active)
    - Vérifie que contact n'est pas dans la suppression list
-   - Crée DrippEnrollment{status=active, current_step_position=0}
+   - Crée DripEnrollment{status=active, current_step_position=0}
 
 Avancement (AdvanceDripEnrollmentsJob — schedulé toutes les 5 min) :
 1. Charge les enrollments {status=active}
@@ -138,7 +138,7 @@ Webhook SES/provider :
 
 | Feature | Priority | Included |
 |---------|----------|----------|
-| Modèle `DrippSequence` + `DripStep` + `DrippEnrollment` | High | Yes |
+| Modèle `DripSequence` + `DripStep` + `DripEnrollment` | High | Yes |
 | Enrollment d'un contact dans une séquence | High | Yes |
 | Enrollment en masse depuis un segment | High | Yes |
 | Job `AdvanceDripEnrollmentsJob` (scheduler 5 min) | High | Yes |
@@ -233,14 +233,14 @@ Webhook SES/provider :
 
 | ID          | Task |
 |-------------|------|
-| P16-BE-011  | Create `DrippSequence` model — `HasUuids`, `HasFactory`. Fillable, casts settings array. Relations `user()`, `steps()` HasMany ordered by position, `enrollments()` HasMany. Scopes `active()`, `forUser()`. |
-| P16-BE-012  | Create `DripStep` model — `HasUuids`, `HasFactory`. Fillable, casts. Relations `sequence()`, `template()`. Méthode `evaluateCondition(DrippEnrollment $enrollment): bool` — vérifie la condition comportementale sur le `CampaignRecipient` du step précédent. |
-| P16-BE-013  | Create `DrippEnrollment` model — `HasUuids`, `HasFactory`. Fillable, casts. Relations `sequence()`, `contact()`. Scopes `active()`, `dueForProcessing()` (filtre sur now() >= last_processed_at + step.delay_hours). |
-| P16-BE-014  | Create `DripEnrollmentService` — `enroll(Contact $contact, DrippSequence $sequence): DrippEnrollment`. `enrollSegment(Segment $segment, DrippSequence $sequence): int`. Vérifie suppression list avant enrollment. Évite double enrollment (idempotent). |
+| P16-BE-011  | Create `DripSequence` model — `HasUuids`, `HasFactory`. Fillable, casts settings array. Relations `user()`, `steps()` HasMany ordered by position, `enrollments()` HasMany. Scopes `active()`, `forUser()`. |
+| P16-BE-012  | Create `DripStep` model — `HasUuids`, `HasFactory`. Fillable, casts. Relations `sequence()`, `template()`. Méthode `evaluateCondition(DripEnrollment $enrollment): bool` — vérifie la condition comportementale sur le `CampaignRecipient` du step précédent. |
+| P16-BE-013  | Create `DripEnrollment` model — `HasUuids`, `HasFactory`. Fillable, casts. Relations `sequence()`, `contact()`. Scopes `active()`, `dueForProcessing()` (filtre sur now() >= last_processed_at + step.delay_hours). |
+| P16-BE-014  | Create `DripEnrollmentService` — `enroll(Contact $contact, DripSequence $sequence): DripEnrollment`. `enrollSegment(Segment $segment, DripSequence $sequence): int`. Vérifie suppression list avant enrollment. Évite double enrollment (idempotent). |
 | P16-BE-015  | Create `SendDripStepEmailJob` — Queue `campaigns`. Charge enrollment + step. Vérifie suppression list. Envoie via `PersonalizationService` + `CampaignRecipientMail`. Crée `CampaignRecipient` pour tracking. Met à jour enrollment (position++, last_processed_at, status si terminé). |
 | P16-BE-016  | Create `AdvanceDripEnrollmentsJob` — Queue `default`, schedulé toutes les 5 minutes dans `Console/Kernel.php`. Charge enrollments `dueForProcessing()`. Pour chaque : évalue condition du step courant, dispatch `SendDripStepEmailJob` si condition OK ou skip si non remplie. |
-| P16-BE-017  | Create `DrippSequenceController` — CRUD complet + `enroll` (POST enroller un contact), `enrollSegment` (POST enroller un segment), `pause`/`resume`/`cancel` (PATCH sur enrollment). Routes API v1. |
-| P16-BE-018  | Create `DrippSequencePolicy` — ownership standard + actions enroll/pause/resume/cancel. |
+| P16-BE-017  | Create `DripSequenceController` — CRUD complet + `enroll` (POST enroller un contact), `enrollSegment` (POST enroller un segment), `pause`/`resume`/`cancel` (PATCH sur enrollment). Routes API v1. |
+| P16-BE-018  | Create `DripSequencePolicy` — ownership standard + actions enroll/pause/resume/cancel. |
 | P16-BE-019  | PHPStan level 8 + Pint. |
 
 #### 6.2.3 Backend Tests (TDD)
@@ -249,8 +249,8 @@ Webhook SES/provider :
 |-------------|-----------|
 | P16-BT-005  | `tests/Unit/Services/DripEnrollmentServiceTest.php` — enroll/double enrollment idempotent, suppression check, enrollSegment count |
 | P16-BT-006  | `tests/Unit/Jobs/AdvanceDripEnrollmentsJobTest.php` — avancement, condition if_opened OK/KO, condition if_not_opened, complétion séquence |
-| P16-BT-007  | `tests/Feature/Drip/DrippSequenceCrudTest.php` — CRUD + enroll + enrollSegment + pause/resume/cancel |
-| P16-BT-008  | `tests/Feature/Drip/DrippSequenceSendTest.php` — email envoyé pour chaque step, CampaignRecipient créé, email supprimé skippé |
+| P16-BT-007  | `tests/Feature/Drip/DripSequenceCrudTest.php` — CRUD + enroll + enrollSegment + pause/resume/cancel |
+| P16-BT-008  | `tests/Feature/Drip/DripSequenceSendTest.php` — email envoyé pour chaque step, CampaignRecipient créé, email supprimé skippé |
 
 ---
 
@@ -299,7 +299,7 @@ Webhook SES/provider :
 
 | ID          | Task |
 |-------------|------|
-| P16-BE-020  | Extend `DataExportService` — Inclure `DrippEnrollment` (séquences, étapes, statuts) + `SuppressedEmail` (raison, date) dans l'export GDPR. |
+| P16-BE-020  | Extend `DataExportService` — Inclure `DripEnrollment` (séquences, étapes, statuts) + `SuppressedEmail` (raison, date) dans l'export GDPR. |
 | P16-BE-021  | Add command `drip-enrollments:prune` — Supprime enrollments `completed`/`cancelled` de plus de 90 jours. Planifiée hebdomadairement. |
 | P16-BE-022  | PHPStan level 8 + Pint sur tous les fichiers du sprint. |
 
@@ -313,8 +313,8 @@ Webhook SES/provider :
 
 | ID          | Test File |
 |-------------|-----------|
-| P16-BT-009  | `tests/Feature/Drip/DrippSequenceGdprTest.php` — export GDPR inclut enrollments + emails supprimés de l'user |
-| P16-BT-010  | `tests/Feature/Drip/DrippEnrollmentPruneTest.php` — prune supprime les bons enrollments, garde les actifs |
+| P16-BT-009  | `tests/Feature/Drip/DripSequenceGdprTest.php` — export GDPR inclut enrollments + emails supprimés de l'user |
+| P16-BT-010  | `tests/Feature/Drip/DripEnrollmentPruneTest.php` — prune supprime les bons enrollments, garde les actifs |
 
 ---
 
