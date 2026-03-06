@@ -4,15 +4,19 @@ namespace App\Services;
 
 use App\Models\Contact;
 use App\Models\User;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class ContactSendTimeService
 {
     public function getOptimalHour(Contact $contact, User $user): ?int
     {
+        $hourExpression = match (DB::connection()->getDriverName()) {
+            'sqlite' => "CAST(strftime('%H', opened_at) AS INTEGER)",
+            default => 'EXTRACT(HOUR FROM opened_at)',
+        };
+
         $hours = DB::table('campaign_recipients')
-            ->selectRaw('strftime(\'%H\', opened_at) as opened_hour, count(*) as aggregate')
+            ->selectRaw("{$hourExpression} as opened_hour, count(*) as aggregate")
             ->join('campaigns', 'campaigns.id', '=', 'campaign_recipients.campaign_id')
             ->where('campaign_recipients.contact_id', $contact->id)
             ->where('campaigns.user_id', $user->id)
@@ -34,7 +38,7 @@ class ContactSendTimeService
     public function getNextSendDelay(int $optimalHour, int $windowHours): int
     {
         $now = now();
-        $candidate = Carbon::instance($now)->setTime($optimalHour, 0, 0);
+        $candidate = $now->copy()->setTime($optimalHour, 0, 0);
 
         if ($candidate->lessThanOrEqualTo($now)) {
             $candidate->addDay();
