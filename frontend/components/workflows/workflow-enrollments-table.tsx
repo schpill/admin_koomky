@@ -67,7 +67,6 @@ export function WorkflowEnrollmentsTable({
                     type="button"
                     variant="outline"
                     size="sm"
-                    aria-label={`Resume ${label}`}
                     onClick={() => onResume(enrollment.id)}
                   >
                     Resume
@@ -77,7 +76,6 @@ export function WorkflowEnrollmentsTable({
                     type="button"
                     variant="outline"
                     size="sm"
-                    aria-label={`Pause ${label}`}
                     onClick={() => onPause(enrollment.id)}
                   >
                     Pause
@@ -87,7 +85,6 @@ export function WorkflowEnrollmentsTable({
                   type="button"
                   variant="destructive"
                   size="sm"
-                  aria-label={`Cancel ${label}`}
                   onClick={() => onCancel(enrollment.id)}
                 >
                   Cancel
