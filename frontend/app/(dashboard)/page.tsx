@@ -309,6 +309,25 @@ export default function DashboardPage() {
         </Card>
       ) : null}
 
+      {(stats?.hot_contacts_count || 0) > 0 ? (
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base">Contacts chauds</CardTitle>
+          </CardHeader>
+          <CardContent className="flex items-center justify-between">
+            <p className="text-2xl font-bold">
+              {stats?.hot_contacts_count || 0}
+            </p>
+            <Link
+              href="/clients"
+              className="text-sm font-medium text-primary hover:underline"
+            >
+              Voir les contacts
+            </Link>
+          </CardContent>
+        </Card>
+      ) : null}
+
       {(stats?.active_ab_tests_count || 0) > 0 ? (
         <Card>
           <CardHeader className="pb-2">

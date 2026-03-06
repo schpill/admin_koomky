@@ -72,6 +72,7 @@ class SegmentFilterEngine
             'last_interaction' => $this->applyLastInteractionCriterion($query, $criterion),
             'project_status' => $this->applyProjectStatusCriterion($query, $criterion),
             'revenue' => $this->applyRevenueCriterion($query, $criterion),
+            'email_score' => $this->applyEmailScoreCriterion($query, $criterion),
             'location' => $this->applyLocationCriterion($query, $criterion),
             'industry' => $this->applyIndustryCriterion($query, $criterion),
             'department' => $this->applyDepartmentCriterion($query, $criterion),
@@ -79,6 +80,35 @@ class SegmentFilterEngine
             'custom', 'custom_field' => $this->applyCustomFieldCriterion($query, $criterion),
             default => throw new InvalidArgumentException('Unsupported filter type: '.$type),
         };
+    }
+
+    /**
+     * @param  array<string, mixed>  $criterion
+     * @param  Builder<Contact>  $query
+     */
+    private function applyEmailScoreCriterion(Builder $query, array $criterion): void
+    {
+        $operator = (string) ($criterion['operator'] ?? '');
+        $value = $criterion['value'] ?? null;
+
+        if (! is_numeric($value)) {
+            throw new InvalidArgumentException('Invalid email_score filter value.');
+        }
+
+        $comparison = match ($operator) {
+            'gte' => '>=',
+            'lte' => '<=',
+            'gt' => '>',
+            'lt' => '<',
+            'eq' => '=',
+            default => null,
+        };
+
+        if ($comparison === null) {
+            throw new InvalidArgumentException('Invalid email_score filter operator.');
+        }
+
+        $query->where('contacts.email_score', $comparison, (int) $value);
     }
 
     /**

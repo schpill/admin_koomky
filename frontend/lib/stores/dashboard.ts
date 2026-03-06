@@ -47,6 +47,7 @@ interface DashboardStats {
   average_campaign_open_rate: number;
   average_campaign_click_rate: number;
   prospects_imported_month?: number;
+  hot_contacts_count?: number;
   profit_loss_summary?: {
     revenue: number;
     expenses: number;

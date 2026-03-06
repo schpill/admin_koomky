@@ -28,6 +28,7 @@ import {
   Package,
   Bell,
   LayoutTemplate,
+  Gauge,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -78,6 +79,12 @@ const secondaryNavigation = [
     key: "reminders",
     href: "/settings/reminders",
     icon: Bell,
+    external: false,
+  },
+  {
+    key: "scoring",
+    href: "/settings/scoring",
+    icon: Gauge,
     external: false,
   },
   {

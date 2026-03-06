@@ -30,6 +30,7 @@ describe("useDashboardStore", () => {
       revenue_year: 4200,
       pending_invoices_count: 3,
       overdue_invoices_count: 1,
+      hot_contacts_count: 2,
       revenue_trend: [
         { month: "2026-01", total: 100 },
         { month: "2026-02", total: 200 },
@@ -51,6 +52,7 @@ describe("useDashboardStore", () => {
     const state = useDashboardStore.getState();
     expect(state.stats?.total_clients).toBe(10);
     expect(state.stats?.revenue_year).toBe(4200);
+    expect(state.stats?.hot_contacts_count).toBe(2);
     expect(state.stats?.revenue_trend).toHaveLength(2);
     expect(state.stats?.upcoming_deadlines).toHaveLength(1);
     expect(state.isLoading).toBe(false);

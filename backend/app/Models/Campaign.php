@@ -24,6 +24,8 @@ use Laravel\Scout\Searchable;
  * @property string|null $ab_winner_criteria
  * @property string|null $subject
  * @property string $content
+ * @property bool $use_sto
+ * @property int $sto_window_hours
  * @property array<string, mixed>|null $settings
  */
 class Campaign extends Model
@@ -45,6 +47,8 @@ class Campaign extends Model
         'started_at',
         'completed_at',
         'settings',
+        'use_sto',
+        'sto_window_hours',
         'is_ab_test',
         'ab_winner_variant_id',
         'ab_winner_selected_at',
@@ -65,6 +69,8 @@ class Campaign extends Model
             'ab_winner_selected_at' => 'datetime',
             'ab_auto_select_after_hours' => 'integer',
             'settings' => 'array',
+            'use_sto' => 'boolean',
+            'sto_window_hours' => 'integer',
         ];
     }
 

@@ -53,6 +53,7 @@ interface Contact {
   phone: string | null;
   position: string | null;
   is_primary: boolean;
+  email_score?: number;
 }
 
 interface ClientContactListProps {
@@ -304,6 +305,7 @@ export function ClientContactList({ clientId }: ClientContactListProps) {
                 <TableRow>
                   <TableHead>{t("clients.table.name")}</TableHead>
                   <TableHead>{t("clients.contacts.position")}</TableHead>
+                  <TableHead>Score email</TableHead>
                   <TableHead>{t("clients.contacts.contactInfo")}</TableHead>
                   <TableHead className="text-right">
                     {t("clients.table.actions")}
@@ -323,7 +325,18 @@ export function ClientContactList({ clientId }: ClientContactListProps) {
                         )}
                       </div>
                     </TableCell>
-                    <TableCell>{contact.position || "-"}</TableCell>
+                    <TableCell>{contact.position || "—"}</TableCell>
+                    <TableCell>
+                      <Badge
+                        variant={
+                          Number(contact.email_score || 0) >= 50
+                            ? "default"
+                            : "secondary"
+                        }
+                      >
+                        {Number(contact.email_score || 0)}
+                      </Badge>
+                    </TableCell>
                     <TableCell>
                       <div className="space-y-1">
                         {contact.email && (

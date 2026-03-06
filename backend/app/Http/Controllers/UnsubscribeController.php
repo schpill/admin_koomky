@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\CampaignRecipient;
 use App\Models\Contact;
+use App\Services\ContactScoreService;
 use App\Services\SuppressionService;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
@@ -13,7 +14,10 @@ class UnsubscribeController extends Controller
 {
     use ApiResponse;
 
-    public function __construct(private readonly SuppressionService $suppressionService) {}
+    public function __construct(
+        private readonly SuppressionService $suppressionService,
+        private readonly ContactScoreService $contactScoreService,
+    ) {}
 
     public function __invoke(Request $request, Contact $contact): JsonResponse
     {
@@ -25,6 +29,8 @@ class UnsubscribeController extends Controller
             $contact->forceFill([
                 'email_unsubscribed_at' => now(),
             ])->save();
+
+            $this->contactScoreService->recordEvent($contact, 'email_unsubscribed');
         }
 
         $recipient = CampaignRecipient::query()
