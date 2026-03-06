@@ -19,7 +19,11 @@ const stepTemplates: Array<{
   label: string;
   config: Record<string, unknown>;
 }> = [
-  { type: "send_email", label: "Send email", config: { subject: "", content: "" } },
+  {
+    type: "send_email",
+    label: "Send email",
+    config: { subject: "", content: "" },
+  },
   { type: "wait", label: "Wait", config: { duration: 1, unit: "hours" } },
   {
     type: "condition",
@@ -29,7 +33,11 @@ const stepTemplates: Array<{
   { type: "update_score", label: "Update score", config: { delta: 10 } },
   { type: "add_tag", label: "Add tag", config: { tag: "" } },
   { type: "remove_tag", label: "Remove tag", config: { tag: "" } },
-  { type: "update_field", label: "Update field", config: { field: "", value: "" } },
+  {
+    type: "update_field",
+    label: "Update field",
+    config: { field: "", value: "" },
+  },
   { type: "enroll_drip", label: "Enroll drip", config: { sequence_id: "" } },
   { type: "end", label: "End", config: {} },
 ];
@@ -43,14 +51,19 @@ export function WorkflowBuilder({
   entryStepId,
   onChange,
 }: WorkflowBuilderProps) {
-  const [selectedId, setSelectedId] = useState<string | null>(value[0]?.id || null);
+  const [selectedId, setSelectedId] = useState<string | null>(
+    value[0]?.id || null
+  );
 
   const selectedStep = useMemo(
     () => value.find((step) => step.id === selectedId) || null,
     [selectedId, value]
   );
 
-  const updateStep = (stepId: string, updater: (current: WorkflowStep) => WorkflowStep) => {
+  const updateStep = (
+    stepId: string,
+    updater: (current: WorkflowStep) => WorkflowStep
+  ) => {
     onChange(
       value.map((step) => (step.id === stepId ? updater(step) : step)),
       entryStepId
@@ -88,7 +101,8 @@ export function WorkflowBuilder({
         next_step_id: step.next_step_id === stepId ? null : step.next_step_id,
         else_step_id: step.else_step_id === stepId ? null : step.else_step_id,
       }));
-    const nextEntry = entryStepId === stepId ? nextSteps[0]?.id || null : entryStepId;
+    const nextEntry =
+      entryStepId === stepId ? nextSteps[0]?.id || null : entryStepId;
     onChange(nextSteps, nextEntry);
     setSelectedId(nextSteps[0]?.id || null);
   };
@@ -129,7 +143,9 @@ export function WorkflowBuilder({
                 <div
                   key={step.id || `${step.type}-${index}`}
                   className={`rounded-xl border p-4 transition ${
-                    selectedId === step.id ? "border-primary shadow-sm" : "border-border"
+                    selectedId === step.id
+                      ? "border-primary shadow-sm"
+                      : "border-border"
                   }`}
                 >
                   <div className="flex items-start justify-between gap-3">

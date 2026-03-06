@@ -42,7 +42,9 @@ export default function WorkflowDetailPage() {
         if (!workflow) return;
         setName(workflow.name);
         setDescription(workflow.description || "");
-        setTriggerConfig(JSON.stringify(workflow.trigger_config || {}, null, 2));
+        setTriggerConfig(
+          JSON.stringify(workflow.trigger_config || {}, null, 2)
+        );
         setSteps(workflow.steps || []);
         setEntryStepId(workflow.entry_step_id || workflow.steps[0]?.id || null);
       })
@@ -71,16 +73,27 @@ export default function WorkflowDetailPage() {
           </h1>
           <p className="text-sm text-muted-foreground">
             Trigger: {currentWorkflow?.trigger_type || "manual"} • Completion:{" "}
-            {Number(currentWorkflow?.analytics?.completion_rate || 0).toFixed(2)}%
+            {Number(currentWorkflow?.analytics?.completion_rate || 0).toFixed(
+              2
+            )}
+            %
           </p>
         </div>
         <div className="flex gap-2">
           {currentWorkflow?.status === "active" ? (
-            <Button type="button" variant="outline" onClick={() => void pauseWorkflow(params.id)}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => void pauseWorkflow(params.id)}
+            >
               Pause
             </Button>
           ) : (
-            <Button type="button" variant="outline" onClick={() => void activateWorkflow(params.id)}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => void activateWorkflow(params.id)}
+            >
               Activate
             </Button>
           )}

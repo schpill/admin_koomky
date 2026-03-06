@@ -40,7 +40,12 @@ export default function CreateWorkflowPage() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [triggerType, setTriggerType] = useState<
-    "manual" | "contact_created" | "email_opened" | "email_clicked" | "score_threshold" | "segment_entered"
+    | "manual"
+    | "contact_created"
+    | "email_opened"
+    | "email_clicked"
+    | "score_threshold"
+    | "segment_entered"
   >("manual");
   const [triggerConfig, setTriggerConfig] = useState("{}");
   const [steps, setSteps] = useState<WorkflowStep[]>(initialSteps);

@@ -48,7 +48,9 @@ export function WorkflowNodeConfig({
             <Input
               id="workflow-step-subject"
               value={String(config.subject || "")}
-              onChange={(event) => updateConfig({ subject: event.target.value })}
+              onChange={(event) =>
+                updateConfig({ subject: event.target.value })
+              }
             />
           </div>
           <div className="space-y-2">
@@ -57,7 +59,9 @@ export function WorkflowNodeConfig({
               id="workflow-step-content"
               value={String(config.content || "")}
               rows={6}
-              onChange={(event) => updateConfig({ content: event.target.value })}
+              onChange={(event) =>
+                updateConfig({ content: event.target.value })
+              }
             />
           </div>
         </>
@@ -110,7 +114,9 @@ export function WorkflowNodeConfig({
               id="workflow-step-operator"
               className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
               value={String(config.operator || "eq")}
-              onChange={(event) => updateConfig({ operator: event.target.value })}
+              onChange={(event) =>
+                updateConfig({ operator: event.target.value })
+              }
             >
               <option value="eq">Equals</option>
               <option value="neq">Not equal</option>

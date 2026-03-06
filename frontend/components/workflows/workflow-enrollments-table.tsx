@@ -47,7 +47,9 @@ export function WorkflowEnrollmentsTable({
           <TableRow key={enrollment.id}>
             <TableCell>{contactName(enrollment)}</TableCell>
             <TableCell>{enrollment.status}</TableCell>
-            <TableCell>{enrollment.current_step?.type || "Completed"}</TableCell>
+            <TableCell>
+              {enrollment.current_step?.type || "Completed"}
+            </TableCell>
             <TableCell>{enrollment.enrolled_at || "-"}</TableCell>
             <TableCell className="flex gap-2">
               {enrollment.status === "paused" ? (

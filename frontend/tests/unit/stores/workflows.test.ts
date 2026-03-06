@@ -35,7 +35,11 @@ describe("useWorkflowStore", () => {
           status: "draft",
           steps: [],
           enrollments: [],
-          analytics: { active_enrollments: 0, completion_rate: 0, dropoff_by_step: [] },
+          analytics: {
+            active_enrollments: 0,
+            completion_rate: 0,
+            dropoff_by_step: [],
+          },
         },
       ],
     });
@@ -51,7 +55,11 @@ describe("useWorkflowStore", () => {
         status: "draft",
         steps: [],
         enrollments: [],
-        analytics: { active_enrollments: 0, completion_rate: 0, dropoff_by_step: [] },
+        analytics: {
+          active_enrollments: 0,
+          completion_rate: 0,
+          dropoff_by_step: [],
+        },
       },
     });
 
@@ -72,7 +80,11 @@ describe("useWorkflowStore", () => {
           status: "draft",
           steps: [],
           enrollments: [],
-          analytics: { active_enrollments: 0, completion_rate: 0, dropoff_by_step: [] },
+          analytics: {
+            active_enrollments: 0,
+            completion_rate: 0,
+            dropoff_by_step: [],
+          },
         },
       ],
       currentWorkflow: null,
@@ -89,7 +101,11 @@ describe("useWorkflowStore", () => {
         status: "paused",
         steps: [],
         enrollments: [],
-        analytics: { active_enrollments: 0, completion_rate: 0, dropoff_by_step: [] },
+        analytics: {
+          active_enrollments: 0,
+          completion_rate: 0,
+          dropoff_by_step: [],
+        },
       },
     });
     const updated = await useWorkflowStore

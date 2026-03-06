@@ -227,7 +227,9 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
   },
 
   activateWorkflow: async (id) => {
-    const response = await apiClient.patch<Workflow>(`/workflows/${id}/activate`);
+    const response = await apiClient.patch<Workflow>(
+      `/workflows/${id}/activate`
+    );
     const workflow = response.data as Workflow;
     set({
       currentWorkflow: workflow,
@@ -268,7 +270,9 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
 
   saveWorkflowGraph: async (workflowId, steps, entryStepId) => {
     const current = get().currentWorkflow;
-    const existing = new Map((current?.steps || []).map((step) => [step.id, step]));
+    const existing = new Map(
+      (current?.steps || []).map((step) => [step.id, step])
+    );
     const nextIds = new Set(steps.map((step) => step.id).filter(Boolean));
 
     for (const currentStep of current?.steps || []) {
