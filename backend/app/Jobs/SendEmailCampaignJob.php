@@ -10,6 +10,8 @@ use App\Models\Client;
 use App\Models\Contact;
 use App\Models\SuppressedEmail;
 use App\Notifications\CampaignCompletedNotification;
+use App\Services\ContactScoreService;
+use App\Services\ContactSendTimeService;
 use App\Services\SegmentFilterEngine;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
@@ -20,8 +22,14 @@ class SendEmailCampaignJob implements ShouldQueue
 
     public function __construct(public string $campaignId) {}
 
-    public function handle(SegmentFilterEngine $segmentFilterEngine): void
-    {
+    public function handle(
+        SegmentFilterEngine $segmentFilterEngine,
+        ?ContactSendTimeService $contactSendTimeService = null,
+        ?ContactScoreService $contactScoreService = null,
+    ): void {
+        $contactSendTimeService ??= app(ContactSendTimeService::class);
+        $contactScoreService ??= app(ContactScoreService::class);
+
         $campaign = Campaign::query()->with(['user', 'segment', 'variants'])->find($this->campaignId);
 
         if (! $campaign || $campaign->type !== 'email') {
@@ -100,8 +108,20 @@ class SendEmailCampaignJob implements ShouldQueue
 
             $delaySeconds = (int) floor($index * $interval);
 
+            if ($campaign->use_sto) {
+                $optimalHour = $contactSendTimeService->getOptimalHour($contact, $user);
+                if ($optimalHour !== null) {
+                    $delaySeconds = max(
+                        $delaySeconds,
+                        $contactSendTimeService->getNextSendDelay($optimalHour, max(1, (int) $campaign->sto_window_hours))
+                    );
+                }
+            }
+
             SendCampaignEmailJob::dispatch($recipient->id)
                 ->delay(now()->addSeconds($delaySeconds));
+
+            $contactScoreService->recordEvent($contact, 'campaign_sent', $campaign);
 
             Activity::query()->create([
                 'user_id' => $campaign->user_id,

@@ -12,6 +12,7 @@ use App\Models\Campaign;
 use App\Models\CampaignAttachment;
 use App\Models\CampaignVariant;
 use App\Models\User;
+use App\Services\DynamicContentValidatorService;
 use App\Services\MailConfigService;
 use App\Services\PersonalizationService;
 use App\Services\Sms\SmsProviderManager;
@@ -30,6 +31,7 @@ class CampaignController extends Controller
         private readonly MailConfigService $mailConfigService,
         private readonly SmsProviderManager $smsProviderManager,
         private readonly PersonalizationService $personalizationService,
+        private readonly DynamicContentValidatorService $dynamicContentValidatorService,
     ) {}
 
     public function index(Request $request): JsonResponse
@@ -69,6 +71,7 @@ class CampaignController extends Controller
         $user = $request->user();
 
         $validated = $request->validated();
+        $this->assertDynamicContentIsValid($validated);
 
         $campaign = DB::transaction(function () use ($validated, $user): Campaign {
             $attachments = $this->extractAttachments($validated);
@@ -92,6 +95,8 @@ class CampaignController extends Controller
                 'content' => $resolvedContent,
                 'scheduled_at' => $validated['scheduled_at'] ?? null,
                 'settings' => $validated['settings'] ?? null,
+                'use_sto' => $validated['use_sto'] ?? false,
+                'sto_window_hours' => $validated['sto_window_hours'] ?? 24,
                 'is_ab_test' => $isAbTest,
                 'ab_winner_criteria' => $validated['ab_winner_criteria'] ?? null,
                 'ab_auto_select_after_hours' => $validated['ab_auto_select_after_hours'] ?? null,
@@ -118,6 +123,7 @@ class CampaignController extends Controller
         Gate::authorize('update', $campaign);
 
         $validated = $request->validated();
+        $this->assertDynamicContentIsValid($validated);
 
         $campaign = DB::transaction(function () use ($campaign, $validated): Campaign {
             $attachments = $this->extractAttachments($validated);
@@ -326,6 +332,46 @@ class CampaignController extends Controller
         }
 
         return $size;
+    }
+
+    /**
+     * @param  array<string, mixed>  $validated
+     */
+    private function assertDynamicContentIsValid(array $validated): void
+    {
+        $contentFields = [];
+
+        foreach (['subject', 'content'] as $field) {
+            if (isset($validated[$field]) && is_string($validated[$field])) {
+                $contentFields[$field] = $validated[$field];
+            }
+        }
+
+        if (isset($validated['variants']) && is_array($validated['variants'])) {
+            foreach ($validated['variants'] as $index => $variant) {
+                if (! is_array($variant)) {
+                    continue;
+                }
+
+                foreach (['subject', 'content'] as $field) {
+                    if (isset($variant[$field]) && is_string($variant[$field])) {
+                        $contentFields["variants.$index.$field"] = $variant[$field];
+                    }
+                }
+            }
+        }
+
+        $errors = [];
+        foreach ($contentFields as $field => $content) {
+            $result = $this->dynamicContentValidatorService->validate($content);
+            if (! $result['valid']) {
+                $errors[$field] = $result['errors'];
+            }
+        }
+
+        if ($errors !== []) {
+            throw \Illuminate\Validation\ValidationException::withMessages($errors);
+        }
     }
 
     /**

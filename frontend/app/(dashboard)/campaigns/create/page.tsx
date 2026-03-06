@@ -12,7 +12,9 @@ import { TemplateSelector } from "@/components/campaigns/template-selector";
 import { CampaignPreview } from "@/components/campaigns/campaign-preview";
 import { TestSendModal } from "@/components/campaigns/test-send-modal";
 import { AbTestConfig } from "@/components/campaigns/ab-test-config";
+import { DynamicContentEditor } from "@/components/campaigns/dynamic-content-editor";
 import { PersonalizationVariablesPanel } from "@/components/campaigns/personalization-variables-panel";
+import { StoConfig } from "@/components/campaigns/sto-config";
 import { useCampaignStore } from "@/lib/stores/campaigns";
 import type { CampaignVariant } from "@/lib/stores/campaigns";
 import { useSegmentStore } from "@/lib/stores/segments";
@@ -99,6 +101,11 @@ export default function CreateCampaignPage() {
     number | null
   >(24);
   const [activeField, setActiveField] = useState<string | null>(null);
+  const [useSto, setUseSto] = useState(false);
+  const [stoWindowHours, setStoWindowHours] = useState(24);
+  const [dynamicContentErrors, setDynamicContentErrors] = useState<string[]>(
+    []
+  );
 
   useEffect(() => {
     fetchTemplates().catch(() => undefined);
@@ -158,6 +165,8 @@ export default function CreateCampaignPage() {
     template_id: selectedTemplateId || null,
     scheduled_at: scheduledAt || null,
     status: scheduledAt ? "scheduled" : "draft",
+    use_sto: type === "email" ? useSto : false,
+    sto_window_hours: type === "email" ? stoWindowHours : null,
     is_ab_test: type === "email" ? isAbTest : false,
     variants: type === "email" && isAbTest ? variants : undefined,
     ab_winner_criteria: type === "email" && isAbTest ? winnerCriteria : null,
@@ -268,21 +277,25 @@ export default function CreateCampaignPage() {
 
   const saveDraft = async () => {
     try {
+      setDynamicContentErrors([]);
       const campaignId = await ensureDraftExists();
       toast.success("Draft campaign saved");
       router.push(`/campaigns/${campaignId}`);
     } catch (error) {
+      setDynamicContentErrors(extractDynamicContentErrors(error));
       toast.error((error as Error).message || "Unable to save campaign");
     }
   };
 
   const saveAndSendNow = async () => {
     try {
+      setDynamicContentErrors([]);
       const campaignId = await ensureDraftExists();
       await sendCampaign(campaignId);
       toast.success("Campaign queued for sending");
       router.push(`/campaigns/${campaignId}`);
     } catch (error) {
+      setDynamicContentErrors(extractDynamicContentErrors(error));
       toast.error((error as Error).message || "Unable to send campaign");
     }
   };
@@ -430,6 +443,21 @@ export default function CreateCampaignPage() {
                 <PersonalizationVariablesPanel
                   onInsert={handleInsertVariable}
                 />
+                <DynamicContentEditor onInsert={handleInsertVariable} />
+                {dynamicContentErrors.length > 0 ? (
+                  <Card className="border-destructive/40">
+                    <CardHeader>
+                      <CardTitle className="text-base text-destructive">
+                        Dynamic content errors
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-2 text-sm text-destructive">
+                      {dynamicContentErrors.map((error) => (
+                        <p key={error}>{error}</p>
+                      ))}
+                    </CardContent>
+                  </Card>
+                ) : null}
               </div>
             ) : (
               <SmsComposer value={content} onChange={setContent} />
@@ -489,6 +517,16 @@ export default function CreateCampaignPage() {
               />
             </div>
 
+            {type === "email" ? (
+              <StoConfig
+                enabled={useSto}
+                windowHours={stoWindowHours}
+                knownContactsCount={0}
+                onEnabledChange={setUseSto}
+                onWindowHoursChange={setStoWindowHours}
+              />
+            ) : null}
+
             <div className="flex flex-wrap justify-end gap-2">
               <Button
                 variant="outline"
@@ -507,6 +545,7 @@ export default function CreateCampaignPage() {
 
       <div className="flex justify-between">
         <Button
+          data-testid="campaign-wizard-back"
           variant="outline"
           onClick={() => setStep((current) => Math.max(1, current - 1))}
           disabled={step === 1}
@@ -514,6 +553,7 @@ export default function CreateCampaignPage() {
           {t("campaigns.create.back")}
         </Button>
         <Button
+          data-testid="campaign-wizard-next"
           onClick={() => setStep((current) => Math.min(4, current + 1))}
           disabled={step === 4}
         >
@@ -522,4 +562,24 @@ export default function CreateCampaignPage() {
       </div>
     </div>
   );
+}
+
+function extractDynamicContentErrors(error: unknown): string[] {
+  const candidate = error as {
+    data?: { errors?: Record<string, string[] | string> };
+  };
+
+  const errors = candidate?.data?.errors;
+  if (!errors || typeof errors !== "object") {
+    return [];
+  }
+
+  return Object.entries(errors)
+    .filter(
+      ([field]) =>
+        field === "content" ||
+        field === "subject" ||
+        field.startsWith("variants.")
+    )
+    .flatMap(([, value]) => (Array.isArray(value) ? value : [String(value)]));
 }

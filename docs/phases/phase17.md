@@ -8,7 +8,7 @@
 | **Milestone**       | M17 — v2.3.0 Release                                        |
 | **PRD Sections**    | §4.29 FR-SCORE (nouveau), §4.30 FR-STO (nouveau), §4.31 FR-DYN (nouveau) |
 | **Prerequisite**    | Phase 16 fully completed and tagged `v2.2.0`                 |
-| **Status**          | todo                                                         |
+| **Status**          | done                                                         |
 
 ---
 

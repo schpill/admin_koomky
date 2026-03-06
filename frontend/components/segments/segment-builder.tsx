@@ -28,6 +28,7 @@ const criterionTypes = [
   "last_interaction",
   "project_status",
   "revenue",
+  "email_score",
   "location",
   "industry",
   "department",
@@ -49,6 +50,8 @@ const criterionOperators = [
   "after",
 ];
 
+const numericOperators = ["gte", "lte", "gt", "lt", "eq"];
+
 function cloneFilters(filters: SegmentFilters): SegmentFilters {
   return {
     group_boolean: filters.group_boolean ?? "and",
@@ -65,6 +68,14 @@ function fallbackCriterion(): SegmentCriterion {
     operator: "equals",
     value: "",
   };
+}
+
+function operatorsForType(type: string): string[] {
+  if (type === "email_score") {
+    return numericOperators;
+  }
+
+  return criterionOperators;
 }
 
 export function SegmentBuilder({
@@ -224,6 +235,7 @@ export function SegmentBuilder({
 
             {group.criteria.map((criterion, criterionIndex) => {
               const criterionNumber = criterionIndex + 1;
+              const operators = operatorsForType(criterion.type);
 
               return (
                 <div
@@ -241,6 +253,14 @@ export function SegmentBuilder({
                       onChange={(event) =>
                         updateCriterion(groupIndex, criterionIndex, {
                           type: event.target.value,
+                          operator:
+                            event.target.value === "email_score"
+                              ? "gte"
+                              : "equals",
+                          value:
+                            event.target.value === "email_score"
+                              ? 0
+                              : criterion.value,
                         })
                       }
                       className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
@@ -267,7 +287,7 @@ export function SegmentBuilder({
                       }
                       className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
                     >
-                      {criterionOperators.map((operator) => (
+                      {operators.map((operator) => (
                         <option key={operator} value={operator}>
                           {operator}
                         </option>
@@ -285,8 +305,14 @@ export function SegmentBuilder({
                       value={String(criterion.value ?? "")}
                       onChange={(event) =>
                         updateCriterion(groupIndex, criterionIndex, {
-                          value: event.target.value,
+                          value:
+                            criterion.type === "email_score"
+                              ? Number(event.target.value || 0)
+                              : event.target.value,
                         })
+                      }
+                      type={
+                        criterion.type === "email_score" ? "number" : "text"
                       }
                     />
                   </div>

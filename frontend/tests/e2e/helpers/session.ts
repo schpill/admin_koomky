@@ -81,9 +81,125 @@ export async function seedAuthenticatedSession(page: Page) {
 // Generic API mock to prevent unexpected network calls
 export async function mockProtectedApi(page: Page) {
   await page.route("**/api/v1/**", async (route) => {
-    if (route.request().url().includes("/api/v1/user")) {
+    const url = route.request().url();
+    const method = route.request().method();
+
+    if (url.includes("/api/v1/user")) {
       return route.continue(); // Don't override the specific user mock
     }
+
+    if (url.includes("/api/v1/campaign-templates")) {
+      return route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({ status: "Success", message: "OK", data: [] }),
+      });
+    }
+
+    if (url.includes("/api/v1/segments")) {
+      return route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          status: "Success",
+          message: "OK",
+          data: [],
+          current_page: 1,
+          last_page: 1,
+          total: 0,
+          per_page: 15,
+        }),
+      });
+    }
+
+    if (url.includes("/api/v1/campaigns") && method === "POST") {
+      return route.fulfill({
+        status: 201,
+        contentType: "application/json",
+        body: JSON.stringify({
+          status: "Success",
+          message: "OK",
+          data: {
+            id: "camp_1",
+            name: "Mock campaign",
+            type: "email",
+            status: "draft",
+            subject: "Subject",
+            content: "Body",
+            recipients: [],
+            variants: [],
+          },
+        }),
+      });
+    }
+
+    if (url.match(/\/api\/v1\/campaigns\/[^/]+$/) && method === "GET") {
+      return route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          status: "Success",
+          message: "OK",
+          data: {
+            id: "camp_1",
+            name: "Mock campaign",
+            type: "email",
+            status: "draft",
+            subject: "Subject",
+            content: "Body",
+            recipients: [],
+            variants: [],
+            use_sto: true,
+            sto_window_hours: 24,
+          },
+        }),
+      });
+    }
+
+    if (url.includes("/api/v1/campaigns/") && url.includes("/analytics")) {
+      return route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          status: "Success",
+          message: "OK",
+          data: {
+            campaign_id: "camp_1",
+            total_recipients: 0,
+            open_rate: 0,
+            click_rate: 0,
+            time_series: [],
+            ab_variants: [],
+          },
+        }),
+      });
+    }
+
+    if (url.includes("/api/v1/dashboard")) {
+      return route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          status: "Success",
+          message: "OK",
+          data: {
+            total_clients: 0,
+            active_projects: 0,
+            pending_invoices_amount: 0,
+            recent_activities: [],
+            revenue_month: 0,
+            revenue_quarter: 0,
+            revenue_year: 0,
+            pending_invoices_count: 0,
+            overdue_invoices_count: 0,
+            revenue_trend: [],
+            upcoming_deadlines: [],
+            hot_contacts_count: 0,
+          },
+        }),
+      });
+    }
+
     await route.fulfill({
       status: 200,
       contentType: "application/json",

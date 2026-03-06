@@ -61,6 +61,7 @@ use App\Http\Controllers\Api\V1\RagController;
 use App\Http\Controllers\Api\V1\RecurringInvoiceProfileController;
 use App\Http\Controllers\Api\V1\ReminderSequenceController;
 use App\Http\Controllers\Api\V1\ReportController;
+use App\Http\Controllers\Api\V1\ScoringRuleController;
 use App\Http\Controllers\Api\V1\SearchController;
 use App\Http\Controllers\Api\V1\SegmentController;
 use App\Http\Controllers\Api\V1\Settings\PersonalAccessTokenController as SettingsPersonalAccessTokenController;
@@ -160,6 +161,11 @@ Route::prefix('v1')->group(function () {
             Route::post('/2fa/confirm', [UserSettingsController::class, 'confirm2fa']);
             Route::post('/2fa/disable', [UserSettingsController::class, 'disable2fa']);
         });
+
+        Route::get('scoring-rules', [ScoringRuleController::class, 'index']);
+        Route::post('scoring-rules', [ScoringRuleController::class, 'store']);
+        Route::put('scoring-rules/{ruleId}', [ScoringRuleController::class, 'update']);
+        Route::delete('scoring-rules/{ruleId}', [ScoringRuleController::class, 'destroy']);
 
         Route::get('export/full', [DataExportController::class, 'full']);
         Route::post('import/{entity}', [DataImportController::class, 'import']);

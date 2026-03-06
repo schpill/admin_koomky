@@ -60,6 +60,8 @@ class StoreCampaignRequest extends FormRequest
                 'min:1',
             ],
             'scheduled_at' => ['nullable', 'date', 'after:now'],
+            'use_sto' => ['nullable', 'boolean'],
+            'sto_window_hours' => ['nullable', 'integer', 'min:1', 'max:48'],
             'settings' => ['nullable', 'array'],
             'settings.throttle_rate_per_minute' => ['nullable', 'integer', 'min:1', 'max:2000'],
             'attachments' => ['nullable', 'array'],

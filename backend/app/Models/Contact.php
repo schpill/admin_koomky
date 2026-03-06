@@ -16,6 +16,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $email
  * @property string|null $phone
  * @property string|null $position
+ * @property int $email_score
+ * @property \Illuminate\Support\Carbon|null $email_score_updated_at
  * @property bool $is_primary
  * @property \Illuminate\Support\Carbon|null $email_unsubscribed_at
  * @property \Illuminate\Support\Carbon|null $sms_opted_out_at
@@ -39,6 +41,8 @@ class Contact extends Model
         'email',
         'phone',
         'position',
+        'email_score',
+        'email_score_updated_at',
         'is_primary',
         'email_unsubscribed_at',
         'sms_opted_out_at',
@@ -52,6 +56,8 @@ class Contact extends Model
     protected $casts = [
         'is_primary' => 'boolean',
         'email_unsubscribed_at' => 'datetime',
+        'email_score' => 'integer',
+        'email_score_updated_at' => 'datetime',
         'sms_opted_out_at' => 'datetime',
         'email_consent' => 'boolean',
         'email_consent_date' => 'datetime',

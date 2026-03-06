@@ -12,6 +12,7 @@ import { RecipientStatusTable } from "@/components/campaigns/recipient-status-ta
 import { TestSendModal } from "@/components/campaigns/test-send-modal";
 import { AbTestResults } from "@/components/campaigns/ab-test-results";
 import { PersonalizationVariablesPanel } from "@/components/campaigns/personalization-variables-panel";
+import { StoConfig } from "@/components/campaigns/sto-config";
 import { useCampaignStore } from "@/lib/stores/campaigns";
 import { useI18n } from "@/components/providers/i18n-provider";
 
@@ -123,6 +124,16 @@ export default function CampaignDetailPage() {
             isSubmitting={isLoading}
             onSend={(payload) => testSendCampaign(currentCampaign.id, payload)}
           />
+
+          {currentCampaign.type === "email" ? (
+            <StoConfig
+              enabled={Boolean(currentCampaign.use_sto)}
+              windowHours={currentCampaign.sto_window_hours || 24}
+              knownContactsCount={0}
+              onEnabledChange={() => undefined}
+              onWindowHoursChange={() => undefined}
+            />
+          ) : null}
         </CardContent>
       </Card>
 

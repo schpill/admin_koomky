@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Models\CampaignRecipient;
+use App\Services\ContactScoreService;
 use App\Services\EmailTrackingTokenService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -11,7 +12,10 @@ use Illuminate\Http\Response;
 
 class EmailTrackingController extends Controller
 {
-    public function __construct(private readonly EmailTrackingTokenService $tokenService) {}
+    public function __construct(
+        private readonly EmailTrackingTokenService $tokenService,
+        private readonly ContactScoreService $contactScoreService,
+    ) {}
 
     public function open(string $token): Response
     {
@@ -28,6 +32,10 @@ class EmailTrackingController extends Controller
 
             if ($recipient->variant_id !== null) {
                 $recipient->variant()->increment('open_count');
+            }
+
+            if ($recipient->contact !== null) {
+                $this->contactScoreService->recordEvent($recipient->contact, 'email_opened', $recipient->campaign);
             }
         }
 
@@ -51,6 +59,10 @@ class EmailTrackingController extends Controller
 
             if ($recipient->variant_id !== null) {
                 $recipient->variant()->increment('click_count');
+            }
+
+            if ($recipient->contact !== null) {
+                $this->contactScoreService->recordEvent($recipient->contact, 'email_clicked', $recipient->campaign);
             }
         }
 

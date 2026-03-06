@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Activity;
 use App\Models\Campaign;
 use App\Models\Client;
+use App\Models\Contact;
 use App\Models\Invoice;
 use App\Models\ProductSale;
 use App\Models\Project;
@@ -208,6 +209,10 @@ class DashboardService
                     ->where('user_id', $userId)
                     ->where('status', 'prospect')
                     ->whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()])
+                    ->count(),
+                'hot_contacts_count' => Contact::query()
+                    ->whereHas('client', fn ($query) => $query->where('user_id', $userId))
+                    ->where('email_score', '>=', 50)
                     ->count(),
                 'profit_loss_summary' => [
                     'revenue' => (float) ($profitLossSummary['revenue'] ?? 0),

@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Models\CampaignRecipient;
+use App\Services\ContactScoreService;
 use App\Services\SuppressionService;
 
 class CampaignRecipientObserver
@@ -28,5 +29,9 @@ class CampaignRecipientObserver
             'hard_bounce',
             $campaign->id
         );
+
+        if ($recipient->contact !== null) {
+            app(ContactScoreService::class)->recordEvent($recipient->contact, 'email_bounced', $campaign);
+        }
     }
 }

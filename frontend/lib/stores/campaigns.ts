@@ -56,6 +56,8 @@ export interface Campaign {
   started_at?: string | null;
   completed_at?: string | null;
   settings?: Record<string, unknown> | null;
+  use_sto?: boolean;
+  sto_window_hours?: number;
   recipients_count?: number;
   recipients?: Array<Record<string, unknown>>;
   attachments?: CampaignAttachment[];

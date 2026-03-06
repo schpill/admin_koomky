@@ -6,6 +6,7 @@ use App\Models\Campaign;
 use App\Models\CampaignTemplate;
 use App\Models\Client;
 use App\Models\Contact;
+use App\Models\ContactScoreEvent;
 use App\Models\CreditNote;
 use App\Models\Document;
 use App\Models\DocumentChunk;
@@ -24,6 +25,7 @@ use App\Models\Project;
 use App\Models\Quote;
 use App\Models\RagUsageLog;
 use App\Models\ReminderDelivery;
+use App\Models\ScoringRule;
 use App\Models\Segment;
 use App\Models\SuppressedEmail;
 use App\Models\Tag;
@@ -80,6 +82,14 @@ class DataExportService
             ->get();
 
         $suppressedEmails = SuppressedEmail::query()
+            ->where('user_id', $user->id)
+            ->get();
+
+        $scoringRules = ScoringRule::query()
+            ->where('user_id', $user->id)
+            ->get();
+
+        $contactScoreEvents = ContactScoreEvent::query()
             ->where('user_id', $user->id)
             ->get();
 
@@ -224,6 +234,8 @@ class DataExportService
                 ->toArray(),
             'drip_enrollments' => $dripEnrollments->toArray(),
             'suppressed_emails' => $suppressedEmails->toArray(),
+            'scoring_rules' => $scoringRules->toArray(),
+            'contact_score_events' => $contactScoreEvents->toArray(),
             'segments' => Segment::query()
                 ->where('user_id', $user->id)
                 ->get()
