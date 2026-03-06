@@ -2,7 +2,6 @@
 
 use App\Models\User;
 use App\Models\Workflow;
-use App\Models\WorkflowStep;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);

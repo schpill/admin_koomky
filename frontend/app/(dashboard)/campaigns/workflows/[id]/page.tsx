@@ -4,12 +4,32 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { WorkflowBuilder } from "@/components/workflows/workflow-builder";
 import { WorkflowEnrollmentsTable } from "@/components/workflows/workflow-enrollments-table";
-import { useWorkflowStore, type WorkflowStep } from "@/lib/stores/workflows";
+import { useWorkflowsStore, type Workflow, type WorkflowStep } from "@/lib/stores/workflows";
+
+function cloneWorkflow(workflow: Workflow): Workflow {
+  return {
+    ...workflow,
+    trigger_config: { ...(workflow.trigger_config || {}) },
+    steps: workflow.steps.map((step) => ({
+      ...step,
+      config: { ...(step.config || {}) },
+    })),
+    enrollments: [...workflow.enrollments],
+  };
+}
+
+function normalizeStep(step: WorkflowStep): Record<string, unknown> {
+  return {
+    type: step.type,
+    config: step.config || {},
+    next_step_id: step.next_step_id || null,
+    else_step_id: step.else_step_id || null,
+    position_x: step.position_x || 0,
+    position_y: step.position_y || 0,
+  };
+}
 
 export default function WorkflowDetailPage() {
   const params = useParams<{ id: string }>();
@@ -19,140 +39,93 @@ export default function WorkflowDetailPage() {
     fetchWorkflow,
     fetchEnrollments,
     updateWorkflow,
-    saveWorkflowGraph,
+    createStep,
+    updateStep,
+    deleteStep,
     activateWorkflow,
     pauseWorkflow,
     pauseEnrollment,
     resumeEnrollment,
     cancelEnrollment,
-  } = useWorkflowStore();
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [triggerConfig, setTriggerConfig] = useState("{}");
-  const [steps, setSteps] = useState<WorkflowStep[]>([]);
-  const [entryStepId, setEntryStepId] = useState<string | null>(null);
+  } = useWorkflowsStore();
+  const [draft, setDraft] = useState<Workflow | null>(null);
 
   useEffect(() => {
-    if (!params?.id) {
-      return;
-    }
+    if (!params?.id) return;
 
-    fetchWorkflow(params.id)
-      .then((workflow) => {
-        if (!workflow) return;
-        setName(workflow.name);
-        setDescription(workflow.description || "");
-        setTriggerConfig(
-          JSON.stringify(workflow.trigger_config || {}, null, 2)
-        );
-        setSteps(workflow.steps || []);
-        setEntryStepId(workflow.entry_step_id || workflow.steps[0]?.id || null);
-      })
-      .catch(() => undefined);
-
+    fetchWorkflow(params.id).catch(() => undefined);
     fetchEnrollments(params.id).catch(() => undefined);
   }, [fetchEnrollments, fetchWorkflow, params?.id]);
 
-  const save = async () => {
-    if (!params?.id) return;
+  useEffect(() => {
+    if (currentWorkflow) {
+      setDraft(cloneWorkflow(currentWorkflow));
+    }
+  }, [currentWorkflow]);
 
-    await updateWorkflow(params.id, {
-      name,
-      description,
-      trigger_config: JSON.parse(triggerConfig || "{}"),
+  const save = async () => {
+    if (!draft || !currentWorkflow) return;
+
+    await updateWorkflow(currentWorkflow.id, {
+      name: draft.name,
+      description: draft.description,
+      trigger_type: draft.trigger_type,
+      trigger_config: draft.trigger_config,
+      status: draft.status,
+      entry_step_id: draft.entry_step_id || null,
     });
-    await saveWorkflowGraph(params.id, steps, entryStepId);
+
+    const existingIds = new Set(currentWorkflow.steps.map((step) => step.id));
+    const draftIds = new Set(
+      draft.steps.map((step) => step.id).filter(Boolean) as string[]
+    );
+
+    for (const step of draft.steps) {
+      if (!step.id || String(step.id).startsWith("tmp-")) {
+        await createStep(currentWorkflow.id, normalizeStep(step));
+      } else {
+        await updateStep(step.id, normalizeStep(step));
+      }
+    }
+
+    for (const stepId of existingIds) {
+      if (!draftIds.has(stepId)) {
+        await deleteStep(stepId);
+      }
+    }
+
+    await fetchWorkflow(currentWorkflow.id);
   };
+
+  if (!draft) {
+    return <p className="text-sm text-muted-foreground">Loading workflow...</p>;
+  }
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between gap-3">
         <div>
-          <h1 className="text-3xl font-bold">
-            {currentWorkflow?.name || "Workflow"}
-          </h1>
+          <h1 className="text-3xl font-bold">{draft.name || "Workflow"}</h1>
           <p className="text-sm text-muted-foreground">
-            Trigger: {currentWorkflow?.trigger_type || "manual"} • Completion:{" "}
-            {Number(currentWorkflow?.analytics?.completion_rate || 0).toFixed(
-              2
-            )}
-            %
+            Review nodes, status and active enrollments.
           </p>
         </div>
         <div className="flex gap-2">
-          {currentWorkflow?.status === "active" ? (
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => void pauseWorkflow(params.id)}
-            >
-              Pause
-            </Button>
-          ) : (
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => void activateWorkflow(params.id)}
-            >
-              Activate
-            </Button>
-          )}
-          <Button type="button" onClick={() => void save()}>
-            Save changes
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() =>
+              void (draft.status === "active"
+                ? pauseWorkflow(draft.id)
+                : activateWorkflow(draft.id))
+            }
+          >
+            {draft.status === "active" ? "Pause" : "Activate"}
           </Button>
         </div>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Workflow settings</CardTitle>
-        </CardHeader>
-        <CardContent className="grid gap-4 md:grid-cols-2">
-          <div className="space-y-2">
-            <Label htmlFor="workflow-name">Name</Label>
-            <Input
-              id="workflow-name"
-              value={name}
-              onChange={(event) => setName(event.target.value)}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="workflow-status">Status</Label>
-            <Input
-              id="workflow-status"
-              value={currentWorkflow?.status || ""}
-              readOnly
-            />
-          </div>
-          <div className="space-y-2 md:col-span-2">
-            <Label htmlFor="workflow-description">Description</Label>
-            <Textarea
-              id="workflow-description"
-              value={description}
-              rows={3}
-              onChange={(event) => setDescription(event.target.value)}
-            />
-          </div>
-          <div className="space-y-2 md:col-span-2">
-            <Label htmlFor="workflow-trigger-config">Trigger config JSON</Label>
-            <Textarea
-              id="workflow-trigger-config"
-              value={triggerConfig}
-              rows={4}
-              onChange={(event) => setTriggerConfig(event.target.value)}
-            />
-          </div>
-        </CardContent>
-      </Card>
-
-      <WorkflowBuilder
-        value={steps}
-        entryStepId={entryStepId}
-        onChange={(nextSteps, nextEntryStepId) => {
-          setSteps(nextSteps);
-          setEntryStepId(nextEntryStepId || null);
-        }}
-      />
+      <WorkflowBuilder value={draft} onChange={setDraft} onSave={save} />
 
       <Card>
         <CardHeader>

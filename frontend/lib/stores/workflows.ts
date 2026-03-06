@@ -10,8 +10,6 @@ export type WorkflowTriggerType =
   | "segment_entered"
   | "manual";
 
-export type WorkflowStatus = "draft" | "active" | "paused" | "archived";
-
 export type WorkflowStepType =
   | "send_email"
   | "wait"
@@ -25,20 +23,18 @@ export type WorkflowStepType =
 
 export interface WorkflowStep {
   id?: string;
-  workflow_id?: string;
   type: WorkflowStepType;
   config: Record<string, unknown>;
   next_step_id?: string | null;
   else_step_id?: string | null;
-  position_x: number;
-  position_y: number;
+  position_x?: number;
+  position_y?: number;
 }
 
 export interface WorkflowEnrollment {
   id: string;
-  workflow_id: string;
   status: "active" | "completed" | "paused" | "cancelled" | "failed";
-  enrolled_at?: string | null;
+  enrolled_at?: string;
   current_step_id?: string | null;
   current_step?: {
     id: string;
@@ -51,37 +47,21 @@ export interface WorkflowEnrollment {
   } | null;
 }
 
-export interface WorkflowAnalytics {
-  active_enrollments: number;
-  completion_rate: number;
-  dropoff_by_step: Array<{
-    step_id: string;
-    type: WorkflowStepType;
-    count: number;
-  }>;
-}
-
 export interface Workflow {
   id: string;
   name: string;
   description?: string | null;
   trigger_type: WorkflowTriggerType;
-  trigger_config?: Record<string, unknown> | null;
-  status: WorkflowStatus;
+  trigger_config: Record<string, unknown>;
+  status: "draft" | "active" | "paused" | "archived";
   entry_step_id?: string | null;
   steps: WorkflowStep[];
   enrollments: WorkflowEnrollment[];
-  analytics?: WorkflowAnalytics;
+  active_enrollments_count: number;
+  completion_rate: number;
 }
 
-type WorkflowInput = Omit<
-  Workflow,
-  "id" | "steps" | "enrollments" | "analytics"
-> & {
-  steps?: WorkflowStep[];
-};
-
-interface WorkflowState {
+interface WorkflowsState {
   workflows: Workflow[];
   currentWorkflow: Workflow | null;
   enrollments: WorkflowEnrollment[];
@@ -89,22 +69,23 @@ interface WorkflowState {
   error: string | null;
   fetchWorkflows: () => Promise<void>;
   fetchWorkflow: (id: string) => Promise<Workflow | null>;
-  createWorkflow: (data: Partial<WorkflowInput>) => Promise<Workflow | null>;
+  createWorkflow: (data: Record<string, unknown>) => Promise<Workflow | null>;
   updateWorkflow: (
     id: string,
-    data: Partial<WorkflowInput>
+    data: Record<string, unknown>
   ) => Promise<Workflow | null>;
   deleteWorkflow: (id: string) => Promise<void>;
   activateWorkflow: (id: string) => Promise<Workflow | null>;
   pauseWorkflow: (id: string) => Promise<Workflow | null>;
-  createStep: (workflowId: string, step: WorkflowStep) => Promise<WorkflowStep>;
-  updateStep: (stepId: string, step: WorkflowStep) => Promise<WorkflowStep>;
-  deleteStep: (stepId: string) => Promise<void>;
-  saveWorkflowGraph: (
+  createStep: (
     workflowId: string,
-    steps: WorkflowStep[],
-    entryStepId?: string | null
-  ) => Promise<void>;
+    data: Record<string, unknown>
+  ) => Promise<WorkflowStep | null>;
+  updateStep: (
+    stepId: string,
+    data: Record<string, unknown>
+  ) => Promise<WorkflowStep | null>;
+  deleteStep: (stepId: string) => Promise<void>;
   fetchEnrollments: (workflowId: string) => Promise<void>;
   pauseEnrollment: (enrollmentId: string) => Promise<void>;
   resumeEnrollment: (enrollmentId: string) => Promise<void>;
@@ -132,11 +113,25 @@ function updateEnrollmentState(
   }
 
   const next = [...enrollments];
-  next[index] = enrollment;
+  next[index] = { ...next[index], ...enrollment };
   return next;
 }
 
-export const useWorkflowStore = create<WorkflowState>((set, get) => ({
+function updateStepState(
+  steps: WorkflowStep[],
+  step: WorkflowStep
+): WorkflowStep[] {
+  const index = steps.findIndex((item) => item.id === step.id);
+  if (index === -1) {
+    return [...steps, step];
+  }
+
+  const next = [...steps];
+  next[index] = step;
+  return next;
+}
+
+export const useWorkflowsStore = create<WorkflowsState>((set, get) => ({
   workflows: [],
   currentWorkflow: null,
   enrollments: [],
@@ -147,10 +142,7 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const response = await apiClient.get<Workflow[]>("/workflows");
-      set({
-        workflows: response.data || [],
-        isLoading: false,
-      });
+      set({ workflows: response.data || [], isLoading: false });
     } catch (error) {
       set({ error: (error as Error).message, isLoading: false });
     }
@@ -227,12 +219,11 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
   },
 
   activateWorkflow: async (id) => {
-    const response = await apiClient.patch<Workflow>(
-      `/workflows/${id}/activate`
-    );
+    const response = await apiClient.patch<Workflow>(`/workflows/${id}/activate`);
     const workflow = response.data as Workflow;
     set({
-      currentWorkflow: workflow,
+      currentWorkflow:
+        get().currentWorkflow?.id === id ? workflow : get().currentWorkflow,
       workflows: upsertWorkflow(get().workflows, workflow),
     });
     return workflow;
@@ -242,102 +233,76 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
     const response = await apiClient.patch<Workflow>(`/workflows/${id}/pause`);
     const workflow = response.data as Workflow;
     set({
-      currentWorkflow: workflow,
+      currentWorkflow:
+        get().currentWorkflow?.id === id ? workflow : get().currentWorkflow,
       workflows: upsertWorkflow(get().workflows, workflow),
     });
     return workflow;
   },
 
-  createStep: async (workflowId, step) => {
+  createStep: async (workflowId, data) => {
     const response = await apiClient.post<WorkflowStep>(
       `/workflows/${workflowId}/steps`,
-      step
+      data
     );
-    return response.data as WorkflowStep;
+    const step = response.data as WorkflowStep;
+    const currentWorkflow = get().currentWorkflow;
+    if (currentWorkflow?.id === workflowId) {
+      set({
+        currentWorkflow: {
+          ...currentWorkflow,
+          steps: updateStepState(currentWorkflow.steps, step),
+        },
+      });
+    }
+    return step;
   },
 
-  updateStep: async (stepId, step) => {
+  updateStep: async (stepId, data) => {
     const response = await apiClient.put<WorkflowStep>(
       `/workflow-steps/${stepId}`,
-      step
+      data
     );
-    return response.data as WorkflowStep;
+    const step = response.data as WorkflowStep;
+    const currentWorkflow = get().currentWorkflow;
+    if (currentWorkflow) {
+      set({
+        currentWorkflow: {
+          ...currentWorkflow,
+          steps: updateStepState(currentWorkflow.steps, step),
+        },
+      });
+    }
+    return step;
   },
 
   deleteStep: async (stepId) => {
     await apiClient.delete(`/workflow-steps/${stepId}`);
-  },
-
-  saveWorkflowGraph: async (workflowId, steps, entryStepId) => {
-    const current = get().currentWorkflow;
-    const existing = new Map(
-      (current?.steps || []).map((step) => [step.id, step])
-    );
-    const nextIds = new Set(steps.map((step) => step.id).filter(Boolean));
-
-    for (const currentStep of current?.steps || []) {
-      if (currentStep.id && !nextIds.has(currentStep.id)) {
-        await get().deleteStep(currentStep.id);
-      }
-    }
-
-    const idMap = new Map<string, string>();
-    for (const step of steps) {
-      if (step.id) {
-        idMap.set(step.id, step.id);
-        continue;
-      }
-      const clientTempId = `temp-${Math.random().toString(36).slice(2)}`;
-      const created = await get().createStep(workflowId, {
-        ...step,
-        next_step_id: null,
-        else_step_id: null,
+    const currentWorkflow = get().currentWorkflow;
+    if (currentWorkflow) {
+      set({
+        currentWorkflow: {
+          ...currentWorkflow,
+          steps: currentWorkflow.steps.filter((step) => step.id !== stepId),
+        },
       });
-      if (created.id) {
-        idMap.set(clientTempId, created.id);
-        step.id = created.id;
-      }
     }
-
-    for (const step of steps) {
-      const persistedId = step.id || "";
-      const payload: WorkflowStep = {
-        ...step,
-        next_step_id:
-          steps.find((candidate) => candidate.id === step.next_step_id)?.id ||
-          step.next_step_id ||
-          null,
-        else_step_id:
-          steps.find((candidate) => candidate.id === step.else_step_id)?.id ||
-          step.else_step_id ||
-          null,
-      };
-
-      if (!persistedId) {
-        continue;
-      }
-
-      if (!existing.has(persistedId)) {
-        await get().updateStep(persistedId, payload);
-        continue;
-      }
-
-      await get().updateStep(persistedId, payload);
-    }
-
-    await get().updateWorkflow(workflowId, {
-      entry_step_id: entryStepId || steps[0]?.id || null,
-    });
-    await get().fetchWorkflow(workflowId);
   },
 
   fetchEnrollments: async (workflowId) => {
-    const response = await apiClient.get<{
-      data: WorkflowEnrollment[];
-    }>(`/workflows/${workflowId}/enrollments`);
-
-    const payload = response.data as unknown as { data?: WorkflowEnrollment[] };
-    set({ enrollments: payload.data || [] });
+    set({ isLoading: true, error: null });
+    try {
+      const response = await apiClient.get<{ data: WorkflowEnrollment[] }>(
+        `/workflows/${workflowId}/enrollments`
+      );
+      set({
+        enrollments: response.data?.data || [],
+        isLoading: false,
+      });
+    } catch (error) {
+      set({ error: (error as Error).message, isLoading: false });
+      throw error;
+    }
   },
 
   pauseEnrollment: async (enrollmentId) => {
@@ -376,3 +341,5 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
     });
   },
 }));
+
+export const useWorkflowStore = useWorkflowsStore;

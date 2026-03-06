@@ -5,10 +5,10 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { useWorkflowStore } from "@/lib/stores/workflows";
+import { useWorkflowsStore } from "@/lib/stores/workflows";
 
 export default function WorkflowsPage() {
-  const { workflows, fetchWorkflows, isLoading } = useWorkflowStore();
+  const { workflows, fetchWorkflows, isLoading } = useWorkflowsStore();
 
   useEffect(() => {
     fetchWorkflows().catch(() => undefined);
@@ -18,7 +18,7 @@ export default function WorkflowsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between gap-3">
         <div>
-          <h1 className="text-3xl font-bold">Workflows</h1>
+          <h1 className="text-3xl font-bold">Workflow automations</h1>
           <p className="text-sm text-muted-foreground">
             Multi-step automations with triggers, waits and conditions.
           </p>
@@ -30,13 +30,15 @@ export default function WorkflowsPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Workflow catalog</CardTitle>
+          <CardTitle>Workflows</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           {isLoading && workflows.length === 0 ? (
             <p className="text-sm text-muted-foreground">Loading...</p>
           ) : workflows.length === 0 ? (
-            <p className="text-sm text-muted-foreground">No workflows yet.</p>
+            <p className="text-sm text-muted-foreground">
+              No workflows yet.
+            </p>
           ) : (
             workflows.map((workflow) => (
               <div
@@ -53,14 +55,10 @@ export default function WorkflowsPage() {
                   <p className="text-sm text-muted-foreground">
                     Trigger: {workflow.trigger_type} • Steps:{" "}
                     {workflow.steps.length} • Active enrollments:{" "}
-                    {workflow.analytics?.active_enrollments || 0}
+                    {workflow.active_enrollments_count || 0}
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    Completion rate:{" "}
-                    {Number(workflow.analytics?.completion_rate || 0).toFixed(
-                      2
-                    )}
-                    %
+                    Completion rate: {Number(workflow.completion_rate || 0).toFixed(2)}%
                   </p>
                 </div>
                 <Badge variant="secondary">{workflow.status}</Badge>
