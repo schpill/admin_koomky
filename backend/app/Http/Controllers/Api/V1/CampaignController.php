@@ -287,7 +287,9 @@ class CampaignController extends Controller
             'ab_winner_criteria' => 'manual',
         ]);
 
-        return $this->success($campaign->fresh()->load(['variants', 'winnerVariant']), 'A/B winner selected successfully');
+        $campaign->load(['variants', 'winnerVariant']);
+
+        return $this->success($campaign, 'A/B winner selected successfully');
     }
 
     /**

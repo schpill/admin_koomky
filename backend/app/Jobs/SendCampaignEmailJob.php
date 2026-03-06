@@ -43,9 +43,13 @@ class SendCampaignEmailJob implements ShouldQueue
         }
 
         $variant = $recipient->variant;
+        $rawSubject = $campaign->subject ?? '';
+        $rawBody = $campaign->content;
 
-        $rawSubject = $variant?->subject ?? $campaign->subject ?? '';
-        $rawBody = $variant?->content ?? $campaign->content;
+        if ($variant !== null) {
+            $rawSubject = $variant->subject ?? $rawSubject;
+            $rawBody = $variant->content ?? $rawBody;
+        }
 
         $subject = $personalizationService->render((string) $rawSubject, $contact);
         $body = $personalizationService->render((string) $rawBody, $contact);

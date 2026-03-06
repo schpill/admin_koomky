@@ -12,7 +12,7 @@ class PersonalizationService
         $baseVariables = [
             '{{first_name}}' => e((string) $contact->first_name),
             '{{last_name}}' => e((string) ($contact->last_name ?? '')),
-            '{{company}}' => e((string) ($client?->name ?? '')),
+            '{{company}}' => e($client !== null ? (string) $client->name : ''),
             '{{email}}' => e((string) ($contact->email ?? '')),
             '{{phone}}' => e((string) ($contact->phone ?? '')),
         ];

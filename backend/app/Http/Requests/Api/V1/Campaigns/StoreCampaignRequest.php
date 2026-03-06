@@ -116,9 +116,6 @@ class StoreCampaignRequest extends FormRequest
                 $validator->errors()->add('variants', 'The sum of variants send_percent must equal 100.');
             }
 
-            if ($type !== 'email') {
-                $validator->errors()->add('is_ab_test', 'A/B testing is only available for email campaigns.');
-            }
         });
     }
 }
