@@ -16,7 +16,9 @@ interface AbTestConfigProps {
     value: string | number
   ) => void;
   winnerCriteria: "open_rate" | "click_rate" | "manual";
-  onWinnerCriteriaChange: (value: "open_rate" | "click_rate" | "manual") => void;
+  onWinnerCriteriaChange: (
+    value: "open_rate" | "click_rate" | "manual"
+  ) => void;
   autoSelectAfterHours: number | null;
   onAutoSelectAfterHoursChange: (value: number | null) => void;
   onFocusField?: (fieldId: string) => void;
@@ -33,8 +35,10 @@ export function AbTestConfig({
   onAutoSelectAfterHoursChange,
   onFocusField,
 }: AbTestConfigProps) {
-  const variantA = variants.find((variant) => variant.label === "A") || variants[0];
-  const variantB = variants.find((variant) => variant.label === "B") || variants[1];
+  const variantA =
+    variants.find((variant) => variant.label === "A") || variants[0];
+  const variantB =
+    variants.find((variant) => variant.label === "B") || variants[1];
 
   const splitA = Number(variantA?.send_percent || 50);
   const splitB = Number(variantB?.send_percent || 50);
@@ -59,14 +63,23 @@ export function AbTestConfig({
           <>
             <div className="grid gap-4 md:grid-cols-2">
               {[variantA, variantB].map((variant) => (
-                <div key={variant?.label} className="space-y-2 rounded-md border p-3">
-                  <p className="text-sm font-semibold">Variante {variant?.label}</p>
+                <div
+                  key={variant?.label}
+                  className="space-y-2 rounded-md border p-3"
+                >
+                  <p className="text-sm font-semibold">
+                    Variante {variant?.label}
+                  </p>
                   <div className="space-y-1">
-                    <Label htmlFor={`variant-subject-${variant?.label}`}>Sujet</Label>
+                    <Label htmlFor={`variant-subject-${variant?.label}`}>
+                      Sujet
+                    </Label>
                     <Input
                       id={`variant-subject-${variant?.label}`}
                       value={variant?.subject || ""}
-                      onFocus={() => onFocusField?.(`variant-${variant?.label}-subject`)}
+                      onFocus={() =>
+                        onFocusField?.(`variant-${variant?.label}-subject`)
+                      }
                       onChange={(event) =>
                         onChangeVariant(
                           (variant?.label || "A") as "A" | "B",
@@ -77,12 +90,16 @@ export function AbTestConfig({
                     />
                   </div>
                   <div className="space-y-1">
-                    <Label htmlFor={`variant-content-${variant?.label}`}>Contenu</Label>
+                    <Label htmlFor={`variant-content-${variant?.label}`}>
+                      Contenu
+                    </Label>
                     <Textarea
                       id={`variant-content-${variant?.label}`}
                       rows={6}
                       value={variant?.content || ""}
-                      onFocus={() => onFocusField?.(`variant-${variant?.label}-content`)}
+                      onFocus={() =>
+                        onFocusField?.(`variant-${variant?.label}-content`)
+                      }
                       onChange={(event) =>
                         onChangeVariant(
                           (variant?.label || "A") as "A" | "B",
@@ -106,7 +123,11 @@ export function AbTestConfig({
                   max={99}
                   value={splitA}
                   onChange={(event) =>
-                    onChangeVariant("A", "send_percent", Number(event.target.value || 0))
+                    onChangeVariant(
+                      "A",
+                      "send_percent",
+                      Number(event.target.value || 0)
+                    )
                   }
                 />
               </div>
@@ -119,14 +140,21 @@ export function AbTestConfig({
                   max={99}
                   value={splitB}
                   onChange={(event) =>
-                    onChangeVariant("B", "send_percent", Number(event.target.value || 0))
+                    onChangeVariant(
+                      "B",
+                      "send_percent",
+                      Number(event.target.value || 0)
+                    )
                   }
                 />
               </div>
             </div>
 
-            <p className={`text-sm ${splitValid ? "text-muted-foreground" : "text-red-600"}`}>
-              Total split: {splitA + splitB}% {splitValid ? "" : "(doit être égal à 100%)"}
+            <p
+              className={`text-sm ${splitValid ? "text-muted-foreground" : "text-red-600"}`}
+            >
+              Total split: {splitA + splitB}%{" "}
+              {splitValid ? "" : "(doit être égal à 100%)"}
             </p>
 
             <div className="space-y-1">
@@ -159,7 +187,9 @@ export function AbTestConfig({
                   max={72}
                   value={autoSelectAfterHours ?? 24}
                   onChange={(event) =>
-                    onAutoSelectAfterHoursChange(Number(event.target.value || 0))
+                    onAutoSelectAfterHoursChange(
+                      Number(event.target.value || 0)
+                    )
                   }
                 />
               </div>

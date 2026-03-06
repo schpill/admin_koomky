@@ -3,7 +3,10 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { Campaign, CampaignAbVariantAnalytics } from "@/lib/stores/campaigns";
+import type {
+  Campaign,
+  CampaignAbVariantAnalytics,
+} from "@/lib/stores/campaigns";
 
 interface AbTestResultsProps {
   campaign: Campaign;
@@ -36,8 +39,12 @@ export function AbTestResults({
             </div>
             <div className="grid gap-2 text-sm md:grid-cols-3">
               <p>Envoyés: {variant.sent_count}</p>
-              <p>Ouverts: {variant.open_count} ({variant.open_rate}%)</p>
-              <p>Clics: {variant.click_count} ({variant.click_rate}%)</p>
+              <p>
+                Ouverts: {variant.open_count} ({variant.open_rate}%)
+              </p>
+              <p>
+                Clics: {variant.click_count} ({variant.click_rate}%)
+              </p>
             </div>
 
             {campaign.ab_winner_criteria === "manual" &&

@@ -152,7 +152,11 @@ export function TestSendModal({
 
           {error ? <p className="text-xs text-red-600">{error}</p> : null}
 
-          <Button type="button" onClick={submit} disabled={!canSubmit || isSubmitting}>
+          <Button
+            type="button"
+            onClick={submit}
+            disabled={!canSubmit || isSubmitting}
+          >
             {isSubmitting ? "Sending..." : "Send"}
           </Button>
         </div>

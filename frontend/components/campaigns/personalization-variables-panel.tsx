@@ -52,7 +52,9 @@ export function PersonalizationVariablesPanel({
           >
             <div>
               <p className="text-sm font-medium">{item.token}</p>
-              <p className="text-xs text-muted-foreground">{item.description}</p>
+              <p className="text-xs text-muted-foreground">
+                {item.description}
+              </p>
             </div>
             <div className="flex gap-2">
               <Button
@@ -64,7 +66,11 @@ export function PersonalizationVariablesPanel({
                 Copier
               </Button>
               {onInsert ? (
-                <Button type="button" size="sm" onClick={() => onInsert(item.token)}>
+                <Button
+                  type="button"
+                  size="sm"
+                  onClick={() => onInsert(item.token)}
+                >
                   Insérer
                 </Button>
               ) : null}

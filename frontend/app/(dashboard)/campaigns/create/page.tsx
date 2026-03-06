@@ -95,9 +95,9 @@ export default function CreateCampaignPage() {
   const [winnerCriteria, setWinnerCriteria] = useState<
     "open_rate" | "click_rate" | "manual"
   >("open_rate");
-  const [autoSelectAfterHours, setAutoSelectAfterHours] = useState<number | null>(
-    24
-  );
+  const [autoSelectAfterHours, setAutoSelectAfterHours] = useState<
+    number | null
+  >(24);
   const [activeField, setActiveField] = useState<string | null>(null);
 
   useEffect(() => {
@@ -221,12 +221,20 @@ export default function CreateCampaignPage() {
     }
 
     if (activeField.startsWith("variant-A-subject")) {
-      updateVariant("A", "subject", `${previewVariantA?.subject || ""}${token}`);
+      updateVariant(
+        "A",
+        "subject",
+        `${previewVariantA?.subject || ""}${token}`
+      );
       return;
     }
 
     if (activeField.startsWith("variant-A-content")) {
-      updateVariant("A", "content", `${previewVariantA?.content || ""}${token}`);
+      updateVariant(
+        "A",
+        "content",
+        `${previewVariantA?.content || ""}${token}`
+      );
       return;
     }
 
@@ -419,7 +427,9 @@ export default function CreateCampaignPage() {
                     </>
                   ) : null}
                 </div>
-                <PersonalizationVariablesPanel onInsert={handleInsertVariable} />
+                <PersonalizationVariablesPanel
+                  onInsert={handleInsertVariable}
+                />
               </div>
             ) : (
               <SmsComposer value={content} onChange={setContent} />

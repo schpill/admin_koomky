@@ -62,7 +62,9 @@ describe("AbTestResults", () => {
       />
     );
 
-    fireEvent.click(screen.getByRole("button", { name: "Sélectionner comme gagnant" }));
+    fireEvent.click(
+      screen.getByRole("button", { name: "Sélectionner comme gagnant" })
+    );
     expect(onSelectWinner).toHaveBeenCalledWith("A");
   });
 });
