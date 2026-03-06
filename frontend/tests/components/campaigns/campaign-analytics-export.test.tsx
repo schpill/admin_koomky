@@ -56,7 +56,9 @@ describe("CampaignAnalyticsPage", () => {
       createTemplate: vi.fn(),
       updateTemplate: vi.fn(),
       deleteTemplate: vi.fn(),
-      fetchCampaignAnalytics: vi.fn().mockResolvedValue({ campaign_id: "camp_1" }),
+      fetchCampaignAnalytics: vi
+        .fn()
+        .mockResolvedValue({ campaign_id: "camp_1" }),
       compareCampaigns: vi.fn(),
       updateEmailSettings: vi.fn(),
       updateSmsSettings: vi.fn(),
@@ -80,19 +82,19 @@ describe("CampaignAnalyticsPage", () => {
       value: vi.fn(),
     });
     const originalCreateElement = document.createElement.bind(document);
-    vi.spyOn(document, "createElement").mockImplementation(
-      ((tagName: string) => {
-        if (tagName.toLowerCase() === "a") {
-          return {
-            click: vi.fn(),
-            set href(_value: string) {},
-            set download(_value: string) {},
-          } as unknown as HTMLElement;
-        }
+    vi.spyOn(document, "createElement").mockImplementation(((
+      tagName: string
+    ) => {
+      if (tagName.toLowerCase() === "a") {
+        return {
+          click: vi.fn(),
+          set href(_value: string) {},
+          set download(_value: string) {},
+        } as unknown as HTMLElement;
+      }
 
-        return originalCreateElement(tagName);
-      }) as typeof document.createElement
-    );
+      return originalCreateElement(tagName);
+    }) as typeof document.createElement);
   });
 
   it("renders export buttons and calls the report export endpoints", async () => {

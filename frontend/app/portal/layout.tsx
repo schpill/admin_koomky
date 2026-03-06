@@ -91,7 +91,12 @@ export default function PortalLayout({
     return () => {
       cancelled = true;
     };
-  }, [isAuthRoute, isSignedPreferenceRoute, session?.portal_token, sessionExpiresAt]);
+  }, [
+    isAuthRoute,
+    isSignedPreferenceRoute,
+    session?.portal_token,
+    sessionExpiresAt,
+  ]);
 
   useEffect(() => {
     if (isAuthRoute || isSignedPreferenceRoute || !session?.portal_token) {

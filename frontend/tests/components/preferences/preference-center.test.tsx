@@ -24,7 +24,9 @@ describe("PreferenceCenterForm", () => {
     });
 
     await act(async () => {
-      fireEvent.click(screen.getByRole("button", { name: /save preferences/i }));
+      fireEvent.click(
+        screen.getByRole("button", { name: /save preferences/i })
+      );
     });
 
     expect(onSubmit).toHaveBeenCalledWith([

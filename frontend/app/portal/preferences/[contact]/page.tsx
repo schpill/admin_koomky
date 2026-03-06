@@ -66,7 +66,9 @@ export default function PortalPreferenceCenterPage() {
   }, [cacheKey, params.contact, searchParams]);
 
   if (!payload) {
-    return <p className="text-sm text-muted-foreground">Loading preferences...</p>;
+    return (
+      <p className="text-sm text-muted-foreground">Loading preferences...</p>
+    );
   }
 
   return (
