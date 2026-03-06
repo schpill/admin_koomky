@@ -1,6 +1,6 @@
 # Phase 15 — Task Tracking
 
-> **Status**: todo
+> **Status**: merged
 > **Prerequisite**: Phase 14 fully merged and tagged `v2.0.0`
 > **Spec**: [docs/phases/phase15.md](../phases/phase15.md)
 

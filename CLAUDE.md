@@ -12,6 +12,7 @@ Koomky is a self-hosted Freelance CRM built as a monorepo:
 
 ## Current Implementation Snapshot
 
+- **Phase 15 closed & merged to `main`** — Branch `apex-omega/15-phase15-full` (merged 2026-03-06) delivers email campaign enhancements (v2.1.0): test multi-destinataires (1–5 emails), personnalisation avec contact fictif (`renderPreview()`), déduplication destinataires par email (`firstOrCreate` + contrainte unique DB), A/B Testing complet (variants A/B, split aléatoire, sélection auto/manuelle du gagnant, analytics par variante), GDPR export variants, widget dashboard "A/B Tests actifs".
 - **Phase 12 closed & merged to `main`** — PR #24 (`feat/phase12-reminders`, merged 2026-02-27) delivers the full automatic reminder sequences scope (v1.8.0): configurable sequences, Artisan scheduler, ReminderMail with variable interpolation, per-invoice lifecycle (pause/resume/skip/cancel), GDPR export, webhook `invoice.reminder_sent`, dashboard widget.
 - **Phase 11 closed & merged to `main`** — PR #23 (`feature/phase-11-product-catalog-ai-campaigns`, merged 2026-02-27) delivers the full product catalog + AI campaign generation scope (v1.7.0), including backend/frontend test completion and CI hardening fixes.
 - **Phase 10 closed & merged to `main`** — PR #22 (`feature/phase-10-rag-mcp`, merged 2026-02-25) delivers the full RAG pipeline + MCP server (v1.6.0).

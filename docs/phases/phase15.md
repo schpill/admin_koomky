@@ -8,7 +8,7 @@
 | **Milestone**       | M15 — v2.1.0 Release                                        |
 | **PRD Sections**    | §4.22 FR-TEST (nouveau), §4.23 FR-VARS (nouveau), §4.24 FR-DEDUP (nouveau), §4.25 FR-AB (nouveau) |
 | **Prerequisite**    | Phase 14 fully completed and tagged `v2.0.0`                 |
-| **Status**          | todo                                                         |
+| **Status**          | merged                                                       |
 
 ---
 
