@@ -43,45 +43,59 @@ export function WorkflowEnrollmentsTable({
         </TableRow>
       </TableHeader>
       <TableBody>
-        {enrollments.map((enrollment) => (
-          <TableRow key={enrollment.id}>
-            <TableCell>{contactName(enrollment)}</TableCell>
-            <TableCell>{enrollment.status}</TableCell>
-            <TableCell>
-              {enrollment.current_step?.type || "Completed"}
-            </TableCell>
-            <TableCell>{enrollment.enrolled_at || "-"}</TableCell>
-            <TableCell className="flex gap-2">
-              {enrollment.status === "paused" ? (
+        {enrollments.map((enrollment) => {
+          const label = contactName(enrollment);
+
+          return (
+            <TableRow key={enrollment.id}>
+              <TableCell>
+                <div className="space-y-1">
+                  <p>{label}</p>
+                  {enrollment.contact?.email ? (
+                    <p className="text-xs text-muted-foreground">
+                      {enrollment.contact.email}
+                    </p>
+                  ) : null}
+                </div>
+              </TableCell>
+              <TableCell>{enrollment.status}</TableCell>
+              <TableCell>{enrollment.current_step?.type || "Completed"}</TableCell>
+              <TableCell>{enrollment.enrolled_at || "-"}</TableCell>
+              <TableCell className="flex gap-2">
+                {enrollment.status === "paused" ? (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    aria-label={`Resume ${label}`}
+                    onClick={() => onResume(enrollment.id)}
+                  >
+                    Resume
+                  </Button>
+                ) : (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    aria-label={`Pause ${label}`}
+                    onClick={() => onPause(enrollment.id)}
+                  >
+                    Pause
+                  </Button>
+                )}
                 <Button
                   type="button"
-                  variant="outline"
+                  variant="destructive"
                   size="sm"
-                  onClick={() => onResume(enrollment.id)}
+                  aria-label={`Cancel ${label}`}
+                  onClick={() => onCancel(enrollment.id)}
                 >
-                  Resume
+                  Cancel
                 </Button>
-              ) : (
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => onPause(enrollment.id)}
-                >
-                  Pause
-                </Button>
-              )}
-              <Button
-                type="button"
-                variant="destructive"
-                size="sm"
-                onClick={() => onCancel(enrollment.id)}
-              >
-                Cancel
-              </Button>
-            </TableCell>
-          </TableRow>
-        ))}
+              </TableCell>
+            </TableRow>
+          );
+        })}
       </TableBody>
     </Table>
   );

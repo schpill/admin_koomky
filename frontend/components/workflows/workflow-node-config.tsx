@@ -8,11 +8,15 @@ import type { WorkflowStep } from "@/lib/stores/workflows";
 interface WorkflowNodeConfigProps {
   step: WorkflowStep | null;
   onChange: (next: WorkflowStep) => void;
+  onClose?: () => void;
 }
+
+export type { WorkflowStep };
 
 export function WorkflowNodeConfig({
   step,
   onChange,
+  onClose,
 }: WorkflowNodeConfigProps) {
   if (!step) {
     return (
@@ -36,9 +40,20 @@ export function WorkflowNodeConfig({
 
   return (
     <div className="space-y-4 rounded-lg border p-4">
-      <div>
-        <p className="text-sm font-medium">Node type</p>
-        <p className="text-sm text-muted-foreground">{step.type}</p>
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <p className="text-sm font-medium">Node type</p>
+          <p className="text-sm text-muted-foreground">{step.type}</p>
+        </div>
+        {onClose ? (
+          <button
+            type="button"
+            className="text-xs text-muted-foreground hover:text-foreground"
+            onClick={onClose}
+          >
+            Close
+          </button>
+        ) : null}
       </div>
 
       {step.type === "send_email" ? (
@@ -47,21 +62,19 @@ export function WorkflowNodeConfig({
             <Label htmlFor="workflow-step-subject">Subject</Label>
             <Input
               id="workflow-step-subject"
+              aria-label="Subject"
               value={String(config.subject || "")}
-              onChange={(event) =>
-                updateConfig({ subject: event.target.value })
-              }
+              onChange={(event) => updateConfig({ subject: event.target.value })}
             />
           </div>
           <div className="space-y-2">
             <Label htmlFor="workflow-step-content">Content</Label>
             <Textarea
               id="workflow-step-content"
+              aria-label="Content"
               value={String(config.content || "")}
               rows={6}
-              onChange={(event) =>
-                updateConfig({ content: event.target.value })
-              }
+              onChange={(event) => updateConfig({ content: event.target.value })}
             />
           </div>
         </>
@@ -73,6 +86,7 @@ export function WorkflowNodeConfig({
             <Label htmlFor="workflow-step-duration">Duration</Label>
             <Input
               id="workflow-step-duration"
+              aria-label="Duration"
               type="number"
               min={0}
               value={Number(config.duration || 0)}
@@ -85,6 +99,7 @@ export function WorkflowNodeConfig({
             <Label htmlFor="workflow-step-unit">Unit</Label>
             <select
               id="workflow-step-unit"
+              aria-label="Unit"
               className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
               value={String(config.unit || "hours")}
               onChange={(event) => updateConfig({ unit: event.target.value })}
@@ -99,9 +114,10 @@ export function WorkflowNodeConfig({
       {step.type === "condition" ? (
         <div className="grid gap-4">
           <div className="space-y-2">
-            <Label htmlFor="workflow-step-attribute">Attribute</Label>
+            <Label htmlFor="workflow-attribute">Attribute</Label>
             <Input
-              id="workflow-step-attribute"
+              id="workflow-attribute"
+              aria-label="Attribute"
               value={String(config.attribute || "")}
               onChange={(event) =>
                 updateConfig({ attribute: event.target.value })
@@ -109,28 +125,25 @@ export function WorkflowNodeConfig({
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="workflow-step-operator">Operator</Label>
+            <Label htmlFor="workflow-operator">Operator</Label>
             <select
-              id="workflow-step-operator"
+              id="workflow-operator"
+              aria-label="Operator"
               className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-              value={String(config.operator || "eq")}
-              onChange={(event) =>
-                updateConfig({ operator: event.target.value })
-              }
+              value={String(config.operator || "equals")}
+              onChange={(event) => updateConfig({ operator: event.target.value })}
             >
-              <option value="eq">Equals</option>
-              <option value="neq">Not equal</option>
-              <option value="gt">Greater than</option>
-              <option value="gte">Greater or equal</option>
-              <option value="lt">Lower than</option>
-              <option value="lte">Lower or equal</option>
+              <option value="equals">Equals</option>
+              <option value="gte">Greater than or equal</option>
+              <option value="lte">Less than or equal</option>
               <option value="contains">Contains</option>
             </select>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="workflow-step-value">Value</Label>
+            <Label htmlFor="workflow-value">Value</Label>
             <Input
-              id="workflow-step-value"
+              id="workflow-value"
+              aria-label="Value"
               value={String(config.value || "")}
               onChange={(event) => updateConfig({ value: event.target.value })}
             />
@@ -140,11 +153,12 @@ export function WorkflowNodeConfig({
 
       {step.type === "update_score" ? (
         <div className="space-y-2">
-          <Label htmlFor="workflow-step-delta">Score delta</Label>
+          <Label htmlFor="workflow-delta">Score delta</Label>
           <Input
-            id="workflow-step-delta"
+            id="workflow-delta"
+            aria-label="Score delta"
             type="number"
-            value={Number(config.delta || 0)}
+            value={String(config.delta || 0)}
             onChange={(event) =>
               updateConfig({ delta: Number(event.target.value || 0) })
             }
@@ -152,49 +166,22 @@ export function WorkflowNodeConfig({
         </div>
       ) : null}
 
-      {["add_tag", "remove_tag"].includes(step.type) ? (
+      {step.type === "add_tag" || step.type === "remove_tag" ? (
         <div className="space-y-2">
-          <Label htmlFor="workflow-step-tag">Tag</Label>
+          <Label htmlFor="workflow-tag">Tag</Label>
           <Input
-            id="workflow-step-tag"
+            id="workflow-tag"
+            aria-label="Tag"
             value={String(config.tag || "")}
             onChange={(event) => updateConfig({ tag: event.target.value })}
           />
         </div>
       ) : null}
 
-      {step.type === "update_field" ? (
-        <div className="grid gap-4 md:grid-cols-2">
-          <div className="space-y-2">
-            <Label htmlFor="workflow-step-field">Field</Label>
-            <Input
-              id="workflow-step-field"
-              value={String(config.field || "")}
-              onChange={(event) => updateConfig({ field: event.target.value })}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="workflow-step-field-value">Value</Label>
-            <Input
-              id="workflow-step-field-value"
-              value={String(config.value || "")}
-              onChange={(event) => updateConfig({ value: event.target.value })}
-            />
-          </div>
-        </div>
-      ) : null}
-
-      {step.type === "enroll_drip" ? (
-        <div className="space-y-2">
-          <Label htmlFor="workflow-step-sequence">Drip sequence ID</Label>
-          <Input
-            id="workflow-step-sequence"
-            value={String(config.sequence_id || "")}
-            onChange={(event) =>
-              updateConfig({ sequence_id: event.target.value })
-            }
-          />
-        </div>
+      {step.type === "end" ? (
+        <p className="text-sm text-muted-foreground">
+          This node completes the workflow.
+        </p>
       ) : null}
     </div>
   );
