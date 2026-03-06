@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Models\Campaign;
 use App\Models\CampaignLinkClick;
 use App\Models\CampaignRecipient;
-use Carbon\CarbonInterface;
 use Illuminate\Support\Collection;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -19,9 +18,7 @@ class CampaignReportService
     public function getFullReport(Campaign $campaign): array
     {
         $analytics = $this->campaignAnalyticsService->forCampaign($campaign);
-        /** @var Collection<int, CampaignRecipient> $recipients */
         $recipients = $campaign->recipients()->orderBy('created_at')->get();
-        /** @var Collection<int, CampaignLinkClick> $clicks */
         $clicks = CampaignLinkClick::query()
             ->where('campaign_id', $campaign->id)
             ->orderBy('clicked_at')
@@ -46,13 +43,13 @@ class CampaignReportService
             'links' => $this->campaignAnalyticsService->getLinkStats($campaign)->values()->all(),
             'timeline' => $this->buildTimeline($recipients, $clicks),
             'recipients' => $recipients->map(fn (CampaignRecipient $recipient): array => [
-                'date' => $recipient->sent_at?->toDateString() ?? $recipient->created_at?->toDateString(),
+                'date' => $this->dateString($recipient->sent_at) ?? $this->dateString($recipient->created_at),
                 'email' => $recipient->email,
                 'status' => $recipient->status,
-                'opened_at' => $recipient->opened_at?->toIso8601String(),
-                'clicked_at' => $recipient->clicked_at?->toIso8601String(),
+                'opened_at' => $this->isoString($recipient->opened_at),
+                'clicked_at' => $this->isoString($recipient->clicked_at),
                 'bounce_type' => $recipient->bounce_type,
-                'unsubscribed_at' => $recipient->status === 'unsubscribed' ? $recipient->updated_at?->toIso8601String() : null,
+                'unsubscribed_at' => $recipient->status === 'unsubscribed' ? $this->isoString($recipient->updated_at) : null,
             ])->values()->all(),
         ];
     }
@@ -103,25 +100,34 @@ class CampaignReportService
     }
 
     /**
-     * @param  Collection<int, CampaignRecipient>  $recipients
-     * @param  Collection<int, CampaignLinkClick>  $clicks
+     * @param  Collection<int, mixed>  $recipients
+     * @param  Collection<int, mixed>  $clicks
      * @return array<int, array{date:string,opens:int,clicks:int}>
      */
     private function buildTimeline(Collection $recipients, Collection $clicks): array
     {
+        /** @var array<string, array{date:string,opens:int,clicks:int}> $timeline */
         $timeline = [];
 
         foreach ($recipients as $recipient) {
-            if ($recipient->opened_at instanceof CarbonInterface) {
-                $date = $recipient->opened_at->toDateString();
+            if (! $recipient instanceof CampaignRecipient) {
+                continue;
+            }
+
+            $date = $this->dateString($recipient->opened_at);
+            if ($date !== null) {
                 $timeline[$date] ??= ['date' => $date, 'opens' => 0, 'clicks' => 0];
                 $timeline[$date]['opens']++;
             }
         }
 
         foreach ($clicks as $click) {
-            if ($click->clicked_at instanceof CarbonInterface) {
-                $date = $click->clicked_at->toDateString();
+            if (! $click instanceof CampaignLinkClick) {
+                continue;
+            }
+
+            $date = $this->dateString($click->clicked_at);
+            if ($date !== null) {
                 $timeline[$date] ??= ['date' => $date, 'opens' => 0, 'clicks' => 0];
                 $timeline[$date]['clicks']++;
             }
@@ -130,6 +136,24 @@ class CampaignReportService
         ksort($timeline);
 
         return array_values($timeline);
+    }
+
+    private function dateString(mixed $value): ?string
+    {
+        if ($value instanceof \DateTimeInterface) {
+            return $value->format('Y-m-d');
+        }
+
+        return null;
+    }
+
+    private function isoString(mixed $value): ?string
+    {
+        if ($value instanceof \DateTimeInterface) {
+            return $value->format(\DateTimeInterface::ATOM);
+        }
+
+        return null;
     }
 
     private function renderSimplePdf(string $text): string

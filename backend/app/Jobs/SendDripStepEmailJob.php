@@ -60,7 +60,7 @@ class SendDripStepEmailJob implements ShouldQueue
             return;
         }
 
-        $emailCategory = (string) data_get($step->template?->settings, 'email_category', 'promotional');
+        $emailCategory = 'promotional';
         if (! $preferenceCenterService->isAllowed($contact, $emailCategory)) {
             $enrollment->update(['status' => 'cancelled']);
 

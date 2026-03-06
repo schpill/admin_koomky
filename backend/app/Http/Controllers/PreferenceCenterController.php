@@ -39,7 +39,10 @@ class PreferenceCenterController extends Controller
             'preferences.*.subscribed' => ['required', 'boolean'],
         ]);
 
-        foreach ($validated['preferences'] as $preference) {
+        /** @var array<int, array{category:string,subscribed:bool}> $preferences */
+        $preferences = $validated['preferences'];
+
+        foreach ($preferences as $preference) {
             $this->preferenceCenterService->updatePreference(
                 $contact,
                 (string) $preference['category'],
@@ -55,7 +58,10 @@ class PreferenceCenterController extends Controller
                 'description' => 'Communication preferences updated',
                 'metadata' => [
                     'contact_id' => $contact->id,
-                    'categories' => collect($validated['preferences'])->pluck('category')->values()->all(),
+                    'categories' => array_map(
+                        static fn (array $preference): string => $preference['category'],
+                        $preferences
+                    ),
                     'source' => 'preference_center',
                     'ip_address' => $request->ip(),
                 ],

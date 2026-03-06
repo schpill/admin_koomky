@@ -48,8 +48,8 @@ class DeliverabilityScoreService
 
         preg_match_all('/<img\b[^>]*>/i', $htmlContent, $images);
         preg_match_all('/<img\b[^>]*alt=/i', $htmlContent, $imagesWithAlt);
-        $imageCount = count($images[0] ?? []);
-        $imageWithAltCount = count($imagesWithAlt[0] ?? []);
+        $imageCount = count($images[0]);
+        $imageWithAltCount = count($imagesWithAlt[0]);
 
         if ($imageCount > 0 && $imageWithAltCount < $imageCount) {
             $score -= ($imageCount - $imageWithAltCount) * 2;
@@ -69,7 +69,7 @@ class DeliverabilityScoreService
         }
 
         preg_match_all('/href=["\']([^"\']+)["\']/i', $htmlContent, $links);
-        foreach ($links[1] ?? [] as $link) {
+        foreach ($links[1] as $link) {
             if (str_contains((string) $link, 'bit.ly') || str_contains((string) $link, 'tinyurl')) {
                 $score -= 15;
                 $issues[] = [
