@@ -66,4 +66,6 @@ test("workflow detail page renders a persisted workflow", async ({ page }) => {
   await expect(
     page.getByRole("heading", { name: "Lifecycle workflow" })
   ).toBeVisible();
+  await expect(page.getByTestId("workflow-builder-canvas")).toBeVisible();
+  await expect(page.getByText("Navigator")).toBeVisible();
 });

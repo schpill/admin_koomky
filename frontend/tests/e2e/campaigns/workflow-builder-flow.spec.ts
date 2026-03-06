@@ -28,4 +28,6 @@ test("workflow create page is reachable", async ({ page }) => {
   await expect(
     page.getByRole("heading", { name: "Create workflow" })
   ).toBeVisible();
+  await expect(page.getByTestId("workflow-builder-canvas")).toBeVisible();
+  await expect(page.getByText("Navigator")).toBeVisible();
 });
