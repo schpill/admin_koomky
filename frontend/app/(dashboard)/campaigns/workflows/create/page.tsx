@@ -3,29 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { WorkflowBuilder } from "@/components/workflows/workflow-builder";
-import {
-  useWorkflowsStore,
-  type Workflow,
-  type WorkflowStep,
-} from "@/lib/stores/workflows";
-
-function normalizeStep(
-  step: WorkflowStep,
-  idMap: Map<string, string>
-): Record<string, unknown> {
-  return {
-    type: step.type,
-    config: step.config || {},
-    next_step_id: step.next_step_id
-      ? idMap.get(step.next_step_id) || null
-      : null,
-    else_step_id: step.else_step_id
-      ? idMap.get(step.else_step_id) || null
-      : null,
-    position_x: step.position_x || 0,
-    position_y: step.position_y || 0,
-  };
-}
+import { normalizeWorkflowStepWithMap } from "@/components/workflows/workflow-step-persistence";
+import { useWorkflowsStore, type Workflow } from "@/lib/stores/workflows";
 
 export default function CreateWorkflowPage() {
   const router = useRouter();
@@ -63,7 +42,7 @@ export default function CreateWorkflowPage() {
     for (const step of workflow.steps) {
       const createdStep = await createStep(
         created.id,
-        normalizeStep(step, idMap)
+        normalizeWorkflowStepWithMap(step, idMap)
       );
       if (step.id && createdStep?.id) {
         idMap.set(step.id, createdStep.id);
@@ -73,7 +52,10 @@ export default function CreateWorkflowPage() {
     for (const step of workflow.steps) {
       const createdStepId = step.id ? idMap.get(step.id) : null;
       if (!createdStepId) continue;
-      await updateStep(createdStepId, normalizeStep(step, idMap));
+      await updateStep(
+        createdStepId,
+        normalizeWorkflowStepWithMap(step, idMap)
+      );
     }
 
     await updateWorkflow(created.id, {

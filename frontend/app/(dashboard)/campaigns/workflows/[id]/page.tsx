@@ -7,10 +7,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { WorkflowBuilder } from "@/components/workflows/workflow-builder";
 import { WorkflowEnrollmentsTable } from "@/components/workflows/workflow-enrollments-table";
 import {
-  useWorkflowsStore,
-  type Workflow,
-  type WorkflowStep,
-} from "@/lib/stores/workflows";
+  normalizeWorkflowStep,
+  normalizeWorkflowStepWithMap,
+} from "@/components/workflows/workflow-step-persistence";
+import { useWorkflowsStore, type Workflow } from "@/lib/stores/workflows";
 
 function cloneWorkflow(workflow: Workflow): Workflow {
   return {
@@ -21,17 +21,6 @@ function cloneWorkflow(workflow: Workflow): Workflow {
       config: { ...(step.config || {}) },
     })),
     enrollments: [...workflow.enrollments],
-  };
-}
-
-function normalizeStep(step: WorkflowStep): Record<string, unknown> {
-  return {
-    type: step.type,
-    config: step.config || {},
-    next_step_id: step.next_step_id || null,
-    else_step_id: step.else_step_id || null,
-    position_x: step.position_x || 0,
-    position_y: step.position_y || 0,
   };
 }
 
@@ -79,17 +68,40 @@ export default function WorkflowDetailPage() {
       entry_step_id: draft.entry_step_id || null,
     });
 
-    const existingIds = new Set(currentWorkflow.steps.map((step) => step.id));
+    const existingIds = new Set(
+      currentWorkflow.steps
+        .map((step) => step.id)
+        .filter((stepId): stepId is string => Boolean(stepId))
+    );
     const draftIds = new Set(
       draft.steps.map((step) => step.id).filter(Boolean) as string[]
     );
+    const idMap = new Map<string, string>();
 
     for (const step of draft.steps) {
       if (!step.id || String(step.id).startsWith("tmp-")) {
-        await createStep(currentWorkflow.id, normalizeStep(step));
+        const createdStep = await createStep(
+          currentWorkflow.id,
+          normalizeWorkflowStepWithMap(step, idMap)
+        );
+        if (step.id && createdStep?.id) {
+          idMap.set(step.id, createdStep.id);
+        }
       } else {
-        await updateStep(step.id, normalizeStep(step));
+        await updateStep(step.id, normalizeWorkflowStep(step));
       }
+    }
+
+    for (const step of draft.steps) {
+      const resolvedStepId = step.id ? idMap.get(step.id) || step.id : null;
+      if (!resolvedStepId) {
+        continue;
+      }
+
+      await updateStep(
+        resolvedStepId,
+        normalizeWorkflowStepWithMap(step, idMap)
+      );
     }
 
     for (const stepId of existingIds) {

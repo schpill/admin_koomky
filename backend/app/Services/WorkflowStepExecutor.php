@@ -49,6 +49,7 @@ class WorkflowStepExecutor
             'enroll_drip' => $this->enrollInDrip($step, $contact, $config),
             'update_field' => $this->updateField($step, $contact, $config),
             'end' => null,
+            default => throw new InvalidArgumentException("Unsupported workflow step type [{$step->type}]."),
         };
     }
 

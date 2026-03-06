@@ -7,6 +7,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property string $id
+ * @property string $workflow_id
+ * @property string $type
+ * @property array<string, mixed>|null $config
+ * @property string|null $next_step_id
+ * @property string|null $else_step_id
+ * @property float|null $position_x
+ * @property float|null $position_y
+ */
 class WorkflowStep extends Model
 {
     /** @use HasFactory<\Database\Factories\WorkflowStepFactory> */

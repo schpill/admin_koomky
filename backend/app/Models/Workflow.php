@@ -9,6 +9,16 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @property string $id
+ * @property string $user_id
+ * @property string $name
+ * @property string|null $description
+ * @property string $trigger_type
+ * @property array<string, mixed>|null $trigger_config
+ * @property string $status
+ * @property string|null $entry_step_id
+ */
 class Workflow extends Model
 {
     /** @use HasFactory<\Database\Factories\WorkflowFactory> */

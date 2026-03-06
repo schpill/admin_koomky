@@ -1,8 +1,11 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Inter", sans-serif;
-  --font-mono: "JetBrains Mono", monospace;
+  --font-sans:
+    "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-mono:
+    "SFMono-Regular", "SF Mono", Consolas, "Liberation Mono", Menlo,
+    monospace;
 
   --color-brand-cobalt: #2459ff;
   --color-brand-azure: #1f93ff;

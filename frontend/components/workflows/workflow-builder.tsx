@@ -181,7 +181,13 @@ export function WorkflowBuilder({
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between gap-4">
-            <CardTitle>Workflow builder</CardTitle>
+            <div className="space-y-1">
+              <CardTitle>Workflow builder</CardTitle>
+              <p className="text-sm text-muted-foreground">
+                Visual list fallback active because `reactflow` is not installed
+                in this workspace.
+              </p>
+            </div>
             <div className="flex flex-wrap gap-2">
               {STEP_TYPES.map((type) => (
                 <Button
