@@ -8,6 +8,7 @@ use App\Models\CampaignRecipient;
 use App\Models\CampaignVariant;
 use App\Models\Client;
 use App\Models\Contact;
+use App\Models\SuppressedEmail;
 use App\Notifications\CampaignCompletedNotification;
 use App\Services\SegmentFilterEngine;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -52,6 +53,13 @@ class SendEmailCampaignJob implements ShouldQueue
             ->get()
             ->values();
 
+        $suppressedEmails = SuppressedEmail::query()
+            ->where('user_id', $user->id)
+            ->pluck('email')
+            ->map(fn (mixed $email): string => mb_strtolower(trim((string) $email)))
+            ->filter()
+            ->flip();
+
         $variantAssignments = $this->resolveVariantAssignments($campaign, $contacts->count());
 
         $throttleRate = $this->resolveThrottleRate(
@@ -63,6 +71,10 @@ class SendEmailCampaignJob implements ShouldQueue
         foreach ($contacts as $index => $contact) {
             $email = is_string($contact->email) ? trim($contact->email) : '';
             if ($email === '') {
+                continue;
+            }
+
+            if ($suppressedEmails->has(mb_strtolower($email))) {
                 continue;
             }
 

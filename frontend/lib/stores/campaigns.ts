@@ -81,6 +81,9 @@ export interface CampaignAnalytics {
   opened_count?: number;
   clicked_count?: number;
   bounced_count?: number;
+  hard_bounce_count?: number;
+  soft_bounce_count?: number;
+  suppressed_count?: number;
   failed_count?: number;
   open_rate: number;
   click_rate: number;

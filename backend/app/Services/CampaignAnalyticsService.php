@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Campaign;
 use App\Models\CampaignRecipient;
 use App\Models\CampaignVariant;
+use App\Models\SuppressedEmail;
 use App\Models\User;
 use Carbon\Carbon;
 use Carbon\CarbonInterface;
@@ -26,8 +27,13 @@ class CampaignAnalyticsService
         $openedCount = $recipients->filter(fn (CampaignRecipient $recipient): bool => $recipient->opened_at !== null || in_array($recipient->status, ['opened', 'clicked'], true))->count();
         $clickedCount = $recipients->filter(fn (CampaignRecipient $recipient): bool => $recipient->clicked_at !== null || $recipient->status === 'clicked')->count();
         $bouncedCount = $recipients->where('status', 'bounced')->count();
+        $hardBounceCount = $recipients->where('bounce_type', 'hard')->count();
+        $softBounceCount = $recipients->where('bounce_type', 'soft')->count();
         $unsubscribedCount = $recipients->where('status', 'unsubscribed')->count();
         $failedCount = $recipients->where('status', 'failed')->count();
+        $suppressedCount = SuppressedEmail::query()
+            ->where('user_id', $campaign->user_id)
+            ->count();
 
         $openRate = $deliveredCount > 0 ? round(($openedCount / $deliveredCount) * 100, 2) : 0.0;
         $clickRate = $deliveredCount > 0 ? round(($clickedCount / $deliveredCount) * 100, 2) : 0.0;
@@ -43,6 +49,9 @@ class CampaignAnalyticsService
             'opened_count' => $openedCount,
             'clicked_count' => $clickedCount,
             'bounced_count' => $bouncedCount,
+            'hard_bounce_count' => $hardBounceCount,
+            'soft_bounce_count' => $softBounceCount,
+            'suppressed_count' => $suppressedCount,
             'unsubscribed_count' => $unsubscribedCount,
             'failed_count' => $failedCount,
             'open_rate' => $openRate,
