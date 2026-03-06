@@ -23,6 +23,7 @@ use App\Models\SuppressedEmail;
 use App\Models\Task;
 use App\Models\Ticket;
 use App\Models\TicketMessage;
+use App\Models\Workflow;
 use App\Observers\CampaignRecipientObserver;
 use App\Observers\ClientObserver;
 use App\Observers\ContactObserver;
@@ -44,6 +45,7 @@ use App\Policies\ProductSalePolicy;
 use App\Policies\ProjectTemplatePolicy;
 use App\Policies\ReminderSequencePolicy;
 use App\Policies\SuppressedEmailPolicy;
+use App\Policies\WorkflowPolicy;
 use App\Services\ExchangeRates\ApiExchangeRateService;
 use App\Services\ExchangeRates\EcbExchangeRatesDriver;
 use App\Services\ExchangeRates\ExchangeRateDriver;
@@ -123,5 +125,6 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(ImportSession::class, ImportSessionPolicy::class);
         Gate::policy(SuppressedEmail::class, SuppressedEmailPolicy::class);
         Gate::policy(DripSequence::class, DripSequencePolicy::class);
+        Gate::policy(Workflow::class, WorkflowPolicy::class);
     }
 }

@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
 import { cookies, headers } from "next/headers";
 import { ThemeProvider } from "next-themes";
 import { Toaster } from "@/components/ui/sonner";
@@ -11,16 +10,6 @@ import {
   resolveLocaleFromAcceptLanguage,
 } from "@/lib/i18n/config";
 import "./globals.css";
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-});
-
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  variable: "--font-mono",
-});
 
 export const metadata: Metadata = {
   title: "Koomky | CRM Freelance",
@@ -50,9 +39,7 @@ export default async function RootLayout({
 
   return (
     <html lang={initialLocale} suppressHydrationWarning>
-      <body
-        className={`${inter.variable} ${jetbrainsMono.variable} font-sans antialiased`}
-      >
+      <body className="font-sans antialiased">
         <I18nProvider initialLocale={initialLocale}>
           <ThemeProvider
             attribute="class"

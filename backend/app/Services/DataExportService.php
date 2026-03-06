@@ -34,6 +34,9 @@ use App\Models\Tag;
 use App\Models\Ticket;
 use App\Models\TicketMessage;
 use App\Models\User;
+use App\Models\Workflow;
+use App\Models\WorkflowEnrollment;
+use App\Models\WorkflowStep;
 use RuntimeException;
 use ZipArchive;
 
@@ -89,6 +92,19 @@ class DataExportService
 
         $dripEnrollments = DripEnrollment::query()
             ->whereIn('sequence_id', $dripSequences->pluck('id'))
+            ->get();
+
+        $workflows = Workflow::query()
+            ->where('user_id', $user->id)
+            ->with(['steps', 'enrollments'])
+            ->get();
+
+        $workflowSteps = WorkflowStep::query()
+            ->whereIn('workflow_id', $workflows->pluck('id'))
+            ->get();
+
+        $workflowEnrollments = WorkflowEnrollment::query()
+            ->whereIn('workflow_id', $workflows->pluck('id'))
             ->get();
 
         $suppressedEmails = SuppressedEmail::query()
@@ -244,6 +260,9 @@ class DataExportService
                 ->get()
                 ->toArray(),
             'drip_enrollments' => $dripEnrollments->toArray(),
+            'workflows' => $workflows->toArray(),
+            'workflow_steps' => $workflowSteps->toArray(),
+            'workflow_enrollments' => $workflowEnrollments->toArray(),
             'suppressed_emails' => $suppressedEmails->toArray(),
             'email_warmup_plans' => $emailWarmupPlans->toArray(),
             'scoring_rules' => $scoringRules->toArray(),

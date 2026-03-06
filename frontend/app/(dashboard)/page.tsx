@@ -8,6 +8,7 @@ import { RecentActivityWidget } from "@/components/dashboard/recent-activity-wid
 import { UpcomingDeadlinesWidget } from "@/components/dashboard/upcoming-deadlines-widget";
 import { CampaignSummaryWidget } from "@/components/dashboard/campaign-summary-widget";
 import { DripSummaryWidget } from "@/components/dashboard/drip-summary-widget";
+import { WorkflowSummaryWidget } from "@/components/dashboard/workflow-summary-widget";
 import { RecurringInvoicesWidget } from "@/components/dashboard/recurring-invoices-widget";
 import { CalendarWidget } from "@/components/dashboard/calendar-widget";
 import { PipelineSummaryWidget } from "@/components/dashboard/pipeline-summary-widget";
@@ -229,6 +230,13 @@ export default function DashboardPage() {
                 .length,
             0
           )}
+        />
+      ) : null}
+
+      {(stats?.active_workflows_count || 0) > 0 ? (
+        <WorkflowSummaryWidget
+          workflowsCount={stats?.active_workflows_count || 0}
+          activeEnrollments={stats?.workflow_active_enrollments_count || 0}
         />
       ) : null}
 

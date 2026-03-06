@@ -13,6 +13,8 @@ use App\Models\Project;
 use App\Models\RecurringInvoiceProfile;
 use App\Models\TimeEntry;
 use App\Models\User;
+use App\Models\Workflow;
+use App\Models\WorkflowEnrollment;
 use Carbon\Carbon;
 use Closure;
 use Illuminate\Support\Facades\Cache;
@@ -208,6 +210,14 @@ class DashboardService
                 'recurring_upcoming_due_profiles' => $recurringUpcomingProfiles,
                 'recurring_estimated_revenue_month' => $recurringEstimatedRevenue,
                 'active_campaigns_count' => $activeCampaignsCount,
+                'active_workflows_count' => Workflow::query()
+                    ->where('user_id', $userId)
+                    ->where('status', 'active')
+                    ->count(),
+                'workflow_active_enrollments_count' => WorkflowEnrollment::query()
+                    ->whereHas('workflow', fn ($query) => $query->where('user_id', $userId))
+                    ->where('status', 'active')
+                    ->count(),
                 'active_ab_tests_count' => $activeAbTestsCount,
                 'average_campaign_open_rate' => $averageOpenRate,
                 'average_campaign_click_rate' => $averageClickRate,

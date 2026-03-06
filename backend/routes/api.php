@@ -78,6 +78,8 @@ use App\Http\Controllers\Api\V1\TicketMessageController;
 use App\Http\Controllers\Api\V1\TimeEntryController;
 use App\Http\Controllers\Api\V1\Timer\LiveTimerController;
 use App\Http\Controllers\Api\V1\UserSettingsController;
+use App\Http\Controllers\Api\V1\WorkflowController;
+use App\Http\Controllers\Api\V1\WorkflowEnrollmentController;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
@@ -266,6 +268,20 @@ Route::prefix('v1')->group(function () {
         Route::patch('drip-enrollments/{dripEnrollment}/pause', [DripSequenceController::class, 'pause']);
         Route::patch('drip-enrollments/{dripEnrollment}/resume', [DripSequenceController::class, 'resume']);
         Route::patch('drip-enrollments/{dripEnrollment}/cancel', [DripSequenceController::class, 'cancel']);
+        Route::get('workflows', [WorkflowController::class, 'index']);
+        Route::post('workflows', [WorkflowController::class, 'store']);
+        Route::get('workflows/{workflow}', [WorkflowController::class, 'show']);
+        Route::put('workflows/{workflow}', [WorkflowController::class, 'update']);
+        Route::delete('workflows/{workflow}', [WorkflowController::class, 'destroy']);
+        Route::patch('workflows/{workflow}/activate', [WorkflowController::class, 'activate']);
+        Route::patch('workflows/{workflow}/pause', [WorkflowController::class, 'pause']);
+        Route::post('workflows/{workflow}/steps', [WorkflowController::class, 'storeStep']);
+        Route::put('workflow-steps/{step}', [WorkflowController::class, 'updateStep']);
+        Route::delete('workflow-steps/{step}', [WorkflowController::class, 'destroyStep']);
+        Route::get('workflows/{workflow}/enrollments', [WorkflowEnrollmentController::class, 'index']);
+        Route::patch('workflow-enrollments/{workflowEnrollment}/pause', [WorkflowEnrollmentController::class, 'pause']);
+        Route::patch('workflow-enrollments/{workflowEnrollment}/resume', [WorkflowEnrollmentController::class, 'resume']);
+        Route::patch('workflow-enrollments/{workflowEnrollment}/cancel', [WorkflowEnrollmentController::class, 'cancel']);
 
         // Invoices
         Route::apiResource('invoices', InvoiceController::class);

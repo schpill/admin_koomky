@@ -8,6 +8,7 @@ use App\Models\CampaignRecipient;
 use App\Services\ContactScoreService;
 use App\Services\EmailTrackingTokenService;
 use App\Services\WebhookDispatchService;
+use App\Services\WorkflowTriggerService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -18,6 +19,7 @@ class EmailTrackingController extends Controller
         private readonly EmailTrackingTokenService $tokenService,
         private readonly ContactScoreService $contactScoreService,
         private readonly WebhookDispatchService $webhookDispatchService,
+        private readonly WorkflowTriggerService $workflowTriggerService,
     ) {}
 
     public function open(string $token): Response
@@ -40,6 +42,12 @@ class EmailTrackingController extends Controller
 
             if ($recipient->contact !== null) {
                 $this->contactScoreService->recordEvent($recipient->contact, 'email_opened', $recipient->campaign);
+                $contact = $recipient->contact->fresh();
+                if ($contact !== null) {
+                    $this->workflowTriggerService->evaluateTriggers('email_opened', $contact, [
+                        'campaign_id' => $recipient->campaign_id,
+                    ]);
+                }
             }
 
             if ($recipient->campaign !== null) {
@@ -93,6 +101,13 @@ class EmailTrackingController extends Controller
 
             if ($recipient->contact !== null && $isFirstClickForUrl) {
                 $this->contactScoreService->recordEvent($recipient->contact, 'email_clicked', $recipient->campaign);
+                $contact = $recipient->contact->fresh();
+                if ($contact !== null) {
+                    $this->workflowTriggerService->evaluateTriggers('email_clicked', $contact, [
+                        'campaign_id' => $recipient->campaign_id,
+                        'url' => $url,
+                    ]);
+                }
             }
         }
 
