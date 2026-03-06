@@ -29,6 +29,8 @@ const criterionTypes = [
   "project_status",
   "revenue",
   "location",
+  "industry",
+  "department",
   "created_at",
   "custom_field",
 ];
@@ -39,6 +41,8 @@ const criterionOperators = [
   ">",
   "<",
   "contains",
+  "in",
+  "not_in",
   "exists",
   "not_exists",
   "before",

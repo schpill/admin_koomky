@@ -11,6 +11,7 @@ import { Loader2 } from "lucide-react";
 import { useI18n } from "@/components/providers/i18n-provider";
 import { CurrencySelector } from "@/components/shared/currency-selector";
 import { useCurrencyStore } from "@/lib/stores/currencies";
+import { FRENCH_DEPARTMENTS } from "@/lib/prospects/departments";
 
 export type ClientFormData = {
   name: string;
@@ -20,6 +21,9 @@ export type ClientFormData = {
   city?: string | null;
   zip_code?: string | null;
   country?: string | null;
+  industry?: string | null;
+  department?: string | null;
+  status?: string;
   preferred_currency?: string | null;
 };
 
@@ -55,6 +59,11 @@ export function ClientForm({
         city: z.string().optional().nullable(),
         zip_code: z.string().optional().nullable(),
         country: z.string().optional().nullable(),
+        industry: z.string().max(255).optional().nullable(),
+        department: z.string().max(10).optional().nullable(),
+        status: z
+          .enum(["active", "inactive", "archived", "lead", "prospect"])
+          .optional(),
         preferred_currency: z
           .string()
           .length(3)
@@ -135,6 +144,45 @@ export function ClientForm({
             {...register("country")}
             disabled={isSubmitting}
           />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="industry">Secteur</Label>
+          <Input
+            id="industry"
+            {...register("industry")}
+            disabled={isSubmitting}
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="department">Département</Label>
+          <select
+            id="department"
+            {...register("department")}
+            disabled={isSubmitting}
+            className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
+          >
+            <option value="">Sélectionner</option>
+            {FRENCH_DEPARTMENTS.map((department) => (
+              <option key={department.code} value={department.code}>
+                {department.code} - {department.name}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="status">Statut</Label>
+          <select
+            id="status"
+            {...register("status")}
+            disabled={isSubmitting}
+            className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
+          >
+            <option value="active">active</option>
+            <option value="inactive">inactive</option>
+            <option value="archived">archived</option>
+            <option value="lead">lead</option>
+            <option value="prospect">prospect</option>
+          </select>
         </div>
         <div className="md:col-span-2">
           <CurrencySelector

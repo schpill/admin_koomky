@@ -11,6 +11,7 @@ use App\Models\Document;
 use App\Models\DocumentChunk;
 use App\Models\Expense;
 use App\Models\ExpenseCategory;
+use App\Models\ImportSession;
 use App\Models\Invoice;
 use App\Models\Lead;
 use App\Models\LeadActivity;
@@ -116,6 +117,27 @@ class DataExportService
             ->with(['invoice', 'step'])
             ->get();
 
+        /** @var \Illuminate\Database\Eloquent\Collection<int, ImportSession> $importSessionModels */
+        $importSessionModels = ImportSession::query()
+            ->where('user_id', $user->id)
+            ->orderByDesc('created_at')
+            ->get();
+
+        $importSessions = [];
+        foreach ($importSessionModels as $session) {
+            $importSessions[] = [
+                'id' => $session->id,
+                'original_filename' => $session->original_filename,
+                'status' => $session->status,
+                'total_rows' => $session->total_rows,
+                'processed_rows' => $session->processed_rows,
+                'success_rows' => $session->success_rows,
+                'error_rows' => $session->error_rows,
+                'completed_at' => $session->completed_at?->toIso8601String(),
+                'created_at' => $session->created_at?->toIso8601String(),
+            ];
+        }
+
         $reminderDeliveriesData = [];
         foreach ($reminderDeliveries as $delivery) {
             $reminderDeliveriesData[] = [
@@ -192,6 +214,7 @@ class DataExportService
                 'sold_at' => $sale->sold_at?->toIso8601String(),
             ])->toArray(),
             'reminder_deliveries' => $reminderDeliveriesData,
+            'import_sessions' => $importSessions,
         ];
     }
 

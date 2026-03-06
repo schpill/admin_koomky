@@ -31,9 +31,11 @@ class UpdateClientRequest extends FormRequest
             'city' => ['nullable', 'string', 'max:100'],
             'zip_code' => ['nullable', 'string', 'max:20'],
             'country' => ['nullable', 'string', 'max:100'],
+            'industry' => ['nullable', 'string', 'max:255'],
+            'department' => ['nullable', 'string', 'max:10'],
             'preferred_currency' => ['nullable', 'string', 'size:3'],
             'notes' => ['nullable', 'string'],
-            'status' => ['sometimes', 'string', Rule::in(['active', 'archived', 'inactive'])],
+            'status' => ['sometimes', 'string', Rule::in(['active', 'archived', 'inactive', 'lead', 'prospect'])],
         ];
     }
 
@@ -46,6 +48,8 @@ class UpdateClientRequest extends FormRequest
             'city',
             'zip_code',
             'country',
+            'industry',
+            'department',
             'preferred_currency',
             'notes',
         ]);

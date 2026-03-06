@@ -8,6 +8,7 @@ use App\Models\Contact;
 use App\Models\CreditNote;
 use App\Models\Document;
 use App\Models\Expense;
+use App\Models\ImportSession;
 use App\Models\Invoice;
 use App\Models\Lead;
 use App\Models\Payment;
@@ -33,6 +34,7 @@ use App\Observers\QuoteObserver;
 use App\Observers\TaskObserver;
 use App\Observers\TicketMessageObserver;
 use App\Observers\TicketObserver;
+use App\Policies\ImportSessionPolicy;
 use App\Policies\ProductPolicy;
 use App\Policies\ProductSalePolicy;
 use App\Policies\ProjectTemplatePolicy;
@@ -112,5 +114,6 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(ProductSale::class, ProductSalePolicy::class);
         Gate::policy(ReminderSequence::class, ReminderSequencePolicy::class);
         Gate::policy(ProjectTemplate::class, ProjectTemplatePolicy::class);
+        Gate::policy(ImportSession::class, ImportSessionPolicy::class);
     }
 }

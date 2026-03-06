@@ -198,6 +198,11 @@ class DashboardService
                 'active_campaigns_count' => $activeCampaignsCount,
                 'average_campaign_open_rate' => $averageOpenRate,
                 'average_campaign_click_rate' => $averageClickRate,
+                'prospects_imported_month' => Client::query()
+                    ->where('user_id', $userId)
+                    ->where('status', 'prospect')
+                    ->whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()])
+                    ->count(),
                 'profit_loss_summary' => [
                     'revenue' => (float) ($profitLossSummary['revenue'] ?? 0),
                     'expenses' => (float) ($profitLossSummary['expenses'] ?? 0),

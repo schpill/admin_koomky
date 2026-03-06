@@ -16,3 +16,4 @@ Schedule::command('calendar:sync')->everyFifteenMinutes();
 Schedule::command('campaigns:dispatch-scheduled')->everyMinute();
 Schedule::command('queue:monitor-failures')->everyFiveMinutes();
 Schedule::command('reminders:dispatch')->dailyAt('08:00');
+Schedule::command('import-sessions:prune')->weekly();

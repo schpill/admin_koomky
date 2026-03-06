@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -61,6 +61,7 @@ const sampleRecipients = [
 export default function CreateCampaignPage() {
   const { t } = useI18n();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const {
     templates,
@@ -88,6 +89,13 @@ export default function CreateCampaignPage() {
     fetchTemplates().catch(() => undefined);
     fetchSegments().catch(() => undefined);
   }, [fetchTemplates, fetchSegments]);
+
+  useEffect(() => {
+    const initialSegmentId = searchParams.get("segment_id");
+    if (initialSegmentId) {
+      setSegmentId(initialSegmentId);
+    }
+  }, [searchParams]);
 
   const selectedTemplate = useMemo(
     () => templates.find((template) => template.id === selectedTemplateId),

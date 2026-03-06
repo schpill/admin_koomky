@@ -8,7 +8,7 @@
 | **Milestone**       | M14 — v2.0.0 Release                                        |
 | **PRD Sections**    | §4.20 FR-PRO (nouveau), §4.21 FR-IMP (nouveau)              |
 | **Prerequisite**    | Phase 13 fully completed and tagged `v1.9.0`                 |
-| **Status**          | Planned                                                      |
+| **Status**          | Done                                                         |
 
 ---
 
