@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import {
   LayoutDashboard,
   Users,
@@ -31,6 +32,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useAuthStore } from "@/lib/stores/auth";
 import { useI18n } from "@/components/providers/i18n-provider";
+import { apiClient } from "@/lib/api";
 
 const navigation = [
   { key: "dashboard", href: "/", icon: LayoutDashboard },
@@ -101,6 +103,29 @@ export function Sidebar({
   const router = useRouter();
   const logout = useAuthStore((state) => state.logout);
   const { t } = useI18n();
+  const [prospectCount, setProspectCount] = useState<number>(0);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    apiClient
+      .get<any>("/clients", {
+        params: { status: "prospect", per_page: 1 },
+      })
+      .then((response) => {
+        if (!isMounted) return;
+        const total = Number(response.data?.meta?.total || 0);
+        setProspectCount(Number.isFinite(total) ? total : 0);
+      })
+      .catch(() => {
+        if (!isMounted) return;
+        setProspectCount(0);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const handleLogout = () => {
     logout();
@@ -195,7 +220,16 @@ export function Sidebar({
               )}
             >
               <item.icon className="h-5 w-5 shrink-0" />
-              {!collapsed && <span>{t(`sidebar.${item.key}`)}</span>}
+              {!collapsed && (
+                <span className="flex min-w-0 flex-1 items-center justify-between gap-2">
+                  <span>{t(`sidebar.${item.key}`)}</span>
+                  {item.key === "prospects" && prospectCount > 0 ? (
+                    <span className="inline-flex min-w-5 items-center justify-center rounded-full bg-primary/15 px-1.5 py-0.5 text-xs font-semibold text-primary">
+                      {prospectCount}
+                    </span>
+                  ) : null}
+                </span>
+              )}
             </Link>
           );
         })}

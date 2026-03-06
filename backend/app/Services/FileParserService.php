@@ -2,9 +2,8 @@
 
 namespace App\Services;
 
+use PhpOffice\PhpSpreadsheet\IOFactory;
 use RuntimeException;
-use SimpleXMLElement;
-use ZipArchive;
 
 class FileParserService
 {
@@ -92,87 +91,40 @@ class FileParserService
      */
     private function parseXlsx(string $path): array
     {
-        $zip = new ZipArchive;
-        if ($zip->open($path) !== true) {
-            throw new RuntimeException('Unable to open XLSX file.');
-        }
+        $reader = IOFactory::createReaderForFile($path);
+        $reader->setReadDataOnly(true);
+        $spreadsheet = $reader->load($path);
+        $worksheet = $spreadsheet->getActiveSheet();
+        $rows = $worksheet->toArray(null, true, true, false);
 
-        $sheetXml = $zip->getFromName('xl/worksheets/sheet1.xml');
-        if ($sheetXml === false) {
-            $zip->close();
-            throw new RuntimeException('XLSX worksheet not found.');
-        }
-
-        $sharedStringsXml = $zip->getFromName('xl/sharedStrings.xml');
-        $zip->close();
-
-        $sharedStrings = [];
-        if (is_string($sharedStringsXml)) {
-            $xml = simplexml_load_string($sharedStringsXml);
-            if ($xml instanceof SimpleXMLElement) {
-                foreach ($xml->si as $item) {
-                    $text = '';
-                    if (isset($item->t)) {
-                        $text = (string) $item->t;
-                    } else {
-                        foreach ($item->r as $run) {
-                            $text .= (string) $run->t;
-                        }
-                    }
-                    $sharedStrings[] = $this->normalizeString($text);
-                }
-            }
-        }
-
-        $xml = simplexml_load_string($sheetXml);
-        if (! $xml instanceof SimpleXMLElement || ! isset($xml->sheetData)) {
-            throw new RuntimeException('Invalid XLSX content.');
-        }
-
-        $table = [];
-        foreach ($xml->sheetData->row as $row) {
-            $line = [];
-            foreach ($row->c as $cell) {
-                $ref = (string) $cell['r'];
-                preg_match('/([A-Z]+)(\d+)/', $ref, $matches);
-                $index = $this->columnToIndex($matches[1] ?? 'A');
-
-                $value = null;
-                if (isset($cell->v)) {
-                    $raw = (string) $cell->v;
-                    if ((string) $cell['t'] === 's') {
-                        $value = $sharedStrings[(int) $raw] ?? '';
-                    } else {
-                        $value = $raw;
-                    }
-                }
-
-                $line[$index] = $this->normalizeString((string) $value);
-            }
-
-            if ($line !== []) {
-                ksort($line);
-                $table[] = $line;
-            }
-        }
-
-        if ($table === []) {
+        if ($rows === []) {
             throw new RuntimeException('The import file is empty.');
         }
 
-        $headerRow = array_shift($table);
-
-        $maxIndex = max(array_keys($headerRow));
-        $headers = [];
-        for ($i = 0; $i <= $maxIndex; $i++) {
-            $headers[] = $headerRow[$i] ?? '';
+        $headerRow = array_shift($rows);
+        if (! is_array($headerRow)) {
+            throw new RuntimeException('Invalid XLSX headers.');
         }
 
-        $rows = [];
-        foreach ($table as $line) {
+        $headers = array_values(array_map(
+            fn (mixed $value): string => $this->normalizeString((string) ($value ?? '')),
+            $headerRow
+        ));
+
+        if (count(array_filter($headers, fn (string $h): bool => $h !== '')) === 0) {
+            throw new RuntimeException('Invalid XLSX headers.');
+        }
+
+        $normalizedRows = [];
+        foreach ($rows as $line) {
+            if (! is_array($line)) {
+                continue;
+            }
+
             $mapped = [];
             foreach ($headers as $index => $header) {
-                $value = $line[$index] ?? null;
+                $rawValue = $line[$index] ?? null;
+                $value = $rawValue === null ? null : $this->normalizeString((string) $rawValue);
                 $mapped[$header] = $value === '' ? null : $value;
             }
 
@@ -181,15 +133,15 @@ class FileParserService
                 continue;
             }
 
-            $rows[] = $mapped;
-            if (count($rows) > self::MAX_ROWS) {
+            $normalizedRows[] = $mapped;
+            if (count($normalizedRows) > self::MAX_ROWS) {
                 throw new RuntimeException('Import limit exceeded (max 10000 rows).');
             }
         }
 
         return [
             'headers' => $headers,
-            'rows' => $rows,
+            'rows' => $normalizedRows,
         ];
     }
 
@@ -201,17 +153,5 @@ class FileParserService
         }
 
         return trim((string) $value);
-    }
-
-    private function columnToIndex(string $column): int
-    {
-        $index = 0;
-        $chars = str_split($column);
-
-        foreach ($chars as $char) {
-            $index = ($index * 26) + (ord($char) - 64);
-        }
-
-        return max(0, $index - 1);
     }
 }

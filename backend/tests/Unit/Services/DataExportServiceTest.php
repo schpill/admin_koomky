@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Services;
 
+use App\Models\Client;
 use App\Models\Document;
 use App\Models\DocumentChunk;
 use App\Models\RagUsageLog;
@@ -10,6 +11,7 @@ use App\Models\TicketMessage;
 use App\Models\User;
 use App\Services\DataExportService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 
 class DataExportServiceTest extends TestCase
@@ -23,6 +25,7 @@ class DataExportServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        Queue::fake();
         $this->service = $this->app->make(DataExportService::class);
         $this->user = User::factory()->create();
     }
@@ -132,5 +135,24 @@ class DataExportServiceTest extends TestCase
 
         $this->assertArrayHasKey('rag_usage_logs', $exportData);
         $this->assertEmpty($exportData['rag_usage_logs']);
+    }
+
+    /** @test */
+    public function it_explicitly_includes_client_industry_and_department_in_export()
+    {
+        Client::factory()->create([
+            'user_id' => $this->user->id,
+            'name' => 'Prospect A',
+            'industry' => 'Wedding Planner',
+            'department' => '60',
+            'status' => 'prospect',
+        ]);
+
+        $exportData = $this->service->exportUserData($this->user);
+
+        $this->assertArrayHasKey('clients', $exportData);
+        $this->assertCount(1, $exportData['clients']);
+        $this->assertEquals('Wedding Planner', $exportData['clients'][0]['industry']);
+        $this->assertEquals('60', $exportData['clients'][0]['department']);
     }
 }
