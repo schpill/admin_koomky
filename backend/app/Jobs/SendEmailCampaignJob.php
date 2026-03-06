@@ -8,11 +8,14 @@ use App\Models\CampaignRecipient;
 use App\Models\CampaignVariant;
 use App\Models\Client;
 use App\Models\Contact;
+use App\Models\EmailWarmupPlan;
 use App\Models\SuppressedEmail;
 use App\Notifications\CampaignCompletedNotification;
 use App\Services\ContactScoreService;
 use App\Services\ContactSendTimeService;
 use App\Services\SegmentFilterEngine;
+use App\Services\WarmupGuardService;
+use App\Services\WebhookDispatchService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 
@@ -26,9 +29,13 @@ class SendEmailCampaignJob implements ShouldQueue
         SegmentFilterEngine $segmentFilterEngine,
         ?ContactSendTimeService $contactSendTimeService = null,
         ?ContactScoreService $contactScoreService = null,
+        ?WarmupGuardService $warmupGuardService = null,
+        ?WebhookDispatchService $webhookDispatchService = null,
     ): void {
         $contactSendTimeService ??= app(ContactSendTimeService::class);
         $contactScoreService ??= app(ContactScoreService::class);
+        $warmupGuardService ??= app(WarmupGuardService::class);
+        $webhookDispatchService ??= app(WebhookDispatchService::class);
 
         $campaign = Campaign::query()->with(['user', 'segment', 'variants'])->find($this->campaignId);
 
@@ -75,6 +82,8 @@ class SendEmailCampaignJob implements ShouldQueue
             100
         );
         $interval = 60 / $throttleRate;
+        $hasWarmupPlan = $warmupGuardService->activePlan($user) instanceof EmailWarmupPlan;
+        $quotaReached = false;
 
         foreach ($contacts as $index => $contact) {
             $email = is_string($contact->email) ? trim($contact->email) : '';
@@ -84,6 +93,12 @@ class SendEmailCampaignJob implements ShouldQueue
 
             if ($suppressedEmails->has(mb_strtolower($email))) {
                 continue;
+            }
+
+            if ($hasWarmupPlan && ! $warmupGuardService->canSend($user)) {
+                $quotaReached = true;
+
+                break;
             }
 
             $variant = $variantAssignments[$index] ?? null;
@@ -121,6 +136,10 @@ class SendEmailCampaignJob implements ShouldQueue
             SendCampaignEmailJob::dispatch($recipient->id)
                 ->delay(now()->addSeconds($delaySeconds));
 
+            if ($hasWarmupPlan) {
+                $warmupGuardService->incrementSentCount($user);
+            }
+
             $contactScoreService->recordEvent($contact, 'campaign_sent', $campaign);
 
             Activity::query()->create([
@@ -138,20 +157,39 @@ class SendEmailCampaignJob implements ShouldQueue
             ]);
         }
 
+        if ($quotaReached) {
+            $campaign->update([
+                'status' => 'scheduled',
+                'completed_at' => null,
+            ]);
+
+            static::dispatch($campaign->id)
+                ->delay(now()->addDay()->setTime(6, 0));
+
+            return;
+        }
+
         if ($campaign->isAbTest() && is_numeric($campaign->ab_auto_select_after_hours) && (int) $campaign->ab_auto_select_after_hours > 0) {
             SelectAbWinnerJob::dispatch($campaign->id)
                 ->delay(now()->addHours((int) $campaign->ab_auto_select_after_hours));
         }
 
+        $completedAt = now();
+
         $campaign->update([
             'status' => 'sent',
-            'completed_at' => now(),
+            'completed_at' => $completedAt,
         ]);
 
         $freshCampaign = $campaign->fresh();
         if ($freshCampaign instanceof Campaign) {
             $user->notify(new CampaignCompletedNotification($freshCampaign));
         }
+
+        $webhookDispatchService->dispatch('email.campaign_sent', [
+            'campaign_id' => $campaign->id,
+            'completed_at' => $completedAt->toIso8601String(),
+        ], $user->id);
     }
 
     private function resolveThrottleRate(mixed $configuredRate, int $defaultRate): int

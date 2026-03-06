@@ -46,6 +46,13 @@ enum WebhookEvent: string
     case LEAD_STATUS_CHANGED = 'lead.status_changed';
     case LEAD_CONVERTED = 'lead.converted';
 
+    // Email events
+    case EMAIL_OPENED = 'email.opened';
+    case EMAIL_CLICKED = 'email.clicked';
+    case EMAIL_BOUNCED = 'email.bounced';
+    case EMAIL_UNSUBSCRIBED = 'email.unsubscribed';
+    case EMAIL_CAMPAIGN_SENT = 'email.campaign_sent';
+
     // Test event
     case TEST_PING = 'test.ping';
 
@@ -104,6 +111,13 @@ enum WebhookEvent: string
                 self::LEAD_STATUS_CHANGED->value,
                 self::LEAD_CONVERTED->value,
             ],
+            'email' => [
+                self::EMAIL_OPENED->value,
+                self::EMAIL_CLICKED->value,
+                self::EMAIL_BOUNCED->value,
+                self::EMAIL_UNSUBSCRIBED->value,
+                self::EMAIL_CAMPAIGN_SENT->value,
+            ],
         ];
     }
 
@@ -136,6 +150,11 @@ enum WebhookEvent: string
             self::LEAD_CREATED => 'Lead created',
             self::LEAD_STATUS_CHANGED => 'Lead status changed',
             self::LEAD_CONVERTED => 'Lead converted to client',
+            self::EMAIL_OPENED => 'Email opened',
+            self::EMAIL_CLICKED => 'Email clicked',
+            self::EMAIL_BOUNCED => 'Email bounced',
+            self::EMAIL_UNSUBSCRIBED => 'Email unsubscribed',
+            self::EMAIL_CAMPAIGN_SENT => 'Email campaign sent',
             self::TEST_PING => 'Test ping',
         };
     }

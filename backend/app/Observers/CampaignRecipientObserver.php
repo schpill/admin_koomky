@@ -5,6 +5,7 @@ namespace App\Observers;
 use App\Models\CampaignRecipient;
 use App\Services\ContactScoreService;
 use App\Services\SuppressionService;
+use App\Services\WebhookDispatchService;
 
 class CampaignRecipientObserver
 {
@@ -33,5 +34,14 @@ class CampaignRecipientObserver
         if ($recipient->contact !== null) {
             app(ContactScoreService::class)->recordEvent($recipient->contact, 'email_bounced', $campaign);
         }
+
+        $bouncedAt = $recipient->bounced_at;
+
+        app(WebhookDispatchService::class)->dispatch('email.bounced', [
+            'campaign_id' => $recipient->campaign_id,
+            'contact_id' => $recipient->contact_id,
+            'bounce_type' => $recipient->bounce_type,
+            'bounced_at' => is_string($bouncedAt) ? $bouncedAt : null,
+        ], $campaign->user_id);
     }
 }

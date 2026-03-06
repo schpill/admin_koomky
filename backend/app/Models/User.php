@@ -71,6 +71,8 @@ class User extends Authenticatable
         'two_factor_confirmed_at',
         'deletion_scheduled_at',
         'document_storage_quota_mb',
+        'warmup_sent_today',
+        'warmup_last_reset_at',
     ];
 
     /**
@@ -108,6 +110,8 @@ class User extends Authenticatable
             'two_factor_recovery_codes' => 'encrypted',
             'deletion_scheduled_at' => 'datetime',
             'document_storage_quota_mb' => 'integer',
+            'warmup_sent_today' => 'integer',
+            'warmup_last_reset_at' => 'date',
         ];
     }
 
@@ -173,6 +177,22 @@ class User extends Authenticatable
     public function campaigns(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Campaign::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\CampaignLinkClick, \App\Models\User>
+     */
+    public function campaignLinkClicks(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(CampaignLinkClick::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\EmailWarmupPlan, \App\Models\User>
+     */
+    public function emailWarmupPlans(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(EmailWarmupPlan::class);
     }
 
     /**

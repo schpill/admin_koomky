@@ -165,12 +165,101 @@ export async function mockProtectedApi(page: Page) {
           message: "OK",
           data: {
             campaign_id: "camp_1",
+            campaign_name: "Mock campaign",
             total_recipients: 0,
             open_rate: 0,
             click_rate: 0,
             time_series: [],
             ab_variants: [],
           },
+        }),
+      });
+    }
+
+    if (url.includes("/api/v1/campaigns/") && url.includes("/links/export")) {
+      return route.fulfill({
+        status: 200,
+        contentType: "text/csv",
+        body: "url,total_clicks,unique_clicks,click_rate\nhttps://example.com/a,2,2,50\n",
+      });
+    }
+
+    if (url.includes("/api/v1/campaigns/") && url.includes("/links")) {
+      return route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          status: "Success",
+          message: "OK",
+          data: [
+            {
+              url: "https://example.com/a",
+              total_clicks: 2,
+              unique_clicks: 2,
+              click_rate: 50,
+            },
+          ],
+        }),
+      });
+    }
+
+    if (url.includes("/api/v1/warmup-plans")) {
+      const method = route.request().method();
+
+      if (method === "POST" || method === "PUT" || method === "PATCH") {
+        return route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify({
+            status: "Success",
+            message: "OK",
+            data: {
+              id: "warm_1",
+              name: "IP warm-up",
+              status:
+                method === "PATCH" && url.endsWith("/pause")
+                  ? "paused"
+                  : "active",
+              daily_volume_start: 25,
+              daily_volume_max: 500,
+              increment_percent: 30,
+              current_day: 2,
+              current_daily_limit: 42,
+            },
+          }),
+        });
+      }
+
+      if (method === "DELETE") {
+        return route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify({
+            status: "Success",
+            message: "OK",
+            data: null,
+          }),
+        });
+      }
+
+      return route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          status: "Success",
+          message: "OK",
+          data: [
+            {
+              id: "warm_1",
+              name: "IP warm-up",
+              status: "active",
+              daily_volume_start: 25,
+              daily_volume_max: 500,
+              increment_percent: 30,
+              current_day: 2,
+              current_daily_limit: 42,
+            },
+          ],
         }),
       });
     }
@@ -195,6 +284,14 @@ export async function mockProtectedApi(page: Page) {
             revenue_trend: [],
             upcoming_deadlines: [],
             hot_contacts_count: 0,
+            warmup_widget: {
+              plan_id: "warm_1",
+              name: "IP warm-up",
+              current_day: 2,
+              current_daily_limit: 42,
+              sent_today: 12,
+              status: "active",
+            },
           },
         }),
       });

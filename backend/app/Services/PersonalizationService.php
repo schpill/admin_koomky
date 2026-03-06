@@ -7,7 +7,7 @@ use InvalidArgumentException;
 
 class PersonalizationService
 {
-    public function render(string $content, Contact $contact): string
+    public function render(string $content, Contact $contact, ?string $trackingToken = null): string
     {
         $client = $contact->client;
         $baseVariables = [
@@ -19,7 +19,7 @@ class PersonalizationService
             '{{email_score}}' => e((string) $contact->email_score),
         ];
 
-        return $this->renderWithContext($content, $baseVariables, $contact, $client);
+        return $this->renderWithContext($content, $baseVariables, $contact, $client, $trackingToken);
     }
 
     public function renderPreview(string $content): string
@@ -55,7 +55,7 @@ class PersonalizationService
             '{{email_score}}' => '75',
         ];
 
-        return $this->renderWithContext($content, $baseVariables, $previewContact, $previewClient);
+        return $this->renderWithContext($content, $baseVariables, $previewContact, $previewClient, null);
     }
 
     /**
@@ -63,12 +63,13 @@ class PersonalizationService
      * @param  Contact|array<string, string|int>  $contact
      * @param  \App\Models\Client|array<string, string>|null  $client
      */
-    private function renderWithContext(string $content, array $baseVariables, Contact|array $contact, mixed $client): string
+    private function renderWithContext(string $content, array $baseVariables, Contact|array $contact, mixed $client, ?string $trackingToken): string
     {
         $content = $this->renderDynamicBlocks($content, $contact, $client, 0);
         $content = strtr($content, $baseVariables);
+        $content = $this->rewriteTrackableLinks($content, $trackingToken);
 
-        return preg_replace_callback('/\{\{\s*([a-zA-Z0-9_\.]+)\s*\}\}/', function (array $matches) use ($contact, $client): string {
+        $rendered = preg_replace_callback('/\{\{\s*([a-zA-Z0-9_\.]+)\s*\}\}/', function (array $matches) use ($contact, $client): string {
             $key = (string) $matches[1];
 
             if ($key === 'email_score') {
@@ -90,7 +91,34 @@ class PersonalizationService
             }
 
             return '';
-        }, $content) ?? $content;
+        }, $content);
+
+        return is_string($rendered) ? $rendered : $content;
+    }
+
+    private function rewriteTrackableLinks(string $content, ?string $trackingToken): string
+    {
+        if ($trackingToken === null || $trackingToken === '') {
+            return $content;
+        }
+
+        $rewritten = preg_replace_callback('/href=["\']([^"\']+)["\']/i', function (array $matches) use ($trackingToken): string {
+            $destination = (string) $matches[1];
+
+            if (str_starts_with($destination, 'mailto:') || str_starts_with($destination, 'tel:')) {
+                return $matches[0];
+            }
+
+            if (preg_match('#(^|/+)t/click/#', $destination) === 1) {
+                return $matches[0];
+            }
+
+            $tracking = url('/t/click/'.$trackingToken).'?url='.urlencode($destination);
+
+            return 'href="'.$tracking.'"';
+        }, $content);
+
+        return is_string($rewritten) ? $rewritten : $content;
     }
 
     /**

@@ -75,6 +75,14 @@ interface DashboardStats {
     minutes_today: number;
     entries_count: number;
   };
+  warmup_widget?: {
+    plan_id: string;
+    name: string;
+    current_day: number;
+    current_daily_limit: number;
+    sent_today: number;
+    status: string;
+  } | null;
 }
 
 interface DashboardState {

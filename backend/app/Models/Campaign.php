@@ -123,6 +123,14 @@ class Campaign extends Model
     }
 
     /**
+     * @return HasMany<CampaignLinkClick, Campaign>
+     */
+    public function linkClicks(): HasMany
+    {
+        return $this->hasMany(CampaignLinkClick::class);
+    }
+
+    /**
      * @return BelongsTo<CampaignVariant, Campaign>
      */
     public function winnerVariant(): BelongsTo

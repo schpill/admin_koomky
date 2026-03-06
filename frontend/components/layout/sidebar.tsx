@@ -88,6 +88,12 @@ const secondaryNavigation = [
     external: false,
   },
   {
+    key: "warmup",
+    href: "/settings/warmup",
+    icon: Gauge,
+    external: false,
+  },
+  {
     key: "rag",
     href: "/settings/rag",
     icon: Brain,
