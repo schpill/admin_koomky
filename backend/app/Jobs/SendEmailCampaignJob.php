@@ -174,9 +174,11 @@ class SendEmailCampaignJob implements ShouldQueue
                 ->delay(now()->addHours((int) $campaign->ab_auto_select_after_hours));
         }
 
+        $completedAt = now();
+
         $campaign->update([
             'status' => 'sent',
-            'completed_at' => now(),
+            'completed_at' => $completedAt,
         ]);
 
         $freshCampaign = $campaign->fresh();
@@ -186,7 +188,7 @@ class SendEmailCampaignJob implements ShouldQueue
 
         $webhookDispatchService->dispatch('email.campaign_sent', [
             'campaign_id' => $campaign->id,
-            'completed_at' => $campaign->completed_at?->toIso8601String(),
+            'completed_at' => $completedAt->toIso8601String(),
         ], $user->id);
     }
 

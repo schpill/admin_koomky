@@ -32,7 +32,10 @@ class WarmupGuardService
     public function resetDailyCountIfNeeded(User $user): void
     {
         $today = now()->toDateString();
-        $lastReset = $user->warmup_last_reset_at?->toDateString();
+        $lastResetValue = $user->warmup_last_reset_at;
+        $lastReset = is_string($lastResetValue)
+            ? $lastResetValue
+            : $lastResetValue?->toDateString();
 
         if ($lastReset === $today) {
             return;

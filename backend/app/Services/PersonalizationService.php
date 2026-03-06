@@ -101,9 +101,9 @@ class PersonalizationService
         }
 
         return (string) preg_replace_callback('/href=["\']([^"\']+)["\']/i', function (array $matches) use ($trackingToken): string {
-            $destination = (string) ($matches[1] ?? '');
+            $destination = (string) $matches[1];
 
-            if ($destination === '' || str_starts_with($destination, 'mailto:') || str_starts_with($destination, 'tel:')) {
+            if (str_starts_with($destination, 'mailto:') || str_starts_with($destination, 'tel:')) {
                 return $matches[0];
             }
 

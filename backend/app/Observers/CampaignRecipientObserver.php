@@ -6,6 +6,7 @@ use App\Models\CampaignRecipient;
 use App\Services\ContactScoreService;
 use App\Services\SuppressionService;
 use App\Services\WebhookDispatchService;
+use Carbon\CarbonInterface;
 
 class CampaignRecipientObserver
 {
@@ -35,11 +36,13 @@ class CampaignRecipientObserver
             app(ContactScoreService::class)->recordEvent($recipient->contact, 'email_bounced', $campaign);
         }
 
+        $bouncedAt = $recipient->bounced_at;
+
         app(WebhookDispatchService::class)->dispatch('email.bounced', [
             'campaign_id' => $recipient->campaign_id,
             'contact_id' => $recipient->contact_id,
             'bounce_type' => $recipient->bounce_type,
-            'bounced_at' => $recipient->bounced_at?->toIso8601String(),
+            'bounced_at' => $bouncedAt instanceof CarbonInterface ? $bouncedAt->toIso8601String() : (is_string($bouncedAt) ? $bouncedAt : null),
         ], $campaign->user_id);
     }
 }

@@ -28,8 +28,9 @@ class EmailTrackingController extends Controller
         }
 
         if ($recipient->opened_at === null) {
+            $openedAt = now();
             $recipient->update([
-                'opened_at' => now(),
+                'opened_at' => $openedAt,
                 'status' => in_array($recipient->status, ['sent', 'delivered'], true) ? 'opened' : $recipient->status,
             ]);
 
@@ -45,7 +46,7 @@ class EmailTrackingController extends Controller
                 $this->webhookDispatchService->dispatch('email.opened', [
                     'campaign_id' => $recipient->campaign_id,
                     'contact_id' => $recipient->contact_id,
-                    'opened_at' => $recipient->opened_at?->toIso8601String(),
+                    'opened_at' => $openedAt->toIso8601String(),
                 ], $recipient->campaign->user_id);
             }
         }
