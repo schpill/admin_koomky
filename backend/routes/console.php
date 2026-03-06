@@ -1,6 +1,7 @@
 <?php
 
 use App\Jobs\AdvanceDripEnrollmentsJob;
+use App\Jobs\ResetWarmupCountersJob;
 use App\Jobs\RecalculateExpiredScoresJob;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
@@ -20,5 +21,6 @@ Schedule::job(new AdvanceDripEnrollmentsJob)->everyFiveMinutes();
 Schedule::command('queue:monitor-failures')->everyFiveMinutes();
 Schedule::command('reminders:dispatch')->dailyAt('08:00');
 Schedule::job(new RecalculateExpiredScoresJob)->dailyAt('03:00');
+Schedule::job(new ResetWarmupCountersJob)->dailyAt('00:01');
 Schedule::command('import-sessions:prune')->weekly();
 Schedule::command('drip-enrollments:prune')->weekly();

@@ -51,11 +51,9 @@ class SendCampaignEmailJob implements ShouldQueue
             $rawBody = $variant->content ?? $rawBody;
         }
 
-        $subject = $personalizationService->render((string) $rawSubject, $contact);
-        $body = $personalizationService->render((string) $rawBody, $contact);
-
         $token = $tokenService->encode($recipient->id);
-        $body = $this->rewriteLinks($body, $token);
+        $subject = $personalizationService->render((string) $rawSubject, $contact);
+        $body = $personalizationService->render((string) $rawBody, $contact, $token);
 
         $trackingPixelUrl = url('/t/open/'.$token);
         $unsubscribeUrl = URL::temporarySignedRoute('unsubscribe', now()->addDays(30), ['contact' => $contact->id]);
@@ -77,15 +75,5 @@ class SendCampaignEmailJob implements ShouldQueue
         if ($variant !== null) {
             $variant->increment('sent_count');
         }
-    }
-
-    private function rewriteLinks(string $html, string $token): string
-    {
-        return (string) preg_replace_callback('/href=["\']([^"\']+)["\']/i', function (array $matches) use ($token): string {
-            $destination = (string) $matches[1];
-            $tracking = url('/t/click/'.$token).'?url='.urlencode($destination);
-
-            return 'href="'.$tracking.'"';
-        }, $html);
     }
 }

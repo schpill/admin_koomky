@@ -1,15 +1,20 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AnalyticsSummaryCards } from "@/components/campaigns/analytics-summary-cards";
+import {
+  CampaignLinkAnalytics,
+  type CampaignLinkStat,
+} from "@/components/campaigns/campaign-link-analytics";
 import { EngagementChart } from "@/components/campaigns/engagement-chart";
 import { useCampaignStore } from "@/lib/stores/campaigns";
 import { useAuthStore } from "@/lib/stores/auth";
 import { useI18n } from "@/components/providers/i18n-provider";
+import { apiClient } from "@/lib/api";
 
 export default function CampaignAnalyticsPage() {
   const { t } = useI18n();
@@ -17,6 +22,7 @@ export default function CampaignAnalyticsPage() {
   const campaignId = params.id;
   const { analytics, fetchCampaignAnalytics } = useCampaignStore();
   const accessToken = useAuthStore((state) => state.accessToken);
+  const [linkStats, setLinkStats] = useState<CampaignLinkStat[]>([]);
 
   useEffect(() => {
     if (!campaignId) {
@@ -26,6 +32,15 @@ export default function CampaignAnalyticsPage() {
     fetchCampaignAnalytics(campaignId).catch((error) => {
       toast.error((error as Error).message || "Unable to load analytics");
     });
+
+    apiClient
+      .get<CampaignLinkStat[]>(`/campaigns/${campaignId}/links`)
+      .then((response) => {
+        setLinkStats(response.data || []);
+      })
+      .catch((error) => {
+        toast.error((error as Error).message || "Unable to load link analytics");
+      });
   }, [campaignId, fetchCampaignAnalytics]);
 
   const exportCsv = async () => {
@@ -60,6 +75,38 @@ export default function CampaignAnalyticsPage() {
       URL.revokeObjectURL(url);
     } catch (error) {
       toast.error((error as Error).message || "Unable to export analytics");
+    }
+  };
+
+  const exportLinksCsv = async () => {
+    if (!campaignId) {
+      toast.error("Missing campaign id");
+      return;
+    }
+
+    try {
+      const baseUrl =
+        process.env.NEXT_PUBLIC_API_URL || "http://localhost/api/v1";
+      const response = await fetch(`${baseUrl}/campaigns/${campaignId}/links/export`, {
+        headers: {
+          Accept: "text/csv",
+          Authorization: accessToken ? `Bearer ${accessToken}` : "",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Unable to export link analytics");
+      }
+
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = `campaign-${campaignId}-links.csv`;
+      anchor.click();
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      toast.error((error as Error).message || "Unable to export link analytics");
     }
   };
 
@@ -98,6 +145,8 @@ export default function CampaignAnalyticsPage() {
           <EngagementChart data={analytics.time_series || []} />
         </CardContent>
       </Card>
+
+      <CampaignLinkAnalytics stats={linkStats} onExport={exportLinksCsv} />
     </div>
   );
 }

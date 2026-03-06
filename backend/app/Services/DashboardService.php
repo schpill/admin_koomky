@@ -6,6 +6,7 @@ use App\Models\Activity;
 use App\Models\Campaign;
 use App\Models\Client;
 use App\Models\Contact;
+use App\Models\EmailWarmupPlan;
 use App\Models\Invoice;
 use App\Models\ProductSale;
 use App\Models\Project;
@@ -178,6 +179,11 @@ class DashboardService
                 ->values()
                 ->all();
 
+            $activeWarmupPlan = EmailWarmupPlan::query()
+                ->activeForUser($user)
+                ->latest('started_at')
+                ->first();
+
             return [
                 'total_clients' => Client::where('user_id', $userId)->count(),
                 'active_projects' => Project::query()
@@ -230,6 +236,14 @@ class DashboardService
                 ],
                 'overdue_invoices_widget' => $this->overdueInvoicesWidget($user),
                 'time_tracked_today_widget' => $this->timeTrackedTodayWidget($user),
+                'warmup_widget' => $activeWarmupPlan instanceof EmailWarmupPlan ? [
+                    'plan_id' => $activeWarmupPlan->id,
+                    'name' => $activeWarmupPlan->name,
+                    'current_day' => (int) $activeWarmupPlan->current_day,
+                    'current_daily_limit' => (int) $activeWarmupPlan->current_daily_limit,
+                    'sent_today' => (int) $user->warmup_sent_today,
+                    'status' => $activeWarmupPlan->status,
+                ] : null,
             ];
         });
     }

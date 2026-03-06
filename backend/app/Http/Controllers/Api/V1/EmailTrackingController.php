@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Models\CampaignLinkClick;
 use App\Models\CampaignRecipient;
 use App\Services\ContactScoreService;
 use App\Services\EmailTrackingTokenService;
+use App\Services\WebhookDispatchService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -15,6 +17,7 @@ class EmailTrackingController extends Controller
     public function __construct(
         private readonly EmailTrackingTokenService $tokenService,
         private readonly ContactScoreService $contactScoreService,
+        private readonly WebhookDispatchService $webhookDispatchService,
     ) {}
 
     public function open(string $token): Response
@@ -37,6 +40,14 @@ class EmailTrackingController extends Controller
             if ($recipient->contact !== null) {
                 $this->contactScoreService->recordEvent($recipient->contact, 'email_opened', $recipient->campaign);
             }
+
+            if ($recipient->campaign !== null) {
+                $this->webhookDispatchService->dispatch('email.opened', [
+                    'campaign_id' => $recipient->campaign_id,
+                    'contact_id' => $recipient->contact_id,
+                    'opened_at' => $recipient->opened_at?->toIso8601String(),
+                ], $recipient->campaign->user_id);
+            }
         }
 
         $pixel = base64_decode('R0lGODlhAQABAIABAP///wAAACwAAAAAAQABAAACAkQBADs=', true) ?: '';
@@ -51,9 +62,27 @@ class EmailTrackingController extends Controller
             abort(404);
         }
 
+        $url = (string) $request->query('url', '/');
+        $clickedAt = now();
+        $isFirstClickForUrl = ! CampaignLinkClick::query()
+            ->where('recipient_id', $recipient->id)
+            ->where('url', $url)
+            ->exists();
+
+        CampaignLinkClick::query()->create([
+            'user_id' => $recipient->campaign?->user_id,
+            'campaign_id' => $recipient->campaign_id,
+            'recipient_id' => $recipient->id,
+            'contact_id' => $recipient->contact_id,
+            'url' => $url,
+            'clicked_at' => $clickedAt,
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+        ]);
+
         if ($recipient->clicked_at === null) {
             $recipient->update([
-                'clicked_at' => now(),
+                'clicked_at' => $clickedAt,
                 'status' => 'clicked',
             ]);
 
@@ -61,12 +90,19 @@ class EmailTrackingController extends Controller
                 $recipient->variant()->increment('click_count');
             }
 
-            if ($recipient->contact !== null) {
+            if ($recipient->contact !== null && $isFirstClickForUrl) {
                 $this->contactScoreService->recordEvent($recipient->contact, 'email_clicked', $recipient->campaign);
             }
         }
 
-        $url = (string) $request->query('url', '/');
+        if ($recipient->campaign !== null) {
+            $this->webhookDispatchService->dispatch('email.clicked', [
+                'campaign_id' => $recipient->campaign_id,
+                'contact_id' => $recipient->contact_id,
+                'url' => $url,
+                'clicked_at' => $clickedAt->toIso8601String(),
+            ], $recipient->campaign->user_id);
+        }
 
         return redirect()->away($url);
     }

@@ -25,6 +25,7 @@ export function PageBreadcrumbs({ pathname }: PageBreadcrumbsProps) {
     "credit-notes": t("sidebar.creditNotes"),
     reports: t("sidebar.reports"),
     settings: t("sidebar.settings"),
+    warmup: t("sidebar.warmup"),
     expenses: t("sidebar.expenses"),
     calendar: t("sidebar.calendar"),
     leads: t("sidebar.leads"),

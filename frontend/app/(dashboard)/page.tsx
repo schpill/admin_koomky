@@ -14,6 +14,7 @@ import { PipelineSummaryWidget } from "@/components/dashboard/pipeline-summary-w
 import { RecentDocumentsWidget } from "@/components/dashboard/recent-documents-widget";
 import { TopProductsWidget } from "@/components/dashboard/top-products-widget";
 import { TimeTrackedTodayWidget } from "@/components/dashboard/time-tracked-today-widget";
+import { WarmupStatusWidget } from "@/components/dashboard/warmup-status-widget";
 import { CurrencyAmount } from "@/components/shared/currency-amount";
 import { useDashboardStore } from "@/lib/stores/dashboard";
 import { useCalendarStore } from "@/lib/stores/calendar";
@@ -209,6 +210,14 @@ export default function DashboardPage() {
         minutesToday={stats?.time_tracked_today_widget?.minutes_today || 0}
         entriesCount={stats?.time_tracked_today_widget?.entries_count || 0}
       />
+
+      {stats?.warmup_widget ? (
+        <WarmupStatusWidget
+          currentDay={stats.warmup_widget.current_day}
+          currentDailyLimit={stats.warmup_widget.current_daily_limit}
+          sentToday={stats.warmup_widget.sent_today}
+        />
+      ) : null}
 
       {sequences.length > 0 ? (
         <DripSummaryWidget

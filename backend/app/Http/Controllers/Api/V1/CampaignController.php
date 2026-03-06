@@ -12,6 +12,7 @@ use App\Models\Campaign;
 use App\Models\CampaignAttachment;
 use App\Models\CampaignVariant;
 use App\Models\User;
+use App\Services\CampaignAnalyticsService;
 use App\Services\DynamicContentValidatorService;
 use App\Services\MailConfigService;
 use App\Services\PersonalizationService;
@@ -32,6 +33,7 @@ class CampaignController extends Controller
         private readonly SmsProviderManager $smsProviderManager,
         private readonly PersonalizationService $personalizationService,
         private readonly DynamicContentValidatorService $dynamicContentValidatorService,
+        private readonly CampaignAnalyticsService $campaignAnalyticsService,
     ) {}
 
     public function index(Request $request): JsonResponse
@@ -268,6 +270,46 @@ class CampaignController extends Controller
         }
 
         return $this->success(null, 'Test campaign sent successfully');
+    }
+
+    public function links(Campaign $campaign): JsonResponse
+    {
+        Gate::authorize('view', $campaign);
+
+        return $this->success(
+            $this->campaignAnalyticsService->getLinkStats($campaign)->values()->all(),
+            'Campaign link analytics retrieved successfully'
+        );
+    }
+
+    public function exportLinks(Campaign $campaign): \Symfony\Component\HttpFoundation\StreamedResponse
+    {
+        Gate::authorize('view', $campaign);
+
+        $rows = $this->campaignAnalyticsService->getLinkStats($campaign)->values();
+
+        return response()->stream(function () use ($rows): void {
+            $output = fopen('php://output', 'wb');
+            if ($output === false) {
+                return;
+            }
+
+            fputcsv($output, ['url', 'total_clicks', 'unique_clicks', 'click_rate']);
+
+            foreach ($rows as $row) {
+                fputcsv($output, [
+                    $row['url'],
+                    $row['total_clicks'],
+                    $row['unique_clicks'],
+                    $row['click_rate'],
+                ]);
+            }
+
+            fclose($output);
+        }, 200, [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="campaign-links-'.$campaign->id.'.csv"',
+        ]);
     }
 
     public function selectWinner(Request $request, Campaign $campaign): JsonResponse

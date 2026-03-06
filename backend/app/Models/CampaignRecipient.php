@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class CampaignRecipient extends Model
 {
@@ -71,5 +72,13 @@ class CampaignRecipient extends Model
     public function variant(): BelongsTo
     {
         return $this->belongsTo(CampaignVariant::class, 'variant_id');
+    }
+
+    /**
+     * @return HasMany<CampaignLinkClick, CampaignRecipient>
+     */
+    public function linkClicks(): HasMany
+    {
+        return $this->hasMany(CampaignLinkClick::class, 'recipient_id');
     }
 }

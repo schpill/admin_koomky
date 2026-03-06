@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Campaign;
+use App\Models\CampaignLinkClick;
 use App\Models\CampaignRecipient;
 use App\Models\CampaignVariant;
 use App\Models\SuppressedEmail;
@@ -76,6 +77,40 @@ class CampaignAnalyticsService
             ->map(fn (Campaign $campaign): array => $this->forCampaign($campaign))
             ->values()
             ->all();
+    }
+
+    /**
+     * @return Collection<int, array{url:string,total_clicks:int,unique_clicks:int,click_rate:float}>
+     */
+    public function getLinkStats(Campaign $campaign): Collection
+    {
+        $deliveredCount = (int) $campaign->recipients()
+            ->where(function ($query): void {
+                $query->whereNotNull('delivered_at')
+                    ->orWhereIn('status', ['delivered', 'opened', 'clicked']);
+            })
+            ->count();
+
+        /** @var Collection<int, CampaignLinkClick> $clicks */
+        $clicks = CampaignLinkClick::query()
+            ->where('campaign_id', $campaign->id)
+            ->orderByDesc('clicked_at')
+            ->get();
+
+        return $clicks
+            ->groupBy('url')
+            ->map(function (Collection $group, string $url) use ($deliveredCount): array {
+                $uniqueClicks = (int) $group->pluck('recipient_id')->filter()->unique()->count();
+
+                return [
+                    'url' => $url,
+                    'total_clicks' => $group->count(),
+                    'unique_clicks' => $uniqueClicks,
+                    'click_rate' => $deliveredCount > 0 ? round(($uniqueClicks / $deliveredCount) * 100, 2) : 0.0,
+                ];
+            })
+            ->sortByDesc('total_clicks')
+            ->values();
     }
 
     /**

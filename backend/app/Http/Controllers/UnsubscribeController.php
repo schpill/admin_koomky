@@ -6,6 +6,7 @@ use App\Models\CampaignRecipient;
 use App\Models\Contact;
 use App\Services\ContactScoreService;
 use App\Services\SuppressionService;
+use App\Services\WebhookDispatchService;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -17,6 +18,7 @@ class UnsubscribeController extends Controller
     public function __construct(
         private readonly SuppressionService $suppressionService,
         private readonly ContactScoreService $contactScoreService,
+        private readonly WebhookDispatchService $webhookDispatchService,
     ) {}
 
     public function __invoke(Request $request, Contact $contact): JsonResponse
@@ -46,6 +48,12 @@ class UnsubscribeController extends Controller
                 'unsubscribed',
                 $recipient->campaign_id
             );
+
+            $this->webhookDispatchService->dispatch('email.unsubscribed', [
+                'campaign_id' => $recipient->campaign_id,
+                'contact_id' => $contact->id,
+                'unsubscribed_at' => $contact->email_unsubscribed_at?->toIso8601String(),
+            ], $recipient->campaign->user_id);
         }
 
         return $this->success([

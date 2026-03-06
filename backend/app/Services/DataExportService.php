@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Campaign;
+use App\Models\CampaignLinkClick;
 use App\Models\CampaignTemplate;
 use App\Models\Client;
 use App\Models\Contact;
@@ -13,6 +14,7 @@ use App\Models\DocumentChunk;
 use App\Models\DripEnrollment;
 use App\Models\DripSequence;
 use App\Models\DripStep;
+use App\Models\EmailWarmupPlan;
 use App\Models\Expense;
 use App\Models\ExpenseCategory;
 use App\Models\ImportSession;
@@ -70,6 +72,14 @@ class DataExportService
         $campaigns = Campaign::query()
             ->where('user_id', $user->id)
             ->with(['recipients', 'variants'])
+            ->get();
+
+        $campaignLinkClicks = CampaignLinkClick::query()
+            ->where('user_id', $user->id)
+            ->get();
+
+        $emailWarmupPlans = EmailWarmupPlan::query()
+            ->where('user_id', $user->id)
             ->get();
 
         $dripSequences = DripSequence::query()
@@ -209,6 +219,7 @@ class DataExportService
             'quotes' => $quotes->toArray(),
             'credit_notes' => $creditNotes->toArray(),
             'campaigns' => $campaigns->toArray(),
+            'campaign_link_clicks' => $campaignLinkClicks->toArray(),
             'campaign_variants' => $campaigns
                 ->flatMap(fn (Campaign $campaign) => $campaign->variants->map(fn ($variant) => [
                     'id' => $variant->id,
@@ -234,6 +245,7 @@ class DataExportService
                 ->toArray(),
             'drip_enrollments' => $dripEnrollments->toArray(),
             'suppressed_emails' => $suppressedEmails->toArray(),
+            'email_warmup_plans' => $emailWarmupPlans->toArray(),
             'scoring_rules' => $scoringRules->toArray(),
             'contact_score_events' => $contactScoreEvents->toArray(),
             'segments' => Segment::query()

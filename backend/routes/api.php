@@ -22,6 +22,7 @@ use App\Http\Controllers\Api\V1\DataExportController;
 use App\Http\Controllers\Api\V1\DataImportController;
 use App\Http\Controllers\Api\V1\DocumentController;
 use App\Http\Controllers\Api\V1\DripSequenceController;
+use App\Http\Controllers\Api\V1\EmailWarmupPlanController;
 use App\Http\Controllers\Api\V1\ExpenseCategoryController;
 use App\Http\Controllers\Api\V1\ExpenseController;
 use App\Http\Controllers\Api\V1\ExpenseReportController;
@@ -166,6 +167,12 @@ Route::prefix('v1')->group(function () {
         Route::post('scoring-rules', [ScoringRuleController::class, 'store']);
         Route::put('scoring-rules/{ruleId}', [ScoringRuleController::class, 'update']);
         Route::delete('scoring-rules/{ruleId}', [ScoringRuleController::class, 'destroy']);
+        Route::get('warmup-plans', [EmailWarmupPlanController::class, 'index']);
+        Route::post('warmup-plans', [EmailWarmupPlanController::class, 'store']);
+        Route::put('warmup-plans/{plan}', [EmailWarmupPlanController::class, 'update']);
+        Route::delete('warmup-plans/{plan}', [EmailWarmupPlanController::class, 'destroy']);
+        Route::patch('warmup-plans/{plan}/pause', [EmailWarmupPlanController::class, 'pause']);
+        Route::patch('warmup-plans/{plan}/resume', [EmailWarmupPlanController::class, 'resume']);
 
         Route::get('export/full', [DataExportController::class, 'full']);
         Route::post('import/{entity}', [DataImportController::class, 'import']);
@@ -238,6 +245,8 @@ Route::prefix('v1')->group(function () {
         // Campaigns
         Route::get('campaigns/compare', [CampaignAnalyticsController::class, 'compare']);
         Route::apiResource('campaigns', CampaignController::class);
+        Route::get('campaigns/{campaign}/links', [CampaignController::class, 'links']);
+        Route::get('campaigns/{campaign}/links/export', [CampaignController::class, 'exportLinks']);
         Route::post('campaigns/{campaign}/send', [CampaignController::class, 'send']);
         Route::post('campaigns/{campaign}/pause', [CampaignController::class, 'pause']);
         Route::post('campaigns/{campaign}/duplicate', [CampaignController::class, 'duplicate']);
