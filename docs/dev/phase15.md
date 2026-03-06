@@ -6,7 +6,13 @@
 
 ---
 
-## Sprint 47 — Backend Test Multi-Email & Personnalisation (Weeks 123–125)
+## Sprint 47 — Backend Test Multi-Email, Personnalisation & Déduplication (Weeks 123–125)
+
+### Infrastructure & Database
+
+| ID              | Task                                                                                                                                                                          | Status | Owner |
+|-----------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------|-------|
+| P15-BE-INF-00   | Migration `add_unique_contact_constraint_to_campaign_recipients_table` — Contrainte unique `(campaign_id, contact_id)`. Filet de sécurité DB-level contre les doublons.        | todo   | —     |
 
 ### Backend Tasks
 
@@ -16,6 +22,7 @@
 | P15-BE-002  | Extend `CampaignController::testSend()` — Validation `emails[]` (1–5 items). Résolution via `renderPreview()`. Boucle d'envoi multi-adresses.                                                                   | todo   | —     |
 | P15-BE-003  | Extend `CampaignTestMail` — Accepter `renderedBody` et `renderedSubject` pré-résolus.                                                                                                                           | todo   | —     |
 | P15-BE-004  | Create `StoreCampaignTestRequest` — `emails[]` (1–5, email max 255), `phones[]` (1–3, string max 20).                                                                                                           | todo   | —     |
+| P15-BE-004b | Extend `SendEmailCampaignJob` — Déduplication : `->distinct()` sur query contacts + `CampaignRecipient::firstOrCreate(['campaign_id', 'contact_id'])`. Un contact matchant N critères du segment → 1 seul email. | todo   | —     |
 
 ### Backend Tests (TDD)
 
@@ -23,6 +30,7 @@
 |-------------|-----------------------------------------------------------------------------------|--------|-------|
 | P15-BT-001  | `tests/Unit/Services/PersonalizationServiceTest.php` (extension)                  | todo   | —     |
 | P15-BT-002  | `tests/Feature/Campaigns/CampaignTestSendTest.php`                                | todo   | —     |
+| P15-BT-002b | `tests/Feature/Campaigns/CampaignDeduplicateRecipientsTest.php`                   | todo   | —     |
 
 ---
 
@@ -121,8 +129,8 @@
 
 | Sprint    | Semaines | Livrable principal                                              | Tasks                        |
 |-----------|----------|-----------------------------------------------------------------|------------------------------|
-| Sprint 47 | 123–125  | Test multi-email + variables résolues dans test + nouvelles vars | 4 BE + 2 tests               |
-| Sprint 48 | 126–128  | A/B Testing backend (model, split job, tracking, analytics)     | 3 INF + 11 BE + 4 tests      |
-| Sprint 49 | 129–131  | Frontend A/B config + résultats + variables panel + test modal  | 8 FE + 7 tests               |
-| Sprint 50 | 132–134  | Hardening GDPR, PHPStan, ESLint, dashboard widget              | 3 BE/FE + 1 test             |
-| **Total** | **12 sem** | **v2.1.0**                                                  | **~29 tâches + 14 tests**    |
+| Sprint 47 | 123–125  | Test multi-email + variables résolues + déduplication destinataires | 1 INF + 5 BE + 3 tests       |
+| Sprint 48 | 126–128  | A/B Testing backend (model, split job, tracking, analytics)        | 3 INF + 11 BE + 4 tests      |
+| Sprint 49 | 129–131  | Frontend A/B config + résultats + variables panel + test modal     | 8 FE + 7 tests               |
+| Sprint 50 | 132–134  | Hardening GDPR, PHPStan, ESLint, dashboard widget                 | 3 BE/FE + 1 test             |
+| **Total** | **12 sem** | **v2.1.0**                                                     | **~31 tâches + 15 tests**    |

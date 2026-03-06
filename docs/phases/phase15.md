@@ -3,10 +3,10 @@
 | Field               | Value                                                        |
 |---------------------|--------------------------------------------------------------|
 | **Phase**           | 15                                                           |
-| **Name**            | Email Campaign Enhancements — Test, Personnalisation & A/B   |
+| **Name**            | Email Campaign Enhancements — Test, Personnalisation, Déduplication & A/B |
 | **Duration**        | Weeks 123–134 (12 weeks)                                     |
 | **Milestone**       | M15 — v2.1.0 Release                                        |
-| **PRD Sections**    | §4.22 FR-TEST (nouveau), §4.23 FR-VARS (nouveau), §4.24 FR-AB (nouveau) |
+| **PRD Sections**    | §4.22 FR-TEST (nouveau), §4.23 FR-VARS (nouveau), §4.24 FR-DEDUP (nouveau), §4.25 FR-AB (nouveau) |
 | **Prerequisite**    | Phase 14 fully completed and tagged `v2.0.0`                 |
 | **Status**          | todo                                                         |
 
@@ -22,7 +22,8 @@
 | P15-OBJ-4 | Ajouter une **interface d'insertion de variables** dans l'éditeur de campagne (liste cliquable des balises disponibles)                  |
 | P15-OBJ-5 | Implémenter le **A/B Testing** de campagnes email : deux variantes (sujet et/ou contenu), split configurable, sélection automatique ou manuelle du gagnant |
 | P15-OBJ-6 | Exposer des **analytics A/B** comparant open rate, click rate et conversion par variante                                               |
-| P15-OBJ-7 | Maintenir une couverture de tests >= 80% backend et frontend                                                                           |
+| P15-OBJ-7 | Garantir qu'un contact ne reçoit **qu'un seul exemplaire** d'une campagne, même s'il correspond à plusieurs critères du segment (ex. tagué "coiffeur" ET "barbier") |
+| P15-OBJ-8 | Maintenir une couverture de tests >= 80% backend et frontend                                                                           |
 
 ---
 
@@ -51,6 +52,7 @@
 | Variables `industry`, `department` | Non whitelistées dans `PersonalizationService` | Ajout dans le resolver générique `client.*` |
 | Variables `address`, `zip_code` | Absentes du resolver | Ajout dans le resolver générique `client.*` |
 | Bouton d'insertion de variables | Aucune UI | Panel "Variables disponibles" dans l'éditeur |
+| Doublons de destinataires au sein d'une campagne | Un contact matchant plusieurs critères du segment (ex. tags "coiffeur" ET "barbier") peut recevoir l'email N fois — aucune contrainte unique sur `campaign_recipients` | Contrainte unique `(campaign_id, contact_id)` en DB + `->distinct()` + `firstOrCreate` dans `SendEmailCampaignJob` |
 | A/B Testing | Non implémenté | `CampaignVariant` model + split job + sélection gagnant |
 | Analytics A/B | Inexistantes | Extension `CampaignAnalyticsController` |
 
@@ -119,7 +121,20 @@ La whitelist du resolver générique `client.*` passe de :
 à :
 `['name', 'email', 'phone', 'city', 'country', 'address', 'zip_code', 'industry', 'department', 'reference']`
 
-### 3.5 Test multi-destinataires
+### 3.5 Déduplication des destinataires (FR-DEDUP)
+
+Un contact peut correspondre à plusieurs critères d'un même segment (ex. tagué "coiffeur" ET "barbier", ou avoir `industry = "Coiffeur"` ET appartenir à un groupe géographique). Sans protection, le job d'envoi créerait plusieurs `CampaignRecipient` pour le même contact dans la même campagne, entraînant N envois.
+
+Deux couches de protection complémentaires :
+
+| Couche | Mécanisme | Avantage |
+|--------|-----------|----------|
+| Base de données | Contrainte unique `(campaign_id, contact_id)` sur `campaign_recipients` | Filet de sécurité absolu, empêche tout doublon même en cas de race condition |
+| Application | `->distinct()` sur la query contacts dans `SendEmailCampaignJob` + `firstOrCreate(['campaign_id', 'contact_id'])` au lieu de `create()` | Évite les exceptions DB, silencieux sur les tentatives de doublon |
+
+**Périmètre** : s'applique à toutes les campagnes email (A/B et non-A/B). Ne concerne pas les doublons *inter-campagnes* — si un prospect est ciblé par deux campagnes distinctes sur des sujets différents, il reçoit les deux emails normalement.
+
+### 3.6 Test multi-destinataires
 
 Backend : `testSend` accepte `emails[]` (array de 1 à 5 adresses, chacune validée `email|max:255`). Le body et le subject sont résolus une fois via `PersonalizationService::renderPreview()`, puis envoyés à chaque adresse.
 
@@ -151,7 +166,17 @@ Frontend : champ de saisie multi-valeurs (tags input) dans `TestSendModal`, avec
 | Panel "Variables disponibles" dans l'éditeur (insertion one-click) | Medium | Yes |
 | Test d'envoi SMS multi-numéros (1–3) | Low | Yes |
 
-### 5.2 Module A/B Testing (FR-AB)
+### 5.2 Module Déduplication des destinataires (FR-DEDUP)
+
+| Feature | Priority | Included |
+|---------|----------|----------|
+| Contrainte unique `(campaign_id, contact_id)` sur `campaign_recipients` | High | Yes |
+| `->distinct()` sur la query contacts dans `SendEmailCampaignJob` | High | Yes |
+| `firstOrCreate` au lieu de `create()` pour `CampaignRecipient` dans le job | High | Yes |
+| Déduplication également appliquée aux campagnes A/B | High | Yes |
+| Déduplication inter-campagnes (un prospect ne reçoit jamais deux campagnes distinctes) | Low | No |
+
+### 5.3 Module A/B Testing (FR-AB)
 
 | Feature | Priority | Included |
 |---------|----------|----------|
@@ -174,7 +199,13 @@ Frontend : champ de saisie multi-valeurs (tags input) dans `TestSendModal`, avec
 
 ## 6. Detailed Sprint Breakdown
 
-### 6.1 Sprint 47 — Backend Test Multi-Email & Personnalisation (Weeks 123–125)
+### 6.1 Sprint 47 — Backend Test Multi-Email, Personnalisation & Déduplication (Weeks 123–125)
+
+#### 6.1.0 Infrastructure & Database
+
+| Migration | Description |
+|-----------|-------------|
+| `add_unique_contact_constraint_to_campaign_recipients_table` | Contrainte unique `(campaign_id, contact_id)` sur `campaign_recipients`. Protège au niveau DB contre tout doublon de destinataire au sein d'une même campagne, quelle qu'en soit l'origine (race condition, bug applicatif, segment mal construit). |
 
 #### 6.1.1 Backend — Services & Controller
 
@@ -184,6 +215,7 @@ Frontend : champ de saisie multi-valeurs (tags input) dans `TestSendModal`, avec
 | P15-BE-002  | Extend `CampaignController::testSend()` — Remplacer la validation `email` string unique par `emails` array (required, min 1, max 5 items, chaque item `email|max:255`). Résoudre subject et body via `PersonalizationService::renderPreview()` avant envoi. Boucler sur chaque adresse. | FR-TEST |
 | P15-BE-003  | Extend `CampaignTestMail` — Accepter un `string $renderedBody` et `string $renderedSubject` pré-résolus. Modifier `build()` pour les utiliser. | FR-TEST |
 | P15-BE-004  | Create `StoreCampaignTestRequest` — Règles email : `emails` required array, min:1, max:5, `emails.*` rule `email|max:255`. Règles SMS : `phones` array, min:1, max:3, `phones.*` string max:20. | FR-TEST |
+| P15-BE-004b | Extend `SendEmailCampaignJob` — Déduplication des destinataires : (1) ajouter `->distinct()` sur la query contacts avant le cursor ; (2) remplacer `CampaignRecipient::create()` par `CampaignRecipient::firstOrCreate(['campaign_id' => …, 'contact_id' => …], […autres champs…])` — un contact matchant N critères du segment n'est créé qu'une fois et ne reçoit qu'un seul email par campagne. | FR-DEDUP |
 
 #### 6.1.2 Backend Tests — Personnalisation & Test (TDD)
 
@@ -191,6 +223,7 @@ Frontend : champ de saisie multi-valeurs (tags input) dans `TestSendModal`, avec
 |-----------|-----------|
 | `tests/Unit/Services/PersonalizationServiceTest.php` (extension) | `renderPreview()` remplace `{{first_name}}` par "Marie", `{{client.industry}}` par "Wedding Planner", `{{client.department}}` par "75", `{{client.address}}` par "12 rue de la Paix", `{{client.zip_code}}` par "75001", variable inconnue → chaîne vide ; `render()` — `{{client.industry}}` résolu depuis client réel, `{{client.department}}` résolu, `{{client.address}}` résolu, `{{client.zip_code}}` résolu |
 | `tests/Feature/Campaigns/CampaignTestSendTest.php` | `POST /campaigns/{id}/test` avec `emails[3]` → 200 (3 envois), 0 emails → 422, 6 emails → 422, adresse malformée → 422, subject/body reçus avec valeurs fictives (pas de `{{first_name}}` brut), ownership 403 |
+| `tests/Feature/Campaigns/CampaignDeduplicateRecipientsTest.php` | Contact matchant 2 critères du segment → 1 seul `CampaignRecipient` créé + 1 seul email envoyé ; `CampaignRecipient::firstOrCreate()` appelé deux fois pour le même contact+campaign → 2ème appel silencieux (pas d'exception) ; contrainte unique DB rejette un `INSERT` direct en doublon |
 
 ---
 
@@ -315,8 +348,8 @@ Frontend : champ de saisie multi-valeurs (tags input) dans `TestSendModal`, avec
 
 | Sprint    | Semaines | Livrable principal                                              | Tasks                        |
 |-----------|----------|-----------------------------------------------------------------|------------------------------|
-| Sprint 47 | 123–125  | Test multi-email + variables résolues dans test + nouvelles vars | 4 BE + 2 tests               |
-| Sprint 48 | 126–128  | A/B Testing backend (model, split job, tracking, analytics)     | 3 INF + 11 BE + 4 tests      |
-| Sprint 49 | 129–131  | Frontend A/B config + résultats + variables panel + test modal  | 8 FE + 7 tests               |
-| Sprint 50 | 132–134  | Hardening GDPR, PHPStan, ESLint, dashboard widget              | 3 BE/FE + 1 test             |
-| **Total** | **12 sem** | **v2.1.0**                                                  | **~29 tâches + 14 tests**    |
+| Sprint 47 | 123–125  | Test multi-email + variables résolues + déduplication destinataires | 1 INF + 5 BE + 3 tests       |
+| Sprint 48 | 126–128  | A/B Testing backend (model, split job, tracking, analytics)        | 3 INF + 11 BE + 4 tests      |
+| Sprint 49 | 129–131  | Frontend A/B config + résultats + variables panel + test modal     | 8 FE + 7 tests               |
+| Sprint 50 | 132–134  | Hardening GDPR, PHPStan, ESLint, dashboard widget                 | 3 BE/FE + 1 test             |
+| **Total** | **12 sem** | **v2.1.0**                                                     | **~31 tâches + 15 tests**    |
