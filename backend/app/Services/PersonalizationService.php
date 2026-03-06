@@ -69,7 +69,7 @@ class PersonalizationService
         $content = strtr($content, $baseVariables);
         $content = $this->rewriteTrackableLinks($content, $trackingToken);
 
-        return preg_replace_callback('/\{\{\s*([a-zA-Z0-9_\.]+)\s*\}\}/', function (array $matches) use ($contact, $client): string {
+        $rendered = preg_replace_callback('/\{\{\s*([a-zA-Z0-9_\.]+)\s*\}\}/', function (array $matches) use ($contact, $client): string {
             $key = (string) $matches[1];
 
             if ($key === 'email_score') {
@@ -91,7 +91,9 @@ class PersonalizationService
             }
 
             return '';
-        }, $content) ?? $content;
+        }, $content);
+
+        return is_string($rendered) ? $rendered : $content;
     }
 
     private function rewriteTrackableLinks(string $content, ?string $trackingToken): string
@@ -100,7 +102,7 @@ class PersonalizationService
             return $content;
         }
 
-        return (string) preg_replace_callback('/href=["\']([^"\']+)["\']/i', function (array $matches) use ($trackingToken): string {
+        $rewritten = preg_replace_callback('/href=["\']([^"\']+)["\']/i', function (array $matches) use ($trackingToken): string {
             $destination = (string) $matches[1];
 
             if (str_starts_with($destination, 'mailto:') || str_starts_with($destination, 'tel:')) {
@@ -114,7 +116,9 @@ class PersonalizationService
             $tracking = url('/t/click/'.$trackingToken).'?url='.urlencode($destination);
 
             return 'href="'.$tracking.'"';
-        }, $content) ?? $content;
+        }, $content);
+
+        return is_string($rewritten) ? $rewritten : $content;
     }
 
     /**
