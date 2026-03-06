@@ -4,13 +4,16 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Campaigns\StoreCampaignRequest;
+use App\Http\Requests\Api\V1\Campaigns\StoreCampaignTestRequest;
 use App\Jobs\SendEmailCampaignJob;
 use App\Jobs\SendSmsCampaignJob;
 use App\Mail\CampaignTestMail;
 use App\Models\Campaign;
 use App\Models\CampaignAttachment;
+use App\Models\CampaignVariant;
 use App\Models\User;
 use App\Services\MailConfigService;
+use App\Services\PersonalizationService;
 use App\Services\Sms\SmsProviderManager;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
@@ -25,7 +28,8 @@ class CampaignController extends Controller
 
     public function __construct(
         private readonly MailConfigService $mailConfigService,
-        private readonly SmsProviderManager $smsProviderManager
+        private readonly SmsProviderManager $smsProviderManager,
+        private readonly PersonalizationService $personalizationService,
     ) {}
 
     public function index(Request $request): JsonResponse
@@ -72,6 +76,9 @@ class CampaignController extends Controller
             if ($attachmentTotalSize > 5 * 1024 * 1024) {
                 abort(422, 'Total attachment size cannot exceed 5MB');
             }
+            $isAbTest = (bool) ($validated['is_ab_test'] ?? false);
+            $resolvedSubject = (string) ($validated['subject'] ?? ($isAbTest ? $this->fallbackVariantSubject($validated) : ''));
+            $resolvedContent = (string) ($validated['content'] ?? ($isAbTest ? $this->fallbackVariantContent($validated) : ''));
 
             /** @var Campaign $campaign */
             $campaign = Campaign::query()->create([
@@ -81,25 +88,29 @@ class CampaignController extends Controller
                 'name' => $validated['name'],
                 'type' => $validated['type'],
                 'status' => $validated['status'] ?? 'draft',
-                'subject' => $validated['subject'] ?? null,
-                'content' => $validated['content'],
+                'subject' => $resolvedSubject !== '' ? $resolvedSubject : null,
+                'content' => $resolvedContent,
                 'scheduled_at' => $validated['scheduled_at'] ?? null,
                 'settings' => $validated['settings'] ?? null,
+                'is_ab_test' => $isAbTest,
+                'ab_winner_criteria' => $validated['ab_winner_criteria'] ?? null,
+                'ab_auto_select_after_hours' => $validated['ab_auto_select_after_hours'] ?? null,
             ]);
 
             $this->syncAttachments($campaign, $attachments);
+            $this->syncVariants($campaign, $validated);
 
             return $campaign;
         });
 
-        return $this->success($campaign->load(['segment', 'template', 'attachments']), 'Campaign created successfully', 201);
+        return $this->success($campaign->load(['segment', 'template', 'attachments', 'variants', 'winnerVariant']), 'Campaign created successfully', 201);
     }
 
     public function show(Campaign $campaign): JsonResponse
     {
         Gate::authorize('view', $campaign);
 
-        return $this->success($campaign->load(['segment', 'template', 'attachments', 'recipients.contact']), 'Campaign retrieved successfully');
+        return $this->success($campaign->load(['segment', 'template', 'attachments', 'recipients.contact', 'variants', 'winnerVariant']), 'Campaign retrieved successfully');
     }
 
     public function update(StoreCampaignRequest $request, Campaign $campaign): JsonResponse
@@ -115,16 +126,25 @@ class CampaignController extends Controller
                 abort(422, 'Total attachment size cannot exceed 5MB');
             }
 
-            $campaign->update($validated);
+            $updatePayload = $validated;
+            $isAbTest = (bool) ($validated['is_ab_test'] ?? $campaign->is_ab_test);
+
+            if ($isAbTest) {
+                $updatePayload['subject'] = $validated['subject'] ?? $this->fallbackVariantSubject($validated) ?? $campaign->subject;
+                $updatePayload['content'] = $validated['content'] ?? $this->fallbackVariantContent($validated) ?? $campaign->content;
+            }
+
+            $campaign->update($updatePayload);
 
             if (array_key_exists('attachments', $validated)) {
                 $this->syncAttachments($campaign, $attachments);
             }
+            $this->syncVariants($campaign, $validated);
 
             return $campaign;
         });
 
-        return $this->success($campaign->load(['segment', 'template', 'attachments']), 'Campaign updated successfully');
+        return $this->success($campaign->load(['segment', 'template', 'attachments', 'variants', 'winnerVariant']), 'Campaign updated successfully');
     }
 
     public function destroy(Campaign $campaign): JsonResponse
@@ -209,36 +229,65 @@ class CampaignController extends Controller
         return $this->success($clone->load(['segment', 'template', 'attachments']), 'Campaign duplicated successfully', 201);
     }
 
-    public function testSend(Request $request, Campaign $campaign): JsonResponse
+    public function testSend(StoreCampaignTestRequest $request, Campaign $campaign): JsonResponse
     {
         Gate::authorize('view', $campaign);
 
         /** @var User $user */
         $user = $request->user();
+        $validated = $request->validated();
 
         if ($campaign->type === 'sms') {
-            $validated = $request->validate([
-                'phone' => ['required', 'string', 'max:20'],
-            ]);
+            $phones = array_values(array_filter($validated['phones'] ?? [], fn (mixed $phone): bool => is_string($phone) && $phone !== ''));
 
-            $this->smsProviderManager->send(
-                (array) ($user->sms_settings ?? []),
-                (string) $validated['phone'],
-                (string) $campaign->content
-            );
+            foreach ($phones as $phone) {
+                $this->smsProviderManager->send(
+                    (array) ($user->sms_settings ?? []),
+                    (string) $phone,
+                    (string) $campaign->content
+                );
+            }
         } else {
-            $validated = $request->validate([
-                'email' => ['required', 'email', 'max:255'],
-            ]);
+            $emails = array_values(array_filter($validated['emails'] ?? [], fn (mixed $email): bool => is_string($email) && $email !== ''));
+            $renderedSubject = $this->personalizationService->renderPreview((string) ($campaign->subject ?? 'Campaign test'));
+            $renderedBody = $this->personalizationService->renderPreview((string) $campaign->content);
 
             $mailer = $this->mailConfigService->configureForUser($user);
 
-            Mail::mailer($mailer)
-                ->to((string) $validated['email'])
-                ->send(new CampaignTestMail($campaign));
+            foreach ($emails as $email) {
+                Mail::mailer($mailer)
+                    ->to((string) $email)
+                    ->send(new CampaignTestMail($renderedSubject, $renderedBody));
+            }
         }
 
         return $this->success(null, 'Test campaign sent successfully');
+    }
+
+    public function selectWinner(Request $request, Campaign $campaign): JsonResponse
+    {
+        Gate::authorize('update', $campaign);
+
+        if (! $campaign->isAbTest()) {
+            return $this->error('Campaign is not configured as A/B test', 422);
+        }
+
+        $validated = $request->validate([
+            'variant_id' => [
+                'required',
+                'uuid',
+                \Illuminate\Validation\Rule::exists('campaign_variants', 'id')
+                    ->where(fn ($query) => $query->where('campaign_id', $campaign->id)),
+            ],
+        ]);
+
+        $campaign->update([
+            'ab_winner_variant_id' => $validated['variant_id'],
+            'ab_winner_selected_at' => now(),
+            'ab_winner_criteria' => 'manual',
+        ]);
+
+        return $this->success($campaign->fresh()->load(['variants', 'winnerVariant']), 'A/B winner selected successfully');
     }
 
     /**
@@ -293,5 +342,86 @@ class CampaignController extends Controller
                 'size_bytes' => (int) ($attachment['size_bytes'] ?? 0),
             ]);
         }
+    }
+
+    /**
+     * @param  array<string, mixed>  $validated
+     */
+    private function syncVariants(Campaign $campaign, array $validated): void
+    {
+        if (! $campaign->isAbTest()) {
+            $campaign->variants()->delete();
+
+            return;
+        }
+
+        $rawVariants = $validated['variants'] ?? [];
+        if (! is_array($rawVariants) || $rawVariants === []) {
+            return;
+        }
+
+        foreach ($rawVariants as $rawVariant) {
+            if (! is_array($rawVariant)) {
+                continue;
+            }
+
+            CampaignVariant::query()->updateOrCreate(
+                [
+                    'campaign_id' => $campaign->id,
+                    'label' => (string) ($rawVariant['label'] ?? ''),
+                ],
+                [
+                    'subject' => $rawVariant['subject'] ?? null,
+                    'content' => $rawVariant['content'] ?? null,
+                    'send_percent' => (int) ($rawVariant['send_percent'] ?? 50),
+                ]
+            );
+        }
+    }
+
+    /**
+     * @param  array<string, mixed>  $validated
+     */
+    private function fallbackVariantSubject(array $validated): ?string
+    {
+        $variants = $validated['variants'] ?? [];
+        if (! is_array($variants)) {
+            return null;
+        }
+
+        foreach ($variants as $variant) {
+            if (! is_array($variant)) {
+                continue;
+            }
+
+            if ((string) ($variant['label'] ?? '') === 'A') {
+                return isset($variant['subject']) && is_string($variant['subject']) ? $variant['subject'] : null;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param  array<string, mixed>  $validated
+     */
+    private function fallbackVariantContent(array $validated): ?string
+    {
+        $variants = $validated['variants'] ?? [];
+        if (! is_array($variants)) {
+            return null;
+        }
+
+        foreach ($variants as $variant) {
+            if (! is_array($variant)) {
+                continue;
+            }
+
+            if ((string) ($variant['label'] ?? '') === 'A') {
+                return isset($variant['content']) && is_string($variant['content']) ? $variant['content'] : null;
+            }
+        }
+
+        return null;
     }
 }

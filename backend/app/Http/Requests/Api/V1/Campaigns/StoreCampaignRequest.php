@@ -5,6 +5,7 @@ namespace App\Http\Requests\Api\V1\Campaigns;
 use App\Models\Campaign;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Validator;
 
 class StoreCampaignRequest extends FormRequest
 {
@@ -22,10 +23,15 @@ class StoreCampaignRequest extends FormRequest
         $required = $isUpdate ? 'sometimes' : 'required';
         $routeCampaign = $this->route('campaign');
         $routeCampaignType = $routeCampaign instanceof Campaign ? $routeCampaign->type : null;
+        $isAbTest = filter_var($this->input('is_ab_test', false), FILTER_VALIDATE_BOOLEAN);
+        $isEmailCampaign = (string) $this->input('type', $routeCampaignType ?? '') === 'email';
+        $requiresRootSubject = $isEmailCampaign && ! $isAbTest && ! $isUpdate;
+        $requiresRootContent = ! ($isEmailCampaign && $isAbTest);
 
         return [
             'name' => [$required, 'string', 'max:255'],
             'type' => [$required, Rule::in(['email', 'sms'])],
+            'is_ab_test' => ['nullable', 'boolean'],
             'segment_id' => [
                 'nullable',
                 'uuid',
@@ -45,9 +51,14 @@ class StoreCampaignRequest extends FormRequest
                 'nullable',
                 'string',
                 'max:255',
-                Rule::requiredIf(fn (): bool => (string) $this->input('type', $routeCampaignType ?? '') === 'email' && ! $isUpdate),
+                Rule::requiredIf(fn (): bool => $requiresRootSubject),
             ],
-            'content' => [$required, 'string', 'min:1'],
+            'content' => [
+                $requiresRootContent ? $required : 'nullable',
+                'string',
+                Rule::requiredIf(fn (): bool => $requiresRootContent && ! $isUpdate),
+                'min:1',
+            ],
             'scheduled_at' => ['nullable', 'date', 'after:now'],
             'settings' => ['nullable', 'array'],
             'settings.throttle_rate_per_minute' => ['nullable', 'integer', 'min:1', 'max:2000'],
@@ -56,6 +67,58 @@ class StoreCampaignRequest extends FormRequest
             'attachments.*.path' => ['required_with:attachments', 'string', 'max:500'],
             'attachments.*.mime_type' => ['required_with:attachments', 'string', 'max:100'],
             'attachments.*.size_bytes' => ['required_with:attachments', 'integer', 'min:1'],
+            'variants' => [
+                Rule::requiredIf(fn (): bool => $isEmailCampaign && $isAbTest),
+                'array',
+                'min:2',
+                'max:2',
+            ],
+            'variants.*.label' => ['required_with:variants', Rule::in(['A', 'B'])],
+            'variants.*.subject' => ['nullable', 'string', 'max:255'],
+            'variants.*.content' => ['nullable', 'string'],
+            'variants.*.send_percent' => ['required_with:variants', 'integer', 'min:1', 'max:99'],
+            'ab_winner_criteria' => ['nullable', Rule::in(['open_rate', 'click_rate', 'manual'])],
+            'ab_auto_select_after_hours' => ['nullable', 'integer', 'min:1', 'max:72'],
         ];
+    }
+
+    public function withValidator(Validator $validator): void
+    {
+        $validator->after(function (Validator $validator): void {
+            $type = (string) $this->input('type');
+            $isAbTest = filter_var($this->input('is_ab_test', false), FILTER_VALIDATE_BOOLEAN);
+
+            if (! ($type === 'email' && $isAbTest)) {
+                return;
+            }
+
+            $variants = $this->input('variants');
+            if (! is_array($variants) || $variants === []) {
+                return;
+            }
+
+            $labels = [];
+            $sum = 0;
+            foreach ($variants as $variant) {
+                if (! is_array($variant)) {
+                    continue;
+                }
+                $labels[] = (string) ($variant['label'] ?? '');
+                $sum += (int) ($variant['send_percent'] ?? 0);
+            }
+
+            sort($labels);
+            if ($labels !== ['A', 'B']) {
+                $validator->errors()->add('variants', 'A/B testing requires exactly two variants with labels A and B.');
+            }
+
+            if ($sum !== 100) {
+                $validator->errors()->add('variants', 'The sum of variants send_percent must equal 100.');
+            }
+
+            if ($type !== 'email') {
+                $validator->errors()->add('is_ab_test', 'A/B testing is only available for email campaigns.');
+            }
+        });
     }
 }

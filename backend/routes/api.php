@@ -234,6 +234,7 @@ Route::prefix('v1')->group(function () {
         Route::post('campaigns/{campaign}/pause', [CampaignController::class, 'pause']);
         Route::post('campaigns/{campaign}/duplicate', [CampaignController::class, 'duplicate']);
         Route::post('campaigns/{campaign}/test', [CampaignController::class, 'testSend']);
+        Route::post('campaigns/{campaign}/ab/select-winner', [CampaignController::class, 'selectWinner']);
         Route::get('campaigns/{campaign}/analytics', [CampaignAnalyticsController::class, 'show']);
         Route::get('campaigns/{campaign}/analytics/export', [CampaignAnalyticsController::class, 'export']);
         Route::apiResource('campaign-templates', CampaignTemplateController::class)->only(['index', 'store', 'update', 'destroy']);

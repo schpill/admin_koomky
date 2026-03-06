@@ -289,6 +289,25 @@ export default function DashboardPage() {
         </Card>
       ) : null}
 
+      {(stats?.active_ab_tests_count || 0) > 0 ? (
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base">A/B Tests actifs</CardTitle>
+          </CardHeader>
+          <CardContent className="flex items-center justify-between gap-4">
+            <p className="text-2xl font-bold">
+              {stats?.active_ab_tests_count || 0}
+            </p>
+            <Link
+              href="/campaigns"
+              className="text-sm font-medium text-primary hover:underline"
+            >
+              Voir les campagnes
+            </Link>
+          </CardContent>
+        </Card>
+      ) : null}
+
       <div className="grid gap-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
         <PipelineSummaryWidget />
         <CampaignSummaryWidget

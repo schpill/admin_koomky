@@ -16,6 +16,7 @@ class CampaignRecipient extends Model
     protected $fillable = [
         'campaign_id',
         'contact_id',
+        'variant_id',
         'email',
         'phone',
         'status',
@@ -59,5 +60,13 @@ class CampaignRecipient extends Model
     public function contact(): BelongsTo
     {
         return $this->belongsTo(Contact::class);
+    }
+
+    /**
+     * @return BelongsTo<CampaignVariant, CampaignRecipient>
+     */
+    public function variant(): BelongsTo
+    {
+        return $this->belongsTo(CampaignVariant::class, 'variant_id');
     }
 }

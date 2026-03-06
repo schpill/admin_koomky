@@ -42,7 +42,7 @@ return [
     */
 
     'queue' => [
-        'connection' => env('SCOUT_QUEUE_CONNECTION', 'redis'),
+        'connection' => env('SCOUT_QUEUE_CONNECTION', env('QUEUE_CONNECTION', 'sync')),
         'queue' => env('SCOUT_QUEUE', 'default'),
     ],
 
