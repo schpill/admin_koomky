@@ -3,8 +3,8 @@
 namespace App\Services;
 
 use App\Models\Contact;
-use InvalidArgumentException;
 use Illuminate\Support\Facades\URL;
+use InvalidArgumentException;
 
 class PersonalizationService
 {
