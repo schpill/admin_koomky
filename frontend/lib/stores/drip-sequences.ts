@@ -41,7 +41,9 @@ interface DripSequencesState {
   error: string | null;
   fetchSequences: () => Promise<void>;
   fetchSequence: (id: string) => Promise<DripSequence | null>;
-  createSequence: (data: Record<string, unknown>) => Promise<DripSequence | null>;
+  createSequence: (
+    data: Record<string, unknown>
+  ) => Promise<DripSequence | null>;
   updateSequence: (
     id: string,
     data: Record<string, unknown>
@@ -105,7 +107,9 @@ export const useDripSequencesStore = create<DripSequencesState>((set, get) => ({
   fetchSequence: async (id) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await apiClient.get<DripSequence>(`/drip-sequences/${id}`);
+      const response = await apiClient.get<DripSequence>(
+        `/drip-sequences/${id}`
+      );
       const sequence = response.data as DripSequence;
       set({
         currentSequence: sequence,
@@ -123,7 +127,10 @@ export const useDripSequencesStore = create<DripSequencesState>((set, get) => ({
   createSequence: async (data) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await apiClient.post<DripSequence>("/drip-sequences", data);
+      const response = await apiClient.post<DripSequence>(
+        "/drip-sequences",
+        data
+      );
       const sequence = response.data as DripSequence;
       set({
         currentSequence: sequence,

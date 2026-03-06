@@ -7,7 +7,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { DripStepForm } from "@/components/drip/drip-step-form";
-import { useDripSequencesStore, type DripStepInput } from "@/lib/stores/drip-sequences";
+import {
+  useDripSequencesStore,
+  type DripStepInput,
+} from "@/lib/stores/drip-sequences";
 
 export default function CreateDripSequencePage() {
   const router = useRouter();

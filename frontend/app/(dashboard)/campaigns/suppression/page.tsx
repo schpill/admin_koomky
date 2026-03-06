@@ -9,14 +9,8 @@ import { SuppressionListTable } from "@/components/campaigns/suppression-list-ta
 import { useSuppressionListStore } from "@/lib/stores/suppression-list";
 
 export default function SuppressionListPage() {
-  const {
-    entries,
-    total,
-    fetchEntries,
-    addEntry,
-    removeEntry,
-    exportCsv,
-  } = useSuppressionListStore();
+  const { entries, total, fetchEntries, addEntry, removeEntry, exportCsv } =
+    useSuppressionListStore();
   const [email, setEmail] = useState("");
 
   useEffect(() => {
@@ -54,7 +48,11 @@ export default function SuppressionListPage() {
           >
             Add
           </Button>
-          <Button type="button" variant="outline" onClick={() => void exportCsv()}>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => void exportCsv()}
+          >
             Export CSV
           </Button>
         </CardContent>
@@ -65,7 +63,10 @@ export default function SuppressionListPage() {
           <CardTitle>Entries ({total})</CardTitle>
         </CardHeader>
         <CardContent>
-          <SuppressionListTable entries={entries} onRemove={(id) => void removeEntry(id)} />
+          <SuppressionListTable
+            entries={entries}
+            onRemove={(id) => void removeEntry(id)}
+          />
         </CardContent>
       </Card>
     </div>

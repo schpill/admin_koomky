@@ -55,7 +55,11 @@ export default function DripSequencesPage() {
                   <p className="text-sm text-muted-foreground">
                     Trigger: {sequence.trigger_event} • Steps:{" "}
                     {sequence.steps.length} • Active enrollments:{" "}
-                    {sequence.enrollments.filter((item) => item.status === "active").length}
+                    {
+                      sequence.enrollments.filter(
+                        (item) => item.status === "active"
+                      ).length
+                    }
                   </p>
                 </div>
                 <Badge variant="secondary">{sequence.status}</Badge>

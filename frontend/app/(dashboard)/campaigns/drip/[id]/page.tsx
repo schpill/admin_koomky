@@ -25,7 +25,9 @@ export default function DripSequenceDetailPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">{currentSequence?.name || "Drip sequence"}</h1>
+        <h1 className="text-3xl font-bold">
+          {currentSequence?.name || "Drip sequence"}
+        </h1>
         <p className="text-sm text-muted-foreground">
           Review steps and manage enrollments.
         </p>
