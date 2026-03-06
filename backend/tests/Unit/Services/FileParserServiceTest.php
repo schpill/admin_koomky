@@ -2,21 +2,11 @@
 
 use App\Services\FileParserService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Tests\TestCase;
 
 uses(TestCase::class, RefreshDatabase::class);
-
-function makeSimpleXlsx(string $path): void
-{
-    $shared = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="4" uniqueCount="4"><si><t>Name</t></si><si><t>Email</t></si><si><t>Acme</t></si><si><t>acme@example.com</t></si></sst>';
-    $sheet = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetData><row r="1"><c r="A1" t="s"><v>0</v></c><c r="B1" t="s"><v>1</v></c></row><row r="2"><c r="A2" t="s"><v>2</v></c><c r="B2" t="s"><v>3</v></c></row></sheetData></worksheet>';
-
-    $zip = new ZipArchive;
-    $zip->open($path, ZipArchive::CREATE | ZipArchive::OVERWRITE);
-    $zip->addFromString('xl/sharedStrings.xml', $shared);
-    $zip->addFromString('xl/worksheets/sheet1.xml', $sheet);
-    $zip->close();
-}
 
 test('parses utf8 csv and semicolon csv and xlsx', function () {
     $service = app(FileParserService::class);
@@ -34,7 +24,15 @@ test('parses utf8 csv and semicolon csv and xlsx', function () {
     expect($parsedSemi['rows'][0]['Email'])->toBe('acme@example.com');
 
     $xlsxPath = tempnam(sys_get_temp_dir(), 'xlsx_');
-    makeSimpleXlsx($xlsxPath);
+    $spreadsheet = new Spreadsheet;
+    $sheet = $spreadsheet->getActiveSheet();
+    $sheet->fromArray([
+        ['Name', 'Email'],
+        ['Acme', 'acme@example.com'],
+    ]);
+    $writer = new Xlsx($spreadsheet);
+    $writer->save($xlsxPath);
+
     $parsedXlsx = $service->parse($xlsxPath, 'xlsx');
 
     expect($parsedXlsx['headers'])->toBe(['Name', 'Email']);
