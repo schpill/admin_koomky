@@ -11,10 +11,12 @@ test('search falls back to database when meilisearch is unavailable', function (
     config()->set('scout.force_failure', true);
 
     $user = User::factory()->create();
-    Client::factory()->for($user)->create([
-        'name' => 'Acme Fallback Co',
-        'email' => 'acme@example.test',
-    ]);
+    Client::withoutSyncingToSearch(function () use ($user) {
+        Client::factory()->for($user)->create([
+            'name' => 'Acme Fallback Co',
+            'email' => 'acme@example.test',
+        ]);
+    });
 
     $response = $this->actingAs($user, 'sanctum')
         ->getJson('/api/v1/search?q=Acme');

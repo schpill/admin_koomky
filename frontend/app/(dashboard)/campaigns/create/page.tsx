@@ -198,7 +198,7 @@ export default function CreateCampaignPage() {
 
         return {
           ...variant,
-          [field]: field === "send_percent" ? Number(value) : String(value),
+          [field]: String(value),
         };
       })
     );
