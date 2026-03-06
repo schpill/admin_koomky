@@ -16,7 +16,9 @@ test("workflow index is reachable", async ({ page }) => {
   });
 
   await page.goto("/campaigns/workflows");
-  await expect(page.getByRole("heading", { name: "Workflows" })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Workflow automations" })
+  ).toBeVisible();
 });
 
 test("workflow create page is reachable", async ({ page }) => {
