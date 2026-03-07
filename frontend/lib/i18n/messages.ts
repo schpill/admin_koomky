@@ -72,6 +72,8 @@ export const messages: Record<Locale, MessageTree> = {
       toggleTheme: "Basculer le thème",
       notifications: "Notifications",
       userMenu: "Menu utilisateur",
+      myProfile: "Mon profil",
+      logout: "Déconnexion",
       openNavigation: "Ouvrir la navigation",
       openShortcuts: "Ouvrir les raccourcis clavier",
     },
@@ -646,6 +648,41 @@ export const messages: Record<Locale, MessageTree> = {
           revokeFailed: "Impossible de révoquer le jeton API",
           copied: "Jeton copié dans le presse-papiers",
         },
+      },
+    },
+    profile: {
+      title: "Mon profil",
+      description:
+        "Mettez à jour vos informations personnelles, votre avatar et votre mot de passe.",
+      personal: {
+        title: "Informations personnelles",
+        description:
+          "Gardez votre nom, votre email et votre avatar à jour dans l'application.",
+      },
+      security: {
+        title: "Mot de passe",
+        description:
+          "Définissez un nouveau mot de passe en confirmant votre mot de passe actuel.",
+      },
+      fields: {
+        avatar: "Avatar",
+        name: "Nom complet",
+        email: "Email",
+        currentPassword: "Mot de passe actuel",
+        newPassword: "Nouveau mot de passe",
+        passwordConfirmation: "Confirmation du mot de passe",
+      },
+      actions: {
+        saveProfile: "Enregistrer le profil",
+        savePassword: "Mettre à jour le mot de passe",
+      },
+      toasts: {
+        loadFailed: "Impossible de charger votre profil",
+        updated: "Profil mis à jour avec succès",
+        updateFailed: "Impossible de mettre à jour le profil",
+        passwordUpdated: "Mot de passe mis à jour avec succès",
+        passwordUpdateFailed: "Impossible de mettre à jour le mot de passe",
+        passwordMismatch: "La confirmation du mot de passe ne correspond pas",
       },
     },
     auth: {
@@ -1862,6 +1899,8 @@ export const messages: Record<Locale, MessageTree> = {
       toggleTheme: "Toggle theme",
       notifications: "Notifications",
       userMenu: "User menu",
+      myProfile: "My profile",
+      logout: "Logout",
       openNavigation: "Open navigation",
       openShortcuts: "Open shortcuts",
     },
@@ -2429,6 +2468,41 @@ export const messages: Record<Locale, MessageTree> = {
           revokeFailed: "Failed to revoke API token",
           copied: "Token copied to clipboard",
         },
+      },
+    },
+    profile: {
+      title: "My profile",
+      description:
+        "Update your personal details, avatar, and password.",
+      personal: {
+        title: "Personal information",
+        description:
+          "Keep your name, email, and avatar current across the app.",
+      },
+      security: {
+        title: "Password",
+        description:
+          "Set a new password after confirming your current one.",
+      },
+      fields: {
+        avatar: "Avatar",
+        name: "Full name",
+        email: "Email",
+        currentPassword: "Current password",
+        newPassword: "New password",
+        passwordConfirmation: "Password confirmation",
+      },
+      actions: {
+        saveProfile: "Save profile",
+        savePassword: "Update password",
+      },
+      toasts: {
+        loadFailed: "Unable to load your profile",
+        updated: "Profile updated successfully",
+        updateFailed: "Unable to update the profile",
+        passwordUpdated: "Password updated successfully",
+        passwordUpdateFailed: "Unable to update the password",
+        passwordMismatch: "Password confirmation does not match",
       },
     },
     auth: {

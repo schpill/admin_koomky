@@ -3,11 +3,13 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\HasApiTokens;
 
 /**
@@ -86,6 +88,13 @@ class User extends Authenticatable
     ];
 
     /**
+     * @var list<string>
+     */
+    protected $appends = [
+        'avatar_url',
+    ];
+
+    /**
      * @return array<string, string>
      */
     protected function casts(): array
@@ -113,6 +122,18 @@ class User extends Authenticatable
             'warmup_sent_today' => 'integer',
             'warmup_last_reset_at' => 'date',
         ];
+    }
+
+    /**
+     * @return Attribute<?string, never>
+     */
+    protected function avatarUrl(): Attribute
+    {
+        return Attribute::make(
+            get: fn (): ?string => is_string($this->avatar_path) && $this->avatar_path !== ''
+                ? Storage::disk('public')->url($this->avatar_path)
+                : null,
+        );
     }
 
     /**
