@@ -34,4 +34,9 @@ else
   echo "Dependencies already up to date. Skipping pnpm install."
 fi
 
-exec pnpm dev
+NEXT_START_MODE="${NEXT_START_MODE:-dev}"
+if [ "$NEXT_START_MODE" = "prod" ]; then
+  exec pnpm start
+else
+  exec pnpm dev
+fi

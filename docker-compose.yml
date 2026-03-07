@@ -1,3 +1,5 @@
+version: '3.3'
+
 services:
   # Reverse Proxy
   nginx:
@@ -36,12 +38,10 @@ services:
       - MEILISEARCH_HOST=http://meilisearch:7700
       - GEMINI_API_KEY=${GEMINI_API_KEY}
       - MCP_API_SECRET=${MCP_API_SECRET}
-      - MCP_KOOMKY_URL=${MCP_KOOMKY_URL:-http://api:8000}
+      - MCP_KOOMKY_URL=${MCP_KOOMKY_URL}
     depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_started
+      - postgres
+      - redis
     networks:
       - koomky-network
 
@@ -51,9 +51,10 @@ services:
       context: .
       dockerfile: backend/docker/node/Dockerfile
     command: start-frontend
-    user: "${UID:-1000}:${GID:-1000}"
+    user: "${DOCKER_UID}:${DOCKER_GID}"
     environment:
       - NEXT_PUBLIC_API_URL=/api/v1
+      - NEXT_START_MODE=${NEXT_START_MODE:-dev}
     volumes:
       - ./frontend:/app
       - frontend-node-modules:/app/node_modules
@@ -110,10 +111,8 @@ services:
       - ./backend:/var/www/html
     environment: *php-env
     depends_on:
-      redis:
-        condition: service_started
-      postgres:
-        condition: service_healthy
+      - redis
+      - postgres
     networks:
       - koomky-network
 
@@ -126,7 +125,7 @@ services:
       - MCP_TRANSPORT=sse
       - MCP_PORT=3100
       - MCP_API_SECRET=${MCP_API_SECRET}
-      - MCP_KOOMKY_URL=${MCP_KOOMKY_URL:-http://api:8000}
+      - MCP_KOOMKY_URL=${MCP_KOOMKY_URL}
       - GEMINI_API_KEY=${GEMINI_API_KEY}
     depends_on:
       - api
@@ -146,8 +145,7 @@ services:
       - ./backend:/var/www/html
     environment: *php-env
     depends_on:
-      postgres:
-        condition: service_healthy
+      - postgres
     networks:
       - koomky-network
 
@@ -169,6 +167,7 @@ services:
   # Monitoring: Grafana
   grafana:
     image: grafana/grafana:11.1.0
+    user: "root"
     ports:
       - "3001:3000"
     volumes:
