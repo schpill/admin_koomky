@@ -1,4 +1,4 @@
-.PHONY: up upwc down restart build install test lint fresh seed shell-api shell-frontend deploy tinker
+.PHONY: up upwc down restart build install test lint fresh seed shell-api shell-frontend deploy tinker import-prospects
 
 up:
 	docker compose up -d --build
@@ -75,3 +75,6 @@ tinker:
 
 user:
 	docker compose run --rm api php artisan users:create
+
+import-prospects:
+	docker compose run --rm api php artisan leads:import-xlsx $(ARGS)

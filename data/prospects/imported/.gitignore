@@ -1,0 +1,6 @@
+# Imported prospect files — not committed to git
+*.xlsx
+*.xls
+*.csv
+
+!.gitignore

@@ -1,0 +1,8 @@
+# Prospect data files — not committed to git
+*.xlsx
+*.xls
+*.csv
+
+# Keep this directory and the imported subdirectory
+!.gitignore
+imported/.gitignore

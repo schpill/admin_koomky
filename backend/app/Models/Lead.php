@@ -48,6 +48,15 @@ class Lead extends Model
         'first_name',
         'last_name',
         'email',
+        'email_2',
+        'email_3',
+        'email_4',
+        'email_5',
+        'email_6',
+        'email_7',
+        'email_8',
+        'email_9',
+        'email_10',
         'phone',
         'source',
         'status',
@@ -56,6 +65,7 @@ class Lead extends Model
         'probability',
         'expected_close_date',
         'notes',
+        'tags',
         'lost_reason',
         'won_client_id',
         'converted_at',
@@ -73,6 +83,7 @@ class Lead extends Model
             'expected_close_date' => 'date',
             'converted_at' => 'datetime',
             'pipeline_position' => 'integer',
+            'tags' => 'array',
         ];
     }
 
@@ -168,6 +179,7 @@ class Lead extends Model
             'last_name' => $this->last_name,
             'email' => $this->email ?? '',
             'notes' => $this->notes ?? '',
+            'tags' => $this->tags ?? [],
         ];
     }
 
