@@ -23,6 +23,7 @@ services:
     command: php-fpm
     volumes:
       - ./backend:/var/www/html
+      - ./data:/var/www/data
     environment: &php-env
       - DB_CONNECTION=pgsql
       - DB_HOST=postgres
