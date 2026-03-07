@@ -48,6 +48,7 @@ use App\Http\Controllers\Api\V1\PortalRagController;
 use App\Http\Controllers\Api\V1\PortalSettingsController;
 use App\Http\Controllers\Api\V1\ProductCampaignController;
 use App\Http\Controllers\Api\V1\ProductController;
+use App\Http\Controllers\Api\V1\ProfileController;
 use App\Http\Controllers\Api\V1\ProfitLossController;
 use App\Http\Controllers\Api\V1\ProjectController;
 use App\Http\Controllers\Api\V1\ProjectExpenseController;
@@ -135,6 +136,9 @@ Route::prefix('v1')->group(function () {
     // Protected Routes
     Route::middleware(['auth:sanctum', 'two-factor'])->group(function () {
         Route::get('dashboard', DashboardController::class);
+        Route::get('profile', [ProfileController::class, 'show']);
+        Route::patch('profile', [ProfileController::class, 'update']);
+        Route::post('profile/password', [ProfileController::class, 'updatePassword']);
 
         Route::prefix('auth')->group(function () {
             Route::get('/me', [AuthController::class, 'me']);

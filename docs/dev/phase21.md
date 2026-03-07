@@ -12,26 +12,26 @@
 
 | ID              | Task                                                                                         | Status | Owner |
 |-----------------|----------------------------------------------------------------------------------------------|--------|-------|
-| P21-BE-INF-01   | Migration `add_avatar_path_to_users_table` — `avatar_path` VARCHAR(500) nullable.           | todo   |       |
+| P21-BE-INF-01   | Migration `add_avatar_path_to_users_table` — `avatar_path` VARCHAR(500) nullable.           | done   | Codex |
 
 ### Backend Tasks
 
 | ID          | Task                                                                                                                                                           | Status | Owner |
 |-------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|--------|-------|
-| P21-BE-001  | Extend `User` model — `avatar_path` dans `$fillable`. Accessor `avatar_url` (URL publique ou null).                                                           | todo   |       |
-| P21-BE-002  | Create `ProfileController` — `GET /profile`, `PATCH /profile` (nom, email, avatar), `POST /profile/password` (vérification + update + révocation tokens).    | todo   |       |
-| P21-BE-003  | Create `UpdateProfileRequest` — name, email (unique ignore self), avatar (nullable image max 2048).                                                            | todo   |       |
-| P21-BE-004  | Create `UpdatePasswordRequest` — current_password required, password min:8 confirmed.                                                                          | todo   |       |
-| P21-BE-005  | Register routes dans `api.php` — `GET|PATCH /profile`, `POST /profile/password`. Middleware `auth:sanctum`.                                                    | todo   |       |
-| P21-BE-006  | PHPStan level 8 + Pint.                                                                                                                                         | todo   |       |
+| P21-BE-001  | Extend `User` model — `avatar_path` dans `$fillable`. Accessor `avatar_url` (URL publique ou null).                                                           | done   | Codex |
+| P21-BE-002  | Create `ProfileController` — `GET /profile`, `PATCH /profile` (nom, email, avatar), `POST /profile/password` (vérification + update + révocation tokens).    | done   | Codex |
+| P21-BE-003  | Create `UpdateProfileRequest` — name, email (unique ignore self), avatar (nullable image max 2048).                                                            | done   | Codex |
+| P21-BE-004  | Create `UpdatePasswordRequest` — current_password required, password min:8 confirmed.                                                                          | done   | Codex |
+| P21-BE-005  | Register routes dans `api.php` — `GET|PATCH /profile`, `POST /profile/password`. Middleware `auth:sanctum`.                                                    | done   | Codex |
+| P21-BE-006  | PHPStan level 8 + Pint.                                                                                                                                         | done   | Codex |
 
 ### Backend Tests (TDD)
 
 | ID          | Test File                                                                              | Status | Owner |
 |-------------|----------------------------------------------------------------------------------------|--------|-------|
-| P21-BT-001  | `tests/Feature/Profile/GetProfileTest.php`                                             | todo   |       |
-| P21-BT-002  | `tests/Feature/Profile/UpdateProfileTest.php`                                          | todo   |       |
-| P21-BT-003  | `tests/Feature/Profile/UpdatePasswordTest.php`                                         | todo   |       |
+| P21-BT-001  | `tests/Feature/Profile/GetProfileTest.php`                                             | done   | Codex |
+| P21-BT-002  | `tests/Feature/Profile/UpdateProfileTest.php`                                          | done   | Codex |
+| P21-BT-003  | `tests/Feature/Profile/UpdatePasswordTest.php`                                         | done   | Codex |
 
 ---
 
@@ -41,20 +41,20 @@
 
 | ID          | Task                                                                                                                                                                              | Status | Owner |
 |-------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------|-------|
-| P21-FE-001  | Extend `components/layout/header.tsx` — Remplacer `<Button>` User par `<DropdownMenu>`. Trigger : avatar ou initiales. Items : "Mon profil" (→ /profile), séparateur, "Déconnexion". | todo   |       |
-| P21-FE-002  | Create `lib/stores/profile.ts` (Zustand) — `user`, `fetchProfile()`, `updateProfile(data)`, `changePassword(data)`.                                                               | todo   |       |
-| P21-FE-003  | Create `app/(dashboard)/profile/page.tsx` — Section infos personnelles (nom, email, avatar). Section mot de passe. Toast succès/erreur.                                           | todo   |       |
-| P21-FE-004  | Create `components/profile/avatar-upload.tsx` — Zone drop/clic, preview, suppression.                                                                                            | todo   |       |
-| P21-FE-005  | ESLint + Prettier — 0 erreur.                                                                                                                                                      | todo   |       |
+| P21-FE-001  | Extend `components/layout/header.tsx` — Remplacer `<Button>` User par `<DropdownMenu>`. Trigger : avatar ou initiales. Items : "Mon profil" (→ /profile), séparateur, "Déconnexion". | done   | Codex |
+| P21-FE-002  | Create `lib/stores/profile.ts` (Zustand) — `user`, `fetchProfile()`, `updateProfile(data)`, `changePassword(data)`.                                                               | done   | Codex |
+| P21-FE-003  | Create `app/(dashboard)/profile/page.tsx` — Section infos personnelles (nom, email, avatar). Section mot de passe. Toast succès/erreur.                                           | done   | Codex |
+| P21-FE-004  | Create `components/profile/avatar-upload.tsx` — Zone drop/clic, preview, suppression.                                                                                            | done   | Codex |
+| P21-FE-005  | ESLint + Prettier — 0 erreur.                                                                                                                                                      | done   | Codex |
 
 ### Frontend Tests
 
 | ID          | Test File                                                              | Status | Owner |
 |-------------|------------------------------------------------------------------------|--------|-------|
-| P21-FT-001  | `tests/components/layout/header-user-menu.test.tsx`                   | todo   |       |
-| P21-FT-002  | `tests/components/profile/avatar-upload.test.tsx`                     | todo   |       |
-| P21-FT-003  | `tests/e2e/profile/profile-update-flow.spec.ts`                       | todo   |       |
-| P21-FT-004  | `tests/e2e/profile/password-change-flow.spec.ts`                      | todo   |       |
+| P21-FT-001  | `tests/components/layout/header-user-menu.test.tsx`                   | done   | Codex |
+| P21-FT-002  | `tests/components/profile/avatar-upload.test.tsx`                     | done   | Codex |
+| P21-FT-003  | `tests/e2e/profile/profile-update-flow.spec.ts`                       | done   | Codex |
+| P21-FT-004  | `tests/e2e/profile/password-change-flow.spec.ts`                      | done   | Codex |
 
 ---
 
