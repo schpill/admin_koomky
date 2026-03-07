@@ -18,7 +18,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Plus, Mail, Phone, Trash2, Edit2, Loader2, User } from "lucide-react";
+import {
+  Plus,
+  Mail,
+  Phone,
+  Trash2,
+  Edit2,
+  Loader2,
+  User,
+  MapPin,
+} from "lucide-react";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -42,6 +51,7 @@ type ContactFormData = {
   email?: string;
   phone?: string;
   position?: string;
+  timezone?: string;
   is_primary: boolean;
 };
 
@@ -52,12 +62,50 @@ interface Contact {
   email: string | null;
   phone: string | null;
   position: string | null;
+  timezone: string | null;
   is_primary: boolean;
   email_score?: number;
 }
 
 interface ClientContactListProps {
   clientId: string;
+}
+
+const FALLBACK_TIMEZONES = [
+  "UTC",
+  "Europe/Paris",
+  "Europe/London",
+  "America/New_York",
+  "America/Chicago",
+  "America/Denver",
+  "America/Los_Angeles",
+  "Asia/Tokyo",
+  "Asia/Singapore",
+  "Australia/Sydney",
+];
+
+function getTimezoneOptions(): string[] {
+  if (typeof Intl.supportedValuesOf === "function") {
+    return Intl.supportedValuesOf("timeZone");
+  }
+
+  return FALLBACK_TIMEZONES;
+}
+
+function formatLocalTime(timezone: string | null | undefined): string | null {
+  if (!timezone) {
+    return null;
+  }
+
+  try {
+    return new Intl.DateTimeFormat(undefined, {
+      hour: "2-digit",
+      minute: "2-digit",
+      timeZone: timezone,
+    }).format(new Date());
+  } catch {
+    return null;
+  }
 }
 
 export function ClientContactList({ clientId }: ClientContactListProps) {
@@ -67,6 +115,7 @@ export function ClientContactList({ clientId }: ClientContactListProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingContact, setEditingContact] = useState<Contact | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Contact | null>(null);
+  const timezoneOptions = useMemo(() => getTimezoneOptions(), []);
 
   const contactSchema = useMemo(
     () =>
@@ -82,6 +131,7 @@ export function ClientContactList({ clientId }: ClientContactListProps) {
           .or(z.literal("")),
         phone: z.string().optional().or(z.literal("")),
         position: z.string().optional().or(z.literal("")),
+        timezone: z.string().optional().or(z.literal("")),
         is_primary: z.boolean().default(false),
       }),
     [t]
@@ -93,12 +143,16 @@ export function ClientContactList({ clientId }: ClientContactListProps) {
     reset,
     formState: { errors, isSubmitting },
     setValue,
+    watch,
   } = useForm<ContactFormData>({
     resolver: zodResolver(contactSchema),
     defaultValues: {
+      timezone: "",
       is_primary: false,
     },
   });
+  const selectedTimezone = watch("timezone");
+  const selectedTimezoneTime = formatLocalTime(selectedTimezone);
 
   const fetchContacts = useCallback(async () => {
     try {
@@ -118,15 +172,20 @@ export function ClientContactList({ clientId }: ClientContactListProps) {
   }, [fetchContacts]);
 
   const onSubmit = async (data: ContactFormData) => {
+    const payload = {
+      ...data,
+      timezone: data.timezone?.trim() || "",
+    };
+
     try {
       if (editingContact) {
         await apiClient.put(
           `/clients/${clientId}/contacts/${editingContact.id}`,
-          data
+          payload
         );
         toast.success(t("clients.contacts.toasts.updated"));
       } else {
-        await apiClient.post(`/clients/${clientId}/contacts`, data);
+        await apiClient.post(`/clients/${clientId}/contacts`, payload);
         toast.success(t("clients.contacts.toasts.added"));
       }
       setDialogOpen(false);
@@ -145,6 +204,7 @@ export function ClientContactList({ clientId }: ClientContactListProps) {
     setValue("email", contact.email || "");
     setValue("phone", contact.phone || "");
     setValue("position", contact.position || "");
+    setValue("timezone", contact.timezone || "");
     setValue("is_primary", contact.is_primary);
     setDialogOpen(true);
   };
@@ -260,6 +320,29 @@ export function ClientContactList({ clientId }: ClientContactListProps) {
                 <Label htmlFor="contact-phone">{t("clients.form.phone")}</Label>
                 <Input id="contact-phone" {...register("phone")} />
               </div>
+              <div className="space-y-2">
+                <Label htmlFor="contact-timezone">
+                  {t("clients.contacts.timezone")}
+                </Label>
+                <Input
+                  id="contact-timezone"
+                  list="contact-timezone-options"
+                  placeholder={t("clients.contacts.timezonePlaceholder")}
+                  {...register("timezone")}
+                />
+                <datalist id="contact-timezone-options">
+                  {timezoneOptions.map((timezone) => (
+                    <option key={timezone} value={timezone} />
+                  ))}
+                </datalist>
+                {selectedTimezoneTime ? (
+                  <p className="text-xs text-muted-foreground">
+                    {t("clients.contacts.currentLocalTime", {
+                      time: `${selectedTimezoneTime} (${selectedTimezone})`,
+                    })}
+                  </p>
+                ) : null}
+              </div>
               <div className="flex items-center space-x-2">
                 <input
                   type="checkbox"
@@ -347,6 +430,15 @@ export function ClientContactList({ clientId }: ClientContactListProps) {
                         {contact.phone && (
                           <div className="flex items-center text-xs text-muted-foreground">
                             <Phone className="mr-1 h-3 w-3" /> {contact.phone}
+                          </div>
+                        )}
+                        {contact.timezone && (
+                          <div className="flex items-center text-xs text-muted-foreground">
+                            <MapPin className="mr-1 h-3 w-3" />{" "}
+                            {contact.timezone}
+                            {formatLocalTime(contact.timezone)
+                              ? ` • ${formatLocalTime(contact.timezone)}`
+                              : ""}
                           </div>
                         )}
                       </div>

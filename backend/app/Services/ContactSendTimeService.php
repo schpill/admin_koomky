@@ -4,49 +4,63 @@ namespace App\Services;
 
 use App\Models\Contact;
 use App\Models\User;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class ContactSendTimeService
 {
     public function getOptimalHour(Contact $contact, User $user): ?int
     {
-        $hourExpression = match (DB::connection()->getDriverName()) {
-            'sqlite' => "CAST(strftime('%H', opened_at) AS INTEGER)",
-            default => 'EXTRACT(HOUR FROM opened_at)',
-        };
+        $timezone = $this->resolveTimezone($contact->timezone);
 
-        $hours = DB::table('campaign_recipients')
-            ->selectRaw("{$hourExpression} as opened_hour, count(*) as aggregate")
+        /** @var Collection<int, object{opened_at:string}> $opens */
+        $opens = DB::table('campaign_recipients')
+            ->select('campaign_recipients.opened_at')
             ->join('campaigns', 'campaigns.id', '=', 'campaign_recipients.campaign_id')
             ->where('campaign_recipients.contact_id', $contact->id)
             ->where('campaigns.user_id', $user->id)
             ->whereNotNull('campaign_recipients.opened_at')
-            ->groupBy('opened_hour')
-            ->orderByDesc('aggregate')
-            ->orderBy('opened_hour')
             ->get();
 
-        if ((int) $hours->sum('aggregate') < 3) {
+        if ($opens->count() < 3) {
             return null;
         }
 
-        $optimalHour = $hours->first()?->opened_hour;
+        $hours = $opens
+            ->map(function (object $row) use ($timezone): int {
+                return Carbon::parse($row->opened_at, 'UTC')
+                    ->setTimezone($timezone)
+                    ->hour;
+            })
+            ->countBy()
+            ->sortDesc();
+
+        $optimalHour = $hours->keys()->first();
 
         return is_numeric($optimalHour) ? (int) $optimalHour : null;
     }
 
-    public function getNextSendDelay(int $optimalHour, int $windowHours): int
+    public function getNextSendDelay(int $optimalHour, int $windowHours, ?string $timezone = null): int
     {
-        $now = now();
-        $candidate = $now->copy()->setTime($optimalHour, 0, 0);
+        $resolvedTimezone = $this->resolveTimezone($timezone);
+        $nowUtc = now()->utc();
+        $localNow = $nowUtc->copy()->setTimezone($resolvedTimezone);
+        $candidateLocal = $localNow->copy()->setTime($optimalHour, 0, 0);
 
-        if ($candidate->lessThanOrEqualTo($now)) {
-            $candidate->addDay();
+        if ($candidateLocal->lessThanOrEqualTo($localNow)) {
+            $candidateLocal->addDay();
         }
 
-        $delay = (int) $now->diffInSeconds($candidate, false);
+        $candidateUtc = $candidateLocal->copy()->setTimezone('UTC');
+        $delay = (int) $nowUtc->diffInSeconds($candidateUtc, false);
         $maxDelay = max(1, $windowHours) * 3600;
 
         return $delay >= 0 && $delay <= $maxDelay ? $delay : 0;
+    }
+
+    private function resolveTimezone(?string $timezone): string
+    {
+        return is_string($timezone) && $timezone !== '' ? $timezone : (string) config('app.timezone', 'UTC');
     }
 }

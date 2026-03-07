@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Contact;
+use Illuminate\Support\Facades\URL;
 use InvalidArgumentException;
 
 class PersonalizationService
@@ -17,6 +18,9 @@ class PersonalizationService
             '{{email}}' => e((string) ($contact->email ?? '')),
             '{{phone}}' => e((string) ($contact->phone ?? '')),
             '{{email_score}}' => e((string) $contact->email_score),
+            '{{preferences_url}}' => e(URL::temporarySignedRoute('portal.preferences.show', now()->addDays(30), [
+                'contact' => $contact->id,
+            ])),
         ];
 
         return $this->renderWithContext($content, $baseVariables, $contact, $client, $trackingToken);
@@ -53,6 +57,7 @@ class PersonalizationService
             '{{email}}' => e($previewContact['email']),
             '{{phone}}' => e($previewContact['phone']),
             '{{email_score}}' => '75',
+            '{{preferences_url}}' => 'https://example.test/portal/preferences/preview?signature=preview',
         ];
 
         return $this->renderWithContext($content, $baseVariables, $previewContact, $previewClient, null);

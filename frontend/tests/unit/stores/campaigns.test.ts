@@ -16,9 +16,14 @@ const baseCampaign = {
   id: "camp_1",
   name: "Spring Launch",
   type: "email",
+  email_category: "promotional",
   status: "draft",
   subject: "Hello",
   content: "Hi {{first_name}}",
+  deliverability: {
+    score: 88,
+    issues: [],
+  },
 };
 
 describe("useCampaignStore", () => {
@@ -60,6 +65,8 @@ describe("useCampaignStore", () => {
       .getState()
       .createCampaign(baseCampaign);
     expect(created?.id).toBe("camp_1");
+    expect(created?.email_category).toBe("promotional");
+    expect(created?.deliverability?.score).toBe(88);
 
     (apiClient.put as any).mockResolvedValueOnce({
       data: { ...baseCampaign, name: "Summer Launch" },

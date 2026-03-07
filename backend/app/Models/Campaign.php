@@ -18,6 +18,7 @@ use Laravel\Scout\Searchable;
  * @property string|null $template_id
  * @property string $name
  * @property string $type
+ * @property string $email_category
  * @property string $status
  * @property bool $is_ab_test
  * @property string|null $ab_winner_variant_id
@@ -40,6 +41,7 @@ class Campaign extends Model
         'template_id',
         'name',
         'type',
+        'email_category',
         'status',
         'subject',
         'content',

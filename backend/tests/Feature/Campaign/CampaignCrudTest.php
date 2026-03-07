@@ -28,7 +28,8 @@ test('user can create read update and delete campaign', function () {
         ->postJson('/api/v1/campaigns', validCampaignPayload($segment->id));
 
     $create->assertStatus(201)
-        ->assertJsonPath('data.name', 'Welcome Campaign');
+        ->assertJsonPath('data.name', 'Welcome Campaign')
+        ->assertJsonPath('data.deliverability.score', fn ($value): bool => is_int($value));
 
     $campaignId = (string) $create->json('data.id');
 
@@ -42,7 +43,8 @@ test('user can create read update and delete campaign', function () {
         ]);
 
     $update->assertStatus(200)
-        ->assertJsonPath('data.name', 'Updated Campaign');
+        ->assertJsonPath('data.name', 'Updated Campaign')
+        ->assertJsonPath('data.deliverability.score', fn ($value): bool => is_int($value));
 
     $delete = $this->actingAs($user, 'sanctum')
         ->deleteJson('/api/v1/campaigns/'.$campaignId);

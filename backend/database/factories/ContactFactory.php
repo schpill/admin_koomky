@@ -16,6 +16,7 @@ class ContactFactory extends Factory
             'email' => $this->faker->unique()->safeEmail(),
             'phone' => $this->faker->phoneNumber(),
             'position' => $this->faker->jobTitle(),
+            'timezone' => null,
             'is_primary' => false,
             'email_unsubscribed_at' => null,
             'sms_opted_out_at' => null,

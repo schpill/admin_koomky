@@ -3,6 +3,7 @@
 namespace Tests\Unit\Services;
 
 use App\Models\Client;
+use App\Models\Contact;
 use App\Models\Document;
 use App\Models\DocumentChunk;
 use App\Models\RagUsageLog;
@@ -154,5 +155,21 @@ class DataExportServiceTest extends TestCase
         $this->assertCount(1, $exportData['clients']);
         $this->assertEquals('Wedding Planner', $exportData['clients'][0]['industry']);
         $this->assertEquals('60', $exportData['clients'][0]['department']);
+    }
+
+    /** @test */
+    public function it_includes_communication_preferences_in_the_export()
+    {
+        $contact = Contact::factory()->create([
+            'client_id' => Client::factory()->create(['user_id' => $this->user->id])->id,
+        ]);
+
+        $this->app->make(\App\Services\PreferenceCenterService::class)
+            ->updatePreference($contact, 'promotional', false);
+
+        $exportData = $this->service->exportUserData($this->user);
+
+        $this->assertArrayHasKey('communication_preferences', $exportData);
+        $this->assertCount(3, $exportData['communication_preferences']);
     }
 }

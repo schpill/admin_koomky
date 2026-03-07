@@ -12,6 +12,7 @@ use App\Services\WorkflowTriggerService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Throwable;
 
 class EmailTrackingController extends Controller
 {
@@ -100,6 +101,13 @@ class EmailTrackingController extends Controller
             }
 
             if ($recipient->contact !== null && $isFirstClickForUrl) {
+                if ($recipient->contact->timezone === null) {
+                    $timezone = $this->resolveTimezoneFromIp($request->ip());
+                    if ($timezone !== null) {
+                        $recipient->contact->forceFill(['timezone' => $timezone])->save();
+                    }
+                }
+
                 $this->contactScoreService->recordEvent($recipient->contact, 'email_clicked', $recipient->campaign);
                 $contact = $recipient->contact->fresh();
                 if ($contact !== null) {
@@ -131,5 +139,42 @@ class EmailTrackingController extends Controller
         }
 
         return CampaignRecipient::query()->find($recipientId);
+    }
+
+    private function resolveTimezoneFromIp(?string $ipAddress): ?string
+    {
+        if (! is_string($ipAddress) || $ipAddress === '') {
+            return null;
+        }
+
+        $configuredTimezones = config('services.geoip.testing_timezones', []);
+        if (is_array($configuredTimezones)) {
+            $configuredTimezone = $configuredTimezones[$ipAddress] ?? null;
+            if (is_string($configuredTimezone) && $configuredTimezone !== '') {
+                return $configuredTimezone;
+            }
+        }
+
+        if (! function_exists('geoip')) {
+            return null;
+        }
+
+        try {
+            $location = geoip($ipAddress);
+        } catch (Throwable) {
+            return null;
+        }
+
+        if (is_array($location)) {
+            $timezone = $location['timezone'] ?? null;
+
+            return is_string($timezone) && $timezone !== '' ? $timezone : null;
+        }
+
+        if (is_object($location) && isset($location->timezone) && is_string($location->timezone) && $location->timezone !== '') {
+            return $location->timezone;
+        }
+
+        return null;
     }
 }

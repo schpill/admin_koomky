@@ -24,6 +24,7 @@ class CampaignFactory extends Factory
             'template_id' => null,
             'name' => $this->faker->sentence(3),
             'type' => $type,
+            'email_category' => 'promotional',
             'status' => $this->faker->randomElement(['draft', 'scheduled', 'sending', 'sent']),
             'subject' => $type === 'email' ? $this->faker->sentence(4) : null,
             'content' => $this->faker->paragraph(),

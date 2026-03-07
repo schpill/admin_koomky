@@ -42,6 +42,7 @@ export interface Campaign {
   id: string;
   name: string;
   type: CampaignType;
+  email_category?: "newsletter" | "promotional" | "transactional";
   status: CampaignStatus;
   subject?: string | null;
   content: string;
@@ -62,6 +63,10 @@ export interface Campaign {
   recipients?: Array<Record<string, unknown>>;
   attachments?: CampaignAttachment[];
   variants?: CampaignVariant[];
+  deliverability?: {
+    score: number;
+    issues: Array<{ severity: "error" | "warning" | "info"; message: string }>;
+  };
 }
 
 export interface CampaignAbVariantAnalytics {
@@ -91,7 +96,12 @@ export interface CampaignAnalytics {
   click_rate: number;
   bounce_rate?: number;
   failure_reasons?: Array<{ reason: string; count: number }>;
-  time_series: Array<{ hour: string; opens: number; clicks: number }>;
+  time_series: Array<{
+    hour?: string;
+    date?: string;
+    opens: number;
+    clicks: number;
+  }>;
   ab_variants?: CampaignAbVariantAnalytics[];
 }
 
