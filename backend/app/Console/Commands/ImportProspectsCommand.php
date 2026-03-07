@@ -168,7 +168,7 @@ class ImportProspectsCommand extends Command
         $get = function (string $col) use ($headers, $row): string {
             $index = $headers[$col] ?? null;
 
-            return ($index !== null && isset($row[$index]) && $row[$index] !== null)
+            return ($index !== null && isset($row[$index]))
                 ? trim((string) $row[$index])
                 : '';
         };
