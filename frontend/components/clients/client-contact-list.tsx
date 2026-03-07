@@ -434,7 +434,8 @@ export function ClientContactList({ clientId }: ClientContactListProps) {
                         )}
                         {contact.timezone && (
                           <div className="flex items-center text-xs text-muted-foreground">
-                            <MapPin className="mr-1 h-3 w-3" /> {contact.timezone}
+                            <MapPin className="mr-1 h-3 w-3" />{" "}
+                            {contact.timezone}
                             {formatLocalTime(contact.timezone)
                               ? ` • ${formatLocalTime(contact.timezone)}`
                               : ""}
