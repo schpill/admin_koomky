@@ -54,6 +54,8 @@ test.describe("Password change flow", () => {
 
     await expect(page.getByText("Password updated successfully")).toBeVisible();
     await expect.poll(() => passwordPayload).toContain("current_password");
-    await expect(page.getByRole("heading", { name: "My profile" })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "My profile" })
+    ).toBeVisible();
   });
 });

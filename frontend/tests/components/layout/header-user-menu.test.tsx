@@ -71,7 +71,9 @@ describe("Header user menu", () => {
     fireEvent.click(screen.getByLabelText(/user menu/i));
 
     await waitFor(() => {
-      expect(screen.getByRole("menuitem", { name: /my profile/i })).toBeVisible();
+      expect(
+        screen.getByRole("menuitem", { name: /my profile/i })
+      ).toBeVisible();
     });
   });
 

@@ -17,7 +17,9 @@ export function AvatarUpload({
   initialPreviewUrl = null,
   onChange,
 }: AvatarUploadProps) {
-  const [previewUrl, setPreviewUrl] = useState<string | null>(initialPreviewUrl);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(
+    initialPreviewUrl
+  );
 
   useEffect(() => {
     if (!value) {
@@ -35,7 +37,10 @@ export function AvatarUpload({
 
   return (
     <div className="space-y-3">
-      <label className="block text-sm font-medium text-foreground" htmlFor="profile-avatar">
+      <label
+        className="block text-sm font-medium text-foreground"
+        htmlFor="profile-avatar"
+      >
         {label}
       </label>
       <div className="flex items-center gap-4 rounded-xl border border-dashed border-border/70 bg-muted/30 p-4">

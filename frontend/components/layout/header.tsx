@@ -40,12 +40,13 @@ export function Header({ onOpenNavigation, onOpenShortcuts }: HeaderProps) {
   }, []);
 
   const isDark = mounted && (resolvedTheme === "dark" || theme === "dark");
-  const initials = user?.name
-    ?.split(" ")
-    .map((part) => part[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase() || "U";
+  const initials =
+    user?.name
+      ?.split(" ")
+      .map((part) => part[0])
+      .join("")
+      .slice(0, 2)
+      .toUpperCase() || "U";
 
   async function handleLogout() {
     try {

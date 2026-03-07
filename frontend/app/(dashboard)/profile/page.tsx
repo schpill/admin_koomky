@@ -106,13 +106,17 @@ export default function ProfilePage() {
         <Card>
           <CardHeader>
             <CardTitle>{t("profile.personal.title")}</CardTitle>
-            <CardDescription>{t("profile.personal.description")}</CardDescription>
+            <CardDescription>
+              {t("profile.personal.description")}
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <AvatarUpload
               label={t("profile.fields.avatar")}
               value={avatarFile}
-              initialPreviewUrl={avatarRemoved ? null : authUser?.avatar_url ?? null}
+              initialPreviewUrl={
+                avatarRemoved ? null : (authUser?.avatar_url ?? null)
+              }
               onChange={(file) => {
                 setAvatarFile(file);
                 setAvatarRemoved(file === null);
@@ -137,7 +141,11 @@ export default function ProfilePage() {
             </div>
           </CardContent>
           <CardFooter className="justify-end border-t bg-muted/40 px-6 py-4">
-            <Button type="button" onClick={handleProfileSave} disabled={isLoading}>
+            <Button
+              type="button"
+              onClick={handleProfileSave}
+              disabled={isLoading}
+            >
               {t("profile.actions.saveProfile")}
             </Button>
           </CardFooter>
@@ -146,7 +154,9 @@ export default function ProfilePage() {
         <Card>
           <CardHeader>
             <CardTitle>{t("profile.security.title")}</CardTitle>
-            <CardDescription>{t("profile.security.description")}</CardDescription>
+            <CardDescription>
+              {t("profile.security.description")}
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
@@ -161,7 +171,9 @@ export default function ProfilePage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="new-password">{t("profile.fields.newPassword")}</Label>
+              <Label htmlFor="new-password">
+                {t("profile.fields.newPassword")}
+              </Label>
               <Input
                 id="new-password"
                 type="password"
@@ -177,12 +189,18 @@ export default function ProfilePage() {
                 id="password-confirmation"
                 type="password"
                 value={passwordConfirmation}
-                onChange={(event) => setPasswordConfirmation(event.target.value)}
+                onChange={(event) =>
+                  setPasswordConfirmation(event.target.value)
+                }
               />
             </div>
           </CardContent>
           <CardFooter className="justify-end border-t bg-muted/40 px-6 py-4">
-            <Button type="button" onClick={handlePasswordSave} disabled={isLoading}>
+            <Button
+              type="button"
+              onClick={handlePasswordSave}
+              disabled={isLoading}
+            >
               {t("profile.actions.savePassword")}
             </Button>
           </CardFooter>

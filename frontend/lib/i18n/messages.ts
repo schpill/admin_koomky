@@ -2472,8 +2472,7 @@ export const messages: Record<Locale, MessageTree> = {
     },
     profile: {
       title: "My profile",
-      description:
-        "Update your personal details, avatar, and password.",
+      description: "Update your personal details, avatar, and password.",
       personal: {
         title: "Personal information",
         description:
@@ -2481,8 +2480,7 @@ export const messages: Record<Locale, MessageTree> = {
       },
       security: {
         title: "Password",
-        description:
-          "Set a new password after confirming your current one.",
+        description: "Set a new password after confirming your current one.",
       },
       fields: {
         avatar: "Avatar",
