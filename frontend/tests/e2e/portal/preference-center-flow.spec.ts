@@ -21,7 +21,7 @@ test.describe("Portal preference center", () => {
     });
 
     await page.route("**/portal/preferences/**", async (route) => {
-      if (route.request().resourceType() === "document") {
+      if (!["fetch", "xhr"].includes(route.request().resourceType())) {
         await route.continue();
         return;
       }

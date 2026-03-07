@@ -40,17 +40,20 @@ test('user can update a contact belonging to their client', function () {
     $contact = Contact::factory()->create([
         'client_id' => $client->id,
         'first_name' => 'Old',
+        'timezone' => null,
     ]);
 
     $response = $this->actingAs($user, 'sanctum')
         ->putJson("/api/v1/clients/{$client->id}/contacts/{$contact->id}", [
             'first_name' => 'Updated',
+            'timezone' => 'Europe/Paris',
         ]);
 
     $response->assertStatus(200);
     $this->assertDatabaseHas('contacts', [
         'id' => $contact->id,
         'first_name' => 'Updated',
+        'timezone' => 'Europe/Paris',
     ]);
 });
 
