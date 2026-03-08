@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useMemo, useState } from "react";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -40,6 +41,7 @@ export default function LoginPage() {
 
   const [requires2fa, setRequires2fa] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true);
 
   const loginSchema = useMemo(
     () =>
@@ -69,20 +71,28 @@ export default function LoginPage() {
   const onLoginSubmit = async (data: LoginFormData) => {
     setLoading(true);
     try {
-      const response = await apiClient.post<any>("/auth/login", data, {
-        skipAuth: true,
-      });
+      const response = await apiClient.post<any>(
+        "/auth/login",
+        {
+          ...data,
+          remember_me: rememberMe,
+        },
+        {
+          skipAuth: true,
+        }
+      );
 
       if (response.data.requires_2fa) {
         setRequires2fa(true);
         // Set the temporary token so subsequent verify call works
-        setTokens(response.data.access_token, "");
+        setTokens(response.data.access_token, "", { rememberMe });
         toast.info(t("auth.login.toasts.enter2fa"));
       } else {
         setAuth(
           response.data.user,
           response.data.access_token,
-          response.data.refresh_token
+          response.data.refresh_token,
+          { rememberMe }
         );
         toast.success(t("auth.login.toasts.welcome"));
         router.push("/");
@@ -200,6 +210,16 @@ export default function LoginPage() {
                 {loginForm.formState.errors.password.message}
               </p>
             )}
+          </div>
+          <div className="flex items-center gap-3">
+            <Checkbox
+              id="remember-me"
+              checked={rememberMe}
+              aria-label={t("auth.login.rememberMe")}
+              onCheckedChange={(checked) => setRememberMe(checked === true)}
+              disabled={loading}
+            />
+            <Label htmlFor="remember-me">{t("auth.login.rememberMe")}</Label>
           </div>
         </CardContent>
         <CardFooter>

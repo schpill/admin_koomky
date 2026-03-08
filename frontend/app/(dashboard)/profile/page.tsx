@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { DashboardLayout } from "@/components/layout/dashboard-layout";
 import { AvatarUpload } from "@/components/profile/avatar-upload";
 import { useI18n } from "@/components/providers/i18n-provider";
 import { Button } from "@/components/ui/button";
@@ -92,120 +91,112 @@ export default function ProfilePage() {
   }
 
   return (
-    <DashboardLayout>
-      <div className="mx-auto max-w-3xl space-y-6">
-        <div>
-          <h1 className="text-3xl font-semibold tracking-tight">
-            {t("profile.title")}
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            {t("profile.description")}
-          </p>
-        </div>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>{t("profile.personal.title")}</CardTitle>
-            <CardDescription>
-              {t("profile.personal.description")}
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <AvatarUpload
-              label={t("profile.fields.avatar")}
-              value={avatarFile}
-              initialPreviewUrl={
-                avatarRemoved ? null : (authUser?.avatar_url ?? null)
-              }
-              onChange={(file) => {
-                setAvatarFile(file);
-                setAvatarRemoved(file === null);
-              }}
-            />
-            <div className="space-y-2">
-              <Label htmlFor="profile-name">{t("profile.fields.name")}</Label>
-              <Input
-                id="profile-name"
-                value={name}
-                onChange={(event) => setName(event.target.value)}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="profile-email">{t("profile.fields.email")}</Label>
-              <Input
-                id="profile-email"
-                type="email"
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-              />
-            </div>
-          </CardContent>
-          <CardFooter className="justify-end border-t bg-muted/40 px-6 py-4">
-            <Button
-              type="button"
-              onClick={handleProfileSave}
-              disabled={isLoading}
-            >
-              {t("profile.actions.saveProfile")}
-            </Button>
-          </CardFooter>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>{t("profile.security.title")}</CardTitle>
-            <CardDescription>
-              {t("profile.security.description")}
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="current-password">
-                {t("profile.fields.currentPassword")}
-              </Label>
-              <Input
-                id="current-password"
-                type="password"
-                value={currentPassword}
-                onChange={(event) => setCurrentPassword(event.target.value)}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="new-password">
-                {t("profile.fields.newPassword")}
-              </Label>
-              <Input
-                id="new-password"
-                type="password"
-                value={newPassword}
-                onChange={(event) => setNewPassword(event.target.value)}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password-confirmation">
-                {t("profile.fields.passwordConfirmation")}
-              </Label>
-              <Input
-                id="password-confirmation"
-                type="password"
-                value={passwordConfirmation}
-                onChange={(event) =>
-                  setPasswordConfirmation(event.target.value)
-                }
-              />
-            </div>
-          </CardContent>
-          <CardFooter className="justify-end border-t bg-muted/40 px-6 py-4">
-            <Button
-              type="button"
-              onClick={handlePasswordSave}
-              disabled={isLoading}
-            >
-              {t("profile.actions.savePassword")}
-            </Button>
-          </CardFooter>
-        </Card>
+    <div className="mx-auto max-w-3xl space-y-6">
+      <div>
+        <h1 className="text-3xl font-semibold tracking-tight">
+          {t("profile.title")}
+        </h1>
+        <p className="text-sm text-muted-foreground">
+          {t("profile.description")}
+        </p>
       </div>
-    </DashboardLayout>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>{t("profile.personal.title")}</CardTitle>
+          <CardDescription>{t("profile.personal.description")}</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <AvatarUpload
+            label={t("profile.fields.avatar")}
+            value={avatarFile}
+            initialPreviewUrl={
+              avatarRemoved ? null : (authUser?.avatar_url ?? null)
+            }
+            onChange={(file) => {
+              setAvatarFile(file);
+              setAvatarRemoved(file === null);
+            }}
+          />
+          <div className="space-y-2">
+            <Label htmlFor="profile-name">{t("profile.fields.name")}</Label>
+            <Input
+              id="profile-name"
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="profile-email">{t("profile.fields.email")}</Label>
+            <Input
+              id="profile-email"
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+            />
+          </div>
+        </CardContent>
+        <CardFooter className="justify-end border-t bg-muted/40 px-6 py-4">
+          <Button
+            type="button"
+            onClick={handleProfileSave}
+            disabled={isLoading}
+          >
+            {t("profile.actions.saveProfile")}
+          </Button>
+        </CardFooter>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>{t("profile.security.title")}</CardTitle>
+          <CardDescription>{t("profile.security.description")}</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="current-password">
+              {t("profile.fields.currentPassword")}
+            </Label>
+            <Input
+              id="current-password"
+              type="password"
+              value={currentPassword}
+              onChange={(event) => setCurrentPassword(event.target.value)}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="new-password">
+              {t("profile.fields.newPassword")}
+            </Label>
+            <Input
+              id="new-password"
+              type="password"
+              value={newPassword}
+              onChange={(event) => setNewPassword(event.target.value)}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="password-confirmation">
+              {t("profile.fields.passwordConfirmation")}
+            </Label>
+            <Input
+              id="password-confirmation"
+              type="password"
+              value={passwordConfirmation}
+              onChange={(event) => setPasswordConfirmation(event.target.value)}
+            />
+          </div>
+        </CardContent>
+        <CardFooter className="justify-end border-t bg-muted/40 px-6 py-4">
+          <Button
+            type="button"
+            onClick={handlePasswordSave}
+            disabled={isLoading}
+          >
+            {t("profile.actions.savePassword")}
+          </Button>
+        </CardFooter>
+      </Card>
+    </div>
   );
 }

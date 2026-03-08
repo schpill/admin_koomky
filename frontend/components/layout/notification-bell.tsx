@@ -1,6 +1,7 @@
 "use client";
 
 import { Bell } from "lucide-react";
+import { useI18n } from "@/components/providers/i18n-provider";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -13,6 +14,7 @@ import {
 import { useNotificationStore } from "@/lib/stores/notifications";
 
 export function NotificationBell() {
+  const { t } = useI18n();
   const notifications = useNotificationStore((state) => state.notifications);
   const markAsRead = useNotificationStore((state) => state.markAsRead);
   const markAllAsRead = useNotificationStore((state) => state.markAllAsRead);
@@ -29,13 +31,13 @@ export function NotificationBell() {
               {unreadCount}
             </span>
           )}
-          <span className="sr-only">Notifications</span>
+          <span className="sr-only">{t("notifications.title")}</span>
         </Button>
       </DropdownMenuTrigger>
 
       <DropdownMenuContent align="end" className="w-80">
         <DropdownMenuLabel className="flex items-center justify-between">
-          Notifications
+          {t("notifications.title")}
           <Button
             type="button"
             size="sm"
@@ -43,13 +45,13 @@ export function NotificationBell() {
             className="h-7 px-2"
             onClick={markAllAsRead}
           >
-            Mark all read
+            {t("notifications.markAllRead")}
           </Button>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         {notifications.length === 0 ? (
           <p className="px-2 py-3 text-sm text-muted-foreground">
-            No notifications yet.
+            {t("notifications.noNotifications")}
           </p>
         ) : (
           notifications.map((notification) => (
@@ -65,7 +67,7 @@ export function NotificationBell() {
                 </p>
                 {!notification.read_at && (
                   <p className="text-[10px] font-semibold uppercase tracking-wide text-primary">
-                    Unread
+                    {t("notifications.unread")}
                   </p>
                 )}
               </div>

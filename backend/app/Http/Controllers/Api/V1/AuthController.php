@@ -48,7 +48,11 @@ class AuthController extends Controller
             ], 'Two-factor authentication required');
         }
 
-        return $this->issueTokens($user, 'Login successful');
+        return $this->issueTokens(
+            $user,
+            'Login successful',
+            rememberMe: $request->boolean('remember_me')
+        );
     }
 
     public function verify2fa(Request $request): JsonResponse
@@ -90,11 +94,18 @@ class AuthController extends Controller
         return $this->issueTokens($user, 'Token refreshed successfully');
     }
 
-    protected function issueTokens(User $user, string $message, int $code = 200): JsonResponse
-    {
-        // For a real app, we might want different abilities for access and refresh tokens
+    protected function issueTokens(
+        User $user,
+        string $message,
+        int $code = 200,
+        bool $rememberMe = false
+    ): JsonResponse {
         $accessToken = $user->createToken('access_token', ['access'], now()->addMinutes(15))->plainTextToken;
-        $refreshToken = $user->createToken('refresh_token', ['refresh'], now()->addDays(7))->plainTextToken;
+        $refreshToken = $user->createToken(
+            'refresh_token',
+            ['refresh'],
+            $rememberMe ? now()->addDays(30) : now()->addDay()
+        )->plainTextToken;
 
         return $this->success([
             'user' => $user,
