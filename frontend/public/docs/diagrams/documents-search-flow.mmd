@@ -1,0 +1,75 @@
+graph TD
+    %% Graph Definition and Theme
+    graph LR
+        %% Styling for better readability, adjust as needed
+        classDef startEnd fill:#DDEBF7,stroke:#333,stroke-width:2px,color:#111,font-weight:bold,border-radius:5px;
+        classDef process fill:#EBF1DE,stroke:#5A723D,stroke-width:1px,color:#111;
+        classDef decision fill:#FCE4EC,stroke:#D8367F,stroke-width:1px,color:#111;
+        classDef dataStore fill:#FFF2CC,stroke:#E0B900,stroke-width:1px,color:#111;
+        classDef action fill:#DAEEF3,stroke:#0070C0,stroke-width:1px,color:#111;
+        classDef output fill:#D9D9D9,stroke:#666,stroke-width:1px,color:#111;
+
+    %% Nodes
+    A(User Initiates Document Search):::startEnd
+
+    subgraph User Input & Query Formation
+        B[Enter Keywords, Filters & Context]:::process
+        C{Is Context (e.g., Customer, Product, Case) Available?}:::decision
+        C -- Yes --> D[Apply CRM Record Context]:::action
+        C -- No --> E[Proceed with General Search]:::action
+        D --> F(Query Prepared)
+        E --> F(Query Prepared)
+    end
+
+    subgraph Search Execution & Data Retrieval
+        F --> G[Submit Query to Search Engine]:::action
+        H{Search Engine Processes Query}:::process
+        H --> I[(Knowledge Base Articles)]:::dataStore
+        H --> J[(Case Attachments & Notes)]:::dataStore
+        H --> K[(Product Manuals & Specifications)]:::dataStore
+        H --> L[(Custom Object Documents)]:::dataStore
+        H --> M[(External Document Repositories)]:::dataStore
+    end
+
+    N{Are Relevant Search Results Found?}:::decision
+
+    N -- Yes --> P[Display Sorted & Filtered Results]:::output
+    P --> Q{User Selects a Document?}:::decision
+    Q -- Yes --> R[Open/Preview Document]:::action
+
+    R --> S{Desired Action Taken?}:::decision
+    S -- "Link to CRM Record" --> T[Associate Document with Current CRM Record]:::action
+    S -- "Download/Share" --> U[Download/Share Document]:::action
+    S -- "View Content" --> V[User Reviews Document Content]:::process
+    S -- "Refine Search" --> A
+    S -- "No Further Action" --> Z(End of Flow - Document Accessed)
+
+    T --> W[Confirmation: Document Linked]:::output
+    U --> X[Confirmation: Document Downloaded/Shared]:::output
+    V --> Z
+    W --> Z
+    X --> Z
+
+    N -- No --> Y[Display "No Results Found" Message]:::output
+    Y --> AA{User Actions After No Results?}:::decision
+    AA -- "Refine Search" --> A
+    AA -- "Create New Document/Article" --> BB[Initiate New Content Creation Workflow]:::action
+    AA -- "Submit Feedback on Search Gap" --> CC[Log Feedback for KB Improvement]:::action
+    AA -- "Escalate/Open Support Ticket" --> DD[Create New Case/Task]:::action
+
+    BB --> Z(End of Flow - New Content Initiated)
+    CC --> Z(End of Flow - Feedback Submitted)
+    DD --> Z(End of Flow - Escalation Initiated)
+
+    Z(End of Document Search Flow):::startEnd
+
+    %% Error Path
+    G -- "Search Engine Error" --> EE[Display System Error Message]:::output
+    EE --> FF(End of Flow - System Error)
+
+    %% Link classes
+    class A, Z startEnd;
+    class B, G, H, P, R, T, U, V, W, X, Y, BB, CC, DD, EE process;
+    class C, N, Q, S, AA decision;
+    class D, E action;
+    class I, J, K, L, M dataStore;

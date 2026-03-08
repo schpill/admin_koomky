@@ -8,6 +8,7 @@ export const messages: Record<Locale, MessageTree> = {
   fr: {
     common: {
       loading: "Chargement...",
+      openInDialog: "Ouvrir dans une fenêtre",
       language: "Langue",
       cancel: "Annuler",
       confirm: "Confirmer",
@@ -42,6 +43,7 @@ export const messages: Record<Locale, MessageTree> = {
       accounting: "Comptabilité",
       reports: "Rapports",
       calendar: "Calendrier",
+      docs: "Documentation",
       grafana: "Grafana",
       settings: "Paramètres",
       reminders: "Relances",
@@ -98,6 +100,7 @@ export const messages: Record<Locale, MessageTree> = {
       searchPlaceholder: "Tapez une commande ou recherchez...",
       noResults: "Aucun résultat.",
       clientsGroup: "Clients",
+      docsGroup: "Documentation",
       quickLinksGroup: "Accès rapides",
       dashboard: "Tableau de bord",
       settings: "Paramètres",
@@ -1842,6 +1845,7 @@ export const messages: Record<Locale, MessageTree> = {
   en: {
     common: {
       loading: "Loading...",
+      openInDialog: "Open in dialog",
       language: "Language",
       cancel: "Cancel",
       confirm: "Confirm",
@@ -1876,6 +1880,7 @@ export const messages: Record<Locale, MessageTree> = {
       accounting: "Accounting",
       reports: "Reports",
       calendar: "Calendar",
+      docs: "Documentation",
       grafana: "Grafana",
       settings: "Settings",
       reminders: "Reminders",
@@ -1932,6 +1937,7 @@ export const messages: Record<Locale, MessageTree> = {
       searchPlaceholder: "Type a command or search...",
       noResults: "No results found.",
       clientsGroup: "Clients",
+      docsGroup: "Documentation",
       quickLinksGroup: "Quick Links",
       dashboard: "Dashboard",
       settings: "Settings",

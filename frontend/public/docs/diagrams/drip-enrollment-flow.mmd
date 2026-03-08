@@ -1,0 +1,104 @@
+graph TD
+    %% Title for the diagram
+    title: Drip Enrollment Flow (CRM Documentation Quality)
+
+    %% Style definitions for clarity (optional but good for documentation)
+    classDef startEnd fill:#D2E0FB,stroke:#333,stroke-width:2px,color:#000;
+    classDef decision fill:#FFFBEA,stroke:#FFCC00,stroke-width:2px,color:#000;
+    classDef process fill:#F5F5F5,stroke:#CCC,stroke-width:1px,color:#000;
+    classDef systemBox fill:#E6F7FF,stroke:#91D5FF,stroke-width:2px,color:#000;
+    classDef external fill:#F0F9FF,stroke:#B0E0FF,stroke-width:1px,color:#000;
+
+    %% Nodes for Start and End
+    start((User Initiates Enrollment)):::startEnd
+    end((Enrollment & Drip Sequence Completed)):::startEnd
+
+    %% Subgraphs for System Responsibilities
+    subgraph User Interaction
+        UI1[Clicks 'Enroll Now' / Submits Lead Form]::external
+        UI2[Completes Payment Details]::external
+        UI3{Payment Successful?}:::decision
+    end
+
+    subgraph Website / Landing Page
+        WP1[Collects User Data (Name, Email, etc.)]:::process
+        WP2[Redirects to Payment Gateway]:::process
+        WP3[Displays Confirmation Page]:::process
+        WP4[Handles Payment Failure Display]:::process
+    end
+
+    subgraph CRM / Marketing Automation (MA)
+        CRM1[Create/Update Contact Record]:::process
+        CRM2[Add Contact to 'Enrollment Started' Segment/Tag]:::process
+        CRM3[Check for Existing Enrollment]:::decision
+        CRM4[Create/Update Enrollment Opportunity/Deal]:::process
+        CRM5[Send Welcome & Access Email]:::process
+        CRM6[Trigger Drip Enrollment Sequence]:::process
+        CRM7[Drip Email 1: Welcome & Onboarding]:::process
+        CRM8[Drip Email 2: Resource/Tip Sharing]:::process
+        CRM9[Drip Email 3: Engagement/Next Steps]:::process
+        CRM10[Drip Email N: Follow-up/Upsell (as configured)]:::process
+        CRM11[Update Contact Status: 'Enrolled']:::process
+        CRM12[Update Contact Status: 'Payment Failed']:::process
+        CRM13[Send Payment Failure Notification]:::process
+        CRM14[Move Contact to 'Enrollment Failed' Nurture]:::process
+        CRM15[De-duplicate Existing Enrollment Nurture]:::process
+    end
+
+    subgraph Payment Gateway
+        PG1[Processes Payment Transaction]:::external
+    end
+
+    subgraph Product / Service Provisioning System (e.g., LMS, SaaS App)
+        PS1[Provisions User Access / Account]:::process
+        PS2[Generates Access Credentials]:::process
+    end
+
+    %% Flow connections
+    start --> UI1
+    UI1 --> WP1
+    WP1 --> CRM1
+
+    CRM1 -- Data Synced --> CRM3
+    CRM3 -- Yes, Already Enrolled --> CRM15
+    CRM15 --> end
+
+    CRM3 -- No, New Enrollment --> CRM2
+    CRM2 -- Data Synced --> WP2
+
+    WP2 --> PG1
+    PG1 --> UI2
+    UI2 --> UI3
+
+    UI3 -- Yes (Payment Success) --> CRM4
+    CRM4 -- Opportunity Created --> PS1
+    PS1 --> PS2
+    PS2 -- Access Granted & Credentials --> CRM5
+    CRM5 --> CRM6
+    CRM6 --> CRM7
+    CRM7 --> CRM8
+    CRM8 --> CRM9
+    CRM9 --> CRM10
+    CRM10 --> CRM11
+    CRM11 --> end
+
+    UI3 -- No (Payment Failure) --> WP4
+    WP4 --> CRM12
+    CRM12 --> CRM13
+    CRM13 --> CRM14
+    CRM14 --> end
+
+    %% Notes and Explanations
+    note left of CRM1: **CRM Action:** Creates new contact or updates existing. <br>Assigns Lead Source, Campaign.
+    note right of CRM2: **MA Action:** Applies tag like 'Enrollment-Started', <br>adds to 'In Progress' segment.
+    note left of CRM3: **CRM Logic:** Check if contact has active enrollment record <br>for this product/service. Prevents duplicate enrollment.
+    note right of CRM4: **CRM Action:** Creates/updates 'Enrollment' Opportunity <br>with status 'Paid'.
+    note left of CRM5: **MA Action:** Sends email with login link, <br>username, temporary password.
+    note right of CRM6: **MA Action:** Kicks off a multi-stage <br>email sequence.
+    note left of CRM7: **MA Action:** First email in sequence. <br>Focus on initial success, next steps.
+    note right of CRM9: **MA Action:** Third email in sequence. <br>Drives engagement, showcases features.
+    note left of CRM11: **CRM Action:** Updates contact profile to 'Customer', <br>'Enrolled in [Product]'.
+    note right of CRM12: **CRM Action:** Updates contact profile, <br>might set 'Payment Status: Failed'.
+    note left of CRM13: **MA Action:** Sends email to user with <br>link to retry payment or contact support.
+    note right of CRM14: **MA Action:** Moves contact to a specific nurture stream <br>for failed enrollments, e.g., discount offer.
+    note left of CRM15: **MA Action:** Removes from any active enrollment nurtures, <br>might send a "Thanks, but you're already in!" email.

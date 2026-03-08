@@ -1,0 +1,185 @@
+<svg width="100%" height="700" viewBox="0 0 1200 700" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial, sans-serif">
+  <defs>
+    <!-- Arrowhead Marker -->
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#343a40" />
+    </marker>
+    <marker id="arrowhead-light" markerWidth="10" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#6c757d" />
+    </marker>
+  </defs>
+
+  <!-- Styles for consistency -->
+  <style>
+    .stage-box {
+      fill: #e9ecef; /* Light gray background */
+      stroke: #dee2e6; /* Lighter border */
+      stroke-width: 1;
+      rx: 10; /* Rounded corners */
+      ry: 10;
+    }
+    .component-box {
+      fill: #ffffff; /* White background */
+      stroke: #007bff; /* Primary blue border */
+      stroke-width: 2;
+      rx: 8;
+      ry: 8;
+    }
+    .data-store-box {
+      fill: #ffffff;
+      stroke: #28a745; /* Green border for data */
+      stroke-width: 2;
+      rx: 8;
+      ry: 8;
+    }
+    .user-box {
+      fill: #ffffff;
+      stroke: #6c757d; /* Gray border for user */
+      stroke-width: 2;
+      rx: 8;
+      ry: 8;
+    }
+    .label-text {
+      font-size: 16px;
+      fill: #343a40; /* Dark text */
+      text-anchor: middle;
+      dominant-baseline: middle;
+    }
+    .stage-title {
+      font-size: 20px;
+      font-weight: bold;
+      fill: #007bff; /* Primary blue for stage titles */
+      text-anchor: middle;
+      dominant-baseline: middle;
+    }
+    .connection-text {
+      font-size: 14px;
+      fill: #6c757d; /* Gray text for connections */
+      text-anchor: middle;
+      dominant-baseline: middle;
+    }
+    .arrow-path {
+      stroke: #343a40; /* Dark gray for main arrows */
+      stroke-width: 2;
+      fill: none;
+      marker-end: url(#arrowhead);
+    }
+    .arrow-path-light {
+      stroke: #6c757d; /* Light gray for secondary arrows */
+      stroke-width: 1;
+      fill: none;
+      marker-end: url(#arrowhead-light);
+    }
+    .container-border {
+      stroke: #6c757d;
+      stroke-width: 2;
+      stroke-dasharray: 5 5; /* Dashed line */
+      fill: none;
+      rx: 15;
+      ry: 15;
+    }
+  </style>
+
+  <!-- Title -->
+  <text x="600" y="50" class="stage-title" font-size="32px">Retrieval-Augmented Generation (RAG) Architecture</text>
+
+  <!-- Overall RAG System Container -->
+  <rect x="150" y="100" width="900" height="580" class="container-border" />
+  <text x="250" y="120" class="stage-title" text-anchor="start" font-size="24px" fill="#6c757d">RAG System</text>
+
+
+  <!-- 1. User Input -->
+  <g>
+    <rect x="50" y="300" width="100" height="60" class="user-box" />
+    <text x="100" y="330" class="label-text">User</text>
+  </g>
+
+  <!-- Arrow: User Query to RAG Orchestrator -->
+  <path d="M 150 330 H 260" class="arrow-path" />
+  <text x="200" y="310" class="connection-text">User Query</text>
+
+  <!-- 2. RAG Orchestrator / Prompt Engineering -->
+  <g>
+    <rect x="260" y="270" width="180" height="120" class="component-box" />
+    <text x="350" y="310" class="stage-title" font-size="18px" fill="#007bff">RAG Orchestrator</text>
+    <text x="350" y="340" class="label-text" font-size="14px">(Query Processing &amp; Prompt Assembly)</text>
+  </g>
+
+  <!-- Arrow: Orchestrator to Retriever -->
+  <path d="M 440 330 H 510" class="arrow-path" />
+  <text x="475" y="310" class="connection-text">Augmented Query</text>
+
+  <!-- 3. Retrieval Stage -->
+  <rect x="490" y="150" width="220" height="400" class="stage-box" />
+  <text x="600" y="175" class="stage-title">Retrieval</text>
+
+    <!-- 3.1 Retriever Module -->
+    <g>
+      <rect x="510" y="270" width="180" height="120" class="component-box" />
+      <text x="600" y="310" class="stage-title" font-size="18px" fill="#007bff">Retriever Module</text>
+      <text x="600" y="340" class="label-text" font-size="14px">(Semantic Search)</text>
+    </g>
+
+    <!-- Arrow: Retriever to Vector Database (Query) -->
+    <path d="M 600 390 V 440 H 570" class="arrow-path-light" />
+    <text x="590" y="415" class="connection-text" text-anchor="end">Embeddings Search</text>
+
+    <!-- 3.2 Vector Database / Knowledge Base -->
+    <g>
+      <rect x="480" y="450" width="240" height="100" class="data-store-box" />
+      <text x="600" y="480" class="stage-title" font-size="18px" fill="#28a745">Vector Database</text>
+      <text x="600" y="510" class="label-text" font-size="14px">Knowledge Base (Documents, Articles, CRM Data)</text>
+    </g>
+
+    <!-- Arrow: Vector Database to Retriever (Context) -->
+    <path d="M 630 450 V 420 H 600" class="arrow-path-light" />
+    <text x="615" y="430" class="connection-text" text-anchor="start">Relevant Context</text>
+
+    <!-- Arrow: Ingestion to Vector Database -->
+    <path d="M 380 570 V 510 H 480" class="arrow-path-light" />
+    <text x="360" y="540" class="connection-text" text-anchor="end">Data Ingestion &amp; Embedding</text>
+    <g>
+      <rect x="280" y="560" width="100" height="60" class="data-store-box" />
+      <text x="330" y="590" class="label-text">Raw Data Sources</text>
+    </g>
+
+  <!-- Arrow: Retriever to RAG Orchestrator (Retrieved Context) -->
+  <path d="M 700 330 H 770" class="arrow-path" />
+  <text x="735" y="310" class="connection-text">Context Documents</text>
+
+  <!-- Arrow: RAG Orchestrator to LLM (Final Prompt) -->
+  <path d="M 770 330 H 870" class="arrow-path" />
+  <text x="820" y="310" class="connection-text">Contextualized Prompt</text>
+
+  <!-- 4. Generation Stage -->
+  <rect x="850" y="150" width="220" height="400" class="stage-box" />
+  <text x="960" y="175" class="stage-title">Generation</text>
+
+    <!-- 4.1 LLM Module -->
+    <g>
+      <rect x="870" y="270" width="180" height="120" class="component-box" />
+      <text x="960" y="310" class="stage-title" font-size="18px" fill="#007bff">LLM Module</text>
+      <text x="960" y="340" class="label-text" font-size="14px">(Reasoning &amp; Synthesis)</text>
+    </g>
+
+  <!-- Arrow: LLM to User (Answer) -->
+  <path d="M 1050 330 H 1160" class="arrow-path" />
+  <text x="1105" y="310" class="connection-text">Generated Answer</text>
+
+  <!-- 5. User Output -->
+  <g>
+    <rect x="1110" y="300" width="100" height="60" class="user-box" />
+    <text x="1160" y="330" class="label-text">User</text>
+  </g>
+
+  <!-- Key Interactions/Benefits (Optional, but good for CRM context) -->
+  <text x="600" y="620" class="stage-title" font-size="24px" fill="#343a40">Benefits:</text>
+  <text x="600" y="650" class="label-text" font-size="18px" fill="#343a40">
+    <tspan x="600" dy="0em">•  Factually Grounded Responses</tspan>
+    <tspan x="600" dy="1.4em">•  Reduced Hallucinations</tspan>
+    <tspan x="600" dy="1.4em">•  Access to Real-time &amp; Proprietary Data</tspan>
+    <tspan x="600" dy="1.4em">•  Improved Answer Accuracy &amp; Relevance</tspan>
+  </text>
+
+
+</svg>

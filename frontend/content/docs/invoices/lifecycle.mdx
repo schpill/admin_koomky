@@ -1,0 +1,73 @@
+---
+title: "Cycle de vie des factures"
+description: "Visualiser les etats, transitions et points de controle de la facture."
+module: "invoices"
+---
+
+## Vue d'ensemble
+
+Visualiser les etats, transitions et points de controle de la facture. Cette documentation explique quand utiliser le module, quels indicateurs surveiller et quelles transitions de statut verifier.
+
+<DocCallout type="tip" title="Point d'attention">
+  Cadrez les roles, les donnees d'entree et les validations de sortie avant
+  d'automatiser ce module.
+</DocCallout>
+
+## Concepts cles
+
+- Objectif metier: aligner les operations avec un referentiel partage.
+- Donnees pivots: contacts, documents, statuts, historiques et preuves d'action.
+- Signal de pilotage: identifier les blocages et les exceptions rapidement.
+
+## Fonctionnalites principales
+
+- Vue de liste pour prioriser et filtrer les elements actifs.
+- Ecran detail pour auditer l'historique et les actions de suivi.
+- Formulaires et automatismes pour reduire les taches manuelles.
+
+## Guide pas a pas
+
+<DocSteps>
+  <li>
+    <strong>Prepar er le contexte</strong> en verifiant les prerequis
+    fonctionnels et les droits d'acces.
+    <DocScreenshot
+      src="/docs/screenshots/invoices/overview.png"
+      alt="Cycle de vie des factures overview"
+      caption="Vue representative du module Cycle de vie des factures."
+    />
+  </li>
+  <li>
+    <strong>Executer le flux principal</strong> en suivant les etapes metier
+    attendues et les validations associees.
+  </li>
+  <li>
+    <strong>Controler le resultat</strong> en consultant les journaux, statuts
+    et notifications du module.
+  </li>
+</DocSteps>
+
+## Diagrammes
+
+<DocDiagram
+  src="/docs/diagrams/invoices-overview.mmd"
+  title="Flux Cycle de vie des factures"
+/>
+
+## Infographie
+
+<DocInfographic
+  src="/docs/infographics/invoices-overview.svg"
+  alt="Infographie Cycle de vie des factures"
+  caption="Resume visuel du module Cycle de vie des factures."
+/>
+
+## FAQ
+
+### Quand utiliser ce module ?
+
+Des que l equipe a besoin d'un flux repetable avec trace, priorisation et point de controle explicite.
+
+### Quel est le risque principal ?
+
+Lancer les automatisations sans clarifier la qualite des donnees, ce qui degrade la confiance dans les sorties.

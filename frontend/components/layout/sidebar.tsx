@@ -30,6 +30,7 @@ import {
   Bell,
   LayoutTemplate,
   Gauge,
+  BookOpen,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -65,6 +66,12 @@ const grafanaUrl =
   process.env.NEXT_PUBLIC_GRAFANA_URL || "http://localhost:3001";
 
 const secondaryNavigation = [
+  {
+    key: "docs",
+    href: "/docs",
+    icon: BookOpen,
+    external: false,
+  },
   {
     key: "settings",
     href: "/settings/profile",

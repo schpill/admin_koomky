@@ -1,11 +1,11 @@
 DOCKER_UID := $(shell id -u)
 DOCKER_GID := $(shell id -g)
-DOCKER_COMPOSE := $(shell $(DOCKER_COMPOSE) version > /dev/null 2>&1 && echo "$(DOCKER_COMPOSE)" || echo "docker-compose")
+DOCKER_COMPOSE ?= $(shell if docker compose version > /dev/null 2>&1; then echo "docker compose"; else echo "docker-compose"; fi)
 
 PROD_HOST := gerald@163.172.110.246
 PROD_DIR  := /home/gerald/web/crm
 
-.PHONY: up upwc down restart build install test lint fresh seed shell-api shell-frontend deploy tinker import-prospects go-live
+.PHONY: up upwc down restart build install test lint fresh seed shell-api shell-frontend deploy tinker import-prospects go-live docs-diagrams docs-screenshots
 
 up:
 	$(DOCKER_COMPOSE) up -d --build
@@ -117,3 +117,15 @@ user:
 
 import-prospects:
 	$(DOCKER_COMPOSE) run --rm api php artisan leads:import-xlsx $(ARGS)
+
+docs-diagrams:
+	$(DOCKER_COMPOSE) run --rm -e GEMINI_API_KEY=$(GEMINI_API_KEY) frontend sh -lc "pnpm install --frozen-lockfile && pnpm docs:diagrams $(ARGS)"
+
+docs-screenshots:
+	$(DOCKER_COMPOSE) up -d api nginx frontend
+	$(DOCKER_COMPOSE) exec -T \
+		-e DOCS_SCREENSHOT_EMAIL \
+		-e DOCS_SCREENSHOT_PASSWORD \
+		-e DOCS_SCREENSHOT_BASE_URL=$${DOCS_SCREENSHOT_BASE_URL:-http://nginx} \
+		-e PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium \
+		frontend sh -lc "apk add --no-cache chromium >/dev/null && pnpm install --frozen-lockfile && until wget -q -O /dev/null $${DOCS_SCREENSHOT_BASE_URL}/auth/login; do sleep 2; done && pnpm docs:screenshots"

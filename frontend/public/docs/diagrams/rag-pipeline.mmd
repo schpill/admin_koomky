@@ -1,0 +1,87 @@
+graph TD
+    subgraph User Interaction
+        A[User Query] -- "Ask a question" --> B(Query Pre-processing:
+        - Rephrasing, Intent Detection)
+    end
+
+    subgraph Retrieval Phase
+        B --> C(Embed Query:
+        - Vectorize User Query)
+        C --> D{Vector Search / Retrieval:
+        - Find Top-K similar chunks}
+        D -- "Retrieved Chunks" --> E(Context Formulation:
+        - Assemble relevant info for LLM)
+    end
+
+    subgraph Generation Phase
+        E -- "Prompt + Context" --> F[Large Language Model (LLM):
+        - Generate Answer]
+        F -- "Raw Answer" --> G(Response Post-processing:
+        - Formatting, Filtering, Safety)
+        G --> H[Final Answer to User]
+    end
+
+    subgraph Knowledge Base / CRM Documentation Sources
+        direction LR
+        KBA[Knowledge Base Articles:
+        - FAQs, How-to Guides]
+        CRM_Cases[CRM Cases & Notes:
+        - Support Tickets, Sales Notes]
+        ProdDocs[Product Documentation:
+        - Manuals, Specs, Release Notes]
+        SupportLogs[Support Chat/Call Logs:
+        - Transcripts, Resolutions]
+        ExternalDocs[External Vendor Docs:
+        - Partner Guides, APIs]
+
+        KBA & CRM_Cases & ProdDocs & SupportLogs & ExternalDocs -- "Cleaned, Chunked, Embedded" --> I[Vector Database / Index:
+        - Stores vector embeddings of docs]
+    end
+
+    I -- "Similar Embeddings" --> D
+
+    subgraph Documentation Quality Factors
+        DQ_CRITERIA[Documentation Quality Criteria:
+        - **Accuracy:** Factual correctness
+        - **Completeness:** Full information
+        - **Consistency:** Uniform terminology/data
+        - **Timeliness:** Up-to-date info
+        - **Structure & Tagging:** Organized, searchable
+        - **Relevance:** Pertinent to user needs]
+
+        style DQ_CRITERIA fill:#E0FFFF,stroke:#20B2AA,stroke-width:2px,color:#333
+    end
+
+    subgraph Impact of Doc Quality on RAG
+        DQ_CRITERIA -- "High Quality Docs Lead To" --> I
+        DQ_CRITERIA -- "Low Quality Docs Lead To:" --> LowQ_Impact_Retrieval[Impact on Retrieval:
+        - Irrelevant/Outdated Chunks
+        - Poor Embedding Quality
+        - Missed Information]
+        DQ_CRITERIA -- "Low Quality Docs Lead To:" --> LowQ_Impact_Generation[Impact on Generation:
+        - Misleading/Conflicting Context
+        - Hallucinations/Inaccurate Answers
+        - Suboptimal/Vague User Experience]
+
+        I -- "Ensures good search" --> D
+        LowQ_Impact_Retrieval -- "Bad Input for Search" --> D
+        LowQ_Impact_Retrieval -- "Poor Context" --> E
+
+        E -- "Ensures good prompt" --> F
+        LowQ_Impact_Generation -- "Bad Context for LLM" --> F
+        LowQ_Impact_Generation -- "Poor Output Quality" --> H
+
+        style LowQ_Impact_Retrieval fill:#FFDDC2,stroke:#FF8C00,stroke-width:2px,color:#333
+        style LowQ_Impact_Generation fill:#FFDDC2,stroke:#FF8C00,stroke-width:2px,color:#333
+    end
+
+    subgraph Feedback & Continuous Improvement
+        H -- "User Feedback (Rating, Correction, "Was this helpful?")" --> J[Human Review & Content Update:
+        - Subject Matter Experts, Content Editors]
+        J --> KBA
+        J --> CRM_Cases
+        J --> ProdDocs
+        J --> SupportLogs
+        J -. "Improves Documentation Quality" .-> DQ_CRITERIA
+        style J fill:#D3F4EE,stroke:#1ABC9C,stroke-width:2px,color:#333
+    end

@@ -1,0 +1,94 @@
+graph TD
+    %% Theme: Modern/Professional
+    %% Styles for different node types and states
+    classDef start_end fill:#D0E7FF,stroke:#007BFF,stroke-width:2px;
+    classDef process_step fill:#EAF2F8,stroke:#3498DB;
+    classDef decision_point fill:#F9EBEA,stroke:#CB4335,stroke-dasharray: 5 5;
+    classDef system_action fill:#D4EDDA,stroke:#28A745;
+    classDef integration_point fill:#FFF3CD,stroke:#FFC107;
+    classDef data_storage fill:#E0E0E0,stroke:#616161,stroke-dasharray: 2 2;
+
+    %% Main Flow Subgraph
+    subgraph "Quotes Acceptance Flow"
+        A[1. Sales Rep Creates Quote in CRM]:::start_end --> B{2. Internal Approval Needed?};
+        B -- Yes --> C[3. Sales Manager Approves Quote];
+        B -- No --> D[4. Sales Rep Sends Quote to Customer];
+        C --> D;
+
+        D -- Via Email/CRM Portal --> E[5. Customer Receives & Views Quote];
+        E --> F{6. Customer Action?};
+    end
+
+    %% Decision Paths & Outcomes
+    subgraph "Customer Decision Paths"
+        F -- "Accepts Quote" --> G[7. Customer Accepts Quote (E-signature/Email)]:::system_action;
+        F -- "Requests Revision" --> H[8. Customer Requests Quote Revision];
+        F -- "Rejects Quote" --> I[9. Customer Rejects Quote];
+        F -- "No Response (Quote Expiration)" --> J[10. Quote Expires];
+    end
+
+    %% Post-Acceptance Flow
+    subgraph "Post-Acceptance: Order Creation & CRM Update"
+        G --> K[11. CRM Updates Quote Status: Accepted]:::system_action;
+        K --> L((12. Quote Data Synced with ERP/Billing System)):::integration_point;
+        L --> M[13. Automated: Create Sales Order in ERP]:::system_action;
+        M --> N[14. CRM Notifies Sales Team/Finance]:::system_action;
+        N --> O[15. Order Fulfillment Process Initiated];
+    end
+
+    %% Revision Flow
+    subgraph "Quote Revision Flow"
+        H --> P[16. CRM Updates Quote Status: Revision Requested]:::process_step;
+        P --> Q[17. Sales Rep Modifies Quote in CRM];
+        Q --> B; %% Loop back to internal approval/sending
+    end
+
+    %% Rejection Flow
+    subgraph "Quote Rejection Flow"
+        I --> R[18. CRM Updates Quote Status: Rejected]:::process_step;
+        R --> S[19. Sales Rep Reviews Rejection Reason];
+        S --> T{20. Re-engage Customer?};
+        T -- Yes --> U[21. Sales Rep Schedules Follow-up Activity (Task/Call)];
+        U --> D; %% Loop back to sending a new/revised quote, or new quote creation
+        T -- No --> V[22. Close Opportunity / Archive Quote];
+    end
+
+    %% Expiration Flow
+    subgraph "Quote Expiration Flow"
+        J --> W[23. CRM Updates Quote Status: Expired]:::process_step;
+        W --> X[24. Sales Rep Reviews Expired Quote];
+        X --> T; %% Can lead to re-engagement or closure
+    end
+
+    %% CRM Data and Audit Trail
+    subgraph "CRM Data & Audit Trail"
+        data_quote[(Quote Record (CRM))]:::data_storage;
+        data_opportunity[(Opportunity Record (CRM))]:::data_storage;
+        data_customer[(Customer Record (CRM))]:::data_storage;
+        data_activity[(Activity Records (CRM))]:::data_storage;
+
+        A -. Creates/Updates .-> data_quote;
+        G -. Updates Status .-> data_quote;
+        H -. Updates Status .-> data_quote;
+        I -. Updates Status .-> data_quote;
+        J -. Updates Status .-> data_quote;
+        K -. Updates Status .-> data_quote;
+        P -. Updates Status .-> data_quote;
+        R -. Updates Status .-> data_quote;
+        W -. Updates Status .-> data_quote;
+
+        A -. Linked to .-> data_opportunity;
+        data_opportunity -. Linked to .-> data_customer;
+        U -. Creates .-> data_activity;
+
+        note for data_quote
+            Key Fields:
+            - **Status:** Draft, Sent, Viewed, Accepted, Rejected, Revised, Expired, Ordered
+            - **Valid From/To Dates**
+            - **Total Amount, Line Items**
+            - **Customer Contact, Sales Rep**
+            - **Approval History**
+            - **E-signature Audit Trail (if applicable)**
+            - **Integration Status (ERP Sync)**
+        end
+    end

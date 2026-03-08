@@ -1,0 +1,93 @@
+graph TD
+    %% Theme: Modern Flow
+    classDef start_end fill:#e0ffe0,stroke:#333,stroke-width:2px,color:#333;
+    classDef process fill:#f0f8ff,stroke:#6699ff,stroke-width:1px,color:#333;
+    classDef decision fill:#fffbe0,stroke:#ffcc00,stroke-width:1px,color:#333;
+    classDef crm_action fill:#f9f9f9,stroke:#cccccc,stroke-width:1px,color:#333,font-style:italic;
+    classDef team_owner fill:#e6e6fa,stroke:#9966cc,stroke-width:1px,color:#333;
+    classDef outcome fill:#fff0f5,stroke:#ff6699,stroke-width:2px,color:#333;
+
+    %% Nodes
+    A[Start: Lead Creation]:::start_end
+    B[Automated Welcome Sequence Triggered]:::process
+    C{Lead Engaged (Open/Click)?}:::decision
+    D[Nurture Track: Value-Add Content]:::process
+    E[Re-engagement Campaign]:::process
+    F{Lead Score > X (MQL Threshold)?}:::decision
+    G[SDR Task: Initial Qualification Call]:::team_owner
+    H{SDR Call: Qualified (BANT/FIT)?}:::decision
+    I[Book Discovery / Demo Call]:::team_owner
+    J[Long-Term Nurture / Future Follow-up]:::process
+    K[End: Disqualified / Archived]:::outcome
+    L[End: Hand-off to Account Executive (AE)]:::outcome
+
+    %% CRM Actions as Pseudo-Nodes/Labels on Arrows
+    A -- CRM: New Lead Record, Status: "New", Owner: Marketing --> B;
+    B -- CRM: Activity Log: "Welcome Email Sent" --> C;
+
+    C -- Yes (Engaged) --> D;
+    C -- No (No Engagement) --> E;
+
+    D -- CRM: Activity Log: "Content Engaged", Lead Score Update --> F;
+    E -- CRM: Status: "Nurturing", Lead Score Adjusted --> F;
+    E -- No Re-engagement in 14 days --> K;
+
+    F -- Yes (MQL) --> G;
+    F -- No (Not MQL) --> J;
+
+    G -- CRM: Task Created for SDR, Status: "MQL - Ready for SDR" --> H;
+    G -- SDR Call No Show/No Answer --> J;
+
+    H -- Yes (Qualified) --> I;
+    H -- No (Not Qualified Now) --> J;
+    H -- Unqualified, Bad Fit --> K;
+
+    I -- CRM: Meeting Scheduled, Opportunity Created, Status: "Discovery Scheduled", Owner: AE --> L;
+    J -- CRM: Status: "Nurturing - Long Term" / "DQ - Future Potential" --> K; // Or loop back to D for further engagement
+    J -- Re-engages (e.g., visits pricing page) --> G; // Conditional re-entry to SDR step
+
+    K -- CRM: Status: "Disqualified" / "Archived", Reason Code --> End;
+    L -- CRM: Hand-off Complete, AE takes Ownership --> End;
+
+    %% Subgraphs for Team Responsibilities / Phases
+    subgraph Phase 1: Awareness & Initial Engagement (Marketing Automation)
+        A --> B --> C --> D --> E
+    end
+
+    subgraph Phase 2: Lead Qualification (SDR Team)
+        F --> G --> H
+    end
+
+    subgraph Phase 3: Sales Handoff & Outcome (SDR/AE)
+        I --> L
+        J --> K
+    end
+
+    %% CRM Documentation Notes (using note on link)
+    linkStyle 0 stroke-width:2px,fill:none,stroke:green;
+    linkStyle 1 stroke-width:2px,fill:none,stroke:green;
+    linkStyle 2 stroke-width:2px,fill:none,stroke:green;
+    linkStyle 3 stroke-width:2px,fill:none,stroke:blue;
+    linkStyle 4 stroke-width:2px,fill:none,stroke:blue;
+    linkStyle 5 stroke-width:2px,fill:none,stroke:purple;
+    linkStyle 6 stroke-width:2px,fill:none,stroke:purple;
+    linkStyle 7 stroke-width:2px,fill:none,stroke:red;
+    linkStyle 8 stroke-width:2px,fill:none,stroke:orange;
+    linkStyle 9 stroke-width:2px,fill:none,stroke:orange;
+    linkStyle 10 stroke-width:2px,fill:none,stroke:red;
+    linkStyle 11 stroke-width:2px,fill:none,stroke:green;
+    linkStyle 12 stroke-width:2px,fill:none,stroke:black;
+
+    %% General Flow Description
+    style A fill:#e0ffe0,stroke:#333,stroke-width:2px,color:#333;
+    style B fill:#f0f8ff,stroke:#6699ff,stroke-width:1px,color:#333;
+    style C fill:#fffbe0,stroke:#ffcc00,stroke-width:1px,color:#333;
+    style D fill:#f0f8ff,stroke:#6699ff,stroke-width:1px,color:#333;
+    style E fill:#f0f8ff,stroke:#6699ff,stroke-width:1px,color:#333;
+    style F fill:#fffbe0,stroke:#ffcc00,stroke-width:1px,color:#333;
+    style G fill:#e6e6fa,stroke:#9966cc,stroke-width:1px,color:#333;
+    style H fill:#fffbe0,stroke:#ffcc00,stroke-width:1px,color:#333;
+    style I fill:#e6e6fa,stroke:#9966cc,stroke-width:1px,color:#333;
+    style J fill:#f0f8ff,stroke:#6699ff,stroke-width:1px,color:#333;
+    style K fill:#fff0f5,stroke:#ff6699,stroke-width:2px,color:#333;
+    style L fill:#fff0f5,stroke:#ff6699,stroke-width:2px,color:#333;

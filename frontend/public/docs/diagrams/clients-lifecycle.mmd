@@ -1,0 +1,66 @@
+graph TD
+    subgraph Client Lifecycle Stages
+        A[Start: Prospecting & Lead Generation] --> B(Initial Lead Capture in CRM)
+
+        B --> C{CRM Doc: Lead Data Quality Check?}
+        C -- Good Documentation<br>(Source, Contact, Basic Info) --> D[Lead Qualification]
+        C -- Poor/Missing Docs<br>(Incomplete Profile, No Source) --> C_Remediate[Action: Complete Lead Profile & Source Info]
+        C_Remediate --> D
+
+        D --> E(Opportunity Creation & Nurturing)
+        E --> F{CRM Doc: Opportunity Data Quality Check?}
+        F -- Good Documentation<br>(Value, Close Date, Key Stakeholders, Activities) --> G[Deal Progression & Proposal]
+        F -- Poor/Missing Docs<br>(No Value, Vague Next Steps) --> F_Remediate[Action: Update Forecast, Log Activities & Notes]
+        F_Remediate --> G
+
+        G --> H{CRM Doc: Win/Loss Reason Quality Check?}
+        H -- Good Documentation<br>(Contract, Reasons, Competitors) --> I{Deal Won?}
+        H -- Poor/Missing Docs<br>(No Reason, Vague Outcome) --> H_Remediate[Action: Document Win/Loss Reasons Accurately]
+        H_Remediate --> I
+
+        I -- Yes --> J[Client Onboarding]
+        I -- No --> K[Lost Client Analysis]
+
+        J --> L{CRM Doc: Onboarding Quality Check?}
+        L -- Good Documentation<br>(Onboarding Plan, Milestones, Handover Notes) --> M[Active Client Management]
+        L -- Poor/Missing Docs<br>(Tasks Incomplete, No Handover) --> L_Remediate[Action: Complete Onboarding Tasks & Documentation]
+        L_Remediate --> M
+
+        M --> N{CRM Doc: Ongoing Activity Quality Check?}
+        N -- Good Documentation<br>(Interaction History, Support Tickets, Feedback) --> O[Retention, Upsell & Cross-sell]
+        N -- Poor/Missing Docs<br>(Sparse Interactions, Unlinked Support) --> N_Remediate[Action: Enrich Interaction History & Feedback]
+        N_Remediate --> O
+
+        O --> P{CRM Doc: Renewal/Upsell Quality Check?}
+        P -- Good Documentation<br>(Renewal Dates, Upsell Opportunities, Value Delivered) --> Q{Renewal/Upsell Successful?}
+        P -- Poor/Missing Docs<br>(No Renewal Date, Untracked Opps) --> P_Remediate[Action: Capture Renewal/Upsell Reasons]
+        P_Remediate --> Q
+
+        Q -- Yes --> M
+        Q -- No --> K
+
+        K --> R(Churn/Lost Reason Analysis & Feedback)
+        R --> S[End: Relationship Archived / Re-engagement Opportunity]
+    end
+
+    %% --- Styling Definitions for Clarity ---
+
+    classDef stage fill:#ADD8E6,stroke:#318CE7,stroke-width:2px;
+    class A,B,D,E,G,J,M,O,R,S stage;
+
+    classDef decision fill:#FFFFCC,stroke:#DAA520,stroke-width:2px;
+    class C,F,H,I,L,N,P,Q decision;
+
+    classDef remediation fill:#FFDDC1,stroke:#FF6B6B,stroke-width:2px,color:#333;
+    class C_Remediate,F_Remediate,H_Remediate,L_Remediate,N_Remediate,P_Remediate remediation;
+
+    linkStyle 2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34 stroke:#28a745,stroke-width:2px; %% Green for Good Docs Path
+    linkStyle 3,5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35 stroke:#dc3545,stroke-width:2px,stroke-dasharray: 5 5; %% Red Dashed for Poor Docs Path
+
+    linkStyle 1 stroke-width:2px,stroke:#333;
+    linkStyle 9 stroke-width:2px,stroke:#333;
+    linkStyle 10 stroke-width:2px,stroke:#333;
+    linkStyle 19 stroke-width:2px,stroke:#333;
+    linkStyle 20 stroke-width:2px,stroke:#333;
+    linkStyle 29 stroke-width:2px,stroke:#333;
+    linkStyle 30 stroke-width:2px,stroke:#333;

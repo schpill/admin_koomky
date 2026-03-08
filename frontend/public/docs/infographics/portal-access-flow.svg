@@ -1,0 +1,248 @@
+<svg width="1000" height="1350" viewBox="0 0 1000 1350" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <!-- Arrowhead Marker -->
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#4A6C8E" />
+    </marker>
+
+    <!-- Icons (Material Design-inspired paths) -->
+    <symbol id="icon-user" viewBox="0 0 24 24">
+      <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+    </symbol>
+    <symbol id="icon-web" viewBox="0 0 24 24">
+      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-5-6h10c-.54 2.3-2.58 4-5 4s-4.46-1.7-5-4zm0-2V8c.54-2.3 2.58-4 5-4s4.46 1.7 5 4v4H7zm5-8c-2.76 0-5 2.24-5 5h10c0-2.76-2.24-5-5-5z"/>
+    </symbol>
+    <symbol id="icon-db" viewBox="0 0 24 24">
+      <path d="M4 17h16v-2H4v2zm0 3h16v-2H4v2zM4 14h16v-2H4v2zm9-10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM4 9h16V7H4v2z"/>
+    </symbol>
+    <symbol id="icon-check" viewBox="0 0 24 24">
+      <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/>
+    </symbol>
+    <symbol id="icon-cross" viewBox="0 0 24 24">
+      <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+    </symbol>
+    <symbol id="icon-lock" viewBox="0 0 24 24">
+      <path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-5-5c1.66 0 3 1.34 3 3v2H9V6c0-1.66 1.34-3 3-3zm7 15H5V10h14v8z"/>
+    </symbol>
+     <symbol id="icon-mail" viewBox="0 0 24 24">
+      <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+    </symbol>
+     <symbol id="icon-register" viewBox="0 0 24 24">
+      <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-4 0c-1.66 0-3 1.34-3 3s1.34 3 3 3zm0 4c-2.21 0-4 1.79-4 4v1h8v-1c0-2.21-1.79-4-4-4zm-4-4c0-2.21-1.79-4-4-4H3v2h1v1c0 1.66 1.34 3 3 3zm-3-4c0-1.66 1.34-3 3-3V5h-1c-2.21 0-4 1.79-4 4z"/>
+    </symbol>
+
+  </defs>
+
+  <style>
+    .infographic-title { font-family: 'Segoe UI', sans-serif; font-size: 32px; font-weight: bold; fill: #2C3E50; text-anchor: middle; }
+    .infographic-subtitle { font-family: 'Segoe UI', sans-serif; font-size: 18px; fill: #555; text-anchor: middle; }
+
+    .swimlane-label { font-family: 'Segoe UI', sans-serif; font-size: 20px; font-weight: bold; fill: #4A6C8E; text-anchor: middle; }
+    .swimlane-line { stroke: #D0DCEB; stroke-width: 2; stroke-dasharray: 5 5; }
+
+    .flow-step-process, .flow-step-start-end {
+      fill: #F0F8FF; /* AliceBlue */
+      stroke: #6699CC;
+      stroke-width: 2;
+      filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.1));
+    }
+    .flow-step-decision {
+      fill: #FFFACD; /* LemonChiffon */
+      stroke: #CC9900;
+      stroke-width: 2;
+      filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.1));
+    }
+    .flow-text {
+      font-family: 'Segoe UI', sans-serif;
+      font-size: 14px;
+      fill: #333;
+      text-anchor: middle;
+      pointer-events: none; /* Prevent text from interfering with hover/click on shapes */
+    }
+    .flow-label {
+      font-family: 'Segoe UI', sans-serif;
+      font-size: 12px;
+      fill: #555;
+      text-anchor: middle;
+    }
+    .flow-arrow {
+      stroke: #4A6C8E;
+      stroke-width: 2;
+      marker-end: url(#arrowhead);
+      fill: none;
+    }
+    .flow-arrow-alt {
+      stroke: #9B59B6; /* A contrasting color for alternative paths */
+      stroke-width: 2;
+      marker-end: url(#arrowhead);
+      fill: none;
+    }
+    .icon { fill: #4A6C8E; }
+    .icon-alt { fill: #9B59B6; }
+
+    /* Hover effects for shapes (optional, but good for interactive docs) */
+    .flow-step-process:hover, .flow-step-start-end:hover, .flow-step-decision:hover {
+        opacity: 0.9;
+        cursor: pointer;
+        stroke-width: 3;
+    }
+  </style>
+
+  <!-- Infographic Title -->
+  <text x="500" y="40" class="infographic-title">CRM Portal Access Flow</text>
+  <text x="500" y="70" class="infographic-subtitle">Streamlined Process for User Authentication and Authorization</text>
+
+  <!-- Swimlanes -->
+  <g class="swimlane">
+    <text x="150" y="120" class="swimlane-label">Portal User</text>
+    <line x1="300" y1="100" x2="300" y2="1320" class="swimlane-line" />
+
+    <text x="500" y="120" class="swimlane-label">Web Portal</text>
+    <line x1="700" y1="100" x2="700" y2="1320" class="swimlane-line" />
+
+    <text x="850" y="120" class="swimlane-label">CRM Backend</text>
+  </g>
+
+  <!-- Flow Elements -->
+
+  <!-- START: User Navigates -->
+  <g class="flow-element">
+    <rect x="100" y="150" width="100" height="60" rx="10" ry="10" class="flow-step-start-end" />
+    <use xlink:href="#icon-user" x="135" y="155" width="30" height="30" class="icon" />
+    <text x="150" y="195" class="flow-text">User Navigates</text>
+  </g>
+  <line x1="150" y1="210" x2="150" y2="240" class="flow-arrow" />
+  <line x1="150" y1="240" x2="500" y2="240" class="flow-arrow" />
+
+  <!-- Display Login/Registration Page -->
+  <g class="flow-element">
+    <rect x="400" y="210" width="200" height="80" rx="10" ry="10" class="flow-step-process" />
+    <use xlink:href="#icon-web" x="485" y="215" width="30" height="30" class="icon" />
+    <text x="500" y="255" class="flow-text">Display Login/</text>
+    <text x="500" y="275" class="flow-text">Registration Page</text>
+  </g>
+  <line x1="500" y1="290" x2="500" y2="320" class="flow-arrow" />
+
+  <!-- DECISION: User Registered? -->
+  <g class="flow-element">
+    <rect x="450" y="320" width="100" height="80" transform="rotate(45 500 360)" class="flow-step-decision" />
+    <text x="500" y="360" class="flow-text">User Registered?</text>
+  </g>
+
+  <!-- PATH: NO (New User Registration) -->
+  <line x1="450" y1="360" x2="200" y2="360" class="flow-arrow-alt" />
+  <line x1="200" y1="360" x2="200" y2="440" class="flow-arrow-alt" />
+  <text x="325" y="350" class="flow-label">No (New User)</text>
+
+  <g class="flow-element">
+    <rect x="100" y="440" width="200" height="60" rx="10" ry="10" class="flow-step-process" />
+    <use xlink:href="#icon-register" x="185" y="445" width="30" height="30" class="icon-alt" />
+    <text x="200" y="485" class="flow-text">User Initiates Registration</text>
+  </g>
+  <line x1="200" y1="500" x2="200" y2="530" class="flow-arrow-alt" />
+  <line x1="200" y1="530" x2="850" y2="530" class="flow-arrow-alt" />
+
+  <g class="flow-element">
+    <rect x="750" y="500" width="200" height="80" rx="10" ry="10" class="flow-step-process" />
+    <use xlink:href="#icon-db" x="835" y="505" width="30" height="30" class="icon-alt" />
+    <text x="850" y="545" class="flow-text">CRM Creates Provisional</text>
+    <text x="850" y="565" class="flow-text">Account / Data Record</text>
+  </g>
+  <line x1="850" y1="580" x2="850" y2="610" class="flow-arrow-alt" />
+
+  <g class="flow-element">
+    <rect x="750" y="610" width="200" height="80" rx="10" ry="10" class="flow-step-process" />
+    <use xlink:href="#icon-mail" x="835" y="615" width="30" height="30" class="icon-alt" />
+    <text x="850" y="655" class="flow-text">Send Verification Email</text>
+    <text x="850" y="675" class="flow-text">or Await Admin Approval</text>
+  </g>
+  <line x1="850" y1="690" x2="850" y2="720" class="flow-arrow-alt" />
+  <line x1="850" y1="720" x2="200" y2="720" class="flow-arrow-alt" />
+
+  <g class="flow-element">
+    <rect x="100" y="690" width="200" height="60" rx="10" ry="10" class="flow-step-process" />
+    <use xlink:href="#icon-check" x="185" y="695" width="30" height="30" class="icon-alt" />
+    <text x="200" y="735" class="flow-text">User Activates / Approved</text>
+  </g>
+  <line x1="200" y1="750" x2="200" y2="780" class="flow-arrow-alt" />
+  <line x1="200" y1="780" x2="500" y2="780" class="flow-arrow-alt" />
+  <text x="350" y="770" class="flow-label">Account Active</text>
+
+
+  <!-- PATH: YES (Existing User Login) -->
+  <line x1="550" y1="360" x2="800" y2="360" class="flow-arrow" />
+  <line x1="800" y1="360" x2="800" y2="440" class="flow-arrow" />
+  <text x="675" y="350" class="flow-label">Yes (Existing)</text>
+
+  <g class="flow-element">
+    <rect x="700" y="440" width="200" height="60" rx="10" ry="10" class="flow-step-process" />
+    <use xlink:href="#icon-user" x="785" y="445" width="30" height="30" class="icon" />
+    <text x="800" y="485" class="flow-text">User Enters Credentials</text>
+  </g>
+  <line x1="800" y1="500" x2="800" y2="530" class="flow-arrow" />
+
+  <!-- Authenticate Credentials -->
+  <g class="flow-element">
+    <rect x="700" y="530" width="200" height="80" rx="10" ry="10" class="flow-step-process" />
+    <use xlink:href="#icon-lock" x="785" y="535" width="30" height="30" class="icon" />
+    <text x="800" y="575" class="flow-text">CRM Authenticates</text>
+    <text x="800" y="595" class="flow-text">Credentials</text>
+  </g>
+  <line x1="800" y1="610" x2="800" y2="640" class="flow-arrow" />
+
+  <!-- DECISION: Credentials Valid? -->
+  <g class="flow-element">
+    <rect x="750" y="640" width="100" height="80" transform="rotate(45 800 680)" class="flow-step-decision" />
+    <text x="800" y="680" class="flow-text">Credentials Valid?</text>
+  </g>
+
+  <!-- PATH: NO (Login Failed) -->
+  <line x1="750" y1="680" x2="550" y2="680" class="flow-arrow-alt" />
+  <line x1="550" y1="680" x2="550" y2="750" class="flow-arrow-alt" />
+  <text x="650" y="670" class="flow-label">No</text>
+
+  <g class="flow-element">
+    <rect x="450" y="750" width="200" height="60" rx="10" ry="10" class="flow-step-process" />
+    <use xlink:href="#icon-cross" x="535" y="755" width="30" height="30" class="icon-alt" />
+    <text x="550" y="795" class="flow-text">Login Failed / Forgot Password</text>
+  </g>
+  <line x1="550" y1="810" x2="550" y2="840" class="flow-arrow-alt" />
+  <line x1="550" y1="840" x2="500" y2="840" class="flow-arrow-alt" />
+  <line x1="500" y1="840" x2="500" y2="290" class="flow-arrow-alt" />
+  <text x="525" y="855" class="flow-label">Retry</text>
+
+  <!-- PATH: YES (Authentication Success) -->
+  <line x1="850" y1="680" x2="850" y2="720" class="flow-arrow" />
+  <text x="870" y="670" class="flow-label">Yes</text>
+
+  <!-- CRM Authorizes Access -->
+  <g class="flow-element">
+    <rect x="750" y="720" width="200" height="80" rx="10" ry="10" class="flow-step-process" />
+    <use xlink:href="#icon-db" x="835" y="725" width="30" height="30" class="icon" />
+    <text x="850" y="765" class="flow-text">CRM Authorizes Access</text>
+    <text x="850" y="785" class="flow-text">based on Roles/Permissions</text>
+  </g>
+  <line x1="850" y1="800" x2="850" y2="830" class="flow-arrow" />
+  <line x1="850" y1="830" x2="500" y2="830" class="flow-arrow" />
+
+  <!-- Merge point from New User Activation & Existing User Login -->
+  <line x1="500" y1="780" x2="500" y2="830" class="flow-arrow" />
+
+  <!-- Grant Session & Display Dashboard -->
+  <g class="flow-element">
+    <rect x="400" y="860" width="200" height="80" rx="10" ry="10" class="flow-step-process" />
+    <use xlink:href="#icon-web" x="485" y="865" width="30" height="30" class="icon" />
+    <text x="500" y="905" class="flow-text">Grant Session and Display</text>
+    <text x="500" y="925" class="flow-text">Portal Dashboard</text>
+  </g>
+  <line x1="500" y1="940" x2="500" y2="970" class="flow-arrow" />
+  <line x1="500" y1="970" x2="150" y2="970" class="flow-arrow" />
+
+  <!-- END: User Accesses Portal -->
+  <g class="flow-element">
+    <rect x="100" y="940" width="100" height="60" rx="10" ry="10" class="flow-step-start-end" />
+    <use xlink:href="#icon-check" x="135" y="945" width="30" height="30" class="icon" />
+    <text x="150" y="985" class="flow-text">Access Granted</text>
+  </g>
+
+</svg>

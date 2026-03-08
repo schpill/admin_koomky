@@ -1,0 +1,36 @@
+stateDiagram-v2
+    direction LR
+
+    [*] --> Created
+    Created --> Pending : Configure & Activate
+
+    Pending --> Triggered : Due Date Reached (System)
+    Triggered --> Sent : Deliver Notification (System)
+    Triggered --> Failed : Delivery Failure (System)
+    Triggered --> Pending : User Reschedules
+    Triggered --> Dismissed : User Dismisses / System Cancels
+
+    Sent --> Acknowledged : User Views / Clicks
+    Sent --> Overdue : Timeout / No Acknowledgment (System)
+    Sent --> Pending : User Reschedules
+    Sent --> Dismissed : User Dismisses
+
+    Acknowledged --> Completed : User Marks Complete
+    Acknowledged --> Overdue : Timeout / No Completion (System)
+    Acknowledged --> Pending : User Reschedules
+    Acknowledged --> Dismissed : User Dismisses
+
+    Overdue --> Completed : User Marks Complete
+    Overdue --> Pending : User Reschedules
+    Overdue --> Dismissed : User Dismisses
+    Overdue --> Archived : System Cleanup (No Resolution)
+
+    Completed --> Archived : System Cleanup
+    Dismissed --> Archived : System Cleanup
+    Failed --> Archived : System Cleanup
+
+    state "Legend" {
+      direction LR
+      _state1 : State
+      _state2 --> _state3 : Transition (Actor)
+    }

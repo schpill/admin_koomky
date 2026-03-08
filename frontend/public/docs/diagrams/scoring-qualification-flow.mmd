@@ -1,0 +1,56 @@
+graph TD
+    %% Define Custom Styles for better readability
+    classDef processNode fill:#e0f2f7,stroke:#26c6da,stroke-width:2px,color:#333;
+    classDef decisionNode fill:#fff9c4,stroke:#ffeb3b,stroke-width:2px,color:#333;
+    classDef docCheck fill:#ffe0b2,stroke:#ff9800,stroke-width:2px,color:#333;
+    classDef reworkPath stroke:#f44336,stroke-width:2px,color:#f44336;
+    classDef successPath stroke:#4caf50,stroke-width:2px,color:#4caf50;
+    classDef endState fill:#fce4ec,stroke:#e91e63,stroke-width:2px,color:#333;
+    classDef startState fill:#e8f5e9,stroke:#81c784,stroke-width:2px,color:#333;
+
+    %% Flowchart Nodes
+    A[Start: Lead Ingested]:::startState
+
+    subgraph 1. Lead Scoring
+        A --> B{Automated Lead Score?};
+        B -- High Score (>X) --> C[MQL Generated];
+        B -- Low Score (<X) --> Z[Nurture Pool / Disqualified];
+    end
+
+    subgraph 2. SDR Qualification
+        C --> D[SDR/BDR Initial Review & Outreach];
+        D --> E{{**CRM Doc Quality Check: SDR Input**}};
+        E -- Poor/Incomplete:::reworkPath --> F[SDR: Update CRM with Contact Details, Pain Points, BANT];
+        F --> D;
+        E -- Good/Complete:::successPath --> G{SDR Qualified (SQL)?};
+        G -- No (Not a fit) --> Z;
+        G -- Yes (Fit for AE) --> H[Passed to Account Executive];
+    end
+
+    subgraph 3. AE Qualification
+        H --> I[AE: Discovery Calls & Needs Assessment];
+        I --> J{{**CRM Doc Quality Check: AE Discovery**}};
+        J -- Poor/Incomplete:::reworkPath --> K[AE: Detail Use Cases, Key Pains, Budget, Timeline, Decision Makers];
+        K --> I;
+        J -- Good/Complete:::successPath --> L{AE Qualified (SAO)?};
+        L -- No (Not ready/fit) --> M[Return to Nurture/SDR for Re-qualify];
+        L -- Yes (Ready for Solution) --> N[Sales Qualified Opportunity (SQO)];
+    end
+
+    subgraph 4. Post-Qualification
+        N --> P[Enter Sales Pipeline Stages];
+        M --> Q[Opportunity Lost / Nurture];
+        Z --> Q;
+    end
+
+    %% Apply Classes to Nodes
+    A, B, C, D, F, G, H, I, K, L, M, N, P, Q, Z:::processNode
+    B, G, L:::decisionNode
+    E, J:::docCheck
+    Q, Z:::endState
+
+    %% Legend
+    style A fill:#e8f5e9,stroke:#81c784,stroke-width:2px,color:#333
+    style P fill:#e0f2f7,stroke:#26c6da,stroke-width:2px,color:#333
+    style Q fill:#fce4ec,stroke:#e91e63,stroke-width:2px,color:#333
+    style Z fill:#fce4ec,stroke:#e91e63,stroke-width:2px,color:#333

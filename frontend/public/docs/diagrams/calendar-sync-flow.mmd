@@ -1,0 +1,103 @@
+graph TD
+    %% --- Diagram Configuration & Styling ---
+    classDef actor fill:#ADD8E6,stroke:#333,stroke-width:2px;
+    classDef system fill:#D4EDDA,stroke:#333,stroke-width:2px;
+    classDef service fill:#FFF3CD,stroke:#333,stroke-width:2px;
+    classDef decision fill:#FFD700,stroke:#333,stroke-width:1px;
+    classDef data fill:#E0E0E0,stroke:#333,stroke-width:1px;
+    classDef error fill:#F8D7DA,stroke:#DC3545,stroke-width:2px;
+    classDef startend fill:#C0F0C0,stroke:#333,stroke-width:2px,rx:5px,ry:5px;
+
+    %% --- Start Node ---
+    start((Start Calendar Sync Flow)):::startend
+
+    %% --- Main Flow ---
+    start --> A[User Accesses CRM or Calendar]:::actor
+
+    subgraph "I. Initial Setup & Authorization"
+        A --> B{Is Sync Configured?}:::decision
+        B -- No --> C[User Initiates Calendar Connection]:::actor
+        C --> D[CRM Requests Calendar Access (OAuth)]:::system
+        D --> E[User Grants Access to External Calendar]:::actor
+        E --> F[External Calendar Returns Access Token to CRM]:::system
+        F --> G[CRM Stores Token & Establishes Sync Settings]:::system
+        G --> H(Calendar Sync Enabled & Scheduled)
+        B -- Yes --> H
+    end
+
+    H --> I(Monitoring for Changes)
+
+    subgraph "II. Bi-directional Event Synchronization Flow"
+
+        subgraph "CRM System"
+            CRM_E[CRM Event Record (CRM_ID)]:::data
+            CRM_DB[(CRM Database)]:::system
+            CRM_EVENT_CHANGE[Detect Event Change (Create/Update/Delete)]:::system
+        end
+
+        subgraph "Calendar Integration Service"
+            CIS_DB[(Integration Mapping Table)]:::service
+            CIS_P[Polls CRM API / Receives Webhook from CRM]::service
+            CIS_C[Checks for Mapped Event ID]:::service
+            CIS_T_CRM[Transform CRM Data for Calendar API]:::service
+            CIS_T_CAL[Transform Calendar Data for CRM API]:::service
+            CIS_CALL_CAL_API[Call External Calendar API (Create/Update/Delete)]:::service
+            CIS_CALL_CRM_API[Call CRM API (Create/Update/Delete)]:::service
+            CIS_MAP[Store/Update CRM_ID <> CAL_ID Mapping]:::service
+            CIS_P_CAL[Polls External Calendar API / Receives Webhook]::service
+            CIS_RES_CONFLICT[Resolve Sync Conflict]:::service
+            CIS_LOG[Log Error & Notify Admin]:::error
+        end
+
+        subgraph "External Calendar System"
+            CAL_E[External Calendar Event (CAL_ID)]:::data
+            CAL_API[(External Calendar API)]:::system
+            CAL_EVENT_CHANGE[Event Changed in External Calendar]:::system
+        end
+
+        %% Flow from CRM to Calendar
+        CRM_EVENT_CHANGE --> CIS_P
+        CIS_P --> CIS_C
+        CIS_C -- No Mapping (New CRM Event) --> CIS_T_CRM
+        CIS_T_CRM --> CIS_CALL_CAL_API
+        CIS_CALL_CAL_API -- Success --> CAL_API
+        CAL_API -- CAL_ID & Status --> CIS_MAP
+        CIS_MAP --> CRM_E
+        CIS_MAP --> CAL_E
+
+        %% Flow from Calendar to CRM
+        CAL_EVENT_CHANGE --> CIS_P_CAL
+        CIS_P_CAL --> CIS_C
+        CIS_C -- No Mapping (New Calendar Event) --> CIS_T_CAL
+        CIS_T_CAL --> CIS_CALL_CRM_API
+        CIS_CALL_CRM_API -- Success --> CRM_DB
+        CRM_DB -- CRM_ID & Status --> CIS_MAP
+
+        %% Update/Delete for existing mapped events
+        CIS_C -- Yes Mapping (Existing Event) --> K{Which System Initiated Change?}:::decision
+        K -- CRM --> CIS_T_CRM
+        K -- Calendar --> CIS_T_CAL
+
+        %% Conflict Resolution Path
+        CIS_T_CRM -- Data Prepared --> L{Is Concurrent Change Detected?}:::decision
+        L -- Yes (Conflict) --> CIS_RES_CONFLICT
+        L -- No --> CIS_CALL_CAL_API
+
+        CIS_T_CAL -- Data Prepared --> M{Is Concurrent Change Detected?}:::decision
+        M -- Yes (Conflict) --> CIS_RES_CONFLICT
+        M -- No --> CIS_CALL_CRM_API
+
+        CIS_RES_CONFLICT --> N(Apply Conflict Resolution Logic: e.g., Last-Write-Wins, CRM Priority)
+        N --> O{Sync Direction after Resolution?}:::decision
+        O -- To Calendar --> CIS_CALL_CAL_API
+        O -- To CRM --> CIS_CALL_CRM_API
+
+        %% Error Handling
+        CIS_CALL_CAL_API -- Failure --> CIS_LOG
+        CIS_CALL_CRM_API -- Failure --> CIS_LOG
+
+    end
+
+    CIS_LOG --> end((End Calendar Sync Flow with Error)):::error
+    CAL_E --> end((End Calendar Sync Flow Successfully)):::startend
+    CRM_E --> end
