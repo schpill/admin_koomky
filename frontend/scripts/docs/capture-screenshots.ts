@@ -60,7 +60,10 @@ async function main() {
       .waitForSelector("#code", { state: "visible", timeout: 30000 })
       .then(() => "two-factor" as const),
   ]).catch(async () => {
-    const bodyText = await page.locator("body").innerText().catch(() => "");
+    const bodyText = await page
+      .locator("body")
+      .innerText()
+      .catch(() => "");
     throw new Error(
       `Login did not complete. Stayed on /auth/login. Visible text excerpt: ${bodyText.slice(0, 400)}`
     );
