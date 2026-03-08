@@ -3,12 +3,14 @@ import { useAuthStore } from "../../lib/stores/auth";
 
 // Mock document.cookie
 const mockCookies: Record<string, string> = {};
+const cookieAssignments: string[] = [];
 Object.defineProperty(document, "cookie", {
   get: () =>
     Object.entries(mockCookies)
       .map(([k, v]) => `${k}=${v}`)
       .join("; "),
   set: (v) => {
+    cookieAssignments.push(v);
     const [pair] = v.split(";");
     const [key, value] = pair.split("=");
     mockCookies[key.trim()] = value;
@@ -28,6 +30,7 @@ describe("useAuthStore", () => {
     });
     // Reset cookies
     Object.keys(mockCookies).forEach((key) => delete mockCookies[key]);
+    cookieAssignments.length = 0;
   });
 
   it("should have initial state", () => {
@@ -51,6 +54,42 @@ describe("useAuthStore", () => {
     // Check cookies
     expect(document.cookie).toContain("koomky-access-token=access-token");
     expect(document.cookie).toContain("koomky-refresh-token=refresh-token");
+  });
+
+  it("stores a persistent refresh cookie when remember me is enabled", () => {
+    const user = { id: "1", name: "John", email: "john@example.com" };
+
+    useAuthStore.getState().setAuth(user, "access-token", "refresh-token", {
+      rememberMe: true,
+    });
+
+    expect(mockCookies["koomky-refresh-token"]).toBe("refresh-token");
+    expect(useAuthStore.getState().rememberMe).toBe(true);
+    expect(
+      cookieAssignments.some(
+        (value) =>
+          value.includes("koomky-refresh-token=refresh-token") &&
+          value.includes("max-age=2592000")
+      )
+    ).toBe(true);
+  });
+
+  it("stores a session refresh cookie when remember me is disabled", () => {
+    const user = { id: "1", name: "John", email: "john@example.com" };
+
+    useAuthStore.getState().setAuth(user, "access-token", "refresh-token", {
+      rememberMe: false,
+    });
+
+    expect(mockCookies["koomky-refresh-token"]).toBe("refresh-token");
+    expect(useAuthStore.getState().rememberMe).toBe(false);
+    expect(
+      cookieAssignments.some(
+        (value) =>
+          value.includes("koomky-refresh-token=refresh-token") &&
+          !value.includes("max-age=")
+      )
+    ).toBe(true);
   });
 
   it("should clear auth and cookies on logout", () => {

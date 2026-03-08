@@ -685,13 +685,20 @@ export const messages: Record<Locale, MessageTree> = {
         passwordMismatch: "La confirmation du mot de passe ne correspond pas",
       },
     },
+    notifications: {
+      title: "Notifications",
+      markAllRead: "Tout marquer lu",
+      noNotifications: "Aucune notification pour le moment.",
+      unread: "Non lu",
+    },
     auth: {
       login: {
-        title: "Bon retour",
+        title: "Connexion",
         description: "Entrez vos identifiants pour accéder à votre compte",
         email: "Email",
         emailPlaceholder: "name@example.com",
         password: "Mot de passe",
+        rememberMe: "Rester connecté.e",
         forgotPassword: "Mot de passe oublié ?",
         submit: "Se connecter",
         noAccount: "Vous n'avez pas de compte ?",
@@ -2503,13 +2510,20 @@ export const messages: Record<Locale, MessageTree> = {
         passwordMismatch: "Password confirmation does not match",
       },
     },
+    notifications: {
+      title: "Notifications",
+      markAllRead: "Mark all read",
+      noNotifications: "No notifications yet.",
+      unread: "Unread",
+    },
     auth: {
       login: {
-        title: "Welcome back",
+        title: "Sign in",
         description: "Enter your credentials to access your account",
         email: "Email",
         emailPlaceholder: "name@example.com",
         password: "Password",
+        rememberMe: "Stay signed in",
         forgotPassword: "Forgot password?",
         submit: "Sign in",
         noAccount: "Don't have an account?",
