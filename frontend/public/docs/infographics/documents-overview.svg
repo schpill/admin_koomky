@@ -1,0 +1,118 @@
+<svg width="800" height="500" viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg" font-family="Arial, sans-serif">
+  <!-- Background -->
+  <rect x="0" y="0" width="800" height="500" fill="#f9f9f9"/>
+
+  <!-- Global styles/defs -->
+  <defs>
+    <style type="text/css">
+      .card {
+        fill: #ffffff;
+        stroke: #e0e0e0;
+        stroke-width: 1;
+        rx: 12;
+        ry: 12;
+      }
+      .card-title {
+        font-size: 18px;
+        font-weight: bold;
+        fill: #333333;
+      }
+      .card-text {
+        font-size: 14px;
+        fill: #555555;
+      }
+    </style>
+  </defs>
+
+  <!-- Title -->
+  <text x="400" y="50" text-anchor="middle" font-size="28" font-weight="bold" fill="#333333">Document Management Features</text>
+
+  <!-- Card dimensions: width=220, height=195 -->
+  <!-- Card spacing: horizontal=30, vertical=30 -->
+  <!-- Row 1: x_start = 40, y = 100 -->
+  <!-- Row 2: x_start = 165, y = 325 -->
+
+  <!-- Card 1: Supported File Types -->
+  <g transform="translate(40, 100)">
+    <rect class="card" width="220" height="195"/>
+    <text x="110" y="30" text-anchor="middle" class="card-title">Supported File Types</text>
+    <!-- PDF Icon -->
+    <rect x="15" y="80" width="40" height="50" rx="5" ry="5" fill="#DC3545"/>
+    <text x="35" y="110" text-anchor="middle" font-size="14" font-weight="bold" fill="#ffffff">PDF</text>
+    <!-- DOCX Icon -->
+    <rect x="65" y="80" width="40" height="50" rx="5" ry="5" fill="#007BFF"/>
+    <text x="85" y="110" text-anchor="middle" font-size="14" font-weight="bold" fill="#ffffff">DOC</text>
+    <!-- XLSX Icon -->
+    <rect x="115" y="80" width="40" height="50" rx="5" ry="5" fill="#28A745"/>
+    <text x="135" y="110" text-anchor="middle" font-size="14" font-weight="bold" fill="#ffffff">XLS</text>
+    <!-- Image Icon (generic) -->
+    <rect x="165" y="80" width="40" height="50" rx="5" ry="5" fill="#6C757D"/>
+    <path d="M175 115 L180 110 L185 115 L190 110 L195 115 L195 125 L175 125 Z M185 105 C187.76 105 190 102.76 190 100 C190 97.24 187.76 95 185 95 C182.24 95 180 97.24 180 100 C180 102.76 182.24 105 185 105 Z" fill="#ffffff"/>
+  </g>
+
+  <!-- Card 2: Storage Quota -->
+  <g transform="translate(290, 100)">
+    <rect class="card" width="220" height="195"/>
+    <text x="110" y="30" text-anchor="middle" class="card-title">Storage Quota</text>
+    <g transform="translate(110, 110)">
+      <!-- Cloud storage icon -->
+      <path d="M50 30 C50 17.5 40 10 27.5 10 C20 10 13.5 14.5 10 20 C4.5 20 -0.5 24.5 0 30 C-0.5 35.5 4 40 9.5 40 H50 Z" fill="#6c757d" transform="scale(1.2) translate(-25, -25)"/>
+      <!-- Progress bar -->
+      <rect x="-80" y="30" width="160" height="20" rx="10" ry="10" fill="#e9ecef"/>
+      <rect x="-80" y="30" width="120" height="20" rx="10" ry="10" fill="#28a745"/>
+      <text x="0" y="45" text-anchor="middle" font-size="12" fill="#ffffff">75% Used (15GB/20GB)</text>
+    </g>
+  </g>
+
+  <!-- Card 3: Search by Tag -->
+  <g transform="translate(540, 100)">
+    <rect class="card" width="220" height="195"/>
+    <text x="110" y="30" text-anchor="middle" class="card-title">Search by Tag</text>
+    <g transform="translate(110, 100)">
+      <!-- Search input field visual -->
+      <rect x="-90" y="-30" width="180" height="40" rx="20" ry="20" fill="#f0f0f0" stroke="#dee2e6" stroke-width="1"/>
+      <text x="-75" y="-5" font-size="14" fill="#888">Search "Project X"</text>
+      <circle cx="70" cy="-10" r="10" stroke="#007bff" stroke-width="2" fill="none"/>
+      <line x1="77" y1="-3" x2="85" y2="5" stroke="#007bff" stroke-width="2" stroke-linecap="round"/>
+
+      <!-- Tag icon for the "by Tag" part -->
+      <path d="M-40 30 H20 L0 50 L-20 50 L-40 30 Z" fill="#6c757d" transform="scale(1.2) translate(0,10)"/>
+      <circle cx="-30" cy="40" r="5" fill="#ffffff" transform="scale(1.2) translate(0,10)"/>
+      <text x="0" y="80" text-anchor="middle" font-size="12" fill="#555">Organize &amp; find documents easily.</text>
+    </g>
+  </g>
+
+  <!-- Card 4: Send by Email -->
+  <g transform="translate(165, 325)">
+    <rect class="card" width="220" height="195"/>
+    <text x="110" y="30" text-anchor="middle" class="card-title">Send by Email</text>
+    <g transform="translate(110, 110)">
+      <!-- Simple Envelope icon -->
+      <rect x="-60" y="-40" width="120" height="80" rx="10" ry="10" fill="#e0e0e0"/>
+      <path d="M-60 -40 L0 0 L60 -40 Z" fill="#007bff"/> <!-- Top flap -->
+      <path d="M-60 40 L0 0 L60 40 Z" fill="#007bff"/> <!-- Bottom flap -->
+      <path d="M-60 -40 L-60 40 L0 0 Z" fill="#4682B4"/> <!-- Left flap (slightly different color for depth) -->
+      <path d="M60 -40 L60 40 L0 0 Z" fill="#4682B4"/> <!-- Right flap -->
+      <rect x="-50" y="-20" width="100" height="50" fill="#ffffff" rx="5" ry="5"/> <!-- Inner "document" part -->
+      <text x="0" y="10" text-anchor="middle" font-size="14" font-weight="bold" fill="#333">Share Document</text>
+    </g>
+  </g>
+
+  <!-- Card 5: Preview -->
+  <g transform="translate(415, 325)">
+    <rect class="card" width="220" height="195"/>
+    <text x="110" y="30" text-anchor="middle" class="card-title">Preview</text>
+    <g transform="translate(110, 110)">
+      <!-- Document icon -->
+      <rect x="-50" y="-50" width="100" height="100" rx="10" ry="10" fill="#f0f0f0"/>
+      <rect x="-40" y="-40" width="80" height="80" fill="#ffffff"/>
+      <rect x="-30" y="-30" width="60" height="10" fill="#e0e0e0"/>
+      <rect x="-30" y="-10" width="60" height="10" fill="#e0e0e0"/>
+      <rect x="-30" y="10" width="40" height="10" fill="#e0e0e0"/>
+      <!-- Eye icon overlay -->
+      <path d="M0 0 C-20 -20 -40 0 -20 20 C-40 0 -20 -20 0 0 C20 -20 40 0 20 20 C40 0 20 -20 0 0 Z" stroke="#007bff" stroke-width="3" fill="none" transform="translate(0, -10) scale(0.6)"/>
+      <circle cx="0" cy="-10" r="5" fill="#007bff"/>
+    </g>
+  </g>
+
+</svg>

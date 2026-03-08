@@ -1,0 +1,16 @@
+stateDiagram-v2
+    [*] --> Planning
+
+    Planning --> InProgress : Start Work
+    Planning --> Archived : Cancelled/Rejected
+
+    InProgress --> OnHold : Pause Work
+    InProgress --> Completed : Work Finished
+    InProgress --> Archived : Abandoned
+
+    OnHold --> InProgress : Resume Work
+    OnHold --> Archived : Abandoned while on hold
+
+    Completed --> Archived : File Away
+
+    Archived --> [*] : End of Lifecycle

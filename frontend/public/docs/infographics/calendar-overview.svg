@@ -1,0 +1,48 @@
+<svg width="800" height="500" viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg" font-family="Arial, sans-serif">
+  <!-- Background -->
+  <rect x="0" y="0" width="800" height="500" fill="#f9f9f9"/>
+
+  <!-- CRM Calendar (Central) -->
+  <rect x="300" y="190" width="200" height="120" rx="10" ry="10" fill="#286da8" stroke="#1c4b75" stroke-width="2"/>
+  <text x="400" y="240" font-size="24" fill="#ffffff" text-anchor="middle" font-weight="bold">CRM</text>
+  <text x="400" y="270" font-size="20" fill="#ffffff" text-anchor="middle">Calendar</text>
+
+  <!-- External Calendar Integrations (Top) -->
+  <!-- Google Calendar -->
+  <rect x="100" y="50" width="160" height="70" rx="8" ry="8" fill="#ffffff" stroke="#e0e0e0" stroke-width="1"/>
+  <text x="180" y="95" font-size="18" fill="#4285F4" text-anchor="middle" font-weight="bold">Google Calendar</text>
+  <line x1="180" y1="120" x2="340" y2="190" stroke="#cccccc" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <!-- Outlook Calendar -->
+  <rect x="320" y="50" width="160" height="70" rx="8" ry="8" fill="#ffffff" stroke="#e0e0e0" stroke-width="1"/>
+  <text x="400" y="95" font-size="18" fill="#0078D4" text-anchor="middle" font-weight="bold">Outlook Calendar</text>
+  <line x1="400" y1="120" x2="400" y2="190" stroke="#cccccc" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <!-- Apple Calendar -->
+  <rect x="540" y="50" width="160" height="70" rx="8" ry="8" fill="#ffffff" stroke="#e0e0e0" stroke-width="1"/>
+  <text x="620" y="95" font-size="18" fill="#555555" text-anchor="middle" font-weight="bold">Apple Calendar</text>
+  <line x1="620" y1="120" x2="460" y2="190" stroke="#cccccc" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <!-- Auto-Events (Bottom) -->
+  <!-- Invoice Due -->
+  <rect x="100" y="380" width="160" height="70" rx="8" ry="8" fill="#ffffff" stroke="#e0e0e0" stroke-width="1"/>
+  <text x="180" y="425" font-size="18" fill="#DA4453" text-anchor="middle">Invoice Due</text>
+  <line x1="340" y1="310" x2="180" y2="380" stroke="#cccccc" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <!-- Project Deadline -->
+  <rect x="320" y="380" width="160" height="70" rx="8" ry="8" fill="#ffffff" stroke="#e0e0e0" stroke-width="1"/>
+  <text x="400" y="425" font-size="18" fill="#F6BB42" text-anchor="middle">Project Deadline</text>
+  <line x1="400" y1="310" x2="400" y2="380" stroke="#cccccc" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <!-- Reminder Sent -->
+  <rect x="540" y="380" width="160" height="70" rx="8" ry="8" fill="#ffffff" stroke="#e0e0e0" stroke-width="1"/>
+  <text x="620" y="425" font-size="18" fill="#8CC152" text-anchor="middle">Reminder Sent</text>
+  <line x1="460" y1="310" x2="620" y2="380" stroke="#cccccc" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <!-- Arrowhead definition -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#cccccc"/>
+    </marker>
+  </defs>
+</svg>

@@ -1,0 +1,123 @@
+<svg width="800" height="500" viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg">
+  <!-- Board Background -->
+  <rect x="0" y="0" width="800" height="500" fill="#f5f5f5"/>
+
+  <!-- Column 1: New -->
+  <g transform="translate(10, 10)">
+    <rect x="0" y="0" width="148" height="480" fill="#e0e0e0" rx="5" ry="5"/>
+    <text x="74" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" fill="#333" font-weight="bold">New</text>
+    <!-- Card 1.1 -->
+    <g transform="translate(10, 60)">
+      <rect x="0" y="0" width="128" height="70" fill="#ffffff" stroke="#ccc" stroke-width="1" rx="5" ry="5"/>
+      <text x="64" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#444">Lead A</text>
+      <text x="64" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#777">Initial Contact</text>
+      <circle cx="110" cy="15" r="12" fill="#2196F3"/>
+      <text x="110" y="19" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#fff" font-weight="bold">60</text>
+    </g>
+    <!-- Card 1.2 -->
+    <g transform="translate(10, 140)">
+      <rect x="0" y="0" width="128" height="70" fill="#ffffff" stroke="#ccc" stroke-width="1" rx="5" ry="5"/>
+      <text x="64" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#444">Lead B</text>
+      <text x="64" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#777">Website Form</text>
+      <circle cx="110" cy="15" r="12" fill="#FFC107"/>
+      <text x="110" y="19" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#fff" font-weight="bold">45</text>
+    </g>
+  </g>
+
+  <!-- Column 2: Qualified -->
+  <g transform="translate(170, 10)">
+    <rect x="0" y="0" width="148" height="480" fill="#e0e0e0" rx="5" ry="5"/>
+    <text x="74" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" fill="#333" font-weight="bold">Qualified</text>
+    <!-- Card 2.1 -->
+    <g transform="translate(10, 60)">
+      <rect x="0" y="0" width="128" height="70" fill="#ffffff" stroke="#ccc" stroke-width="1" rx="5" ry="5"/>
+      <text x="64" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#444">Lead C</text>
+      <text x="64" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#777">Product Fit</text>
+      <circle cx="110" cy="15" r="12" fill="#4CAF50"/>
+      <text x="110" y="19" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#fff" font-weight="bold">85</text>
+    </g>
+    <!-- Card 2.2 -->
+    <g transform="translate(10, 140)">
+      <rect x="0" y="0" width="128" height="70" fill="#ffffff" stroke="#ccc" stroke-width="1" rx="5" ry="5"/>
+      <text x="64" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#444">Lead D</text>
+      <text x="64" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#777">Budget Confirmed</text>
+      <circle cx="110" cy="15" r="12" fill="#4CAF50"/>
+      <text x="110" y="19" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#fff" font-weight="bold">90</text>
+    </g>
+    <!-- Card 2.3 -->
+    <g transform="translate(10, 220)">
+      <rect x="0" y="0" width="128" height="70" fill="#ffffff" stroke="#ccc" stroke-width="1" rx="5" ry="5"/>
+      <text x="64" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#444">Lead E</text>
+      <text x="64" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#777">Needs Analysis</text>
+      <circle cx="110" cy="15" r="12" fill="#2196F3"/>
+      <text x="110" y="19" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#fff" font-weight="bold">70</text>
+    </g>
+  </g>
+
+  <!-- Column 3: Proposal -->
+  <g transform="translate(330, 10)">
+    <rect x="0" y="0" width="148" height="480" fill="#e0e0e0" rx="5" ry="5"/>
+    <text x="74" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" fill="#333" font-weight="bold">Proposal</text>
+    <!-- Card 3.1 -->
+    <g transform="translate(10, 60)">
+      <rect x="0" y="0" width="128" height="70" fill="#ffffff" stroke="#ccc" stroke-width="1" rx="5" ry="5"/>
+      <text x="64" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#444">Lead F</text>
+      <text x="64" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#777">Sent Proposal</text>
+      <circle cx="110" cy="15" r="12" fill="#4CAF50"/>
+      <text x="110" y="19" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#fff" font-weight="bold">92</text>
+    </g>
+    <!-- Card 3.2 -->
+    <g transform="translate(10, 140)">
+      <rect x="0" y="0" width="128" height="70" fill="#ffffff" stroke="#ccc" stroke-width="1" rx="5" ry="5"/>
+      <text x="64" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#444">Lead G</text>
+      <text x="64" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#777">Presentation</text>
+      <circle cx="110" cy="15" r="12" fill="#2196F3"/>
+      <text x="110" y="19" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#fff" font-weight="bold">78</text>
+    </g>
+  </g>
+
+  <!-- Column 4: Negotiation -->
+  <g transform="translate(490, 10)">
+    <rect x="0" y="0" width="148" height="480" fill="#e0e0e0" rx="5" ry="5"/>
+    <text x="74" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" fill="#333" font-weight="bold">Negotiation</text>
+    <!-- Card 4.1 -->
+    <g transform="translate(10, 60)">
+      <rect x="0" y="0" width="128" height="70" fill="#ffffff" stroke="#ccc" stroke-width="1" rx="5" ry="5"/>
+      <text x="64" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#444">Lead H</text>
+      <text x="64" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#777">Terms Review</text>
+      <circle cx="110" cy="15" r="12" fill="#4CAF50"/>
+      <text x="110" y="19" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#fff" font-weight="bold">95</text>
+    </g>
+    <!-- Card 4.2 -->
+    <g transform="translate(10, 140)">
+      <rect x="0" y="0" width="128" height="70" fill="#ffffff" stroke="#ccc" stroke-width="1" rx="5" ry="5"/>
+      <text x="64" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#444">Lead I</text>
+      <text x="64" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#777">Discount Discuss</text>
+      <circle cx="110" cy="15" r="12" fill="#FFC107"/>
+      <text x="110" y="19" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#fff" font-weight="bold">65</text>
+    </g>
+  </g>
+
+  <!-- Column 5: Won/Lost -->
+  <g transform="translate(650, 10)">
+    <rect x="0" y="0" width="148" height="480" fill="#e0e0e0" rx="5" ry="5"/>
+    <text x="74" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" fill="#333" font-weight="bold">Won/Lost</text>
+    <!-- Card 5.1 (Won) -->
+    <g transform="translate(10, 60)">
+      <rect x="0" y="0" width="128" height="70" fill="#d4edda" stroke="#28a745" stroke-width="1" rx="5" ry="5"/>
+      <text x="64" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#155724">Lead J</text>
+      <text x="64" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#155724">WON!</text>
+      <circle cx="110" cy="15" r="12" fill="#4CAF50"/>
+      <text x="110" y="19" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#fff" font-weight="bold">99</text>
+    </g>
+    <!-- Card 5.2 (Lost) -->
+    <g transform="translate(10, 140)">
+      <rect x="0" y="0" width="128" height="70" fill="#f8d7da" stroke="#dc3545" stroke-width="1" rx="5" ry="5"/>
+      <text x="64" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#721c24">Lead K</text>
+      <text x="64" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#721c24">LOST</text>
+      <circle cx="110" cy="15" r="12" fill="#F44336"/>
+      <text x="110" y="19" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#fff" font-weight="bold">10</text>
+    </g>
+  </g>
+
+</svg>

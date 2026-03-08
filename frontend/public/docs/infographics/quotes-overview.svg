@@ -1,0 +1,66 @@
+<svg width="800" height="500" viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect x="0" y="0" width="800" height="500" fill="#f8f8f8"/>
+
+  <!-- Main Timeline Line (dashed) -->
+  <line x1="100" y1="250" x2="700" y2="250" stroke="#ccc" stroke-width="3" stroke-dasharray="8 8"/>
+
+  <!-- Step 1: Draft quote -->
+  <g transform="translate(100, 250)">
+    <circle r="25" fill="#4a90e2" />
+    <!-- Icon: Document with lines -->
+    <path d="M-10 -12 V12 H10 V-12 Z M-7 -8 H7 M-7 -4 H7 M-7 0 H7 M-7 4 H4" fill="white" transform="scale(0.8) translate(0, 0)"/>
+    <text x="0" y="55" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#333">Draft quote</text>
+  </g>
+
+  <!-- Flow Arrow 1-2 -->
+  <path d="M125 250 H225" stroke="#4a90e2" stroke-width="2" fill="none"/>
+  <path d="M225 250 L217 245 M225 250 L217 255" stroke="#4a90e2" stroke-width="2" fill="none"/>
+
+  <!-- Step 2: Send to client -->
+  <g transform="translate(250, 250)">
+    <circle r="25" fill="#4a90e2" />
+    <!-- Icon: Paper airplane -->
+    <path d="M-10 0 L0 -6 L10 0 L0 6 Z M0 -6 L0 6" fill="white" transform="scale(0.8) translate(0, 0)"/>
+    <text x="0" y="55" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#333">Send to client</text>
+  </g>
+
+  <!-- Flow Arrow 2-3 -->
+  <path d="M275 250 H375" stroke="#4a90e2" stroke-width="2" fill="none"/>
+  <path d="M375 250 L367 245 M375 250 L367 255" stroke="#4a90e2" stroke-width="2" fill="none"/>
+
+  <!-- Step 3: Client views on portal -->
+  <g transform="translate(400, 250)">
+    <circle r="25" fill="#4a90e2" />
+    <!-- Icon: Monitor -->
+    <path d="M-15 -10 H15 V10 H-15 Z M-8 10 H8 L4 15 L-4 15 Z" fill="white" transform="scale(0.8) translate(0, 0)"/>
+    <text x="0" y="55" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#333">Client views</text>
+    <text x="0" y="78" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#333">on portal</text>
+  </g>
+
+  <!-- Flow Arrow 3-4 -->
+  <path d="M425 250 H525" stroke="#4a90e2" stroke-width="2" fill="none"/>
+  <path d="M525 250 L517 245 M525 250 L517 255" stroke="#4a90e2" stroke-width="2" fill="none"/>
+
+  <!-- Step 4: Client accepts -->
+  <g transform="translate(550, 250)">
+    <circle r="25" fill="#4a90e2" />
+    <!-- Icon: Checkmark -->
+    <path d="M-10 0 L-4 6 L10 -8" stroke="white" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" transform="scale(1.2) translate(-2,0)"/>
+    <text x="0" y="55" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#333">Client accepts</text>
+  </g>
+
+  <!-- Flow Arrow 4-5 -->
+  <path d="M575 250 H675" stroke="#4a90e2" stroke-width="2" fill="none"/>
+  <path d="M675 250 L667 245 M675 250 L667 255" stroke="#4a90e2" stroke-width="2" fill="none"/>
+
+  <!-- Step 5: Auto-convert to invoice -->
+  <g transform="translate(700, 250)">
+    <circle r="25" fill="#4a90e2" />
+    <!-- Icon: Gear -->
+    <path d="M0 -15 L3 -8 L10 -10 L8 -3 L15 0 L8 3 L10 10 L3 8 L0 15 L-3 8 L-10 10 L-8 3 L-15 0 L-8 -3 L-10 -10 L-3 -8 Z" fill="white" transform="scale(0.6) translate(0, -3)"/>
+    <circle cx="0" cy="0" r="5" fill="white" transform="scale(0.6) translate(0, -3)"/>
+    <text x="0" y="55" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#333">Auto-convert</text>
+    <text x="0" y="78" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#333">to invoice</text>
+  </g>
+</svg>

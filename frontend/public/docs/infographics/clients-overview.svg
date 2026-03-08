@@ -1,0 +1,80 @@
+<svg width="800" height="500" viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg" font-family="Arial, sans-serif">
+  <defs>
+    <style>
+      .bg { fill: #f8f8f8; }
+      .feature-box { fill: #ffffff; stroke: #e0e0e0; stroke-width: 1; border-radius: 8px; }
+      .feature-icon { fill: #20c997; } /* Teal */
+      .feature-label { fill: #333; font-size: 16px; font-weight: bold; }
+      .central-circle { fill: #007bff; } /* Blue */
+      .central-icon { fill: #ffffff; }
+      .central-text { fill: #ffffff; font-size: 16px; font-weight: bold; }
+      .line { stroke: #cccccc; stroke-width: 2; }
+    </style>
+  </defs>
+
+  <!-- Background -->
+  <rect x="0" y="0" width="800" height="500" class="bg"/>
+
+  <!-- Central Client Module -->
+  <g transform="translate(400, 250)">
+    <circle cx="0" cy="0" r="80" class="central-circle"/>
+    <!-- Person icon (Material Design: account_circle) -->
+    <path class="central-icon" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" transform="translate(-36, -36) scale(3)"/>
+    <text x="0" y="30" text-anchor="middle" class="central-text">CRM Client Module</text>
+  </g>
+
+  <!-- Feature Boxes -->
+  <!-- Box dimensions: Width: 180, Height: 100 -->
+  <!-- Icon placement: Centered horizontally within box (x=72 for 1.5x scaled 24px icon), y=30 -->
+  <!-- Label placement: Centered horizontally (x=90), y=75 -->
+
+  <!-- Contact Card (Top-Left) -->
+  <g transform="translate(100, 80)">
+    <rect x="0" y="0" width="180" height="100" rx="8" ry="8" class="feature-box"/>
+    <!-- Person icon (Material Design: account_circle) -->
+    <path class="feature-icon" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" transform="translate(72, 30) scale(1.5)"/>
+    <text x="90" y="75" text-anchor="middle" class="feature-label">Contact Card</text>
+  </g>
+
+  <!-- Linked Invoices (Bottom-Left) -->
+  <g transform="translate(100, 320)">
+    <rect x="0" y="0" width="180" height="100" rx="8" ry="8" class="feature-box"/>
+    <!-- Receipt/Invoice icon (Material Design: receipt_long) -->
+    <path class="feature-icon" d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm-2 18c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-2-2V7h6v5h-6z" transform="translate(72, 30) scale(1.5)"/>
+    <text x="90" y="75" text-anchor="middle" class="feature-label">Linked Invoices</text>
+  </g>
+
+  <!-- Linked Projects (Top-Right) -->
+  <g transform="translate(520, 80)">
+    <rect x="0" y="0" width="180" height="100" rx="8" ry="8" class="feature-box"/>
+    <!-- Folder with content icon (Material Design: folder_open) -->
+    <path class="feature-icon" d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-6 10h-2v-3H8v-2h4V8h2v3h4v2h-4v3z" transform="translate(72, 30) scale(1.5)"/>
+    <text x="90" y="75" text-anchor="middle" class="feature-label">Linked Projects</text>
+  </g>
+
+  <!-- Activity History (Mid-Right) -->
+  <g transform="translate(520, 200)">
+    <rect x="0" y="0" width="180" height="100" rx="8" ry="8" class="feature-box"/>
+    <!-- History/Clock icon (Material Design: history) -->
+    <path class="feature-icon" d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.51 0-2.91-.49-4.06-1.42C9.43 19.53 11.17 20 13 20c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v6l5.25 3.15.75-1.23-4.5-2.67V8h-1z" transform="translate(72, 30) scale(1.5)"/>
+    <text x="90" y="75" text-anchor="middle" class="feature-label">Activity History</text>
+  </g>
+
+  <!-- Documents (Bottom-Right) -->
+  <g transform="translate(520, 320)">
+    <rect x="0" y="0" width="180" height="100" rx="8" ry="8" class="feature-box"/>
+    <!-- Folder icon (Material Design: folder) -->
+    <path class="feature-icon" d="M10 4H2c-1.1 0-1.99.9-1.99 2L0 18c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-4z" transform="translate(72, 30) scale(1.5)"/>
+    <text x="90" y="75" text-anchor="middle" class="feature-label">Documents</text>
+  </g>
+
+  <!-- Connecting Lines -->
+  <!-- Central point for lines: (400, 250) (center of the main circle) -->
+  <!-- Target points for lines (center of feature boxes) -->
+  <line x1="400" y1="250" x2="190" y2="130" class="line"/> <!-- Contact Card -->
+  <line x1="400" y1="250" x2="190" y2="370" class="line"/> <!-- Linked Invoices -->
+  <line x1="400" y1="250" x2="610" y2="130" class="line"/> <!-- Linked Projects -->
+  <line x1="400" y1="250" x2="610" y2="250" class="line"/> <!-- Activity History -->
+  <line x1="400" y1="250" x2="610" y2="370" class="line"/> <!-- Documents -->
+
+</svg>

@@ -1,11 +1,39 @@
 flowchart TD
-    subgraph Workflow Node Type Shapes Legend
-        S_Start((Start Node))
-        S_Trigger([Trigger Node])
-        S_Action[Action Node]
-        S_Decision{Decision Node}
-        S_Delay[[Delay Node]]
-        S_Manual{{Manual Task Node}}
-        S_FlowControl(Flow Control Node)
-        S_End([(End Node)])
+    subgraph "Workflow Node Types - CRM Documentation"
+        %% Node Type Definitions
+        style_start([Start/End Node])
+        style_start --- description_start[**Purpose**: Marks the beginning or end of a workflow process.\n**CRM Example**: "Start New Lead Workflow", "End Qualification Process".]
+
+        style_action[Action Node]
+        style_action --- description_action[**Purpose**: Executes a specific task or operation within the CRM system.\n**CRM Example**: "Send Welcome Email", "Update Lead Status", "Create Follow-up Task", "Assign Record Owner".]
+
+        style_decision{Decision Node}
+        style_decision --- description_decision[**Purpose**: Evaluates a condition and branches the workflow based on the outcome (e.g., Yes/No, True/False).\n**CRM Example**: "Is Lead Score > 50?", "Opportunity Stage is 'Closed Won'?", "Customer Tier is 'Premium'?".]
+
+        style_wait[(Wait Node)]
+        style_wait --- description_wait[**Purpose**: Pauses the workflow for a specified duration or until a certain event occurs.\n**CRM Example**: "Wait 7 Days", "Wait for Email Open", "Wait until Opportunity Updated", "Wait for Case Resolution".]
+
+        style_approval{{Approval Node}}
+        style_approval --- description_approval[**Purpose**: Requires human intervention (approval or rejection) to proceed, often leading to different workflow paths.\n**CRM Example**: "Request Manager Approval for Discount", "Await Sales Director Review", "Get Legal Team Sign-off".]
+
+        style_subworkflow[[Sub-Workflow Node]]
+        style_subworkflow --- description_subworkflow[**Purpose**: Invokes another predefined workflow as a nested process, promoting modularity and reusability.\n**CRM Example**: "Call 'New Customer Onboarding' Workflow", "Trigger 'Lead Nurturing Sequence'", "Execute 'Product Upsell' Process".]
     end
+
+    %% Define Node Type Styles
+    classDef startEndNode fill:#d4edda,stroke:#28a745,stroke-width:2px,color:#333,font-weight:bold;
+    classDef actionNode fill:#e0f2f7,stroke:#2196f3,stroke-width:2px,color:#333,font-weight:bold;
+    classDef decisionNode fill:#fff3cd,stroke:#ffc107,stroke-width:2px,color:#333,font-weight:bold;
+    classDef waitNode fill:#f8f9fa,stroke:#6c757d,stroke-width:2px,color:#333,font-weight:bold;
+    classDef approvalNode fill:#fce4ec,stroke:#e91e63,stroke-width:2px,color:#333,font-weight:bold;
+    classDef subWorkflowNode fill:#e3f2fd,stroke:#03a9f4,stroke-width:2px,color:#333,font-weight:bold;
+    classDef descriptionText fill:#ffffff,stroke:#cccccc,stroke-width:1px,color:#555,text-align:left;
+
+    class style_start startEndNode;
+    class style_action actionNode;
+    class style_decision decisionNode;
+    class style_wait waitNode;
+    class style_approval approvalNode;
+    class style_subworkflow subWorkflowNode;
+
+    class description_start, description_action, description_decision, description_wait, description_approval, description_subworkflow descriptionText;

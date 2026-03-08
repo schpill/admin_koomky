@@ -1,0 +1,93 @@
+<svg width="800" height="500" viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg">
+    <style>
+        .title {
+            font-family: 'Arial', sans-serif;
+            font-size: 40px;
+            font-weight: bold;
+            fill: #333;
+            text-anchor: middle;
+        }
+        .card-bg {
+            fill: #ffffff;
+            stroke: #e0e0e0;
+            stroke-width: 1px;
+            filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.05));
+        }
+        .card-text {
+            font-family: 'Arial', sans-serif;
+            font-size: 18px;
+            font-weight: bold;
+            fill: #007bff;
+            text-anchor: middle;
+        }
+        .card-subtext {
+            font-family: 'Arial', sans-serif;
+            font-size: 14px;
+            fill: #666;
+            text-anchor: middle;
+        }
+        .icon {
+            fill: #007bff;
+        }
+    </style>
+
+    <!-- Background -->
+    <rect x="0" y="0" width="800" height="500" fill="#f8f8f8"/>
+
+    <!-- Title -->
+    <text x="400" y="70" class="title">Client Portal Features</text>
+
+    <!-- Card 1: View Invoices -->
+    <g transform="translate(30, 120)">
+        <rect x="0" y="0" width="220" height="160" rx="10" ry="10" class="card-bg"/>
+        <!-- Icon: Document -->
+        <g transform="translate(60, 20) scale(0.8)">
+             <path class="icon" d="M30,5 H70 L70,25 L90,25 L90,95 H30 Z M70,20 H65 V15 H70 V20 Z M40,40 H80 V45 H40 Z M40,55 H80 V60 H40 Z M40,70 H70 V75 H40 Z" />
+        </g>
+        <text x="110" y="130" class="card-text">View Invoices</text>
+    </g>
+
+    <!-- Card 2: Pay Online (Stripe) -->
+    <g transform="translate(290, 120)">
+        <rect x="0" y="0" width="220" height="160" rx="10" ry="10" class="card-bg"/>
+        <!-- Icon: Credit Card -->
+        <g transform="translate(60, 20) scale(0.8)">
+            <path class="icon" d="M20,30 H80 C85.5,30 90,34.5 90,40 V70 C90,75.5 85.5,80 80,80 H20 C14.5,80 10,75.5 10,70 V40 C10,34.5 14.5,30 20,30 Z M10,45 H90 V55 H10 Z M25,65 H45 V70 H25 Z" />
+        </g>
+        <text x="110" y="130" class="card-text">Pay Online</text>
+        <text x="110" y="150" class="card-subtext">(Stripe)</text>
+    </g>
+
+    <!-- Card 3: Accept/Reject Quotes -->
+    <g transform="translate(550, 120)">
+        <rect x="0" y="0" width="220" height="160" rx="10" ry="10" class="card-bg"/>
+        <!-- Icon: Document with checkmark -->
+        <g transform="translate(60, 20) scale(0.8)">
+            <path class="icon" d="M30,5 H70 L70,25 L90,25 L90,95 H30 Z M70,20 H65 V15 H70 V20 Z M40,60 L50,70 L70,50 L65,45 L50,60 L45,55 Z" />
+        </g>
+        <text x="110" y="130" class="card-text">Accept/Reject</text>
+        <text x="110" y="150" class="card-subtext">Quotes</text>
+    </g>
+
+    <!-- Card 4: Manage Communication Preferences -->
+    <g transform="translate(160, 320)">
+        <rect x="0" y="0" width="220" height="160" rx="10" ry="10" class="card-bg"/>
+        <!-- Icon: Gear/Cog -->
+        <g transform="translate(60, 20) scale(0.8)">
+            <path class="icon" d="M50,15 C35,15 25,30 25,50 C25,70 35,85 50,85 C65,85 75,70 75,50 C75,30 65,15 50,15 Z M50,35 C40,35 35,40 35,50 C35,60 40,65 50,65 C60,65 65,60 65,50 C65,40 60,35 50,35 Z M55,10 L60,20 L70,20 L75,10 L85,20 L80,30 L90,40 L80,50 L90,60 L80,70 L85,80 L75,90 L70,90 L60,80 L55,90 L45,80 L35,80 L30,90 L20,80 L25,70 L15,60 L25,50 L15,40 L25,30 L20,20 L30,10 L35,10 L45,20 Z" />
+        </g>
+        <text x="110" y="130" class="card-text">Manage</text>
+        <text x="110" y="150" class="card-subtext">Communication</text>
+    </g>
+
+    <!-- Card 5: Download Documents -->
+    <g transform="translate(420, 320)">
+        <rect x="0" y="0" width="220" height="160" rx="10" ry="10" class="card-bg"/>
+        <!-- Icon: Cloud with down arrow -->
+        <g transform="translate(60, 20) scale(0.8)">
+            <path class="icon" d="M20,60 C20,40 40,30 50,30 C60,30 80,40 80,60 C80,70 70,80 60,80 H40 C30,80 20,70 20,60 Z M50,70 L40,80 L45,80 L45,90 L55,90 L55,80 L60,80 Z" />
+        </g>
+        <text x="110" y="130" class="card-text">Download</text>
+        <text x="110" y="150" class="card-subtext">Documents</text>
+    </g>
+</svg>

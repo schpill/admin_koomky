@@ -1,0 +1,12 @@
+flowchart TD
+    A[Email Hard Bounces Detected]
+    B[Contact Manually Unsubscribes]
+    C[User Imports CSV with Suppressed Contacts]
+
+    A --> D[CRM Adds to Suppression List]
+    B --> D
+    C --> D
+
+    D --> E[Suppression List]
+
+    E -- "Excludes Contacts From" --> F[Future Email Campaigns]

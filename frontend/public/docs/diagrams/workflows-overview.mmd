@@ -1,0 +1,24 @@
+flowchart TD
+    T_EMAIL[Trigger: Email Opened]
+    T_SCORE[Trigger: Score Threshold]
+    T_CONTACT[Trigger: Contact Created]
+
+    A_SEND[Send Email]
+    A_WAIT[Wait]
+    D_COND{Condition?}
+    A_UPDATE[Update Score]
+    A_ADDTAG[Add Tag]
+    E_END[End]
+
+    T_EMAIL --> A_SEND
+    T_SCORE --> A_SEND
+    T_CONTACT --> A_SEND
+
+    A_SEND --> A_WAIT
+    A_WAIT --> D_COND
+
+    D_COND -- Yes --> A_ADDTAG
+    D_COND -- No --> A_UPDATE
+
+    A_ADDTAG --> A_UPDATE
+    A_UPDATE --> E_END

@@ -1,159 +1,122 @@
-<svg width="1000" height="850" viewBox="0 0 1000 850" xmlns="http://www.w3.org/2000/svg" font-family="Arial, sans-serif" font-size="14" style="border: 1px solid #ccc; background-color: #f9f9f9;">
-    <title>CRM Lead to Customer Workflow</title>
-    <desc>A standard workflow diagram illustrating the progression of a lead through qualification, opportunity management, and conversion into an active customer within a CRM system.</desc>
+<svg width="1200" height="800" viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg" font-family="Arial, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#007bff" />
+    </marker>
+  </defs>
 
-    <defs>
-        <!-- Arrowhead marker definition -->
-        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
-            <polygon points="0 0, 10 3.5, 0 7" fill="#333"/>
-        </marker>
+  <!-- Swimlanes -->
+  <g class="swimlanes">
+    <rect x="0" y="0" width="1200" height="200" fill="#f8f9fa" stroke="#dee2e6" stroke-width="1"/>
+    <text x="600" y="30" text-anchor="middle" font-size="20px" font-weight="bold" fill="#6c757d">Marketing</text>
 
-        <!-- Common styles for shapes -->
-        <style>
-            .start-end {
-                fill: #d4edda; /* Light green */
-                stroke: #28a745; /* Darker green */
-                stroke-width: 2;
-            }
-            .process {
-                fill: #cfe2f3; /* Light blue */
-                stroke: #007bff; /* Darker blue */
-                stroke-width: 2;
-            }
-            .decision {
-                fill: #fff3cd; /* Light yellow */
-                stroke: #ffc107; /* Darker yellow */
-                stroke-width: 2;
-            }
-            .termination {
-                fill: #f8d7da; /* Light red */
-                stroke: #dc3545; /* Darker red */
-                stroke-width: 2;
-            }
-            .line {
-                stroke: #333;
-                stroke-width: 2;
-                marker-end: url(#arrowhead);
-                fill: none;
-            }
-            .text-main {
-                fill: #333;
-                font-size: 15px;
-                font-weight: bold;
-            }
-            .text-label {
-                fill: #555;
-                font-size: 12px;
-            }
-            .diagram-title {
-                font-size: 28px;
-                font-weight: bold;
-                fill: #333;
-            }
-        </style>
-    </defs>
+    <rect x="0" y="200" width="1200" height="300" fill="#f8f9fa" stroke="#dee2e6" stroke-width="1"/>
+    <text x="600" y="230" text-anchor="middle" font-size="20px" font-weight="bold" fill="#6c757d">Sales</text>
 
-    <!-- Title of the Infographic -->
-    <text x="500" y="50" text-anchor="middle" class="diagram-title">CRM: Lead to Customer Workflow</text>
-    <text x="500" y="85" text-anchor="middle" font-size="16" fill="#666">Standardized Process for Sales and Account Management</text>
+    <rect x="0" y="500" width="1200" height="300" fill="#f8f9fa" stroke="#dee2e6" stroke-width="1"/>
+    <text x="600" y="530" text-anchor="middle" font-size="20px" font-weight="bold" fill="#6c757d">Operations</text>
+  </g>
 
+  <!-- Workflow Nodes -->
+  <g class="workflow-nodes">
+    <!-- 1. Start: New Lead Captured (Marketing) -->
+    <ellipse cx="150" cy="100" rx="70" ry="40" fill="#ffffff" stroke="#007bff" stroke-width="2"/>
+    <text x="150" y="95" text-anchor="middle" font-size="16px" fill="#343a40">
+      <tspan x="150" dy="0">New Lead</tspan>
+      <tspan x="150" dy="20">Captured</tspan>
+    </text>
 
-    <!-- Workflow Elements -->
+    <!-- 2. Process: Lead Qualification (Sales) -->
+    <rect x="100" y="270" width="150" height="60" rx="8" ry="8" fill="#ffffff" stroke="#007bff" stroke-width="2"/>
+    <text x="175" y="305" text-anchor="middle" font-size="16px" fill="#343a40">Lead Qualification</text>
 
-    <!-- 1. Start: New Lead Captured -->
-    <ellipse cx="200" cy="150" rx="100" ry="30" class="start-end"/>
-    <text x="200" y="155" text-anchor="middle" class="text-main">New Lead Captured</text>
+    <!-- 3. Decision: Is Lead Qualified? (Sales) -->
+    <polygon points="175,390 250,440 175,490 100,440" fill="#ffffff" stroke="#007bff" stroke-width="2"/>
+    <text x="175" y="430" text-anchor="middle" font-size="16px" fill="#343a40">
+      <tspan x="175" dy="0">Lead</tspan>
+      <tspan x="175" dy="18">Qualified?</tspan>
+    </text>
 
-    <!-- 2. Process: Lead Qualification -->
-    <rect x="100" y="230" width="200" height="60" rx="5" ry="5" class="process"/>
-    <text x="200" y="265" text-anchor="middle" class="text-main">Lead Qualification</text>
+    <!-- 4. Process (NO path): Nurture Lead (Marketing) -->
+    <rect x="350" y="70" width="150" height="60" rx="8" ry="8" fill="#ffffff" stroke="#007bff" stroke-width="2"/>
+    <text x="425" y="105" text-anchor="middle" font-size="16px" fill="#343a40">Nurture Lead</text>
 
-    <!-- 3. Decision: Is Lead Qualified? -->
-    <rect x="150" y="340" width="100" height="100" transform="rotate(45 200 390)" class="decision"/>
-    <text x="200" y="390" text-anchor="middle" class="text-main">Is Lead</text>
-    <text x="200" y="410" text-anchor="middle" class="text-main">Qualified?</text>
+    <!-- 5. Process (YES path): Create Opportunity (Sales) -->
+    <rect x="350" y="270" width="150" height="60" rx="8" ry="8" fill="#ffffff" stroke="#007bff" stroke-width="2"/>
+    <text x="425" y="305" text-anchor="middle" font-size="16px" fill="#343a40">Create Opportunity</text>
 
-    <!-- Path for "No" from Lead Qualification -->
-    <rect x="50" y="520" width="200" height="60" rx="5" ry="5" class="termination"/>
-    <text x="150" y="555" text-anchor="middle" class="text-main">Archive Lead</text>
+    <!-- 6. Process: Discovery (Sales) -->
+    <rect x="550" y="270" width="150" height="60" rx="8" ry="8" fill="#ffffff" stroke="#007bff" stroke-width="2"/>
+    <text x="625" y="305" text-anchor="middle" font-size="16px" fill="#343a40">Discovery</text>
 
-    <ellipse cx="150" cy="640" rx="80" ry="30" class="termination"/>
-    <text x="150" y="645" text-anchor="middle" class="text-main">Lead Archived (END)</text>
+    <!-- 7. Process: Proposal (Sales) -->
+    <rect x="750" y="270" width="150" height="60" rx="8" ry="8" fill="#ffffff" stroke="#007bff" stroke-width="2"/>
+    <text x="825" y="305" text-anchor="middle" font-size="16px" fill="#343a40">Proposal</text>
 
-    <!-- 4. Process: Convert to Opportunity -->
-    <rect x="350" y="230" width="200" height="60" rx="5" ry="5" class="process"/>
-    <text x="450" y="265" text-anchor="middle" class="text-main">Convert to Opportunity</text>
+    <!-- 8. Decision: Proposal Accepted? (Sales) -->
+    <polygon points="825,390 900,440 825,490 750,440" fill="#ffffff" stroke="#007bff" stroke-width="2"/>
+    <text x="825" y="430" text-anchor="middle" font-size="16px" fill="#343a40">
+      <tspan x="825" dy="0">Proposal</tspan>
+      <tspan x="825" dy="18">Accepted?</tspan>
+    </text>
 
-    <!-- 5. Process: Opportunity Nurturing/Sales -->
-    <rect x="350" y="340" width="200" height="60" rx="5" ry="5" class="process"/>
-    <text x="450" y="375" text-anchor="middle" class="text-main">Opportunity Nurturing</text>
-    <text x="450" y="395" text-anchor="middle" class="text-main">&amp; Sales Process</text>
+    <!-- 9. Process (NO path): Revise Proposal (Sales) -->
+    <rect x="950" y="370" width="150" height="60" rx="8" ry="8" fill="#ffffff" stroke="#007bff" stroke-width="2"/>
+    <text x="1025" y="405" text-anchor="middle" font-size="16px" fill="#343a40">Revise Proposal</text>
 
-    <!-- 6. Decision: Is Opportunity Won? -->
-    <rect x="400" y="470" width="100" height="100" transform="rotate(45 450 520)" class="decision"/>
-    <text x="450" y="520" text-anchor="middle" class="text-main">Is Opportunity</text>
-    <text x="450" y="540" text-anchor="middle" class="text-main">Won?</text>
+    <!-- 10. Process (YES path): Opportunity Won (Sales) -->
+    <rect x="950" y="270" width="150" height="60" rx="8" ry="8" fill="#ffffff" stroke="#007bff" stroke-width="2"/>
+    <text x="1025" y="305" text-anchor="middle" font-size="16px" fill="#343a40">Opportunity Won</text>
 
-    <!-- Path for "No" from Opportunity Won -->
-    <rect x="650" y="520" width="200" height="60" rx="5" ry="5" class="termination"/>
-    <text x="750" y="555" text-anchor="middle" class="text-main">Close Opportunity Lost</text>
+    <!-- 11. End: Customer Onboarded (Operations) -->
+    <ellipse cx="1025" cy="600" rx="70" ry="40" fill="#ffffff" stroke="#007bff" stroke-width="2"/>
+    <text x="1025" y="590" text-anchor="middle" font-size="16px" fill="#343a40">
+      <tspan x="1025" dy="0">Customer</tspan>
+      <tspan x="1025" dy="20">Onboarded</tspan>
+    </text>
+  </g>
 
-    <ellipse cx="750" cy="640" rx="80" ry="30" class="termination"/>
-    <text x="750" y="645" text-anchor="middle" class="text-main">Opp. Closed (END)</text>
+  <!-- Connectors -->
+  <g class="workflow-connections">
+    <!-- 1. New Lead Captured -> Lead Qualification -->
+    <path d="M 150 140 L 150 270" stroke="#007bff" stroke-width="2" fill="none" marker-end="url(#arrow)" />
 
-    <!-- 7. Process: Convert to Customer Account -->
-    <rect x="350" y="600" width="200" height="60" rx="5" ry="5" class="process"/>
-    <text x="450" y="635" text-anchor="middle" class="text-main">Convert to Customer</text>
-    <text x="450" y="655" text-anchor="middle" class="text-main">Account</text>
+    <!-- 2. Lead Qualification -> Is Lead Qualified? -->
+    <path d="M 175 330 L 175 390" stroke="#007bff" stroke-width="2" fill="none" marker-end="url(#arrow)" />
 
-    <!-- 8. Process: Customer Onboarding -->
-    <rect x="350" y="700" width="200" height="60" rx="5" ry="5" class="process"/>
-    <text x="450" y="735" text-anchor="middle" class="text-main">Customer Onboarding</text>
-    <text x="450" y="755" text-anchor="middle" class="text-main">&amp; Handoff</text>
+    <!-- 3. Is Lead Qualified? (NO) -> Nurture Lead -->
+    <path d="M 100 440 L 50 440 L 50 100 L 350 100" stroke="#007bff" stroke-width="2" fill="none" marker-end="url(#arrow)" />
+    <text x="80" y="430" font-size="14px" fill="#343a40" font-weight="bold">No</text>
+    
+    <!-- Nurture Lead (exit to unknown/archive) - simple line off to the right -->
+    <path d="M 500 100 L 550 100" stroke="#007bff" stroke-width="2" fill="none" marker-end="url(#arrow)" stroke-dasharray="5,5"/>
+    <text x="525" y="90" font-size="12px" fill="#6c757d" text-anchor="middle">Archive / Re-engage</text>
 
-    <!-- 9. End: Active Customer -->
-    <ellipse cx="450" cy="810" rx="100" ry="30" class="start-end"/>
-    <text x="450" y="815" text-anchor="middle" class="text-main">Active Customer (END)</text>
+    <!-- 4. Is Lead Qualified? (YES) -> Create Opportunity -->
+    <path d="M 250 440 L 300 440 L 300 300 L 350 300" stroke="#007bff" stroke-width="2" fill="none" marker-end="url(#arrow)" />
+    <text x="275" y="430" font-size="14px" fill="#343a40" font-weight="bold">Yes</text>
 
-    <!-- Workflow Lines and Labels -->
+    <!-- 5. Create Opportunity -> Discovery -->
+    <path d="M 500 300 L 550 300" stroke="#007bff" stroke-width="2" fill="none" marker-end="url(#arrow)" />
 
-    <!-- Lead Flow -->
-    <line x1="200" y1="180" x2="200" y2="230" class="line"/>
-    <line x1="200" y1="290" x2="200" y2="340" class="line"/>
+    <!-- 6. Discovery -> Proposal -->
+    <path d="M 700 300 L 750 300" stroke="#007bff" stroke-width="2" fill="none" marker-end="url(#arrow)" />
 
-    <!-- Qualified? Decision -->
-    <line x1="200" y1="440" x2="200" y2="470" class="line"/>
-    <polyline points="200,440 200,470 150,470 150,520" class="line"/>
-    <text x="180" y="455" class="text-label">No</text>
+    <!-- 7. Proposal -> Proposal Accepted? -->
+    <path d="M 825 330 L 825 390" stroke="#007bff" stroke-width="2" fill="none" marker-end="url(#arrow)" />
 
-    <!-- Archive Lead Path -->
-    <line x1="150" y1="580" x2="150" y2="610" class="line"/>
-    <polyline points="150,610 150,610 150,610 150,610" class="line"/> <!-- Dummy line for arrow alignment -->
+    <!-- 8. Proposal Accepted? (NO) -> Revise Proposal -->
+    <path d="M 750 440 L 725 440 L 725 400 L 950 400" stroke="#007bff" stroke-width="2" fill="none" marker-end="url(#arrow)" />
+    <text x="770" y="430" font-size="14px" fill="#343a40" font-weight="bold">No</text>
 
-    <!-- Yes Path from Qualified? -->
-    <line x1="250" y1="390" x2="350" y2="390" class="line"/>
-    <polyline points="250,390 350,390 350,390 350,390" class="line"/> <!-- Dummy line for arrow alignment -->
-    <line x1="250" y1="390" x2="350" y2="390" class="line"/>
-    <text x="295" y="380" class="text-label">Yes</text>
-    <polyline points="350,390 350,260 450,260" class="line"/>
-    <line x1="450" y1="290" x2="450" y2="340" class="line"/>
+    <!-- 9. Revise Proposal -> Proposal (loop back) -->
+    <path d="M 1100 400 L 1150 400 L 1150 250 L 825 250 L 825 270" stroke="#007bff" stroke-width="2" fill="none" marker-end="url(#arrow)" />
 
-    <!-- Opportunity Flow -->
-    <line x1="450" y1="400" x2="450" y2="470" class="line"/>
+    <!-- 10. Proposal Accepted? (YES) -> Opportunity Won -->
+    <path d="M 900 440 L 925 440 L 925 300 L 950 300" stroke="#007bff" stroke-width="2" fill="none" marker-end="url(#arrow)" />
+    <text x="925" y="430" font-size="14px" fill="#343a40" font-weight="bold">Yes</text>
 
-    <!-- Won? Decision -->
-    <line x1="450" y1="570" x2="450" y2="600" class="line"/>
-    <text x="430" y="585" class="text-label">Yes</text>
-
-    <!-- Close Lost Path -->
-    <line x1="550" y1="520" x2="650" y2="520" class="line"/>
-    <polyline points="550,520 650,520 650,520 650,520" class="line"/> <!-- Dummy line for arrow alignment -->
-    <text x="590" y="510" class="text-label">No</text>
-    <line x1="750" y1="580" x2="750" y2="610" class="line"/>
-    <polyline points="750,610 750,610 750,610 750,610" class="line"/> <!-- Dummy line for arrow alignment -->
-
-    <!-- Customer Flow -->
-    <line x1="450" y1="660" x2="450" y2="700" class="line"/>
-    <line x1="450" y1="760" x2="450" y2="780" class="line"/>
-
+    <!-- 11. Opportunity Won -> Customer Onboarded -->
+    <path d="M 1025 330 L 1025 560" stroke="#007bff" stroke-width="2" fill="none" marker-end="url(#arrow)" />
+  </g>
 </svg>

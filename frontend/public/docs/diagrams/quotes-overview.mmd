@@ -1,0 +1,6 @@
+flowchart TD
+    A[Draft] --> B[Sent to Client]
+    B --> C[Viewed on Portal]
+    C --> D{Accepted or Rejected?}
+    D -- Accepted --> E[Converted to Invoice]
+    D -- Rejected --> F[Quote Rejected]

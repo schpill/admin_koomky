@@ -1,0 +1,17 @@
+stateDiagram-v2
+    direction LR
+
+    [*] --> Open : Client creates ticket
+
+    Open --> In Progress : Assignee starts work
+    Open --> Closed : Client cancels / Assignee invalidates
+
+    In Progress --> Pending : Assignee requests info
+    In Progress --> Resolved : Assignee completes work
+
+    Pending --> In Progress : Client provides info
+
+    Resolved --> Closed : Client confirms / System auto-closes
+    Resolved --> In Progress : Client re-opens
+
+    Closed --> [*] : End of lifecycle

@@ -1,0 +1,13 @@
+graph TD
+    A[Upload File] --> B[Detect MIME Type]
+    B --> C{Check Quota?}
+    C -- No --> D[Quota Exceeded - Notify User]
+    C -- Yes --> E[Store File in Storage Service]
+    E --> F[Index File in Search Engine]
+    F --> G[Access File: Preview / Download]
+    G --> H{Optional: Send by Email to Client?}
+    H -- Yes --> I[Compose & Send Email]
+    I --> J[Log Activity]
+    H -- No --> J
+    D --> K((End))
+    J --> K

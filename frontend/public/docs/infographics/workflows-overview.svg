@@ -1,0 +1,81 @@
+<svg width="800" height="500" viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style type="text/css">
+      .node-bg { fill: #f0f0f0; stroke: #cccccc; stroke-width: 1px; }
+      .node-icon { fill: #007bff; }
+      .node-label { font-family: 'Arial', sans-serif; font-size: 18px; fill: #333333; text-anchor: middle; }
+      .main-title { font-family: 'Arial', sans-serif; font-size: 24px; font-weight: bold; fill: #333; text-anchor: middle; }
+    </style>
+  </defs>
+
+  <!-- Main Title -->
+  <text x="400" y="30" class="main-title">CRM Workflow Automation Node Types</text>
+
+  <!-- Node Dimensions -->
+  <!-- nodeWidth = 180, nodeHeight = 120 -->
+  <!-- iconSize = 50x50, iconXOffset = (180-50)/2 = 65, iconYOffset = 15 -->
+  <!-- labelYOffset = 100 -->
+
+  <!-- Row 1 -->
+  <!-- Trigger Node -->
+  <g transform="translate(90, 70)">
+    <rect x="0" y="0" width="180" height="120" rx="10" ry="10" class="node-bg"/>
+    <g transform="translate(65, 15)">
+      <path d="M25,0 L5,35 L20,35 L0,50 L25,15 L10,15 L25,0 Z" class="node-icon"/>
+    </g>
+    <text x="90" y="100" class="node-label">Trigger</text>
+  </g>
+
+  <!-- Send Email Node -->
+  <g transform="translate(310, 70)">
+    <rect x="0" y="0" width="180" height="120" rx="10" ry="10" class="node-bg"/>
+    <g transform="translate(65, 15)">
+      <path d="M0,10 L0,40 L50,40 L50,10 Z M0,10 L25,25 L50,10 Z" class="node-icon"/>
+    </g>
+    <text x="90" y="100" class="node-label">Send Email</text>
+  </g>
+
+  <!-- Wait Node -->
+  <g transform="translate(530, 70)">
+    <rect x="0" y="0" width="180" height="120" rx="10" ry="10" class="node-bg"/>
+    <g transform="translate(65, 15)">
+      <circle cx="25" cy="25" r="23" stroke="#007bff" stroke-width="4" fill="none"/>
+      <line x1="25" y1="25" x2="25" y2="10" stroke="#007bff" stroke-width="3" stroke-linecap="round"/>
+      <line x1="25" y1="25" x2="35" y2="25" stroke="#007bff" stroke-width="3" stroke-linecap="round"/>
+    </g>
+    <text x="90" y="100" class="node-label">Wait</text>
+  </g>
+
+  <!-- Row 2 -->
+  <!-- Condition Node (Diamond shape) -->
+  <g transform="translate(90, 230)">
+    <polygon points="90,0 180,60 90,120 0,60" class="node-bg"/>
+    <text x="90" y="68" class="node-label">Condition</text>
+  </g>
+
+  <!-- Update Score Node -->
+  <g transform="translate(310, 230)">
+    <rect x="0" y="0" width="180" height="120" rx="10" ry="10" class="node-bg"/>
+    <g transform="translate(65, 15)">
+      <path d="M25,0 L31,18 L50,18 L35,29 L40,48 L25,37 L10,48 L15,29 L0,18 L19,18 Z" class="node-icon"/>
+    </g>
+    <text x="90" y="100" class="node-label">Update Score</text>
+  </g>
+
+  <!-- Add Tag Node -->
+  <g transform="translate(530, 230)">
+    <rect x="0" y="0" width="180" height="120" rx="10" ry="10" class="node-bg"/>
+    <g transform="translate(65, 15)">
+      <path d="M5,5 L45,5 L45,25 L35,35 L5,35 Z M15,20 A5,5 0 1,0 15,20Z" class="node-icon"/>
+    </g>
+    <text x="90" y="100" class="node-label">Add Tag</text>
+  </g>
+
+  <!-- Row 3 -->
+  <!-- End Node (Circle shape) -->
+  <g transform="translate(310, 390)">
+    <circle cx="90" cy="60" r="60" class="node-bg"/>
+    <text x="90" y="68" class="node-label">End</text>
+  </g>
+
+</svg>

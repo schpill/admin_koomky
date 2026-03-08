@@ -60,18 +60,13 @@ const navigation = [
   { key: "accounting", href: "/accounting", icon: Calculator },
   { key: "reports", href: "/reports", icon: BarChart3 },
   { key: "calendar", href: "/calendar", icon: CalendarDays },
+  { key: "docs", href: "/docs", icon: BookOpen },
 ];
 
 const grafanaUrl =
   process.env.NEXT_PUBLIC_GRAFANA_URL || "http://localhost:3001";
 
 const secondaryNavigation = [
-  {
-    key: "docs",
-    href: "/docs",
-    icon: BookOpen,
-    external: false,
-  },
   {
     key: "settings",
     href: "/settings/profile",
@@ -224,7 +219,7 @@ export function Sidebar({
       </div>
 
       {/* Main Navigation */}
-      <nav className="flex-1 space-y-1 p-2">
+      <nav className="space-y-1 p-2">
         {navigation.map((item) => {
           const isActive =
             item.href === "/"

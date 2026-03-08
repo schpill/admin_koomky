@@ -1,0 +1,112 @@
+<svg width="800" height="500" viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="8" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#333" />
+        </marker>
+        <marker id="arrowhead-reverse" markerWidth="10" markerHeight="7" refX="2" refY="3.5" orient="auto">
+            <polygon points="10 0, 0 3.5, 10 7" fill="#333" />
+        </marker>
+    </defs>
+
+    <style>
+        .node {
+            fill: #e0f7fa; /* Light Blue */
+            stroke: #00796b; /* Teal */
+            stroke-width: 2;
+            rx: 10;
+            ry: 10;
+        }
+        .storage-node {
+            fill: #e8f5e9; /* Light Green */
+            stroke: #2e7d32; /* Dark Green */
+            stroke-width: 2;
+            rx: 10;
+            ry: 10;
+        }
+        .llm-node {
+            fill: #ffe0b2; /* Light Orange */
+            stroke: #ff9800; /* Dark Orange */
+            stroke-width: 2;
+            rx: 10;
+            ry: 10;
+        }
+        .label {
+            font-family: "Arial", sans-serif;
+            font-size: 16px;
+            fill: #333;
+            text-anchor: middle;
+            dominant-baseline: middle;
+        }
+        .label-small {
+            font-size: 14px;
+        }
+        .arrow {
+            stroke: #333;
+            stroke-width: 2;
+            fill: none;
+            marker-end: url(#arrowhead);
+        }
+        .bidirectional-arrow {
+            stroke: #333;
+            stroke-width: 2;
+            fill: none;
+            marker-start: url(#arrowhead-reverse);
+            marker-end: url(#arrowhead);
+        }
+    </style>
+
+    <!-- Ingestion Flow (Left Side) -->
+    <rect class="node" x="30" y="30" width="160" height="70" />
+    <text class="label label-small" x="110" y="65">Document (PDF/DOCX)</text>
+
+    <rect class="node" x="30" y="130" width="160" height="70" />
+    <text class="label" x="110" y="165">Text Extraction</text>
+
+    <rect class="node" x="30" y="230" width="160" height="70" />
+    <text class="label" x="110" y="265">Chunking</text>
+
+    <rect class="node" x="30" y="330" width="160" height="70" />
+    <text class="label" x="110" y="365">Gemini Embedding</text>
+
+    <rect class="storage-node" x="250" y="330" width="160" height="70" />
+    <text class="label" x="330" y="365">pgvector Storage</text>
+
+    <!-- Query Flow (Right Side) -->
+    <rect class="node" x="610" y="30" width="160" height="70" />
+    <text class="label" x="690" y="65">User Question</text>
+
+    <rect class="node" x="610" y="130" width="160" height="70" />
+    <text class="label" x="690" y="165">Embed</text>
+
+    <rect class="node" x="400" y="230" width="160" height="70" />
+    <text class="label" x="480" y="265">Vector Search</text>
+
+    <rect class="node" x="400" y="330" width="160" height="70" />
+    <text class="label" x="480" y="365">Top 5 Chunks</text>
+
+    <!-- Central LLM and Output -->
+    <rect class="llm-node" x="300" y="420" width="220" height="70" />
+    <text class="label" x="410" y="455">Gemini (LLM)</text>
+
+    <rect class="node" x="610" y="420" width="160" height="70" />
+    <text class="label" x="690" y="455">Answer</text>
+
+    <!-- Arrows -->
+    <!-- Ingestion Path -->
+    <path class="arrow" d="M 110 100 V 130" />
+    <path class="arrow" d="M 110 200 V 230" />
+    <path class="arrow" d="M 110 300 V 330" />
+    <path class="arrow" d="M 190 365 H 250" />
+
+    <!-- Query Path -->
+    <path class="arrow" d="M 690 100 V 130" />
+    <path class="arrow" d="M 690 200 L 480 230" />
+    <path class="bidirectional-arrow" d="M 480 300 L 330 330" />
+    <path class="arrow" d="M 480 300 V 330" />
+
+    <!-- Convergence and Output -->
+    <path class="arrow" d="M 480 400 L 410 420" />
+    <path class="arrow" d="M 690 200 C 690 300, 560 380, 410 420" />
+    <path class="arrow" d="M 520 455 H 610" />
+
+</svg>

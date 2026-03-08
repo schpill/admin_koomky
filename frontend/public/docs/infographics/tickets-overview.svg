@@ -1,0 +1,24 @@
+<svg width="800" height="500" viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg" font-family="Arial, sans-serif">
+    <!-- Title -->
+    <text x="400" y="50" text-anchor="middle" font-size="36" font-weight="bold" fill="#333">Support Ticket Priority Levels & SLA</text>
+
+    <!-- Bar 1: Low Priority (Green) -->
+    <rect x="100" y="120" width="600" height="80" fill="rgb(144, 238, 144)" rx="10" ry="10"/>
+    <text x="120" y="170" font-size="28" font-weight="bold" fill="#333">Low</text>
+    <text x="600" y="170" text-anchor="end" font-size="26" fill="#333">72h SLA</text>
+
+    <!-- Bar 2: Normal Priority (Yellow) -->
+    <rect x="100" y="220" width="600" height="80" fill="rgb(255, 255, 0)" rx="10" ry="10"/>
+    <text x="120" y="270" font-size="28" font-weight="bold" fill="#333">Normal</text>
+    <text x="600" y="270" text-anchor="end" font-size="26" fill="#333">48h SLA</text>
+
+    <!-- Bar 3: High Priority (Orange) -->
+    <rect x="100" y="320" width="600" height="80" fill="rgb(255, 165, 0)" rx="10" ry="10"/>
+    <text x="120" y="370" font-size="28" font-weight="bold" fill="#333">High</text>
+    <text x="600" y="370" text-anchor="end" font-size="26" fill="#333">24h SLA</text>
+
+    <!-- Bar 4: Urgent Priority (Red) -->
+    <rect x="100" y="420" width="600" height="80" fill="rgb(255, 0, 0)" rx="10" ry="10"/>
+    <text x="120" y="470" font-size="28" font-weight="bold" fill="#fff">Urgent</text>
+    <text x="600" y="470" text-anchor="end" font-size="26" fill="#fff">4h SLA</text>
+</svg>

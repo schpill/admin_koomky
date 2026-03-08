@@ -1,0 +1,20 @@
+sequenceDiagram
+    Freelancer->>Client: Sends magic link (email)
+    Client->>Portal: Clicks magic link (with token)
+    Portal->>Portal: Validates token & Authenticates Client
+    Portal-->>Client: Displays invoices and quotes
+
+    alt Client accepts quote
+        Client->>Portal: Clicks "Accept Quote"
+        Portal->>Portal: Updates quote status to "Accepted"
+        Portal-->>Client: Quote accepted confirmation
+    else Client pays invoice
+        Client->>Portal: Clicks "Pay Invoice"
+        Portal->>Stripe: Initiates payment request (API)
+        Stripe-->>Portal: Returns payment session/intent
+        Portal->>Client: Redirects to Stripe for payment
+        Client->>Stripe: Enters payment details & confirms
+        Stripe-->>Portal: Sends payment confirmation (webhook)
+        Portal->>Portal: Updates invoice status to "Paid"
+        Portal-->>Client: Payment successful confirmation
+    end

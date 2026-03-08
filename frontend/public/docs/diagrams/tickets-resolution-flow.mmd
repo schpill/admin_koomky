@@ -1,85 +1,22 @@
 graph TD
-    %% Graph Settings
-    classDef important fill:#f9f,stroke:#333,stroke-width:2px;
-    classDef startend fill:#D4EDDA,stroke:#28A745,stroke-width:2px;
-    classDef decision fill:#FFF3CD,stroke:#FFC107,stroke-width:2px;
-    classDef process fill:#E0F2F7,stroke:#17A2B8,stroke-width:1px;
-    classDef system fill:#F8F9FA,stroke:#6C757D,stroke-width:1px;
+    A[Ticket Submitted] --> B{Initial Triage & Assignment};
+    B --> C[Agent Acknowledges & Reviews Ticket];
+    C --> D[Investigate Issue & Diagnose Problem];
+    D --> E{Solution Found in KB or Prior Cases?};
 
-    %% Define Node Shapes
-    start((Start))
-    finish((End))
+    E -- Yes --> F[Propose Solution to Customer];
+    E -- No --> G[Escalate to Tier 2/SME];
+    G --> H[Tier 2 Investigates & Provides Solution];
+    H --> F;
 
-    %% Swimlanes
-    subgraph "Customer"
-        A[Submit Ticket via Portal/Email/Call] --> B{Ticket Created}
-        L[Review Solution Provided] --> M{Satisfied with Resolution?}
-        M -- Yes --> N[Confirm Resolution]
-        M -- No --> O[Reopen Ticket]
-    end
+    F --> I{Customer Confirms Resolution?};
+    I -- Yes --> J[Ticket Resolved & Closed];
+    I -- No (Requires Further Action) --> D;
 
-    subgraph "CRM System"
-        B --> C[Log Ticket & Auto-Generate ID]
-        C --> D[Send Auto-Acknowledgement & SLA Start]
-        D --> E{Categorize & Prioritize}
-        C -- "Continuously monitor" --> P{SLA Breached?}
-        J --> K[Update Status: Resolved]
-        K --> L
-        N --> Q[Update Status: Closed (Customer Confirmed)]
-        Q --> finish
-        O --> R[Update Status: Reopened]
-        S[Auto-Close Ticket (Timeout)] --> finish
-        T[Archive Ticket] --> finish
-    end
+    J --> K[Update Knowledge Base (if applicable)];
+    J --> L{Customer Reopens Ticket (within X days)?};
+    L -- Yes --> C;
+    L -- No --> M[Ticket Archived & Process Ends];
 
-    subgraph "Support Agent (Tier 1)"
-        E --> F[Review Ticket & Perform Initial Triage]
-        F --> G{Can resolve at Tier 1?}
-        G -- Yes --> H[Investigate & Resolve Issue (L1)]
-        G -- No --> I[Escalate to Tier 2/Specialist]
-        H --> J[Document Solution in CRM]
-        R --> F
-        U[Review & Intervene] --> H
-    end
-
-    subgraph "Specialist (Tier 2/Engineer)"
-        I --> V[Investigate & Diagnose Issue (L2)]
-        V --> J
-        U --> V
-    end
-
-    subgraph "Manager/Admin"
-        P -- Yes --> U[Review & Intervene]
-        U --> W[Reassign/Expedite Resolution]
-    end
-
-    %% Flow Connections (beyond swimlanes)
-    start --> A
-
-    W --> F
-    W --> V
-
-    K -- "No Customer Response (e.g., 7 days)" --> S
-
-    Q --> T
-    S --> T
-
-    J --> K
-    R --> F
-    U --> F
-    U --> V
-
-    %% Styles for readability
-    class start,finish startend;
-    class B,M,E,G,P decision;
-    class A,L,N,O process;
-    class C,D,J,K,Q,R,S,T system;
-    class F,H,I,V,W,U process;
-
-    %% Optional: Add specific notes
-    style A fill:#DCE8F1,stroke:#007BFF,stroke-width:1px
-    style N fill:#D4EDDA,stroke:#28A745,stroke-width:1px
-    style O fill:#FFF3CD,stroke:#FFC107,stroke-width:1px
-    style M fill:#FFF3CD,stroke:#FFC107,stroke-width:2px
-    style G fill:#FFF3CD,stroke:#FFC107,stroke-width:2px
-    style P fill:#F8D7DA,stroke:#DC3545,stroke-width:2px
+    style A fill:#DDEBF7,stroke:#367DD9,stroke-width:2px;
+    style M fill:#DDEBF7,stroke:#367DD9,stroke-width:2px;

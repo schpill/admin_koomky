@@ -1,0 +1,90 @@
+<svg width="800" height="500" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto" markerUnits="userSpaceOnUse">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#007bff" />
+        </marker>
+    </defs>
+
+    <style>
+        .step-circle {
+            fill: #e0f2ff; /* Very light blue */
+            stroke: #007bff; /* Primary blue */
+            stroke-width: 2;
+        }
+        .step-number {
+            font-family: 'Arial', sans-serif;
+            font-weight: bold;
+            font-size: 40px;
+            fill: #007bff;
+        }
+        .step-description {
+            font-family: 'Arial', sans-serif;
+            font-size: 20px;
+            fill: #333333;
+        }
+        .icon {
+            fill: #333333;
+        }
+        .progress-arrow {
+            stroke: #007bff;
+            stroke-width: 3;
+            marker-end: url(#arrowhead);
+        }
+    </style>
+
+    <!-- Progress Arrows -->
+    <!-- Arrow 1 to 2 -->
+    <line x1="170" y1="250" x2="270" y2="250" class="progress-arrow" />
+    <!-- Arrow 2 to 3 -->
+    <line x1="370" y1="250" x2="470" y2="250" class="progress-arrow" />
+    <!-- Arrow 3 to 4 -->
+    <line x1="570" y1="250" x2="670" y2="250" class="progress-arrow" />
+
+    <!-- Step 1: Create your account -->
+    <g transform="translate(120, 0)">
+        <!-- Icon: User (Material Design person icon) -->
+        <path class="icon" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" transform="translate(30, 140) scale(1.6)"/>
+        <!-- Circle -->
+        <circle cx="50" cy="250" r="50" class="step-circle" />
+        <!-- Number -->
+        <text x="50" y="265" text-anchor="middle" dominant-baseline="central" class="step-number">1</text>
+        <!-- Description -->
+        <text x="50" y="330" text-anchor="middle" class="step-description">Create your account</text>
+    </g>
+
+    <!-- Step 2: Add your first client -->
+    <g transform="translate(320, 0)">
+        <!-- Icon: User with plus (Material Design person_add icon) -->
+        <path class="icon" d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" transform="translate(30, 140) scale(1.6)"/>
+        <!-- Circle -->
+        <circle cx="50" cy="250" r="50" class="step-circle" />
+        <!-- Number -->
+        <text x="50" y="265" text-anchor="middle" dominant-baseline="central" class="step-number">2</text>
+        <!-- Description -->
+        <text x="50" y="330" text-anchor="middle" class="step-description">Add your first client</text>
+    </g>
+
+    <!-- Step 3: Send an invoice -->
+    <g transform="translate(520, 0)">
+        <!-- Icon: Document with dollar (Material Design description icon) -->
+        <path class="icon" d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm-1 9V3.5L18.5 9H13zm-2 2h4v2h-4v-2zm0 4h4v2h-4v-2z" transform="translate(30, 140) scale(1.6)"/>
+        <!-- Circle -->
+        <circle cx="50" cy="250" r="50" class="step-circle" />
+        <!-- Number -->
+        <text x="50" y="265" text-anchor="middle" dominant-baseline="central" class="step-number">3</text>
+        <!-- Description -->
+        <text x="50" y="330" text-anchor="middle" class="step-description">Send an invoice</text>
+    </g>
+
+    <!-- Step 4: Track your payment -->
+    <g transform="translate(720, 0)">
+        <!-- Icon: Bar chart (Material Design bar_chart icon) -->
+        <path class="icon" d="M16 11V3H8v6H2v12h20V11h-6zm-6-6h4v14h-4V5zm-4 0h2v14H6V5zm12 0h2v14h-2V5z" transform="translate(30, 140) scale(1.6)"/>
+        <!-- Circle -->
+        <circle cx="50" cy="250" r="50" class="step-circle" />
+        <!-- Number -->
+        <text x="50" y="265" text-anchor="middle" dominant-baseline="central" class="step-number">4</text>
+        <!-- Description -->
+        <text x="50" y="330" text-anchor="middle" class="step-description">Track your payment</text>
+    </g>
+</svg>

@@ -1,0 +1,13 @@
+sequenceDiagram
+    participant CRM System
+    participant External Calendar
+    participant User
+
+    CRM System->>CRM System: Create Event (e.g., Invoice Due)
+    CRM System->>External Calendar: Push new event details
+    Note over External Calendar: (Google Calendar / Outlook)
+    External Calendar->>User: Display event in calendar view
+    User->>External Calendar: Update event (e.g., reschedule, add notes)
+    External Calendar->>External Calendar: Save updated event
+    External Calendar->>CRM System: Push updated event details
+    CRM System->>CRM System: Update event in CRM database

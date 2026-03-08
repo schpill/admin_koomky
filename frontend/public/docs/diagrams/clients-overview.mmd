@@ -1,0 +1,10 @@
+stateDiagram-v2
+    direction LR
+    [*] --> Prospect
+    Prospect --> ActiveClient : Converts to client
+    ActiveClient --> ProjectInProgress : Starts new project
+    ProjectInProgress --> InvoiceSent : Project completed
+    InvoiceSent --> Paid : Payment received
+    Paid --> ActiveClient : Client remains active
+    ActiveClient --> Archived : Client relationship ends
+    Prospect --> Archived : Lost / Not converted

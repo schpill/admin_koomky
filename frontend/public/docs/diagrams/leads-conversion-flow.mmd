@@ -1,97 +1,53 @@
-graph TD
-    %% --- Flowchart Configuration ---
-    linkStyle 0 stroke:#0066CC,stroke-width:2px;
-    linkStyle 1 stroke:#0066CC,stroke-width:2px;
-    linkStyle 2 stroke:#0066CC,stroke-width:2px;
-    linkStyle 3 stroke:#0066CC,stroke-width:2px;
-    linkStyle 4 stroke:#0066CC,stroke-width:2px;
-    linkStyle 5 stroke:#0066CC,stroke-width:2px;
-    linkStyle 6 stroke:#0066CC,stroke-width:2px;
-    linkStyle 7 stroke:#0066CC,stroke-width:2px;
-    linkStyle 8 stroke:#0066CC,stroke-width:2px;
-    linkStyle 9 stroke:#0066CC,stroke-width:2px;
-    linkStyle 10 stroke:#0066CC,stroke-width:2px;
-    linkStyle 11 stroke:#0066CC,stroke-width:2px;
-    linkStyle 12 stroke:#0066CC,stroke-width:2px;
-    linkStyle 13 stroke:#0066CC,stroke-width:2px;
-    linkStyle 14 stroke:#0066CC,stroke-width:2px;
-    linkStyle 15 stroke:#0066CC,stroke-width:2px;
-    linkStyle 16 stroke:#0066CC,stroke-width:2px;
-    linkStyle 17 stroke:#0066CC,stroke-width:2px;
-    linkStyle 18 stroke:#0066CC,stroke-width:2px;
-    linkStyle 19 stroke:#0066CC,stroke-width:2px;
-    linkStyle 20 stroke:#0066CC,stroke-width:2px;
-    linkStyle 21 stroke:#0066CC,stroke-width:2px;
-    linkStyle 22 stroke:#0066CC,stroke-width:2px;
-    linkStyle 23 stroke:#0066CC,stroke-width:2px;
+flowchart TD
+    subgraph "1. Lead Generation & Capture"
+        A[Start] --> B(Lead Source: Website, Ads, Referrals, Events)
+        B --> C[CRM: Lead Capture & Entry]
+    end
 
-    %% --- Node Definitions ---
-    A[Start: Lead Generation] --> B(New Lead Captured);
-    B --> C{Lead Valid?};
+    subgraph "2. Lead Qualification"
+        C --> D[CRM: Data Enrichment & Auto-Scoring]
+        D --> E{Manual Review & Initial Contact}
+        E -- "Not Qualified" --> F[CRM: Lead Nurturing Campaigns]
+        F --> G{Nurtured Lead MQL?}
+        G -- "No" --> F
+        E -- "Qualified (MQL)" --> H[CRM: Update Lead Status to MQL]
+        G -- "Yes" --> H
+    end
 
-    C -- Yes --> D[Lead Qualification (Marketing/SDR)];
-    C -- No --> E[Junk / Discarded];
+    subgraph "3. Sales Acceptance"
+        H --> I{Sales Qualified Lead (SQL)?}
+        I -- "No, Re-nurture" --> F
+        I -- "Yes, Assign" --> J[CRM: Assign to Sales Rep (SQL Status)]
+    end
 
-    D --> F{Meets MQL Criteria?};
-    F -- Yes --> G[MQL (Marketing Qualified Lead)];
-    F -- No --> H[Nurture Pool (Marketing)];
+    subgraph "4. Opportunity Management"
+        J --> K[CRM: Convert Lead to Opportunity]
+        K --> L[CRM: Create Account & Contact Records]
+        L --> M{Opportunity Stage: Discovery / Needs Analysis}
+        M --> N{Opportunity Stage: Solution Proposal / Demo}
+        N --> O{Opportunity Stage: Negotiation / Final Quote}
+    end
 
-    G --> I[SDR Engagement / Outreach];
-    I --> J{SDR Connects & Qualifies?};
-    J -- Yes --> K[SQL (Sales Qualified Lead) - Create Opportunity];
-    J -- No --> L[SDR Follow-up / Re-Nurture];
-    L --> H;
+    subgraph "5. Deal Closure"
+        O -- "Closed Won" --> P[CRM: Update Opportunity Status]
+        P --> Q[CRM: Handoff to Onboarding/Success Team]
+        Q --> R(End)
 
-    K --> M[Account Executive (AE) Discovery / Needs Analysis];
-    M --> N[AE Solution Presentation / Demo];
-    N --> O[AE Proposal / Quote Sent];
+        O -- "Closed Lost" --> S[CRM: Update Opportunity Status to Lost]
+        S --> T[CRM: Log Lost Reasons / Post-Mortem]
+        T --> U[CRM: Re-engagement Strategy / Archives]
+        U --> R
+    end
 
-    O --> P{Customer Accepts Proposal?};
-    P -- Yes --> Q[Negotiation / Contract Signing];
-    P -- No --> R[AE Re-evaluate / Handle Objections];
+    %% Styles for better documentation quality
+    classDef start_end fill:#DDF,stroke:#333,stroke-width:2px,color:#333;
+    classDef process fill:#FFF,stroke:#AAA,stroke-width:1px,color:#333;
+    classDef decision fill:#FFDDC2,stroke:#FF9933,stroke-width:1px,color:#333;
+    classDef crm_action fill:#E6FFCC,stroke:#66AA33,stroke-width:1px,color:#333;
+    classDef crm_status fill:#CCE5FF,stroke:#3366AA,stroke-width:1px,color:#333;
+    classDef external fill:#FFF,stroke:#666,stroke-width:1px,stroke-dasharray: 5 5,color:#333;
 
-    Q --> S((Closed Won));
-    R --> T{Can We Resurrect?};
-    T -- Yes --> O; %% Loop back to Proposal (after adjustments)
-    T -- No --> U((Closed Lost));
-
-    H --> V[Marketing Nurture Campaigns (CRM Automations)];
-    V --> W{Lead Re-engages / Re-qualifies?};
-    W -- Yes --> D; %% Back to Lead Qualification
-    W -- No --> X[Archive / Cold Lead Pool];
-
-    E --> Y((End));
-    X --> Y;
-    S --> Y;
-    U --> Y;
-
-    %% --- Styling for Documentation Quality ---
-    classDef start_end fill:#CCE5FF,stroke:#336699,stroke-width:2px,color:#336699;
-    classDef process fill:#EBF5FF,stroke:#66A3D2,stroke-width:1px;
-    classDef decision fill:#FFF2CC,stroke:#CC9900,stroke-width:1px;
-    classDef outcome fill:#D4EDDA,stroke:#28A745,stroke-width:2px,color:#28A745;
-    classDef negative_outcome fill:#F8D7DA,stroke:#DC3545,stroke-width:2px,color:#DC3545;
-    classDef nurture fill:#D1ECF1,stroke:#17A2B8,stroke-width:1px;
-
-    class A,B process;
-    class C,F,J,P,T,W decision;
-    class D,G,I,K,M,N,O,Q,R process;
-    class H,L,V,X nurture;
-    class E negative_outcome;
-    class S outcome;
-    class U negative_outcome;
-    class Y start_end;
-
-    %% --- Critical Path Highlight ---
-    linkStyle 0 stroke-width:3px,stroke:#4CAF50,color:#4CAF50;
-    linkStyle 3 stroke-width:3px,stroke:#4CAF50,color:#4CAF50;
-    linkStyle 5 stroke-width:3px,stroke:#4CAF50,color:#4CAF50;
-    linkStyle 7 stroke-width:3px,stroke:#4CAF50,color:#4CAF50;
-    linkStyle 8 stroke-width:3px,stroke:#4CAF50,color:#4CAF50;
-    linkStyle 9 stroke-width:3px,stroke:#4CAF50,color:#4CAF50;
-    linkStyle 10 stroke-width:3px,stroke:#4CAF50,color:#4CAF50;
-    linkStyle 11 stroke-width:3px,stroke:#4CAF50,color:#4CAF50;
-    linkStyle 12 stroke-width:3px,stroke:#4CAF50,color:#4CAF50;
-    linkStyle 13 stroke-width:3px,stroke:#4CAF50,color:#4CAF50;
-    linkStyle 14 stroke-width:3px,stroke:#4CAF50,color:#4CAF50;
-    linkStyle 15 stroke-width:3px,stroke:#4CAF50,color:#4CAF50;
+    class A,R start_end;
+    class B external;
+    class C,D,F,H,J,K,L,P,Q,S,T,U crm_action;
+    class E,G,I,M,N,O decision;

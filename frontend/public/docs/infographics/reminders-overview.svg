@@ -1,0 +1,111 @@
+<svg width="800" height="500" viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg" font-family="Arial, sans-serif">
+  <!-- Background -->
+  <rect x="0" y="0" width="800" height="500" fill="#f8f8f8"/>
+
+  <!-- Title -->
+  <text x="400" y="60" font-size="36" font-weight="bold" fill="#333" text-anchor="middle">Automatic Reminder Sequence</text>
+
+  <!-- Timeline Axis -->
+  <line x1="100" y1="250" x2="700" y2="250" stroke="#aaa" stroke-width="4" stroke-linecap="round"/>
+
+  <!-- Common styles and icon definitions -->
+  <defs>
+    <style type="text/css"><![CDATA[
+      .event-circle {
+        fill: #4CAF50; /* Green */
+        stroke: #388E3C; /* Darker green stroke */
+        stroke-width: 3;
+      }
+      .event-text-day {
+        font-size: 20px;
+        font-weight: bold;
+        fill: #333;
+        text-anchor: middle;
+      }
+      .event-text-desc {
+        font-size: 16px;
+        fill: #555;
+        text-anchor: middle;
+      }
+      .email-icon {
+        fill: #fff; /* White icon */
+      }
+      .control-icon {
+        fill: #555;
+      }
+      .control-text {
+        font-size: 14px;
+        fill: #555;
+      }
+    ]]></style>
+
+    <!-- Email Icon (24x24 viewBox) -->
+    <symbol id="email-icon" viewBox="0 0 24 24">
+      <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+    </symbol>
+
+    <!-- Play Icon (24x24 viewBox) -->
+    <symbol id="play-icon" viewBox="0 0 24 24">
+      <path d="M8 5v14l11-7z"/>
+    </symbol>
+
+    <!-- Pause Icon (24x24 viewBox) -->
+    <symbol id="pause-icon" viewBox="0 0 24 24">
+      <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+    </symbol>
+  </defs>
+
+  <!-- Event 1: Invoice Sent (Day 0) -->
+  <g transform="translate(100, 250)">
+    <circle r="30" class="event-circle"/>
+    <use href="#email-icon" x="-15" y="-15" width="30" height="30" class="email-icon"/>
+    <text y="60" class="event-text-day">Day 0</text>
+    <text y="85" class="event-text-desc">Invoice Sent</text>
+  </g>
+
+  <!-- Event 2: Reminder 1 (Day 7) -->
+  <g transform="translate(240, 250)">
+    <circle r="30" class="event-circle"/>
+    <use href="#email-icon" x="-15" y="-15" width="30" height="30" class="email-icon"/>
+    <text y="60" class="event-text-day">Day 7</text>
+    <text y="85" class="event-text-desc">Reminder 1</text>
+  </g>
+
+  <!-- Event 3: Reminder 2 (Day 14) -->
+  <g transform="translate(380, 250)">
+    <circle r="30" class="event-circle"/>
+    <use href="#email-icon" x="-15" y="-15" width="30" height="30" class="email-icon"/>
+    <text y="60" class="event-text-day">Day 14</text>
+    <text y="85" class="event-text-desc">Reminder 2</text>
+  </g>
+
+  <!-- Event 4: Final Notice (Day 30) -->
+  <g transform="translate(700, 250)">
+    <circle r="30" class="event-circle"/>
+    <use href="#email-icon" x="-15" y="-15" width="30" height="30" class="email-icon"/>
+    <text y="60" class="event-text-day">Day 30</text>
+    <text y="85" class="event-text-desc">Final Notice</text>
+  </g>
+
+  <!-- Pause/Resume Controls -->
+  <g transform="translate(580, 100)">
+    <!-- Background for controls -->
+    <rect x="-10" y="-10" width="220" height="120" rx="10" ry="10" fill="#fff" stroke="#ddd" stroke-width="1"/>
+    <text x="0" y="20" font-size="20" font-weight="bold" fill="#333">Sequence Controls:</text>
+
+    <!-- Pause Button -->
+    <g transform="translate(15, 40)">
+      <rect x="0" y="0" width="50" height="50" rx="5" fill="#eee" stroke="#ccc" stroke-width="1"/>
+      <use href="#pause-icon" x="13" y="13" width="24" height="24" class="control-icon"/>
+      <text x="25" y="70" class="control-text" text-anchor="middle">Pause</text>
+    </g>
+
+    <!-- Play Button -->
+    <g transform="translate(115, 40)">
+      <rect x="0" y="0" width="50" height="50" rx="5" fill="#eee" stroke="#ccc" stroke-width="1"/>
+      <use href="#play-icon" x="13" y="13" width="24" height="24" class="control-icon"/>
+      <text x="25" y="70" class="control-text" text-anchor="middle">Resume</text>
+    </g>
+  </g>
+
+</svg>

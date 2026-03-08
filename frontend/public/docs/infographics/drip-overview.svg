@@ -1,0 +1,86 @@
+<svg width="800" height="500" viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg">
+  <title>Drip Campaign Sequence Infographic</title>
+  <desc>Visual representation of a marketing drip campaign sequence with conditional branching.</desc>
+  <defs>
+    <!-- Arrowhead marker -->
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#333" />
+    </marker>
+
+    <!-- Reusable Email Icon component -->
+    <g id="email-icon-template">
+      <rect x="0" y="0" width="60" height="40" rx="5" fill="#e0f2f7" stroke="#333" stroke-width="2"/>
+      <polyline points="0,0 30,20 60,0" fill="none" stroke="#333" stroke-width="2"/>
+      <line x1="0" y1="40" x2="60" y2="40" stroke="#333" stroke-width="1"/> <!-- Bottom seal -->
+    </g>
+  </defs>
+
+  <!-- Background -->
+  <rect x="0" y="0" width="800" height="500" fill="#fcfcfc"/>
+
+  <!-- Day 0: Welcome Email -->
+  <circle cx="100" cy="200" r="6" fill="#6699ff" stroke="#333" stroke-width="2"/>
+  <line x1="100" y1="200" x2="100" y2="140" stroke="#333" stroke-width="2"/>
+  <g transform="translate(70, 100)">
+    <use href="#email-icon-template"/>
+  </g>
+  <text x="100" y="160" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#333">Day 0</text>
+  <text x="100" y="180" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#555">Welcome email</text>
+
+  <!-- Flow from Day 0 to Day 3 -->
+  <line x1="100" y1="200" x2="250" y2="200" stroke="#333" stroke-width="3" marker-end="url(#arrowhead)"/>
+
+  <!-- Day 3: Follow-up -->
+  <circle cx="250" cy="200" r="6" fill="#6699ff" stroke="#333" stroke-width="2"/>
+  <line x1="250" y1="200" x2="250" y2="140" stroke="#333" stroke-width="2"/>
+  <g transform="translate(220, 100)">
+    <use href="#email-icon-template"/>
+  </g>
+  <text x="250" y="160" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#333">Day 3</text>
+  <text x="250" y="180" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#555">Follow-up</text>
+
+  <!-- Flow from Day 3 to Day 7 -->
+  <line x1="250" y1="200" x2="400" y2="200" stroke="#333" stroke-width="3" marker-end="url(#arrowhead)"/>
+
+  <!-- Day 7: Value Email -->
+  <circle cx="400" cy="200" r="6" fill="#6699ff" stroke="#333" stroke-width="2"/>
+  <line x1="400" y1="200" x2="400" y2="140" stroke="#333" stroke-width="2"/>
+  <g transform="translate(370, 100)">
+    <use href="#email-icon-template"/>
+  </g>
+  <text x="400" y="160" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#333">Day 7</text>
+  <text x="400" y="180" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#555">Value email</text>
+
+  <!-- Decision Point: Opened? -->
+  <polygon points="400,230 430,250 400,270 370,250" fill="#ffecb3" stroke="#333" stroke-width="2"/>
+  <text x="400" y="255" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#333">Opened?</text>
+  <line x1="400" y1="200" x2="400" y2="230" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <!-- "Yes" path (Opened: Continue to Day 14) -->
+  <polyline points="430,250 520,250 520,200 650,200" fill="none" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="475" y="240" font-family="Arial, sans-serif" font-size="12" fill="#333">Yes</text>
+
+  <!-- "No" path (Not Opened: Resend Day 7) -->
+  <polyline points="370,250 300,250 300,310" fill="none" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="330" y="260" font-family="Arial, sans-serif" font-size="12" fill="#333">No</text>
+
+  <!-- Resend Day 7 Email -->
+  <g transform="translate(270, 310)">
+    <use href="#email-icon-template"/>
+  </g>
+  <text x="300" y="370" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#333">Resend Day 7</text>
+  <text x="300" y="390" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#555">Value email</text>
+
+  <!-- Path from Resend back to Day 14 -->
+  <polyline points="330,350 550,350 550,200 650,200" fill="none" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- Day 14: Offer Email -->
+  <circle cx="650" cy="200" r="6" fill="#6699ff" stroke="#333" stroke-width="2"/>
+  <line x1="650" y1="200" x2="650" y2="140" stroke="#333" stroke-width="2"/>
+  <g transform="translate(620, 100)">
+    <use href="#email-icon-template"/>
+  </g>
+  <text x="650" y="160" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#333">Day 14</text>
+  <text x="650" y="180" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#555">Offer email</text>
+
+</svg>

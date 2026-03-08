@@ -1,0 +1,17 @@
+flowchart TD
+    A[Contact Action Detected] --> B{Action Type?}
+
+    B -- Email Open --> C1[Adjust Score +5]
+    B -- Click --> C2[Adjust Score +10]
+    B -- Bounce --> C3[Adjust Score -20]
+    B -- Unsubscribe --> C4[Adjust Score -30]
+
+    C1 --> D(Update Lead Score in CRM)
+    C2 --> D
+    C3 --> D
+    C4 --> D
+
+    D --> E{Is Score Above Threshold?}
+
+    E -- Yes --> F[Trigger Workflow]
+    E -- No --> G[End / Continue Monitoring]

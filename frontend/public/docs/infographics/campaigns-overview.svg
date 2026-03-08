@@ -1,0 +1,47 @@
+<svg width="800" height="500" viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="funnelGradient" x1="0" y1="25" x2="0" y2="425" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#3498DB" />
+      <stop offset="20%" stop-color="#4A9FCE" />
+      <stop offset="40%" stop-color="#60A6C0" />
+      <stop offset="60%" stop-color="#76ADC2" />
+      <stop offset="80%" stop-color="#8BB4B3" />
+      <stop offset="100%" stop-color="#A1BB98" />
+    </linearGradient>
+  </defs>
+
+  <!-- Segment 1: Sent -->
+  <polygon points="50,25 750,25 732.5,105 67.5,105" fill="url(#funnelGradient)" stroke="none"/>
+  <text x="400" y="65" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="20">
+    <tspan x="400" dy="-0.6em">Sent: 10000</tspan>
+    <tspan x="400" dy="1.2em">100%</tspan>
+  </text>
+
+  <!-- Segment 2: Delivered -->
+  <polygon points="67.5,105 732.5,105 516.5,185 283.5,185" fill="url(#funnelGradient)" stroke="none"/>
+  <text x="400" y="145" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="20">
+    <tspan x="400" dy="-0.6em">Delivered: 9500</tspan>
+    <tspan x="400" dy="1.2em">95%</tspan>
+  </text>
+
+  <!-- Segment 3: Opened -->
+  <polygon points="283.5,185 516.5,185 433.5,265 366.5,265" fill="url(#funnelGradient)" stroke="none"/>
+  <text x="400" y="225" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="20">
+    <tspan x="400" dy="-0.6em">Opened: 3325</tspan>
+    <tspan x="400" dy="1.2em">35%</tspan>
+  </text>
+
+  <!-- Segment 4: Clicked -->
+  <polygon points="366.5,265 433.5,265 406.5,345 393.5,345" fill="url(#funnelGradient)" stroke="none"/>
+  <text x="400" y="305" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="20">
+    <tspan x="400" dy="-0.6em">Clicked: 950</tspan>
+    <tspan x="400" dy="1.2em">10%</tspan>
+  </text>
+
+  <!-- Segment 5: Converted -->
+  <polygon points="393.5,345 406.5,345 402.5,425 397.5,425" fill="url(#funnelGradient)" stroke="none"/>
+  <text x="400" y="385" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="20">
+    <tspan x="400" dy="-0.6em">Converted: 190</tspan>
+    <tspan x="400" dy="1.2em">2%</tspan>
+  </text>
+</svg>

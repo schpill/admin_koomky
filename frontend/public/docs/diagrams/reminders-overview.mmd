@@ -1,0 +1,28 @@
+flowchart TD
+    A[Invoice Sent] --> B{Due Date - X days?};
+    B -- Yes --> C{Invoice State: Paused or Skipped Reminder 1?};
+    C -- No --> D[Send Reminder 1];
+    C -- Yes --> E[Bypass Reminder 1];
+
+    D --> F{Wait N Days};
+    E --> F;
+
+    F --> G{Invoice Paid?};
+    G -- Yes --> H[Invoice Paid - Process Complete];
+    G -- No --> I{Invoice State: Paused or Skipped Reminder 2?};
+
+    I -- No --> J[Send Reminder 2];
+    I -- Yes --> K[Bypass Reminder 2];
+
+    J --> L{Wait M Days};
+    K --> L;
+
+    L --> M{Invoice Paid?};
+    M -- Yes --> H;
+    M -- No --> N{Invoice State: Paused or Skipped Final Notice?};
+
+    N -- No --> O[Send Final Notice];
+    N -- Yes --> P[Bypass Final Notice];
+
+    O --> Q[Process Complete - Final Notice Sent];
+    P --> R[Process Complete - Unpaid, Final Skipped];

@@ -1,0 +1,40 @@
+<svg width="800" height="500" viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .title { font: bold 30px sans-serif; fill: #333; text-anchor: middle; }
+    .bar-label { font: 16px sans-serif; fill: #555; text-anchor: middle; }
+    .bar-value { font: 14px sans-serif; fill: #777; text-anchor: middle; }
+    .info-header { font: bold 20px sans-serif; fill: #333; }
+    .info-item { font: 18px sans-serif; fill: #555; }
+    .revenue-bar { fill: #4CAF50; } /* Green */
+    .cost-bar { fill: #FF9800; } /* Orange */
+    .profit-bar { fill: #2196F3; } /* Blue */
+    .axis-line { stroke: #ccc; stroke-width: 1; }
+  </style>
+
+  <!-- Title -->
+  <text x="400" y="50" class="title">Project Profitability Overview</text>
+
+  <!-- Horizontal Axis Line -->
+  <line x1="100" y1="400" x2="500" y2="400" class="axis-line" />
+
+  <!-- Revenue Bar (Height based on $30,000) -->
+  <rect x="150" y="100" width="80" height="300" class="revenue-bar" />
+  <text x="190" y="80" class="bar-label">Revenue</text>
+  <text x="190" y="420" class="bar-value">$30,000</text>
+
+  <!-- Cost Bar (Height based on $20,000) -->
+  <rect x="280" y="200" width="80" height="200" class="cost-bar" />
+  <text x="320" y="180" class="bar-label">Total Cost</text>
+  <text x="320" y="420" class="bar-value">$20,000</text>
+
+  <!-- Net Profit (Margin) Bar (Height based on $10,000) -->
+  <rect x="410" y="300" width="80" height="100" class="profit-bar" />
+  <text x="450" y="280" class="bar-label">Net Profit</text>
+  <text x="450" y="420" class="bar-value">$10,000</text>
+
+  <!-- Profitability Details / Key Metrics -->
+  <text x="580" y="150" class="info-header">Key Metrics:</text>
+  <text x="580" y="190" class="info-item">Billable Hours: 200 hrs</text>
+  <text x="580" y="230" class="info-item">Expenses: $5,000</text>
+  <text x="580" y="270" class="info-item">Net Profit: $10,000</text>
+</svg>

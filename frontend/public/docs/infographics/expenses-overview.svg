@@ -1,0 +1,118 @@
+<svg width="800" height="500" viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <style type="text/css">
+      .title { font-family: 'Arial', sans-serif; font-size: 36px; font-weight: bold; fill: #333; }
+      .subtitle { font-family: 'Arial', sans-serif; font-size: 20px; fill: #666; }
+      .category-name { font-family: 'Arial', sans-serif; font-size: 18px; fill: #333; font-weight: bold; }
+      .category-desc { font-family: 'Arial', sans-serif; font-size: 14px; fill: #555; }
+      .legend-text { font-family: 'Arial', sans-serif; font-size: 16px; fill: #333; }
+      .legend-percentage { font-family: 'Arial', sans-serif; font-size: 16px; fill: #666; }
+      .icon { fill: #666; }
+    </style>
+
+    <!-- Icon Definitions (Material Design style paths, 24x24 viewBox) -->
+    <symbol id="icon-travel" viewBox="0 0 24 24"><path d="M22 16V4c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2zm-2 0H4V4h16v12zM5 11h2V9H5v2zm12-4h-2V5h2v2zM5 7h2V5H5v2zm8 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-4h-2V7h2v2z"/></symbol>
+    <symbol id="icon-software" viewBox="0 0 24 24"><path d="M20 14H4v-4h16m0 4v4H4v-4h16zm0-10H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zM4 6h16v2H4V6z"/></symbol>
+    <symbol id="icon-equipment" viewBox="0 0 24 24"><path d="M20 5H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm-1 9h-4v3H9v-3H5v-2h4V7h6v5h4v2z"/></symbol>
+    <symbol id="icon-services" viewBox="0 0 24 24"><path d="M12 11c-1.33 0-4-.67-4-2v-3c0-1.1-.9-2-2-2H2v10h2c0 1.1.9 2 2 2h4c1.1 0 2-.9 2-2v-4zm-8 1H2V6h2v6zm16-6v10h-2c-1.1 0-2-.9-2-2v-4c0-1.33-2.67-2-4-2s-4 .67-4 2v4c0 1.1.9 2 2 2h2v-4h4V6h2z"/></symbol>
+    <symbol id="icon-office" viewBox="0 0 24 24"><path d="M12 11.55V21h-2v-9.45c-2.4-.23-4-2.35-4-4.55 0-2.21 1.79-4 4-4s4 1.79 4 4c0 2.2-1.6 4.32-4 4.55zM18 10h-2V4h-2v6H6v8h12V10zm2 0V4H4v6c0 3.87 3.13 7 7 7s7-3.13 7-7z"/></symbol>
+    <symbol id="icon-training" viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 11-6L12 3zm0 10l-6-3.27L12 6l6 3.27L12 13zm0 2.21L2.45 10.22l-1.99.73L12 18l11.55-7.05-1.99-.73L12 15.21z"/></symbol>
+  </defs>
+
+  <!-- Background -->
+  <rect x="0" y="0" width="800" height="500" fill="#f9f9f9" />
+
+  <!-- Title -->
+  <text x="400" y="40" text-anchor="middle" class="title">Freelance Expense Overview</text>
+  <text x="400" y="70" text-anchor="middle" class="subtitle">Typical Expense Categories &amp; Distribution</text>
+
+  <!-- Left Section: Expense Categories -->
+  <g>
+    <text x="50" y="110" class="category-name">Expense Categories</text>
+    <text x="50" y="130" class="category-desc">Manage your spending with these common types.</text>
+
+    <!-- Category Items -->
+    <g>
+      <g>
+        <use href="#icon-travel" x="50" y="140" width="30" height="30" class="icon"/>
+        <text x="100" y="160" class="category-name">Travel</text>
+        <text x="100" y="180" class="category-desc">Client meetings, conferences, work trips.</text>
+      </g>
+      <g>
+        <use href="#icon-software" x="50" y="210" width="30" height="30" class="icon"/>
+        <text x="100" y="230" class="category-name">Software</text>
+        <text x="100" y="250" class="category-desc">CRM, design tools, subscriptions, SaaS.</text>
+      </g>
+      <g>
+        <use href="#icon-equipment" x="50" y="280" width="30" height="30" class="icon"/>
+        <text x="100" y="300" class="category-name">Equipment</text>
+        <text x="100" y="320" class="category-desc">Computers, cameras, office tech.</text>
+      </g>
+      <g>
+        <use href="#icon-services" x="50" y="350" width="30" height="30" class="icon"/>
+        <text x="100" y="370" class="category-name">Services</text>
+        <text x="100" y="390" class="category-desc">Subcontractors, legal, accounting, consulting.</text>
+      </g>
+      <g>
+        <use href="#icon-office" x="50" y="420" width="30" height="30" class="icon"/>
+        <text x="100" y="440" class="category-name">Office</text>
+        <text x="100" y="460" class="category-desc">Rent, utilities, internet, supplies.</text>
+      </g>
+      <g>
+        <use href="#icon-training" x="250" y="420" width="30" height="30" class="icon" visibility="hidden"/> <!-- Dummy icon for spacing -->
+        <text x="250" y="440" class="category-name" visibility="hidden">Training</text> <!-- Dummy for spacing -->
+        <text x="250" y="460" class="category-desc" visibility="hidden">Courses, workshops, conferences, books.</text> <!-- Dummy for spacing -->
+      </g>
+    </g>
+  </g>
+
+  <!-- Right Section: Pie Chart -->
+  <g>
+    <text x="600" y="110" text-anchor="middle" class="category-name">Expense Distribution</text>
+    <text x="600" y="130" text-anchor="middle" class="category-desc">Typical breakdown by category.</text>
+
+    <!-- Pie Chart Slices -->
+    <g class="pie-chart">
+      <!-- Software: 25% (#4CAF50) -->
+      <path d="M 600,250 L 720,250 A 120,120 0 0,1 600,370 Z" fill="#4CAF50" />
+      <!-- Services: 20% (#2196F3) -->
+      <path d="M 600,250 L 600,370 A 120,120 0 0,1 485.88,287.08 Z" fill="#2196F3" />
+      <!-- Office: 15% (#FFC107) -->
+      <path d="M 600,250 L 485.88,287.08 A 120,120 0 0,1 502.92,179.44 Z" fill="#FFC107" />
+      <!-- Equipment: 15% (#9C27B0) -->
+      <path d="M 600,250 L 502.92,179.44 A 120,120 0 0,1 600,130 Z" fill="#9C27B0" />
+      <!-- Travel: 15% (#FF5722) -->
+      <path d="M 600,250 L 600,130 A 120,120 0 0,1 697.08,179.44 Z" fill="#FF5722" />
+      <!-- Training: 10% (#00BCD4) -->
+      <path d="M 600,250 L 697.08,179.44 A 120,120 0 0,1 720,250 Z" fill="#00BCD4" />
+    </g>
+
+    <!-- Pie Chart Legend -->
+    <g class="pie-legend">
+      <rect x="450" y="160" width="20" height="20" fill="#4CAF50" rx="3" />
+      <text x="480" y="177" class="legend-text">Software</text>
+      <text x="700" y="177" text-anchor="end" class="legend-percentage">25%</text>
+
+      <rect x="450" y="200" width="20" height="20" fill="#2196F3" rx="3" />
+      <text x="480" y="217" class="legend-text">Services</text>
+      <text x="700" y="217" text-anchor="end" class="legend-percentage">20%</text>
+
+      <rect x="450" y="240" width="20" height="20" fill="#FFC107" rx="3" />
+      <text x="480" y="257" class="legend-text">Office</text>
+      <text x="700" y="257" text-anchor="end" class="legend-percentage">15%</text>
+
+      <rect x="450" y="280" width="20" height="20" fill="#9C27B0" rx="3" />
+      <text x="480" y="297" class="legend-text">Equipment</text>
+      <text x="700" y="297" text-anchor="end" class="legend-percentage">15%</text>
+
+      <rect x="450" y="320" width="20" height="20" fill="#FF5722" rx="3" />
+      <text x="480" y="337" class="legend-text">Travel</text>
+      <text x="700" y="337" text-anchor="end" class="legend-percentage">15%</text>
+
+      <rect x="450" y="360" width="20" height="20" fill="#00BCD4" rx="3" />
+      <text x="480" y="377" class="legend-text">Training</text>
+      <text x="700" y="377" text-anchor="end" class="legend-percentage">10%</text>
+    </g>
+  </g>
+
+</svg>

@@ -1,0 +1,17 @@
+flowchart TD
+    subgraph Ingestion Pipeline
+        A[Upload Document] --> B{Extract Text}
+        B --> C[Chunk Text]
+        C --> D[(Embed with Gemini)]
+        D --> E[Store in pgvector]
+    end
+
+    subgraph Query Pipeline
+        F[User Query] --> G[(Embed Question with Gemini)]
+        G --> H{Vector Search (top-5) in pgvector}
+        H --> I[Retrieved Context Chunks]
+        I --> J[Send to Gemini with Query + Context]
+        J --> K[Return Answer]
+    end
+
+    E -- Data Available For --> H

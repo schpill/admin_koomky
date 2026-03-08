@@ -1,0 +1,21 @@
+stateDiagram-v2
+    [*] --> Draft
+
+    Draft --> Sent: send invoice
+    Draft --> Cancelled: cancel invoice
+
+    Sent --> PartiallyPaid: receive partial payment
+    Sent --> Paid: receive full payment
+    Sent --> Overdue: due date passes
+    Sent --> Cancelled: cancel invoice
+
+    PartiallyPaid --> Paid: receive final payment
+    PartiallyPaid --> Overdue: due date passes (remaining)
+    PartiallyPaid --> Cancelled: cancel invoice
+
+    Overdue --> PartiallyPaid: receive partial payment
+    Overdue --> Paid: receive full payment
+    Overdue --> Cancelled: cancel invoice
+
+    Paid --> [*]
+    Cancelled --> [*]

@@ -1,0 +1,17 @@
+flowchart TD
+    A[Contact Enrolled]
+    A --> B{Wait 1 Day}
+    B --> C[Send Email 1: Welcome]
+    C --> D{Email 1 Engaged? (Opened/Clicked)}
+    D -- Yes --> E{Wait 2 Days}
+    D -- No --> F[End Campaign: No E1 Engagement]
+
+    E --> G[Send Email 2: Product Info]
+    G --> H{Email 2 Engaged? (Opened/Clicked)}
+    H -- Yes --> I{Wait 3 Days}
+    H -- No --> J[End Campaign: No E2 Engagement]
+
+    I --> K[Send Email 3: Special Offer]
+    K --> L{Email 3 Engaged? (Opened/Clicked)}
+    L -- Yes --> M[End Campaign: Converted/Engaged]
+    L -- No --> N[End Campaign: No E3 Engagement]

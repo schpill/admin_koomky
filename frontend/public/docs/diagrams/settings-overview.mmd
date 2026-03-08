@@ -1,0 +1,49 @@
+flowchart LR
+    A[Settings]
+
+    subgraph Profile
+        B[Profile]
+        B1[Name, Email, Avatar]
+        B2[Change Password]
+    end
+
+    subgraph Business
+        C[Business]
+        C1[Company Info]
+    end
+
+    subgraph Email
+        D[Email]
+        D1[SES Configuration]
+    end
+
+    subgraph Security
+        E[Security]
+        E1[2FA]
+        E2[API Tokens]
+        E3[Webhooks]
+    end
+
+    subgraph Automations
+        F[Automations]
+        F1[Scoring Rules]
+        F2[Warmup Plan]
+        F3[Reminder Sequences]
+    end
+
+    A --> B
+    A --> C
+    A --> D
+    A --> E
+    A --> F
+
+    B --> B1
+    B --> B2
+    C --> C1
+    D --> D1
+    E --> E1
+    E --> E2
+    E --> E3
+    F --> F1
+    F --> F2
+    F --> F3

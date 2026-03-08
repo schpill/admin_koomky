@@ -1,0 +1,24 @@
+flowchart TD
+    A[Start IP Warm-up] --> B[Set Day 1 Quota];
+
+    B --> C{Warm-up Period Complete?};
+
+    C -- No --> D[Increase Quota for Current Day];
+    D --> E{Check Quota vs. Provider's Daily Limit?};
+
+    E -- Yes: Quota > Limit --> F[Adjust Quota to Provider's Limit];
+    E -- No: Quota <= Limit --> G[Send Today's Quota];
+
+    F --> G;
+
+    G --> H[Monitor Delivery & Reputation];
+
+    H --> I{Is it Midnight?};
+
+    I -- No --> H;
+    I -- Yes --> J[Reset Daily Send Counter];
+
+    J --> K[Increment Day Counter];
+    K --> C;
+
+    C -- Yes --> L[Full Sending Capacity Achieved];

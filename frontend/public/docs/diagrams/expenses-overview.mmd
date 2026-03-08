@@ -1,0 +1,20 @@
+flowchart TD
+    A[Record Expense] --> B[/Enter Expense Details/]
+    B --> C[Assign Category]
+    C --> D[Attach Receipt]
+    D --> E{Link to Project?}
+
+    E -- Yes --> F[Select Project]
+    E -- No --> G[No Project Link]
+
+    F --> H{Mark as Billable?}
+    G --> H
+
+    H -- Yes --> I[Mark as Billable]
+    H -- No --> J[Mark as Non-Billable]
+
+    I --> K[Add to Next Invoice Queue]
+    J --> L[Record for Financials/Tax]
+
+    K --> M((Expense Recorded))
+    L --> M

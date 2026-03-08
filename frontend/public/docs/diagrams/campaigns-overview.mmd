@@ -1,0 +1,7 @@
+flowchart TD
+    create[Create Campaign] --> segment[Select Segment]
+    segment --> template[Choose Template]
+    template --> abtest[A/B Test Variants]
+    abtest --> send[Send]
+    send --> track[Track Opens/Clicks/Bounces]
+    track --> analytics[View Analytics]

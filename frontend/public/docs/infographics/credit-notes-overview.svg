@@ -1,0 +1,90 @@
+<svg width="800" height="500" viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .title {
+        font-family: Arial, sans-serif;
+        font-size: 36px;
+        font-weight: bold;
+        fill: #333;
+        text-anchor: middle;
+      }
+      .card-title {
+        font-family: Arial, sans-serif;
+        font-size: 22px;
+        font-weight: bold;
+        fill: #444;
+        text-anchor: middle;
+      }
+      .card-description {
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        fill: #666;
+        text-anchor: middle;
+      }
+      .card-bg {
+        fill: #fff;
+        stroke: #ddd;
+        stroke-width: 1;
+        rx: 10;
+        ry: 10;
+      }
+      .icon-full {
+        fill: #4CAF50; /* Green for full refund */
+      }
+      .icon-partial {
+        fill: #FFC107; /* Amber for partial refund */
+      }
+      .icon-discount {
+        fill: #2196F3; /* Blue for discount */
+      }
+      .icon-white {
+        fill: #fff;
+      }
+    </style>
+  </defs>
+
+  <!-- Main Title -->
+  <text x="400" y="70" class="title">When to Use Credit Notes</text>
+
+  <!-- Card 1: Full Refund -->
+  <g transform="translate(60, 150)">
+    <rect x="0" y="0" width="200" height="280" class="card-bg"/>
+    <!-- Icon: Checkmark in circle -->
+    <circle cx="100" cy="80" r="40" class="icon-full"/>
+    <path d="M80 80 L95 95 L120 65" stroke="#fff" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="100" y="180" class="card-title">Full Refund</text>
+    <text x="100" y="210" class="card-description">
+      <tspan x="100" dy="0">When a customer returns all</tspan>
+      <tspan x="100" dy="20">goods or cancels a service</tspan>
+      <tspan x="100" dy="20">for a complete money-back.</tspan>
+    </text>
+  </g>
+
+  <!-- Card 2: Partial Refund -->
+  <g transform="translate(300, 150)">
+    <rect x="0" y="0" width="200" height="280" class="card-bg"/>
+    <!-- Icon: Pie chart / Partial Circle -->
+    <circle cx="100" cy="80" r="40" class="icon-partial"/>
+    <path d="M 100 80 L 100 40 A 40 40 0 0 1 140 80 Z" class="icon-white"/>
+    <text x="100" y="180" class="card-title">Partial Refund</text>
+    <text x="100" y="210" class="card-description">
+      <tspan x="100" dy="0">When only a portion of goods</tspan>
+      <tspan x="100" dy="20">are returned, or a service</tspan>
+      <tspan x="100" dy="20">is partially unfulfilled.</tspan>
+    </text>
+  </g>
+
+  <!-- Card 3: Discount After Invoice Sent -->
+  <g transform="translate(540, 150)">
+    <rect x="0" y="0" width="200" height="280" class="card-bg"/>
+    <!-- Icon: Price tag with percentage -->
+    <rect x="65" y="55" width="70" height="50" rx="8" ry="8" class="icon-discount"/>
+    <text x="100" y="90" font-family="Arial, sans-serif" font-size="36px" font-weight="bold" fill="#fff" text-anchor="middle">%</text>
+    <text x="100" y="180" class="card-title">Discount Post-Invoice</text>
+    <text x="100" y="210" class="card-description">
+      <tspan x="100" dy="0">To apply a discount to an</tspan>
+      <tspan x="100" dy="20">invoice that has already</tspan>
+      <tspan x="100" dy="20">been sent to the customer.</tspan>
+    </text>
+  </g>
+</svg>

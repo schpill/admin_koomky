@@ -1,0 +1,32 @@
+flowchart LR
+    subgraph Data Sources
+        A[Invoices]
+        B[Expenses]
+        C[Projects]
+        D[Campaigns]
+        E[Tickets]
+    end
+
+    subgraph KPI Widgets
+        F{MRR}
+        G{Overdue}
+        H{Pipeline}
+        I{Open Rate}
+        J{Urgent Tickets}
+    end
+
+    K[[Koomky CRM Dashboard]]
+
+    A --> F
+    B --> H
+    C --> G
+    C --> H
+    D --> I
+    E --> G
+    E --> J
+
+    F --> K
+    G --> K
+    H --> K
+    I --> K
+    J --> K

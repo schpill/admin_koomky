@@ -1,36 +1,64 @@
 stateDiagram-v2
     direction LR
 
-    [*] --> Created
-    Created --> Pending : Configure & Activate
+    [*] --> Created : Initiate Reminder
 
-    Pending --> Triggered : Due Date Reached (System)
-    Triggered --> Sent : Deliver Notification (System)
-    Triggered --> Failed : Delivery Failure (System)
-    Triggered --> Pending : User Reschedules
-    Triggered --> Dismissed : User Dismisses / System Cancels
+    Created : Reminder record defined in CRM; associated with an entity (e.g., Lead, Contact, Opportunity).
+    Created --> Pending : Save & Schedule
 
-    Sent --> Acknowledged : User Views / Clicks
-    Sent --> Overdue : Timeout / No Acknowledgment (System)
-    Sent --> Pending : User Reschedules
-    Sent --> Dismissed : User Dismisses
+    Pending : Reminder is active but awaiting its scheduled trigger time.
+    Pending --> Triggered : At Scheduled Time
 
-    Acknowledged --> Completed : User Marks Complete
-    Acknowledged --> Overdue : Timeout / No Completion (System)
-    Acknowledged --> Pending : User Reschedules
-    Acknowledged --> Dismissed : User Dismisses
+    Triggered : Reminder's scheduled time has passed; it is now active for notification.
+    Triggered --> Delivering : Initiate Notification
+    Triggered --> Overdue : Not Delivered (Timeout)
 
-    Overdue --> Completed : User Marks Complete
-    Overdue --> Pending : User Reschedules
-    Overdue --> Dismissed : User Dismisses
-    Overdue --> Archived : System Cleanup (No Resolution)
+    Delivering : System attempting to send notification to the user.
+    Delivering --> Delivered : Notification Sent Successfully
+    Delivering --> Failed_to_Deliver : Notification Delivery Failed
 
-    Completed --> Archived : System Cleanup
-    Dismissed --> Archived : System Cleanup
-    Failed --> Archived : System Cleanup
+    Delivered : Notification successfully transmitted to the user.
+    Delivered --> Acknowledged : User Views / Interacts
+    Delivered --> Overdue : Not Acknowledged (Timeout)
 
-    state "Legend" {
-      direction LR
-      _state1 : State
-      _state2 --> _state3 : Transition (Actor)
-    }
+    Acknowledged : User has seen, opened, or otherwise interacted with the notification.
+    Acknowledged --> Completed : Mark as Done / Action Taken
+    Acknowledged --> Snoozed : Postpone Reminder
+
+    Snoozed : User temporarily deferred the reminder.
+    Snoozed --> Pending : Reschedule to New Time
+
+    Failed_to_Deliver : Notification could not be sent. Requires manual intervention or system retry.
+    Failed_to_Deliver --> Overdue : No Resolution (Timeout)
+    Failed_to_Deliver --> Archived : Irrecoverable Failure
+
+    Overdue : Reminder was not completed/resolved within its grace period post-trigger. May trigger escalation rules.
+    Overdue --> Completed : User Resolves Overdue
+    Overdue --> Archived : System Auto-Archives After (Timeout)
+
+    Completed : User has performed the required action for the reminder.
+    Completed --> Archived : Store Historical Record
+
+    Created --> Cancelled : User/System Cancels (Pre-Schedule)
+    Pending --> Cancelled : User/System Cancels (Pre-Trigger)
+    Triggered --> Cancelled : User/System Cancels (Post-Trigger, Pre-Completion)
+    
+    Cancelled : Reminder was explicitly stopped by the user or system.
+    Cancelled --> Archived : Store Historical Record
+
+    Archived : Final dormant state.
+
+    stateDescriptions
+        Created : Reminder record defined in CRM; associated with an entity (e.g., Lead, Contact, Opportunity, Task).
+        Pending : Reminder is active but awaiting its scheduled trigger time.
+        Triggered : Reminder's scheduled time has passed; it is now active for notification.
+        Delivering : System attempting to push notification via configured channels (e.g., email, in-app, SMS).
+        Delivered : Notification successfully transmitted to the user's device/inbox.
+        Failed_to_Deliver : Notification delivery attempt failed (e.g., invalid email, unreachable device).
+        Acknowledged : User has viewed, opened, or otherwise interacted with the notification.
+        Completed : User has performed the required action and marked the reminder as done.
+        Snoozed : User temporarily deferred the reminder; it will re-enter the 'Pending' state with a new schedule.
+        Overdue : Reminder was not completed or resolved within its expected timeframe post-trigger.
+        Cancelled : Reminder was explicitly stopped by the user or system before completion.
+        Archived : Final dormant state. Reminder is no longer active and is stored for historical purposes.
+    end stateDescriptions
