@@ -1,4 +1,93 @@
-flowchart TD
-    A[expenses-approval-flow] --> B[Analyse]
-    B --> C[Execution]
-    C --> D[Validation]
+graph TD
+    %% Define Custom Styles for better readability and 'documentation quality'
+    classDef actor fill:#F9D276,stroke:#333,stroke-width:2px,color:#333;
+    classDef system fill:#C9ECF7,stroke:#333,stroke-width:2px,color:#333;
+    classDef decision fill:#FFEFD6,stroke:#333,stroke-width:2px,color:#333;
+    classDef external fill:#D6EAD3,stroke:#333,stroke-width:2px,color:#333;
+    classDef startend fill:#D0FFD0,stroke:#333,stroke-width:2px,color:#333;
+    classDef error fill:#FFD0D0,stroke:#333,stroke-width:2px,color:#333;
+
+    %% Overall Flow Definition
+    start((Start)):::startend
+
+    subgraph "Employee / Requester"
+        A[1. Create Expense Report]:::actor
+        B(2. Submit Report)
+    end
+
+    subgraph "Expense Management System (EMS)"
+        C{3. Automated Policy Check & Validation}:::system
+        D[4. Route to Manager for Approval]:::system
+    end
+
+    subgraph "Manager / Approver"
+        E[5. Review & Approve/Reject]:::actor
+    end
+
+    subgraph "Expense Management System (EMS)"
+        F{6. Check Approval Limits / Next Approver?}:::system
+        G[7. Route to Finance for Audit]:::system
+    end
+
+    subgraph "Finance Department"
+        H[8. Audit & Final Approval]:::actor
+    end
+
+    subgraph "ERP / Financial System"
+        I[9. Process Reimbursement]:::external
+    end
+
+    finish((End)):::startend
+
+    %% Flow Connections
+    start --> A;
+    A --> B;
+    B --> C;
+
+    C -- Invalid/Missing Info --> J[Notify Employee: Revise Report]:::error;
+    J --> A;
+
+    C -- Valid & Policy Compliant --> D;
+    D --> E;
+
+    E -- Reject --> K[Notify Employee & Manager: Report Rejected]:::error;
+    K --> A;
+
+    E -- Approve --> F;
+
+    F -- Requires Higher Approval --> D; %% Routes to next manager in hierarchy
+    F -- No Higher Approval Needed --> G;
+
+    G --> H;
+
+    H -- Reject --> L[Notify Employee & Manager: Finance Rejects]:::error;
+    L --> A;
+
+    H -- Approve --> I;
+    I --> finish;
+
+    %% CRM & HRIS Integration Notes (Implicit or Explicit in steps)
+    style A fill:#E9F5FF,stroke:#333,stroke-width:2px
+    style E fill:#E9F5FF,stroke:#333,stroke-width:2px
+    style H fill:#E9F5FF,stroke:#333,stroke-width:2px
+    style B fill:#F2F9FF,stroke:#333,stroke-width:2px
+    style D fill:#F2F9FF,stroke:#333,stroke-width:2px
+    style G fill:#F2F9FF,stroke:#333,stroke-width:2px
+
+    linkStyle 0 stroke:#0066CC,stroke-width:2px;
+    linkStyle 1 stroke:#0066CC,stroke-width:2px;
+    linkStyle 2 stroke:#0066CC,stroke-width:2px;
+    linkStyle 3 stroke:#CC0000,stroke-width:2px;
+    linkStyle 4 stroke:#CC0000,stroke-width:2px;
+    linkStyle 5 stroke:#0066CC,stroke-width:2px;
+    linkStyle 6 stroke:#0066CC,stroke-width:2px;
+    linkStyle 7 stroke:#CC0000,stroke-width:2px;
+    linkStyle 8 stroke:#CC0000,stroke-width:2px;
+    linkStyle 9 stroke:#0066CC,stroke-width:2px;
+    linkStyle 10 stroke:#0066CC,stroke-width:2px;
+    linkStyle 11 stroke:#0066CC,stroke-width:2px;
+    linkStyle 12 stroke:#0066CC,stroke-width:2px;
+    linkStyle 13 stroke:#CC0000,stroke-width:2px;
+    linkStyle 14 stroke:#CC0000,stroke-width:2px;
+    linkStyle 15 stroke:#0066CC,stroke-width:2px;
+    linkStyle 16 stroke:#0066CC,stroke-width:2px;

@@ -1,4 +1,113 @@
-flowchart TD
-    A[invoices-lifecycle] --> B[Analyse]
-    B --> C[Execution]
-    C --> D[Validation]
+graph TD
+    %% Define CSS classes for better readability and highlighting CRM interactions
+    classDef process fill:#e0f7fa,stroke:#00bcd4,stroke-width:2px,color:#263238;
+    classDef decision fill:#ffecb3,stroke:#ffb300,stroke-width:2px,color:#263238;
+    classDef actor fill:#e8f5e9,stroke:#4caf50,stroke-width:2px,color:#263238;
+    classDef system fill:#f3e5f5,stroke:#9c27b0,stroke-width:2px,color:#263238;
+    classDef crm_interaction fill:#fff3e0,stroke:#ff9800,stroke-width:2px,color:#263238;
+    classDef end_state fill:#ffe0b2,stroke:#ff7043,stroke-width:2px,color:#263238;
+    classDef start_state fill:#c8e6c9,stroke:#66bb6a,stroke-width:2px,color:#263238;
+
+    subgraph "Invoice Lifecycle Workflow"
+
+        A[Start: Service/Product Delivered]:::start_state --> B{Confirmed Order/Work Done?};
+
+        B -->|Yes| C[Generate Invoice (Billing System/Finance)]:::system;
+        B -->|No - Requires Re-eval| D[Re-evaluate Service/Product Scope]:::process;
+        D --> A;
+
+        C --> C_CRM[CRM Update: Opportunity 'Closed Won', Invoice Expected]:::crm_interaction;
+
+        C_CRM --> E[Invoice Review & Approval (Finance/Sales)]:::process;
+        E --> F[Invoice Issued to Customer (via Email/Portal)]:::actor;
+
+        F --> F_CRM[CRM Update: Invoice Sent, Status 'Open', Link to Invoice PDF, Next Activity: 'Follow-up Payment']:::crm_interaction;
+
+        F_CRM --> G{Customer Acknowledged/Accepted Invoice?};
+
+        G -->|Yes| H[Payment Due Date Approaches]:::process;
+        G -->|No - Customer Dispute| I[Customer Disputes Invoice Details]:::actor;
+
+        I --> J[Log Dispute & Initiate Resolution (Sales/Finance)]:::process;
+        J --> J_CRM[CRM Update: Invoice Status 'Disputed', Create Case/Task for Resolution, Log Communication]:::crm_interaction;
+
+        J_CRM --> K{Dispute Resolved?};
+        K -->|Yes - Requires Adjustment| C; %% Loop back to generate new invoice
+        K -->|Yes - No Adjustment Needed| H;
+        K -->|No - Unresolvable| L[Invoice Uncollectible/Write-off Consideration]:::process;
+        L --> M[End: Invoice Closed (Unpaid/Written Off)]:::end_state;
+
+
+        H --> N[Monitor Payment Status (Automated/Finance)]:::process;
+        N --> N_CRM[CRM Visibility: Payment Due/Overdue Dashboard, Automated Reminders Triggered]:::crm_interaction;
+
+        N_CRM --> O{Payment Received?};
+
+        O -->|Yes| P[Process & Reconcile Payment (Finance)]:::process;
+        O -->|No - Past Due Date| Q[Invoice Overdue]:::process;
+
+        P --> P_CRM[CRM Update: Invoice Status 'Paid', Close Associated Opportunity, Remove Open Tasks]:::crm_interaction;
+        P_CRM --> R[End: Invoice Closed (Paid)]:::end_state;
+
+        Q --> S[Automated/Manual Payment Reminders (Finance/Sales)]:::actor;
+        S --> S_CRM[CRM Update: Invoice Status 'Overdue', Assign Follow-up Tasks to Sales/Account Manager, Log Reminders Sent]:::crm_interaction;
+
+        S_CRM --> T{Payment Received After Overdue?};
+        T -->|Yes| P; %% Loop back to process payment
+        T -->|No - Still Unpaid| U{Escalate to Collections?};
+
+        U -->|Yes| V[Initiate Collections Process]:::process;
+        V --> V_CRM[CRM Update: Invoice Status 'In Collections', Log Collection Activities, Account Health Alert]:::crm_interaction;
+        V_CRM --> W{Collections Successful?};
+        W -->|Yes| P; %% Loop back to process payment
+        W -->|No| X[Invoice Written Off / Bad Debt]:::process;
+        X --> M; %% End: Invoice Closed (Unpaid/Written Off)
+
+        U -->|No - Write-off Decision| X; %% Direct to write-off
+    end
+
+    %% CRM Documentation Notes
+    subgraph "CRM Documentation & Data Points"
+        CRMD_1[**Opportunity Stage Management:** Set to "Closed Won" upon order confirmation. Essential for sales forecasting and pipeline accuracy.]:::crm_interaction
+        CRMD_2[**Invoice Object/Record:** Create or link to an Invoice object in CRM. Include ID, amount, due date, status, linked opportunity/account.]:::crm_interaction
+        CRMD_3[**Customer Communication Log:** All invoice-related communications (sent, acknowledged, dispute details, payment reminders) logged against the Contact/Account.]:::crm_interaction
+        CRMD_4[**Task/Activity Management:** Automated tasks for sales reps for payment follow-ups, dispute resolution. Clear ownership and due dates.]:::crm_interaction
+        CRMD_5[**Reporting & Dashboards:** Dashboards for 'Invoices Due Soon', 'Overdue Invoices', 'Invoice Value by Account Manager'. Provides insights for proactive management.]:::crm_interaction
+        CRMD_6[**Account Health/Risk Scoring:** Overdue invoices can trigger a reduction in account health score, alerting sales to potential issues.]:::crm_interaction
+        CRMD_7[**Integration Points:** Highlight integrations with ERP/Billing systems to ensure real-time status updates in CRM.]:::crm_interaction
+        CRMD_8[**Audit Trail:** Every status change, communication, and action related to an invoice is timestamped and attributed to a user in CRM.]:::crm_interaction
+    end
+
+    style A fill:#d4edda,stroke:#28a745,stroke-width:2px
+    style R fill:#d4edda,stroke:#28a745,stroke-width:2px
+    style M fill:#f8d7da,stroke:#dc3545,stroke-width:2px
+
+    linkStyle 0 stroke:#00bcd4,stroke-width:2px;
+    linkStyle 1 stroke:#00bcd4,stroke-width:2px;
+    linkStyle 2 stroke:#dc3545,stroke-width:2px;
+    linkStyle 3 stroke:#00bcd4,stroke-width:2px;
+    linkStyle 4 stroke:#00bcd4,stroke-width:2px;
+    linkStyle 5 stroke:#00bcd4,stroke-width:2px;
+    linkStyle 6 stroke:#00bcd4,stroke-width:2px;
+    linkStyle 7 stroke:#00bcd4,stroke-width:2px;
+    linkStyle 8 stroke:#00bcd4,stroke-width:2px;
+    linkStyle 9 stroke:#dc3545,stroke-width:2px;
+    linkStyle 10 stroke:#00bcd4,stroke-width:2px;
+    linkStyle 11 stroke:#00bcd4,stroke-width:2px;
+    linkStyle 12 stroke:#00bcd4,stroke-width:2px;
+    linkStyle 13 stroke:#dc3545,stroke-width:2px;
+    linkStyle 14 stroke:#00bcd4,stroke-width:2px;
+    linkStyle 15 stroke:#00bcd4,stroke-width:2px;
+    linkStyle 16 stroke:#00bcd4,stroke-width:2px;
+    linkStyle 17 stroke:#dc3545,stroke-width:2px;
+    linkStyle 18 stroke:#00bcd4,stroke-width:2px;
+    linkStyle 19 stroke:#00bcd4,stroke-width:2px;
+    linkStyle 20 stroke:#00bcd4,stroke-width:2px;
+    linkStyle 21 stroke:#00bcd4,stroke-width:2px;
+    linkStyle 22 stroke:#00bcd4,stroke-width:2px;
+    linkStyle 23 stroke:#00bcd4,stroke-width:2px;
+    linkStyle 24 stroke:#00bcd4,stroke-width:2px;
+    linkStyle 25 stroke:#00bcd4,stroke-width:2px;
+    linkStyle 26 stroke:#00bcd4,stroke-width:2px;
+    linkStyle 27 stroke:#00bcd4,stroke-width:2px;
+    linkStyle 28 stroke:#00bcd4,stroke-width:2px;

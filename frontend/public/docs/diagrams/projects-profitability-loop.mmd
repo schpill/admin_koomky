@@ -1,4 +1,32 @@
-flowchart TD
-    A[projects-profitability-loop] --> B[Analyse]
-    B --> C[Execution]
-    C --> D[Validation]
+graph TD
+    subgraph "Projects Profitability Loop"
+        A[1. Opportunity & Sales] --> B(2. Project Planning & Estimation)
+        B --> C[3. Project Execution & Tracking]
+        C --> D[4. Project Completion & Delivery]
+        D --> E[5. Invoicing & Revenue Recognition]
+        E --> F((6. Profitability Analysis))
+        F --> G[7. Lessons Learned & Improvement]
+        G --> A
+    end
+
+    subgraph "Influencing Factor: CRM Documentation Quality"
+        CRM_DQ[(CRM Documentation Quality)]
+    end
+
+    %% CRM Documentation Quality's Influence
+    CRM_DQ -- "Accurate Client & History Data" --> A
+    CRM_DQ -- "Reliable Cost & Resource Estimates" --> B
+    CRM_DQ -- "Effective Progress & Expense Tracking" --> C
+    CRM_DQ -- "Supports Accurate Billing" --> E
+    CRM_DQ -- "Enables Deep Dive Analysis" --> F
+    CRM_DQ -- "Feeds Back to Best Practices" --> G
+
+    %% Styling for emphasis
+    style CRM_DQ fill:#add8e6,stroke:#333,stroke-width:2px,color:#000
+    style A fill:#D4EDDA,stroke:#28A745,stroke-width:2px
+    style B fill:#FFF3CD,stroke:#FFC107,stroke-width:2px
+    style C fill:#DCF1F8,stroke:#17A2B8,stroke-width:2px
+    style D fill:#D1ECF1,stroke:#007BFF,stroke-width:2px
+    style E fill:#D1ECF1,stroke:#007BFF,stroke-width:2px
+    style F fill:#F8D7DA,stroke:#DC3545,stroke-width:2px
+    style G fill:#E2E3E5,stroke:#6C757D,stroke-width:2px

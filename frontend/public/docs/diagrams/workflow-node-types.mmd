@@ -1,4 +1,11 @@
 flowchart TD
-    A[workflow-node-types] --> B[Analyse]
-    B --> C[Execution]
-    C --> D[Validation]
+    subgraph Workflow Node Type Shapes Legend
+        S_Start((Start Node))
+        S_Trigger([Trigger Node])
+        S_Action[Action Node]
+        S_Decision{Decision Node}
+        S_Delay[[Delay Node]]
+        S_Manual{{Manual Task Node}}
+        S_FlowControl(Flow Control Node)
+        S_End([(End Node)])
+    end

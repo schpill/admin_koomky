@@ -1,4 +1,46 @@
-flowchart TD
-    A[getting-started-flow] --> B[Analyse]
-    B --> C[Execution]
-    C --> D[Validation]
+graph TD
+    %% Nodes
+    A[Start: Initiate CRM Doc Quality Project]
+    B(Define Scope & Target Audience)
+    C{Audit Existing Docs & Identify Gaps}
+    D[Establish Quality Standards & Guidelines]
+    E[Prioritize Doc Tasks & Assign Owners]
+    F[Draft/Update Content]
+    G{Review & Edit Content}
+    H{Content Meets Standards?}
+    I[Incorporate Feedback & Revise]
+    J[User Test & Validate Docs]
+    K{Validation Successful?}
+    L[Publish Documentation]
+    M[Collect User Feedback & Analytics]
+    N[Schedule Regular Reviews & Updates]
+    O(End: Continuous Improvement Cycle)
+
+    %% Flow
+    A --> B
+    B --> C
+    C --> D
+    D --> E
+    E --> F
+    F --> G
+    G --> H
+    H -- "No" --> I
+    I --> F
+    H -- "Yes" --> J
+    J --> K
+    K -- "No" --> I
+    K -- "Yes" --> L
+    L --> M
+    M --> N
+    N --> C
+
+    %% Styling (Optional but good for clarity)
+    classDef startEnd fill:#d4edda,stroke:#28a745,stroke-width:2px,color:#155724;
+    classDef process fill:#e0f7fa,stroke:#00bcd4,stroke-width:1px;
+    classDef decision fill:#fff3cd,stroke:#ffc107,stroke-width:1px,font-weight:bold;
+    classDef feedbackLoop fill:#f8d7da,stroke:#dc3545,stroke-width:1px;
+    class A,O startEnd;
+    class B,C,E,F,G,J,L,M,N process;
+    class D decision; %% D is a process, but key for quality definition
+    class H,K decision;
+    class I feedbackLoop;

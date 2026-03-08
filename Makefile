@@ -119,7 +119,7 @@ import-prospects:
 	$(DOCKER_COMPOSE) run --rm api php artisan leads:import-xlsx $(ARGS)
 
 docs-diagrams:
-	$(DOCKER_COMPOSE) run --rm frontend sh -lc "pnpm install --frozen-lockfile && pnpm docs:diagrams"
+	$(DOCKER_COMPOSE) run --rm -e GEMINI_API_KEY=$(GEMINI_API_KEY) frontend sh -lc "pnpm install --frozen-lockfile && pnpm docs:diagrams $(ARGS)"
 
 docs-screenshots:
 	$(DOCKER_COMPOSE) up -d api nginx frontend

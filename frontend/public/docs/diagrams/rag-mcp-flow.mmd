@@ -1,4 +1,47 @@
-flowchart TD
-    A[rag-mcp-flow] --> B[Analyse]
-    B --> C[Execution]
-    C --> D[Validation]
+graph TD
+    %% Graph Settings & Theme
+    accTitle: RAG-MCP Customer Interaction Flow
+    accDescr: Visual representation of the Retrieval-Augmented Generation for Multi-Channel Personalization flow, integrating CRM data for intelligent customer interactions.
+
+    subgraph "Customer Interaction Trigger"
+        A[Customer Initiates Interaction] -- e.g., Chat, Email, Support Ticket, App --> B(Receive & Parse Customer Query)
+    end
+
+    subgraph "RAG - Retrieval-Augmented Generation"
+        direction LR
+        B --> C{Identify Contextual Needs & Entities}
+        C -- Search Queries --> D{{Data Sources: CRM, KB, Product Info}}
+        D -- Retrieved Context & Data --> E[Augment LLM Prompt]
+        E --> F((Generate Tailored Response via LLM))
+    end
+
+    subgraph "MCP - Multi-Channel Personalization"
+        direction LR
+        F --> G{Analyze Customer Profile & Preferences}
+        G -- Customer Data (CRM) --> H[Personalize Content, Tone & Format]
+        H --> I{Determine Optimal Delivery Channel(s)}
+        I -- Based on Preference/Context --> J[Deliver Personalized Response]
+    end
+
+    subgraph "Continuous Improvement & Feedback Loop"
+        J --> K[Capture Feedback & Update Systems]
+        K -- Feedback, New Info --> D
+        K -- Interaction Logged --> M((CRM History Update))
+        M --> D
+    end
+
+    %% Edge Labels and Styling
+    style A fill:#D0F0C0,stroke:#3C803C,stroke-width:2px,color:#000
+    style J fill:#C0D8F0,stroke:#3C6080,stroke-width:2px,color:#000
+
+    linkStyle 0 stroke:#007bff,stroke-width:2px,fill:none;
+    linkStyle 1 stroke:#6c757d,stroke-width:1px,fill:none;
+    linkStyle 2 stroke:#6c757d,stroke-width:1px,fill:none;
+    linkStyle 3 stroke:#28a745,stroke-width:2px,fill:none;
+    linkStyle 4 stroke:#007bff,stroke-width:2px,fill:none;
+    linkStyle 5 stroke:#6c757d,stroke-width:1px,fill:none;
+    linkStyle 6 stroke:#6f42c1,stroke-width:2px,fill:none;
+    linkStyle 7 stroke:#ffc107,stroke-width:2px,fill:none;
+    linkStyle 8 stroke:#007bff,stroke-width:2px,fill:none;
+    linkStyle 9 stroke:#dc3545,stroke-width:2px,fill:none;
+    linkStyle 10 stroke:#17a2b8,stroke-width:2px,fill:none;

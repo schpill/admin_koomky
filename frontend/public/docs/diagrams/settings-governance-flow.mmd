@@ -1,4 +1,93 @@
-flowchart TD
-    A[settings-governance-flow] --> B[Analyse]
-    B --> C[Execution]
-    C --> D[Validation]
+graph TD
+    %% Define Node Styles for CRM Documentation Quality
+    classDef CRM fill:#e0f2f1,stroke:#00796b,stroke-width:2px;
+    classDef Decision fill:#fffde7,stroke:#ffc107,stroke-width:2px,color:#333;
+    classDef ProcessStep fill:#e3f2fd,stroke:#2196f3,stroke-width:2px;
+    classDef OutputRecord fill:#f3e5f5,stroke:#9c27b0,stroke-width:2px,color:#333;
+    classDef Actor fill:#fce4ec,stroke:#d81b60,stroke-width:2px,color:#333;
+    classDef System fill:#f0f4c3,stroke:#afb42b,stroke-width:2px,color:#333;
+
+    %% Actors and Systems Legend (implicitly defined via shapes/colors)
+    %% Key:
+    %% [] - Actor/Role
+    %% () - Process Step
+    %% {} - Decision Point
+    %% [()] - System/Database
+    %% (()) - Output/Record
+
+    subgraph A[1. Initiation & Business Case]
+        REQ[Requester (Business/Product)] -- Identifies Need --> A1(Create Settings Change Request);
+        A1 --> A2(Define Business Case & Impact Analysis);
+        A2 --> A3[Link/Create CRM Record (e.g., Case/Opportunity/Feature Request)]:::CRM;
+        A3 --> A4(Attach Supporting Documentation);
+        A4 --> A5((Generate Unique Request ID));
+        A5 --> A6[Update CRM Status: 'Pending Review']:::CRM;
+    end
+
+    subgraph B[2. Governance & Technical Review]
+        A6 --> B1(Assign Reviewers: Technical Lead, Security, Compliance);
+        B1 --> B2{Technical Feasibility Check?};
+        B2 -- No --> B3(Reject - Insufficient Scope/Feasibility);
+        B3 --> B4[Update CRM Status: 'Rejected', Notify Requester via CRM]:::CRM;
+        B2 -- Yes --> B5{Security & Compliance Check?};
+        B5 -- No --> B3;
+        B5 -- Yes --> B6(Assess Impact on Existing Customers/Integrations);
+        B6 --> B7((Review Outcome Summary & Recommendations));
+        B7 --> B8[Update CRM Status: 'Ready for Approval']:::CRM;
+    end
+
+    subgraph C[3. Formal Approval]
+        B8 --> C1(Present to Governance Board/Approver);
+        C1 --> C2{Approve Change?};
+        C2 -- No --> C3(Reject - Business Justification/Risk);
+        C3 --> B4; %% Re-use rejection path
+        C2 -- Yes --> C4((Approval Document/Minutes));
+        C4 --> C5[Update CRM Status: 'Approved', Assign Implementer]:::CRM;
+    end
+
+    subgraph D[4. Implementation & Configuration]
+        C5 --> D1(Develop/Configure Setting Change in Dev/Test);
+        D1 --> D2[Update Configuration Management Database (CMDB)]:::System;
+        D2 --> D3(Version Control/Snapshot Configuration);
+        D3 --> D4(Automated Deployment to Staging/UAT);
+        D4 --> D5[Update CRM Status: 'In Progress - UAT']:::CRM;
+    end
+
+    subgraph E[5. Testing & Validation]
+        D5 --> E1(QA Team Performs Testing);
+        E1 --> E2{Tests Passed?};
+        E2 -- No --> E3(Log Defect in Bug Tracker);
+        E3 --> D1; %% Loop back for rework
+        E2 -- Yes --> E4((Test Results & Sign-off));
+        E4 --> E5[Update CRM Status: 'Ready for Production']:::CRM;
+    end
+
+    subgraph F[6. Deployment & Monitoring]
+        E5 --> F1(Scheduled Production Deployment);
+        F1 --> F2(Post-Deployment Verification);
+        F2 --> F3(Monitor Performance & Stability);
+        F3 -- Issues Detected --> F4(Initiate Incident Management);
+        F4 --> F5[Update CRM Status: 'Incident Detected']:::CRM;
+        F3 -- No Issues --> F6[Update CRM Status: 'Live - Monitoring']:::CRM;
+    end
+
+    subgraph G[7. Communication & Closure]
+        F6 --> G1(Internal Communication: IT, Support, Sales);
+        G1 --> G2(External Communication: Affected Clients, Partners);
+        G2 --> G3[Log Communication in CRM (Email/Activity)]:::CRM;
+        G3 --> G4[Update CRM Status: 'Implemented', 'Closed']:::CRM;
+        G4 --> G5((Archived & Auditable Record));
+        G5 --> G6[Final CRM Update: Link all related activities]:::CRM;
+    end
+
+    %% Apply Classes
+    click A1 "Link to Request Form/System" "Opens the request system"
+    click A2 "Link to Impact Assessment Template" "Provides template for assessment"
+    click A3 "Link to CRM Case/Opportunity" "Navigates to the relevant CRM record"
+    click A6 "Link to CRM Status Tracking" "Shows the current status in CRM"
+    class A1,A2,A4,B1,B6,C1,D1,D3,D4,E1,F1,F2,F3,G1,G2 ProcessStep;
+    class A3,A6,B4,B8,C5,D5,E5,F5,F6,G3,G4,G6 CRM;
+    class B2,B5,C2,E2 Decision;
+    class A5,B7,C4,E4,G5 OutputRecord;
+    class REQ Actor;
+    class D2 System;

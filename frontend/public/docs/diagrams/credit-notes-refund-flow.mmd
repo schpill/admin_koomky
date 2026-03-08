@@ -1,4 +1,68 @@
-flowchart TD
-    A[credit-notes-refund-flow] --> B[Analyse]
-    B --> C[Execution]
-    C --> D[Validation]
+graph TD
+    %% Graph Settings - Customize as needed
+    classDef customer_role fill:#e0f7fa,stroke:#00acc1,stroke-width:2px,color:#000;
+    classDef csr_role fill:#e8f5e9,stroke:#4caf50,stroke-width:2px,color:#000;
+    classDef finance_role fill:#fff3e0,stroke:#ff9800,stroke-width:2px,color:#000;
+    classDef system_role fill:#f3e5f5,stroke:#9c27b0,stroke-width:2px,color:#000;
+    classDef decision_node fill:#ffecb3,stroke:#ffc107,stroke-width:2px,color:#000;
+    classDef start_end fill:#cfd8dc,stroke:#607d8b,stroke-width:2px,color:#000;
+    classDef crm_action fill:#bbdefb,stroke:#2196f3,stroke-width:2px,color:#000;
+
+    %% Define Nodes
+    A((Start)):::start_end
+    B[Customer Initiates Return/Cancellation/Refund Request]:::customer_role
+    C[CSR Receives Request & Creates Case in CRM]:::csr_role & crm_action
+    D{Request Valid?<br>(Policy, Condition, Timing)}:::decision_node
+    E[CRM: Update Case Status "Pending Approval"]:::crm_action
+    F[Sales Manager / Finance Approver Reviews Case]:::finance_role
+    G{Approve Credit Note/Refund?}:::decision_node
+    H[CRM: Update Case Status "Rejected"]:::crm_action
+    I[Notify Customer of Rejection]:::csr_role
+    J[CRM: Update Case Status "Approved, Pending CN"]:::crm_action
+    K[Finance Team Creates Credit Note in ERP]:::finance_role
+    L[ERP Updates CRM with Credit Note ID & Details]:::system_role & crm_action
+    M{Full Refund, Partial Refund, or Store Credit?}:::decision_node
+    N[Finance Team Processes Refund via Payment Gateway/ERP]:::finance_role
+    O[System: Record Refund Transaction ID & Details in CRM]:::system_role & crm_action
+    P[CSR Notifies Customer of Refund Processed]:::csr_role
+    Q[CRM: Update Case Status "Refunded"]:::crm_action
+    R[Finance Team Issues Store Credit / Voucher]:::finance_role
+    S[System: Update Customer Account Balance / Create Voucher in CRM]:::system_role & crm_action
+    T[CSR Notifies Customer of Store Credit Issued]:::csr_role
+    U[CRM: Update Case Status "Store Credit Issued"]:::crm_action
+    V((End)):::start_end
+
+    %% Flow
+    A --> B
+    B --> C
+    C --> D
+    D -- No --> H
+    H --> I
+    I --> V
+    D -- Yes --> E
+    E --> F
+    F --> G
+    G -- No --> H
+    G -- Yes --> J
+    J --> K
+    K -- API/Integration --> L
+    L --> M
+    M -- Full/Partial Refund --> N
+    N -- Integration --> O
+    O --> P
+    P --> Q
+    Q --> V
+    M -- Store Credit --> R
+    R -- Integration --> S
+    S --> T
+    T --> U
+    U --> V
+
+    %% Class assignment (explicitly for visual representation)
+    class A, V start_end;
+    class B customer_role;
+    class C, I, P, T csr_role;
+    class D, G, M decision_node;
+    class E, H, J, O, Q, S, U crm_action;
+    class F, K, N, R finance_role;
+    class L system_role;

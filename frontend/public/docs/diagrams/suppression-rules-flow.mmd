@@ -1,4 +1,69 @@
-flowchart TD
-    A[suppression-rules-flow] --> B[Analyse]
-    B --> C[Execution]
-    C --> D[Validation]
+graph TD
+    %% --- Diagram Configuration ---
+    %% General styling
+    classDef default fill:#fff,stroke:#333,stroke-width:2px;
+    %% Styling for decision nodes (diamonds)
+    classDef decision fill:#e0f2f7,stroke:#333,stroke-width:2px;
+    %% Styling for suppression outcomes
+    classDef suppress fill:#f9e7e7,stroke:#c0392b,stroke-width:2px;
+    %% Styling for successful processes
+    classDef process fill:#dff0d8,stroke:#27ae60,stroke-width:2px;
+    %% Styling for data sources (dashed border)
+    classDef data_source fill:#f0f8ff,stroke:#6c7a89,stroke-width:1px,stroke-dasharray: 5 5;
+    %% Styling for start/end nodes
+    classDef start_end fill:#f2f2f2,stroke:#555,stroke-width:2px;
+
+
+    %% --- Flow Definition ---
+
+    subgraph "1. Communication Initiation"
+        A[Marketing Campaign Triggered] --> B(Identify Target Audience List)
+        B -- From --> CRM_DATA[CRM: Contacts/Leads Data]
+    end
+
+    subgraph "2. Initial Recipient Validation & System-Wide Suppression"
+        B --> C{Is Email Address Valid & Deliverable?}
+        C -- No / Hard Bounce --> S1[Suppress: Invalid Email/Hard Bounce]
+        C -- Yes --> D{Recipient in System's Global Suppression List?}
+        D -- Check --> MAP_SUP[MAP/ESP: Global Unsubscribe/Bounce List]
+        D -- Yes --> S2[Suppress: System Global Opt-Out]
+    end
+
+    subgraph "3. CRM & Preference-Based Suppression Rules"
+        D -- No --> E{CRM: 'Do Not Email' (DNE) Flag Set on Record?}
+        E -- Refers To --> CRM_DNE[CRM: Contact/Lead 'Do Not Email' Field]
+        E -- Yes --> S3[Suppress: CRM Do Not Email Flag]
+        E -- No --> F{Customer Preference: Opted out of THIS communication type?}
+        F -- Via --> PREF_CENTER[Customer Preference Center Data]
+        F -- Yes --> S4[Suppress: Specific Preference Opt-Out]
+        F -- No --> G{CRM: Regulatory/Compliance Suppression Applied?}
+        G -- Based On --> CRM_COMP[CRM: Compliance Flags/Consent Status (e.g., GDPR, CCPA)]
+        G -- Yes --> S5[Suppress: Regulatory/Compliance Rule]
+    end
+
+    subgraph "4. Business Logic & Custom Exclusion Rules"
+        G -- No --> H{Custom Business Logic Met for Exclusion?}
+        H -- Configured In --> MAP_RULES[MAP/CRM: Custom Exclusion Rules (e.g., recent purchase, too many emails sent)]
+        H -- Yes --> S6[Suppress: Custom Business Rule]
+    end
+
+    subgraph "5. Outcome & Reporting"
+        H -- No --> I[Send Email Communication]
+        S1 --> J(Log Suppression Reason & Details)
+        S2 --> J
+        S3 --> J
+        S4 --> J
+        S5 --> J
+        S6 --> J
+        J --> K[Update CRM/MAP Suppression Status]
+        I --> L[Email Sent Successfully]
+        K --> End(Process Complete)
+        L --> End
+    end
+
+    %% --- Apply Classes ---
+    class A,B,I,J,K,L process;
+    class C,D,E,F,G,H decision;
+    class S1,S2,S3,S4,S5,S6 suppress;
+    class CRM_DATA,MAP_SUP,CRM_DNE,PREF_CENTER,CRM_COMP,MAP_RULES data_source;
+    class End start_end;

@@ -1,4 +1,36 @@
-flowchart TD
-    A[campaigns-ab-testing-flow] --> B[Analyse]
-    B --> C[Execution]
-    C --> D[Validation]
+%%{init: {'flowchart': {'htmlLabels': true}}}%%
+graph TD
+    subgraph "Phase 1: Setup & Hypothesis"
+        A[<b>1. Define Campaign Objective & Hypothesis</b><br><i>CRM Link: Campaign Goal Setting</i><br>•   Identify primary KPI (e.g., Open Rate, CTR, Conversion, Revenue)<br>•   Formulate a testable hypothesis (e.g., "Subject Line B will increase open rates by 10%")] --> B
+    end
+
+    subgraph "Phase 2: Audience & Variant Creation"
+        B[<b>2. Audience Segmentation & Split</b><br><i>CRM Link: Segmentation Tools, Contact Data</i><br>•   Define target audience using CRM filters (demographics, behavior, lead score)<br>•   Randomly split into Control (Variant A) and Test (Variant B) groups (e.g., 50/50, 90/10)] --> C
+        C[<b>3. Develop Campaign Variants</b><br><i>CRM Link: Email/LP Builder, Content Library</i><br>•   <b>Variant A (Control):</b> Baseline creative/copy, existing approach<br>•   <b>Variant B (Test):</b> Modified element (Subject Line, CTA, Image, Offer, Landing Page URL)] --> D
+    end
+
+    subgraph "Phase 3: Test Configuration & Launch"
+        D[<b>4. A/B Test Configuration in CRM</b><br><i>CRM Link: Campaign Builder, A/B Test Module</i><br>•   Set test duration or minimum participant volume<br>•   Define the winning metric (e.g., highest CTR after 24 hours)<br>•   Configure automated winner selection if CRM supports it] --> E
+        E[<b>5. Launch A/B Test</b><br><i>CRM Link: Campaign Scheduler, Automated Send</i><br>•   Simultaneously send Variant A to Control group and Variant B to Test group<br>•   Ensure all tracking mechanisms are active] --> F
+    end
+
+    subgraph "Phase 4: Monitoring & Analysis"
+        F[<b>6. Data Collection & Real-time Monitoring</b><br><i>CRM Link: Analytics Dashboards, Activity Logs</i><br>•   Track performance metrics for both variants in real-time<br>•   Monitor engagement (opens, clicks), conversions, unsubscribes, bounces] --> G
+        G[<b>7. Performance Analysis</b><br><i>CRM Link: A/B Test Reports, Custom Analytics</i><br>•   Compare key metrics (Open Rate, CTR, Conversion Rate) for A vs. B<br>•   Assess statistical significance to confirm validity of results<br>•   Identify potential reasons for performance differences] --> H
+    end
+
+    subgraph "Phase 5: Decision & Implementation"
+        H{<b>8. Determine Winning Variant</b><br><i>CRM Link: Reporting & Decision Support</i><br>•   <b>Manual:</b> Marketing team reviews data, makes an informed decision<br>•   <b>Automated:</b> CRM automatically selects winner based on pre-defined metric/duration}
+        H -- "Winning Variant" --> I
+        H -- "Losing Variant (Insights)" --> J
+    end
+
+    subgraph "Phase 6: Post-Test Actions & Documentation"
+        I[<b>9. Implement Winning Variant</b><br><i>CRM Link: Campaign Execution, Template Updates</i><br>•   Send winning variant to the remainder of the target audience (if applicable)<br>•   Update relevant ongoing automations or campaign templates with winning creative/copy] --> J
+        J[<b>10. Post-Campaign Actions & CRM Updates</b><br><i>CRM Link: Workflows, Lead Scoring, Activity History</i><br>•   Update Contact/Lead records (e.g., lead score adjustment, segment change)<br>•   Create follow-up tasks for sales/service if conversions occurred<br>•   Document key learnings for future reference] --> K
+    end
+
+    subgraph "Phase 7: Continuous Optimization"
+        K[<b>11. Continuous Optimization & Documentation</b><br><i>CRM Link: Campaign History, Knowledge Base, Reporting</i><br>•   Store test results, insights, and recommendations within the CRM's campaign history<br>•   Use learnings to inform future campaigns, content strategy, and automation flows<br>•   Share results with relevant stakeholders (Sales, Product)]
+        K --> A
+    end

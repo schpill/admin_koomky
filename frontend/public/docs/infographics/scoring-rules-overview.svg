@@ -1,1 +1,148 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500"><rect width="800" height="500" fill="#f8fafc"/><rect x="32" y="32" width="736" height="436" rx="28" fill="#dbeafe"/><text x="72" y="120" font-family="Arial" font-size="32" fill="#0f172a">scoring-rules-overview</text><text x="72" y="172" font-family="Arial" font-size="20" fill="#334155">Fallback asset generated locally because Gemini output was unavailable.</text></svg>
+<svg width="1200" height="850" viewBox="0 0 1200 850" xmlns="http://www.w3.org/2000/svg" font-family="Arial, sans-serif">
+  <defs>
+    <!-- Arrowhead Marker -->
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#007bff" />
+    </marker>
+    <!-- Light Arrowhead Marker -->
+    <marker id="lightArrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#6c757d" />
+    </marker>
+
+    <!-- Styles for consistency -->
+    <style>
+      .title { font-size: 38px; font-weight: bold; fill: #343a40; text-anchor: middle; }
+      .subtitle { font-size: 20px; fill: #6c757d; text-anchor: middle; }
+      .section-header { font-size: 22px; font-weight: bold; fill: #343a40; }
+      .box-label { font-size: 16px; font-weight: bold; fill: #343a40; }
+      .description { font-size: 14px; fill: #343a40; }
+      .small-text { font-size: 12px; fill: #6c757d; }
+      .bg-box { fill: #f8f9fa; stroke: #dee2e6; stroke-width: 1; rx: 8; ry: 8; }
+      .primary-box { fill: #e7f3ff; stroke: #007bff; stroke-width: 2; rx: 8; ry: 8; }
+      .accent-box { fill: #d4edda; stroke: #28a745; stroke-width: 1; rx: 5; ry: 5; }
+      .line-arrow { stroke: #007bff; stroke-width: 2; fill: none; marker-end: url(#arrowhead); }
+      .line-secondary { stroke: #6c757d; stroke-width: 1; fill: none; marker-end: url(#lightArrowhead); }
+      .crm-icon-base { fill: #007bff; }
+      .crm-icon-detail { fill: #ffffff; }
+    </style>
+  </defs>
+
+  <!-- Overall Background -->
+  <rect x="0" y="0" width="1200" height="850" fill="#ffffff"/>
+
+  <!-- Header -->
+  <text x="600" y="50" class="title">Scoring Rules Overview</text>
+  <text x="600" y="85" class="subtitle">Streamline Lead Qualification &amp; Prioritization</text>
+
+  <!-- Purpose Box (Top Left) -->
+  <rect x="40" y="140" width="280" height="150" class="bg-box"/>
+  <text x="55" y="165" class="section-header">Why Score Leads?</text>
+  <text x="55" y="195" class="description">• Prioritize outreach effectively</text>
+  <text x="55" y="215" class="description">• Align Sales &amp; Marketing teams</text>
+  <text x="55" y="235" class="description">• Improve conversion rates</text>
+  <text x="55" y="255" class="description">• Personalize marketing efforts</text>
+  <text x="55" y="275" class="description">• Identify MQLs/SQLs faster</text>
+
+  <!-- CRM Icon (Placeholder for the system) -->
+  <g transform="translate(1000, 150)">
+    <rect x="0" y="0" width="120" height="80" rx="10" ry="10" class="crm-icon-base" />
+    <rect x="10" y="10" width="100" height="60" rx="5" ry="5" fill="#ffffff" stroke="#0056b3" stroke-width="2" />
+    <text x="60" y="48" font-size="20" font-weight="bold" fill="#0056b3" text-anchor="middle">CRM</text>
+  </g>
+  <text x="1060" y="240" class="description" text-anchor="middle">Integrated System</text>
+
+  <!-- Input Data Sources (Left Side) -->
+  <g>
+    <text x="180" y="360" class="section-header" text-anchor="middle">Input Data Points</text>
+
+    <!-- Behavioral Data -->
+    <rect x="80" y="390" width="200" height="100" class="accent-box"/>
+    <text x="180" y="415" class="box-label" text-anchor="middle">Behavioral Data</text>
+    <text x="180" y="440" class="description" text-anchor="middle">(Interest &amp; Engagement)</text>
+    <text x="180" y="465" class="small-text" text-anchor="middle">Website visits, Email clicks, Downloads,</text>
+    <text x="180" y="480" class="small-text" text-anchor="middle">Event attendance, Product usage</text>
+
+    <!-- Demographic/Firmographic Data -->
+    <rect x="80" y="550" width="200" height="100" class="accent-box"/>
+    <text x="180" y="575" class="box-label" text-anchor="middle">Demographic / Firmographic</text>
+    <text x="180" y="600" class="description" text-anchor="middle">(Fit &amp; Profile)</text>
+    <text x="180" y="625" class="small-text" text-anchor="middle">Job Title, Industry, Company Size,</text>
+    <text x="180" y="640" class="small-text" text-anchor="middle">Location, Revenue</text>
+
+    <!-- Negative Actions -->
+    <rect x="80" y="710" width="200" height="60" fill="#f8d7da" stroke="#dc3545" stroke-width="1" rx="5" ry="5"/>
+    <text x="180" y="735" class="box-label" text-anchor="middle" fill="#dc3545">Negative Actions</text>
+    <text x="180" y="755" class="small-text" text-anchor="middle">Unsubscribe, Spam report, Inactivity</text>
+  </g>
+
+  <!-- Scoring Engine (Central Hub) -->
+  <rect x="400" y="300" width="400" height="400" class="primary-box"/>
+  <text x="600" y="340" class="section-header" text-anchor="middle">The Scoring Engine</text>
+  <text x="600" y="380" class="box-label" text-anchor="middle">Rule-Based Point Assignment</text>
+
+  <g transform="translate(430, 420)">
+    <circle cx="10" cy="10" r="8" fill="#28a745"/>
+    <text x="25" y="15" class="description" fill="#343a40">Positive Actions: Add points</text>
+
+    <circle cx="10" cy="40" r="8" fill="#dc3545"/>
+    <text x="25" y="45" class="description" fill="#343a40">Negative Actions: Deduct points</text>
+
+    <circle cx="10" cy="70" r="8" fill="#ffc107"/>
+    <text x="25" y="75" class="description" fill="#343a40">Recency / Decay: Weight recent activity more heavily; decrease score over time for inactivity.</text>
+    <text x="25" y="90" class="small-text" fill="#6c757d">(Advanced)</text>
+
+    <rect x="0" y="120" width="340" height="80" rx="5" ry="5" fill="#ffffff" stroke="#dee2e6"/>
+    <text x="170" y="145" class="box-label" text-anchor="middle">Example Rule:</text>
+    <text x="170" y="165" class="small-text" text-anchor="middle">"Downloaded Whitepaper" = +15 pts</text>
+    <text x="170" y="180" class="small-text" text-anchor="middle">"Job Title: Manager" = +10 pts</text>
+  </g>
+
+
+  <!-- Output & Actionable Segments (Right Side) -->
+  <g>
+    <text x="960" y="360" class="section-header" text-anchor="middle">Outputs &amp; Actions</text>
+
+    <!-- Total Score & Grade -->
+    <rect x="860" y="390" width="200" height="70" class="accent-box"/>
+    <text x="960" y="415" class="box-label" text-anchor="middle">Total Score &amp; Grade</text>
+    <text x="960" y="440" class="description" text-anchor="middle">e.g., 85 points (A-)</text>
+
+    <!-- MQL (Marketing Qualified Lead) -->
+    <rect x="860" y="500" width="200" height="60" fill="#d1ecf1" stroke="#17a2b8" stroke-width="1" rx="5" ry="5"/>
+    <text x="960" y="525" class="box-label" text-anchor="middle" fill="#17a2b8">MQL (Score &gt; 70)</text>
+    <text x="960" y="545" class="small-text" text-anchor="middle">Hand-off to Sales</text>
+
+    <!-- SQL (Sales Qualified Lead) -->
+    <rect x="860" y="580" width="200" height="60" fill="#cce5ff" stroke="#007bff" stroke-width="1" rx="5" ry="5"/>
+    <text x="960" y="605" class="box-label" text-anchor="middle" fill="#007bff">SQL (Score &gt; 90)</text>
+    <text x="960" y="625" class="small-text" text-anchor="middle">Immediate Sales Engagement</text>
+
+    <!-- Nurture Track -->
+    <rect x="860" y="660" width="200" height="60" fill="#fff3cd" stroke="#ffc107" stroke-width="1" rx="5" ry="5"/>
+    <text x="960" y="685" class="box-label" text-anchor="middle" fill="#ffc107">Nurture Track (Score &lt; 70)</text>
+    <text x="960" y="705" class="small-text" text-anchor="middle">Further Marketing Engagement</text>
+  </g>
+
+  <!-- Arrows from Inputs to Scoring Engine -->
+  <line x1="280" y1="440" x2="400" y2="440" class="line-arrow"/>
+  <line x1="280" y1="600" x2="400" y2="600" class="line-arrow"/>
+  <line x1="280" y1="735" x2="400" y2="650" class="line-arrow"/> <!-- Negative actions also feed in -->
+
+  <!-- Arrows from Scoring Engine to Outputs -->
+  <line x1="800" y1="425" x2="860" y2="425" class="line-arrow"/>
+  <line x1="800" y1="530" x2="860" y2="530" class="line-arrow"/>
+  <line x1="800" y1="610" x2="860" y2="610" class="line-arrow"/>
+  <line x1="800" y1="690" x2="860" y2="690" class="line-arrow"/>
+
+  <!-- Benefits Box (Bottom Right) -->
+  <rect x="40" y="790" width="280" height="50" class="bg-box"/>
+  <text x="55" y="815" class="section-header">Key Benefits:</text>
+  <text x="55" y="835" class="small-text">Smarter Decisions, Better ROI, Aligned Teams</text>
+
+  <!-- Documentation Footer -->
+  <text x="600" y="750" class="small-text" text-anchor="middle">CRM Documentation | Version 1.0 | Date: 2023-10-27</text>
+  <text x="600" y="770" class="small-text" text-anchor="middle">For Internal Use Only</text>
+  <line x1="450" y1="755" x2="750" y2="755" class="line-secondary"/>
+  <line x1="450" y1="775" x2="750" y2="775" class="line-secondary"/>
+
+</svg>

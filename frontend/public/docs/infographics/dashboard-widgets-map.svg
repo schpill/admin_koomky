@@ -1,1 +1,176 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500"><rect width="800" height="500" fill="#f8fafc"/><rect x="32" y="32" width="736" height="436" rx="28" fill="#dbeafe"/><text x="72" y="120" font-family="Arial" font-size="32" fill="#0f172a">dashboard-widgets-map</text><text x="72" y="172" font-family="Arial" font-size="20" fill="#334155">Fallback asset generated locally because Gemini output was unavailable.</text></svg>
+<svg width="100%" height="auto" viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial, sans-serif">
+  <defs>
+    <!-- Styles for various elements -->
+    <style>
+      .title-text {
+        font-size: 48px;
+        font-weight: bold;
+        fill: #333;
+        text-anchor: middle;
+      }
+      .subtitle-text {
+        font-size: 28px;
+        fill: #666;
+        text-anchor: middle;
+      }
+      .dashboard-container {
+        fill: #f5f8fa;
+        stroke: #d8e0e6;
+        stroke-width: 3;
+        rx: 15;
+        ry: 15;
+      }
+      .widget-slot {
+        fill: #ffffff;
+        stroke: #c2d7e8;
+        stroke-width: 2;
+        rx: 8;
+        ry: 8;
+      }
+      .widget-label {
+        font-size: 20px;
+        font-weight: bold;
+        fill: #333;
+        text-anchor: middle;
+      }
+      .widget-desc {
+        font-size: 16px;
+        fill: #555;
+        text-anchor: middle;
+      }
+      .data-source-container {
+        fill: #e8f0f8;
+        stroke: #92b0c9;
+        stroke-width: 2;
+        rx: 10;
+        ry: 10;
+      }
+      .data-source-label {
+        font-size: 22px;
+        font-weight: bold;
+        fill: #2a618d;
+        text-anchor: middle;
+      }
+      .connection-line {
+        stroke: #5a9bd4;
+        stroke-width: 3;
+        fill: none;
+      }
+      .arrowhead {
+        fill: #5a9bd4;
+        stroke: #5a9bd4;
+        stroke-width: 1;
+      }
+      .info-label {
+        font-size: 20px;
+        fill: #777;
+        text-anchor: middle;
+      }
+      .main-info {
+        font-size: 24px;
+        font-weight: bold;
+        fill: #333;
+        text-anchor: middle;
+      }
+
+      /* Icons for widgets */
+      .icon-fill { fill: #5a9bd4; }
+      .icon-stroke { stroke: #5a9bd4; stroke-width: 2; }
+    </style>
+
+    <!-- Arrowhead Marker -->
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L8,5 L0,10 Z" class="arrowhead" />
+    </marker>
+  </defs>
+
+  <!-- Title and Subtitle -->
+  <text x="600" y="70" class="title-text">CRM Dashboard Widgets Map</text>
+  <text x="600" y="115" class="subtitle-text">Visualize Your Data Structure &amp; Flow</text>
+
+  <!-- Dashboard Container -->
+  <rect x="100" y="160" width="1000" height="450" class="dashboard-container" />
+  <text x="600" y="195" class="main-info">Your CRM Dashboard</text>
+  <text x="600" y="225" class="info-label">(Customizable Layout)</text>
+
+  <!-- Widget Slots within Dashboard -->
+  <!-- Widget 1: KPI - Leads Generated -->
+  <rect x="130" y="270" width="280" height="150" class="widget-slot" />
+  <text x="270" y="300" class="widget-label">KPI Widget</text>
+  <text x="270" y="325" class="widget-desc">Leads Generated (This Month)</text>
+  <!-- Icon: Gauge -->
+  <path d="M270,365 A40,40 0 1 1 270,405 L270,385 A20,20 0 1 0 270,365 Z M270,365 L270,345" class="icon-fill icon-stroke"/>
+  <circle cx="270" cy="385" r="3" class="icon-fill"/>
+
+  <!-- Widget 2: Chart - Opportunities by Stage -->
+  <rect x="460" y="270" width="300" height="200" class="widget-slot" />
+  <text x="610" y="300" class="widget-label">Chart Widget</text>
+  <text x="610" y="325" class="widget-desc">Opportunities by Stage</text>
+  <!-- Icon: Bar Chart -->
+  <rect x="540" y="350" width="25" height="40" class="icon-fill"/>
+  <rect x="575" y="330" width="25" height="60" class="icon-fill"/>
+  <rect x="610" y="370" width="25" height="20" class="icon-fill"/>
+  <rect x="645" y="310" width="25" height="80" class="icon-fill"/>
+  <line x1="530" y1="390" x2="680" y2="390" class="icon-stroke"/>
+  <line x1="530" y1="390" x2="530" y2="300" class="icon-stroke"/>
+
+  <!-- Widget 3: List - Upcoming Tasks -->
+  <rect x="800" y="270" width="270" height="150" class="widget-slot" />
+  <text x="935" y="300" class="widget-label">List Widget</text>
+  <text x="935" y="325" class="widget-desc">Upcoming Tasks &amp; Activities</text>
+  <!-- Icon: List -->
+  <line x1="880" y1="350" x2="990" y2="350" class="icon-stroke"/>
+  <line x1="880" y1="370" x2="990" y2="370" class="icon-stroke"/>
+  <line x1="880" y1="390" x2="990" y2="390" class="icon-stroke"/>
+  <circle cx="870" cy="350" r="3" class="icon-fill"/>
+  <circle cx="870" cy="370" r="3" class="icon-fill"/>
+  <circle cx="870" cy="390" r="3" class="icon-fill"/>
+
+  <!-- Widget 4: Chart - Customer Cases (bottom-left) -->
+  <rect x="130" y="440" width="280" height="150" class="widget-slot" />
+  <text x="270" y="470" class="widget-label">Chart Widget</text>
+  <text x="270" y="495" class="widget-desc">Customer Cases Status</text>
+  <!-- Icon: Pie Chart -->
+  <circle cx="270" cy="535" r="30" class="icon-fill" fill-opacity="0.3"/>
+  <path d="M270,535 L270,505 A30,30 0 0 1 295.98,520.00 Z" class="icon-fill"/>
+  <path d="M270,535 L295.98,520.00 A30,30 0 0 1 244.02,520.00 Z" class="icon-fill" fill-opacity="0.6"/>
+
+  <!-- Widget 5: Custom Table - Account Health Score (bottom-right) -->
+  <rect x="800" y="440" width="270" height="150" class="widget-slot" />
+  <text x="935" y="470" class="widget-label">Table Widget</text>
+  <text x="935" y="495" class="widget-desc">Top Accounts by Health Score</text>
+  <!-- Icon: Table -->
+  <rect x="870" y="525" width="100" height="50" class="icon-stroke" fill="none"/>
+  <line x1="870" y1="540" x2="970" y2="540" class="icon-stroke"/>
+  <line x1="920" y1="525" x2="920" y2="575" class="icon-stroke"/>
+
+  <!-- Data Sources Section -->
+  <text x="600" y="660" class="main-info">CRM Data Modules</text>
+  <text x="600" y="690" class="info-label">("The Map" of Your Data)</text>
+
+  <!-- Individual Data Source Containers -->
+  <rect x="150" y="720" width="200" height="60" class="data-source-container" />
+  <text x="250" y="755" class="data-source-label">Leads</text>
+
+  <rect x="370" y="720" width="200" height="60" class="data-source-container" />
+  <text x="470" y="755" class="data-source-label">Opportunities</text>
+
+  <rect x="590" y="720" width="200" height="60" class="data-source-container" />
+  <text x="690" y="755" class="data-source-label">Accounts</text>
+
+  <rect x="810" y="720" width="200" height="60" class="data-source-container" />
+  <text x="910" y="755" class="data-source-label">Cases</text>
+
+  <!-- Connection Lines (Data Flow) -->
+  <!-- Leads -> KPI Widget -->
+  <line x1="250" y1="720" x2="270" y2="420" class="connection-line" marker-end="url(#arrow)" />
+  <!-- Opportunities -> Chart Widget (Opportunities) -->
+  <line x1="470" y1="720" x2="610" y2="470" class="connection-line" marker-end="url(#arrow)" />
+  <!-- Accounts -> Table Widget (Account Health) -->
+  <line x1="690" y1="720" x2="935" y2="590" class="connection-line" marker-end="url(#arrow)" />
+  <!-- Cases -> Chart Widget (Cases Status) -->
+  <line x1="910" y1="720" x2="270" y2="590" class="connection-line" marker-end="url(#arrow)" />
+  <!-- General Data -> List Widget (Tasks - often cross-module or standalone activities) -->
+  <path d="M600,690 V620 C600,600 935,600 935,420" class="connection-line" marker-end="url(#arrow)" />
+
+</svg>

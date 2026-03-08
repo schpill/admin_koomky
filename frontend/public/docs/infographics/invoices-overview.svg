@@ -1,1 +1,100 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500"><rect width="800" height="500" fill="#f8fafc"/><rect x="32" y="32" width="736" height="436" rx="28" fill="#dbeafe"/><text x="72" y="120" font-family="Arial" font-size="32" fill="#0f172a">invoices-overview</text><text x="72" y="172" font-family="Arial" font-size="20" fill="#334155">Fallback asset generated locally because Gemini output was unavailable.</text></svg>
+<svg width="900" height="450" viewBox="0 0 900 450" xmlns="http://www.w3.org/2000/svg" font-family="Arial, sans-serif">
+  <defs>
+    <style>
+      .title { font-size: 38px; font-weight: bold; fill: #333; }
+      .main-value { font-size: 58px; font-weight: bold; fill: #1a73e8; }
+      .main-label { font-size: 20px; fill: #555; }
+      .metric-label { font-size: 18px; fill: #555; }
+      .metric-value { font-size: 28px; font-weight: bold; }
+      .paid-value { fill: #28a745; }
+      .outstanding-value { fill: #ffc107; }
+      .overdue-value { fill: #dc3545; }
+      .upcoming-value { fill: #6c757d; }
+      .icon-bg { fill: #e0e0e0; opacity: 0.3; }
+      .icon-color { fill: #666; }
+      .light-text { fill: #888; font-size: 14px; }
+    </style>
+  </defs>
+
+  <!-- Background Rect - Optional, remove if transparent background is desired -->
+  <!-- <rect x="0" y="0" width="900" height="450" fill="#f9f9f9" /> -->
+
+  <!-- Title -->
+  <text x="450" y="60" text-anchor="middle" class="title">Invoices Overview</text>
+
+  <!-- Main Total Invoiced Card -->
+  <g transform="translate(100, 120)">
+    <rect x="0" y="0" width="700" height="120" rx="10" ry="10" fill="#ffffff" stroke="#e0e0e0" stroke-width="1"/>
+    <text x="350" y="55" text-anchor="middle" class="main-label">Total Invoiced Amount</text>
+    <text x="350" y="105" text-anchor="middle" class="main-value">$125,450.00</text>
+
+    <!-- Small icon for Total Invoiced -->
+    <g transform="translate(20, 30) scale(0.8)">
+      <rect x="0" y="0" width="60" height="80" rx="8" ry="8" fill="#e0f2f7"/>
+      <rect x="15" y="0" width="45" height="15" rx="4" ry="4" fill="#a7d9eb"/>
+      <path d="M20 30 L40 30 L40 40 L30 40 L30 60 L20 60 L20 30 Z M25 35 L25 55 L35 55 L35 45 L25 45 Z" fill="#1a73e8"/>
+    </g>
+  </g>
+
+  <!-- Metrics Grid -->
+  <g transform="translate(50, 270)">
+    <!-- Paid -->
+    <g transform="translate(0, 0)">
+      <rect x="0" y="0" width="200" height="150" rx="10" ry="10" fill="#ffffff" stroke="#e0e0e0" stroke-width="1"/>
+      <!-- Icon -->
+      <g transform="translate(75, 20)">
+        <circle cx="25" cy="25" r="20" fill="#e8f5e9"/>
+        <path d="M15 25 L22 32 L35 18" stroke="#28a745" stroke-width="3" fill="none" stroke-linecap="round"/>
+      </g>
+      <text x="100" y="90" text-anchor="middle" class="metric-label">Paid</text>
+      <text x="100" y="125" text-anchor="middle" class="metric-value paid-value">$98,700.00</text>
+      <text x="100" y="140" text-anchor="middle" class="light-text">(78.67%)</text>
+    </g>
+
+    <!-- Outstanding -->
+    <g transform="translate(233, 0)">
+      <rect x="0" y="0" width="200" height="150" rx="10" ry="10" fill="#ffffff" stroke="#e0e0e0" stroke-width="1"/>
+      <!-- Icon -->
+      <g transform="translate(75, 20)">
+        <rect x="10" y="10" width="30" height="30" rx="5" ry="5" fill="#fffbe5" />
+        <path d="M15 15 L25 5 L35 15 L35 35 L15 35 L15 15 Z M25 10 L25 30 M20 20 L30 20" stroke="#ffc107" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M25 5 L25 15" stroke="#ffc107" stroke-width="2" fill="none" stroke-linecap="round"/>
+      </g>
+      <text x="100" y="90" text-anchor="middle" class="metric-label">Outstanding</text>
+      <text x="100" y="125" text-anchor="middle" class="metric-value outstanding-value">$26,750.00</text>
+      <text x="100" y="140" text-anchor="middle" class="light-text">(21.33%)</text>
+    </g>
+
+    <!-- Overdue -->
+    <g transform="translate(466, 0)">
+      <rect x="0" y="0" width="200" height="150" rx="10" ry="10" fill="#ffffff" stroke="#e0e0e0" stroke-width="1"/>
+      <!-- Icon -->
+      <g transform="translate(75, 20)">
+        <circle cx="25" cy="25" r="20" fill="#ffebee"/>
+        <path d="M25 15 V25 H35" stroke="#dc3545" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <circle cx="25" cy="25" r="1" fill="#dc3545"/>
+        <path d="M25 5 L25 10 M25 40 L25 45 M5 25 L10 25 M40 25 L45 25" stroke="#dc3545" stroke-width="1" fill="none" stroke-linecap="round"/>
+        <path d="M25 2 A23 23 0 0 1 45 25 A23 23 0 0 1 25 48 A23 23 0 0 1 5 25 A23 23 0 0 1 25 2 Z" fill="none" stroke="#dc3545" stroke-width="1.5" />
+      </g>
+      <text x="100" y="90" text-anchor="middle" class="metric-label">Overdue</text>
+      <text x="100" y="125" text-anchor="middle" class="metric-value overdue-value">$12,300.00</text>
+      <text x="100" y="140" text-anchor="middle" class="light-text">(5 Invoices)</text>
+    </g>
+
+    <!-- Upcoming -->
+    <g transform="translate(699, 0)">
+      <rect x="0" y="0" width="200" height="150" rx="10" ry="10" fill="#ffffff" stroke="#e0e0e0" stroke-width="1"/>
+      <!-- Icon -->
+      <g transform="translate(75, 20)">
+        <rect x="10" y="10" width="30" height="30" rx="5" ry="5" fill="#e8eaf6"/>
+        <rect x="15" y="5" width="20" height="5" rx="2" ry="2" fill="#9fa8da"/>
+        <rect x="15" y="35" width="20" height="5" rx="2" ry="2" fill="#9fa8da"/>
+        <path d="M15 18 L20 18 M15 23 L30 23 M15 28 L25 28" stroke="#6c757d" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      </g>
+      <text x="100" y="90" text-anchor="middle" class="metric-label">Upcoming</text>
+      <text x="100" y="125" text-anchor="middle" class="metric-value upcoming-value">$35,000.00</text>
+      <text x="100" y="140" text-anchor="middle" class="light-text">(12 Invoices)</text>
+    </g>
+  </g>
+
+</svg>

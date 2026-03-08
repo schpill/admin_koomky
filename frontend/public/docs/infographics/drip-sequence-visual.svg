@@ -1,1 +1,235 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500"><rect width="800" height="500" fill="#f8fafc"/><rect x="32" y="32" width="736" height="436" rx="28" fill="#dbeafe"/><text x="72" y="120" font-family="Arial" font-size="32" fill="#0f172a">drip-sequence-visual</text><text x="72" y="172" font-family="Arial" font-size="20" fill="#334155">Fallback asset generated locally because Gemini output was unavailable.</text></svg>
+<svg width="800" height="1300" viewBox="0 0 800 1300" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <!-- Arrowhead marker -->
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#6c757d" />
+    </marker>
+
+    <!-- Node Styles -->
+    <style>
+      .node {
+        fill: #e9ecef;
+        stroke: #adb5bd;
+        stroke-width: 1;
+        font-family: 'Arial', sans-serif;
+        font-size: 14px;
+        font-weight: bold;
+        text-anchor: middle;
+      }
+      .node-text {
+        fill: #343a40;
+        font-family: 'Arial', sans-serif;
+        font-size: 13px;
+        text-anchor: middle;
+      }
+      .node-detail {
+        fill: #6c757d;
+        font-family: 'Arial', sans-serif;
+        font-size: 11px;
+        text-anchor: middle;
+      }
+      .start-end-node {
+        fill: #d1ecf1; /* Light blue */
+        stroke: #17a2b8; /* Info blue */
+        stroke-width: 1;
+      }
+      .decision-node {
+        fill: #fff3cd; /* Light yellow */
+        stroke: #ffc107; /* Warning yellow */
+        stroke-width: 1;
+      }
+      .action-node {
+        fill: #e2e6ea; /* Light gray */
+        stroke: #6c757d; /* Secondary gray */
+        stroke-width: 1;
+      }
+      .path {
+        stroke: #6c757d;
+        stroke-width: 2;
+        fill: none;
+        marker-end: url(#arrowhead);
+      }
+      .path-yes {
+        stroke: #28a745; /* Green for Yes */
+      }
+      .path-no {
+        stroke: #dc3545; /* Red for No */
+      }
+      .title {
+        font-family: 'Arial', sans-serif;
+        font-size: 24px;
+        font-weight: bold;
+        fill: #343a40;
+        text-anchor: middle;
+      }
+      .subtitle {
+        font-family: 'Arial', sans-serif;
+        font-size: 16px;
+        fill: #6c757d;
+        text-anchor: middle;
+      }
+      .icon {
+        fill: #6c757d;
+      }
+    </style>
+
+    <!-- Icons -->
+    <g id="icon-email">
+      <path d="M10 2a2 2 0 00-2 2v10a2 2 0 002 2h4a2 2 0 002-2V4a2 2 0 00-2-2h-4zm0 2h4v.5L12 7.25 10 4.5zM11 8l-1 1.5 2 1.5 2-1.5-1-1.5zM10 14v-2.5l2 1.5 2-1.5V14h-4z" transform="scale(0.8) translate(2,2)"/>
+    </g>
+    <g id="icon-clock">
+      <circle cx="12" cy="12" r="8" stroke="#6c757d" stroke-width="1.5" fill="none"/>
+      <path d="M12 8V12L15 13.5" stroke="#6c757d" stroke-width="1.5" fill="none"/>
+    </g>
+    <g id="icon-task">
+      <rect x="5" y="5" width="14" height="14" rx="2" ry="2" stroke="#6c757d" stroke-width="1.5" fill="none"/>
+      <line x1="8" y1="9" x2="16" y2="9" stroke="#6c757d" stroke-width="1.5"/>
+      <line x1="8" y1="12" x2="16" y2="12" stroke="#6c757d" stroke-width="1.5"/>
+      <line x1="8" y1="15" x2="14" y2="15" stroke="#6c757d" stroke-width="1.5"/>
+    </g>
+    <g id="icon-status">
+      <circle cx="12" cy="12" r="8" stroke="#6c757d" stroke-width="1.5" fill="none"/>
+      <path d="M9 12l2 2 4-4" stroke="#6c757d" stroke-width="1.5" fill="none"/>
+    </g>
+  </defs>
+
+  <!-- Title and Subtitle -->
+  <text x="400" y="50" class="title">Lead Nurturing Drip Sequence</text>
+  <text x="400" y="80" class="subtitle">Automated CRM Workflow</text>
+
+  <!-- Workflow Nodes -->
+
+  <!-- Start Node -->
+  <g>
+    <rect x="300" y="130" width="200" height="60" rx="30" ry="30" class="node start-end-node"/>
+    <text x="400" y="155" class="node-text">START</text>
+    <text x="400" y="175" class="node-detail">Lead Submits Form</text>
+  </g>
+
+  <!-- Arrow 1 -->
+  <line x1="400" y1="190" x2="400" y2="220" class="path" />
+
+  <!-- Email 1 Node -->
+  <g>
+    <rect x="300" y="220" width="200" height="80" class="node action-node"/>
+    <use xlink:href="#icon-email" x="310" y="240" width="20" height="20" class="icon"/>
+    <text x="400" y="250" class="node-text">ACTION: Send Email</text>
+    <text x="400" y="270" class="node-detail">Welcome Series - Email #1</text>
+    <text x="400" y="285" class="node-detail">Subject: Welcome to Our Community!</text>
+  </g>
+
+  <!-- Arrow 2 -->
+  <line x1="400" y1="300" x2="400" y2="330" class="path" />
+
+  <!-- Wait 1 Node -->
+  <g>
+    <rect x="300" y="330" width="200" height="60" class="node action-node"/>
+    <use xlink:href="#icon-clock" x="310" y="345" width="20" height="20" class="icon"/>
+    <text x="400" y="355" class="node-text">WAIT</text>
+    <text x="400" y="375" class="node-detail">3 Days</text>
+  </g>
+
+  <!-- Arrow 3 -->
+  <line x1="400" y1="390" x2="400" y2="420" class="path" />
+
+  <!-- Decision 1 Node -->
+  <g>
+    <polygon points="400 420, 500 470, 400 520, 300 470" class="node decision-node"/>
+    <text x="400" y="460" class="node-text">DECISION</text>
+    <text x="400" y="480" class="node-detail">Email #1 Opened?</text>
+  </g>
+
+  <!-- Arrow 4a (Yes Path) -->
+  <line x1="500" y1="470" x2="600" y2="470" class="path path-yes" />
+  <text x="550" y="460" class="node-detail" fill="#28a745">YES</text>
+
+  <!-- Email 2 Node (Yes Path) -->
+  <g>
+    <rect x="500" y="500" width="200" height="80" class="node action-node"/>
+    <use xlink:href="#icon-email" x="510" y="520" width="20" height="20" class="icon"/>
+    <text x="600" y="530" class="node-text">ACTION: Send Email</text>
+    <text x="600" y="550" class="node-detail">Nurture Series - Email #2</text>
+    <text x="600" y="565" class="node-detail">Subject: Advanced Tips &amp; Benefits</text>
+  </g>
+
+  <!-- Arrow 4b (No Path) -->
+  <line x1="300" y1="470" x2="200" y2="470" class="path path-no" />
+  <text x="250" y="460" class="node-detail" fill="#dc3545">NO</text>
+
+  <!-- Email 3 Node (No Path) -->
+  <g>
+    <rect x="100" y="500" width="200" height="80" class="node action-node"/>
+    <use xlink:href="#icon-email" x="110" y="520" width="20" height="20" class="icon"/>
+    <text x="200" y="530" class="node-text">ACTION: Send Email</text>
+    <text x="200" y="550" class="node-detail">Re-engagement - Email #3</text>
+    <text x="200" y="565" class="node-detail">Subject: Don't Miss Out!</text>
+  </g>
+
+  <!-- Converging Paths to Wait 2 -->
+  <path d="M600 580 V630 H400 V660" class="path" />
+  <path d="M200 580 V630 H400 V660" class="path" />
+
+  <!-- Wait 2 Node -->
+  <g>
+    <rect x="300" y="660" width="200" height="60" class="node action-node"/>
+    <use xlink:href="#icon-clock" x="310" y="675" width="20" height="20" class="icon"/>
+    <text x="400" y="685" class="node-text">WAIT</text>
+    <text x="400" y="705" class="node-detail">5 Days</text>
+  </g>
+
+  <!-- Arrow 5 -->
+  <line x1="400" y1="720" x2="400" y2="750" class="path" />
+
+  <!-- Decision 2 Node -->
+  <g>
+    <polygon points="400 750, 500 800, 400 850, 300 800" class="node decision-node"/>
+    <text x="400" y="790" class="node-text">DECISION</text>
+    <text x="400" y="810" class="node-detail">Clicked Key Link?</text>
+  </g>
+
+  <!-- Arrow 6a (Yes Path) -->
+  <line x1="500" y1="800" x2="600" y2="800" class="path path-yes" />
+  <text x="550" y="790" class="node-detail" fill="#28a745">YES</text>
+
+  <!-- Task Node (Yes Path) -->
+  <g>
+    <rect x="500" y="870" width="200" height="80" class="node action-node"/>
+    <use xlink:href="#icon-task" x="510" y="890" width="20" height="20" class="icon"/>
+    <text x="600" y="900" class="node-text">ACTION: Create Task</text>
+    <text x="600" y="920" class="node-detail">Sales Follow-up with Warm Lead</text>
+    <text x="600" y="935" class="node-detail">Assign to: Sales Rep</text>
+  </g>
+
+  <!-- Arrow 6b (No Path) -->
+  <line x1="300" y1="800" x2="200" y2="800" class="path path-no" />
+  <text x="250" y="790" class="node-detail" fill="#dc3545">NO</text>
+
+  <!-- Status Update Node (No Path) -->
+  <g>
+    <rect x="100" y="870" width="200" height="80" class="node action-node"/>
+    <use xlink:href="#icon-status" x="110" y="890" width="20" height="20" class="icon"/>
+    <text x="200" y="900" class="node-text">ACTION: Update Field</text>
+    <text x="200" y="920" class="node-detail">Lead Status: Cold</text>
+    <text x="200" y="935" class="node-detail">Lead Score: -10</text>
+  </g>
+
+  <!-- Converging Paths to End -->
+  <path d="M600 950 V1000 H400 V1030" class="path" />
+  <path d="M200 950 V1000 H400 V1030" class="path" />
+
+  <!-- End Node -->
+  <g>
+    <rect x="300" y="1030" width="200" height="60" rx="30" ry="30" class="node start-end-node"/>
+    <text x="400" y="1055" class="node-text">END</text>
+    <text x="400" y="1075" class="node-detail">Sequence Concluded</text>
+  </g>
+
+  <!-- Footer/Disclaimer -->
+  <text x="400" y="1150" class="node-detail" font-size="10px">
+    This infographic illustrates a typical drip sequence. Specific actions and timing
+  </text>
+  <text x="400" y="1165" class="node-detail" font-size="10px">
+    may vary based on CRM platform and strategy.
+  </text>
+
+</svg>

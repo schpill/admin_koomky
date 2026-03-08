@@ -1,4 +1,96 @@
-flowchart TD
-    A[campaigns-sending-flow] --> B[Analyse]
-    B --> C[Execution]
-    C --> D[Validation]
+graph TD
+    %% Title for the diagram
+    title: CRM Campaigns Sending Flow
+
+    %% Actors and Systems
+    A[Marketing User]
+    B[CRM / Marketing Automation Platform]
+    C[Email Sending Service (ESP)]
+    D[Analytics & Reporting Engine]
+    E[Contact Database]
+
+    %% Section 1: Campaign Preparation (CRM-centric)
+    subgraph S1_Prep[1. Campaign Preparation & Setup]
+        A --> B{1.1 Create New Campaign Record};
+        B -- "Details: Name, Goal, Type, Budget" --> B1_1(1.1.1 Log Campaign Details);
+        B1_1 --> B1_2(1.1.2 Define Campaign Goal: eg. Lead Gen, Retention);
+
+        B1_2 --> B1_3{1.2 Select Target Audience?};
+        B1_3 -- Yes --> B1_4[1.2.1 Use CRM Segmentation Tools];
+        B1_3 -- No --> B1_5(1.2.2 Select Existing List/Audience);
+        B1_4 --> B1_6(1.2.3 Apply Filters: Demographics, Behavior);
+        B1_5 --> B1_6;
+        B1_6 --> E(1.2.4 Query Contact Database);
+        E --> B1_7(1.2.5 Preview Audience Size & Sample);
+        B1_7 --> B1_8[1.2.6 Auto-Exclude Suppressed / Unsubscribed Contacts];
+        B1_8 --> B1_9(1.2.7 Confirm Final Audience);
+
+        B1_9 --> B1_10{1.3 Content Creation & Design};
+        B1_10 -- "Select Email Template" --> B1_11(1.3.1 Design Email Content);
+        B1_11 --> B1_12(1.3.2 Insert Personalization Fields from CRM);
+        B1_12 --> B1_13(1.3.3 Add CTA & Tracking Links);
+        B1_13 --> B1_14{1.3.4 Setup A/B Test Variants?};
+        B1_14 -- Yes --> B1_15[1.3.5 Create Variants for Subject/Content];
+        B1_14 -- No --> B1_16(1.3.6 Finalize Content);
+        B1_15 --> B1_16;
+
+        B1_16 --> B1_17(1.4 Configure Campaign Settings: From Name, Reply-to);
+        B1_17 --> B1_18{1.5 Internal Review & Approval?};
+        B1_18 -- Yes --> A(1.5.1 Submit for Approval);
+        A -- "Reviewer Actions: Approve / Reject" --> B1_19(1.5.2 Await Approval Status);
+        B1_18 -- No --> B1_20(1.5.3 Skip Approval Step);
+        B1_19 -- Approved --> B1_20;
+        B1_19 -- Rejected --> B1_10(1.5.4 Revise Content/Audience); %% Loop back to content
+    end
+
+    %% Section 2: Campaign Execution
+    subgraph S2_Exec[2. Campaign Execution & Deployment]
+        B1_20 --> B2_1(2.1 Schedule Campaign Send Time & Date);
+        B2_1 --> B2_2(2.2 Perform Final Pre-Flight Checks: links, personalization, audience);
+        B2_2 --> A(2.3 Confirm Send Initiation);
+
+        A --> B2_3(2.4 Initiate Campaign Send from CRM);
+        B2_3 --> B[2.4.1 CRM Updates Campaign Status: "Sending"];
+        B --> C[2.5 CRM Transmits Send Request & Data to ESP];
+        C --> B2_4(2.6 ESP Processes Send Queue);
+        B2_4 --> B2_5(2.7 ESP Sends Emails to Recipients);
+        B2_5 --> B2_6(2.8 ESP Handles Hard/Soft Bounces & ISP Feedback);
+        B2_6 --> C;
+        C --> B[2.8.1 ESP Feeds Delivery/Bounce Status to CRM];
+        B --> E[2.8.2 CRM Updates Contact Delivery Status];
+    end
+
+    %% Section 3: Post-Send Analysis & Follow-up
+    subgraph S3_Post[3. Post-Send Analysis & Follow-up]
+        B2_6 --> D(3.1 ESP Tracks Opens, Clicks, Unsubscribes);
+        D --> B[3.1.1 ESP Feeds Engagement Data to CRM];
+        B --> E[3.1.2 CRM Logs Contact Activity (Opens, Clicks)];
+        E --> B3_1(3.2 CRM Aggregates Campaign Performance Metrics);
+        B3_1 --> D[3.3 Analytics Engine Processes Campaign Data];
+        D --> A[3.4 Marketing User Views Campaign Reports/Dashboards];
+        A --> B3_2{3.5 Analyze Performance Against Goals?};
+        B3_2 -- Yes --> B3_3(3.5.1 Identify Key Learnings & Optimizations);
+        B3_2 -- No --> B3_4(3.5.2 Campaign Closed);
+
+        B3_3 --> B3_5{3.6 Trigger Post-Campaign Actions?};
+        B3_5 -- Yes --> B3_6(3.6.1 Update Lead Scores / Contact Fields);
+        B3_5 -- Yes --> B3_7(3.6.2 Create Follow-up Tasks for Sales);
+        B3_5 -- Yes --> B3_8(3.6.3 Enroll Engaged Contacts into Nurture Journeys);
+        B3_5 -- No --> B3_4;
+        B3_6 --> B3_4;
+        B3_7 --> B3_4;
+        B3_8 --> B3_4;
+    end
+
+    %% Overall Flow and End State
+    S1_Prep --> S2_Exec;
+    S2_Exec --> S3_Post;
+    B3_4 --> Z(Campaign Complete);
+
+    %% Legend / Notes (optional, but good for CRM documentation)
+    style A fill:#e0f2f7,stroke:#333,stroke-width:2px;
+    style B fill:#d0e6f2,stroke:#333,stroke-width:2px;
+    style C fill:#f0f0d8,stroke:#333,stroke-width:2px;
+    style D fill:#dff0d8,stroke:#333,stroke-width:2px;
+    style E fill:#fff8dc,stroke:#333,stroke-width:2px;
+    style Z fill:#c8e6c9,stroke:#333,stroke-width:2px;

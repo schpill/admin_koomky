@@ -1,4 +1,97 @@
-flowchart TD
-    A[leads-conversion-flow] --> B[Analyse]
-    B --> C[Execution]
-    C --> D[Validation]
+graph TD
+    %% --- Flowchart Configuration ---
+    linkStyle 0 stroke:#0066CC,stroke-width:2px;
+    linkStyle 1 stroke:#0066CC,stroke-width:2px;
+    linkStyle 2 stroke:#0066CC,stroke-width:2px;
+    linkStyle 3 stroke:#0066CC,stroke-width:2px;
+    linkStyle 4 stroke:#0066CC,stroke-width:2px;
+    linkStyle 5 stroke:#0066CC,stroke-width:2px;
+    linkStyle 6 stroke:#0066CC,stroke-width:2px;
+    linkStyle 7 stroke:#0066CC,stroke-width:2px;
+    linkStyle 8 stroke:#0066CC,stroke-width:2px;
+    linkStyle 9 stroke:#0066CC,stroke-width:2px;
+    linkStyle 10 stroke:#0066CC,stroke-width:2px;
+    linkStyle 11 stroke:#0066CC,stroke-width:2px;
+    linkStyle 12 stroke:#0066CC,stroke-width:2px;
+    linkStyle 13 stroke:#0066CC,stroke-width:2px;
+    linkStyle 14 stroke:#0066CC,stroke-width:2px;
+    linkStyle 15 stroke:#0066CC,stroke-width:2px;
+    linkStyle 16 stroke:#0066CC,stroke-width:2px;
+    linkStyle 17 stroke:#0066CC,stroke-width:2px;
+    linkStyle 18 stroke:#0066CC,stroke-width:2px;
+    linkStyle 19 stroke:#0066CC,stroke-width:2px;
+    linkStyle 20 stroke:#0066CC,stroke-width:2px;
+    linkStyle 21 stroke:#0066CC,stroke-width:2px;
+    linkStyle 22 stroke:#0066CC,stroke-width:2px;
+    linkStyle 23 stroke:#0066CC,stroke-width:2px;
+
+    %% --- Node Definitions ---
+    A[Start: Lead Generation] --> B(New Lead Captured);
+    B --> C{Lead Valid?};
+
+    C -- Yes --> D[Lead Qualification (Marketing/SDR)];
+    C -- No --> E[Junk / Discarded];
+
+    D --> F{Meets MQL Criteria?};
+    F -- Yes --> G[MQL (Marketing Qualified Lead)];
+    F -- No --> H[Nurture Pool (Marketing)];
+
+    G --> I[SDR Engagement / Outreach];
+    I --> J{SDR Connects & Qualifies?};
+    J -- Yes --> K[SQL (Sales Qualified Lead) - Create Opportunity];
+    J -- No --> L[SDR Follow-up / Re-Nurture];
+    L --> H;
+
+    K --> M[Account Executive (AE) Discovery / Needs Analysis];
+    M --> N[AE Solution Presentation / Demo];
+    N --> O[AE Proposal / Quote Sent];
+
+    O --> P{Customer Accepts Proposal?};
+    P -- Yes --> Q[Negotiation / Contract Signing];
+    P -- No --> R[AE Re-evaluate / Handle Objections];
+
+    Q --> S((Closed Won));
+    R --> T{Can We Resurrect?};
+    T -- Yes --> O; %% Loop back to Proposal (after adjustments)
+    T -- No --> U((Closed Lost));
+
+    H --> V[Marketing Nurture Campaigns (CRM Automations)];
+    V --> W{Lead Re-engages / Re-qualifies?};
+    W -- Yes --> D; %% Back to Lead Qualification
+    W -- No --> X[Archive / Cold Lead Pool];
+
+    E --> Y((End));
+    X --> Y;
+    S --> Y;
+    U --> Y;
+
+    %% --- Styling for Documentation Quality ---
+    classDef start_end fill:#CCE5FF,stroke:#336699,stroke-width:2px,color:#336699;
+    classDef process fill:#EBF5FF,stroke:#66A3D2,stroke-width:1px;
+    classDef decision fill:#FFF2CC,stroke:#CC9900,stroke-width:1px;
+    classDef outcome fill:#D4EDDA,stroke:#28A745,stroke-width:2px,color:#28A745;
+    classDef negative_outcome fill:#F8D7DA,stroke:#DC3545,stroke-width:2px,color:#DC3545;
+    classDef nurture fill:#D1ECF1,stroke:#17A2B8,stroke-width:1px;
+
+    class A,B process;
+    class C,F,J,P,T,W decision;
+    class D,G,I,K,M,N,O,Q,R process;
+    class H,L,V,X nurture;
+    class E negative_outcome;
+    class S outcome;
+    class U negative_outcome;
+    class Y start_end;
+
+    %% --- Critical Path Highlight ---
+    linkStyle 0 stroke-width:3px,stroke:#4CAF50,color:#4CAF50;
+    linkStyle 3 stroke-width:3px,stroke:#4CAF50,color:#4CAF50;
+    linkStyle 5 stroke-width:3px,stroke:#4CAF50,color:#4CAF50;
+    linkStyle 7 stroke-width:3px,stroke:#4CAF50,color:#4CAF50;
+    linkStyle 8 stroke-width:3px,stroke:#4CAF50,color:#4CAF50;
+    linkStyle 9 stroke-width:3px,stroke:#4CAF50,color:#4CAF50;
+    linkStyle 10 stroke-width:3px,stroke:#4CAF50,color:#4CAF50;
+    linkStyle 11 stroke-width:3px,stroke:#4CAF50,color:#4CAF50;
+    linkStyle 12 stroke-width:3px,stroke:#4CAF50,color:#4CAF50;
+    linkStyle 13 stroke-width:3px,stroke:#4CAF50,color:#4CAF50;
+    linkStyle 14 stroke-width:3px,stroke:#4CAF50,color:#4CAF50;
+    linkStyle 15 stroke-width:3px,stroke:#4CAF50,color:#4CAF50;

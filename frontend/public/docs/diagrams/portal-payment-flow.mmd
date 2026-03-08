@@ -1,4 +1,92 @@
-flowchart TD
-    A[portal-payment-flow] --> B[Analyse]
-    B --> C[Execution]
-    C --> D[Validation]
+graph TD
+    %% Title and Introduction
+    linkStyle 0 stroke:#f00,stroke-width:2px,fill:none;
+    style T title;
+    T["Portal Payment Flow with CRM Integration"]
+
+    %% Define Subgraphs for each system/actor
+    subgraph 1. Customer Interaction
+        USR0[Start] --> USR1(Access Payment Portal)
+        USR1 --> USR2{Logged In?}
+        USR2 -- No --> USR3(Register / Login)
+        USR3 --> USR1
+        USR2 -- Yes --> USR4[View Outstanding Invoices / Services]
+        USR4 --> USR5{Select Items for Payment?}
+        USR5 -- Yes --> USR6(Review Payment Summary)
+        USR5 -- No --> USR7[Exit / Browse Other Services]
+        USR6 --> USR8(Choose Payment Method)
+        USR8 --> USR9(Enter Payment Details)
+        USR9 --> USR10[Confirm & Submit Payment]
+    end
+
+    subgraph 2. Payment Portal System
+        PP1[Portal: Authenticate User] <-- USR1
+        USR4 --> PP2[Portal: Fetch & Display Invoices]
+        PP2 --> PP3[Portal: Calculate Totals / Apply Rules]
+        PP3 --> USR6
+        USR8 --> PP4[Portal: Display Payment Options]
+        USR9 --> PP5[Portal: Validate Input Details]
+        USR10 --> PP6[Portal: Prepare Payment Request]
+        PP6 --> PP7(Portal: Redirect to Payment Gateway)
+
+        PG_OK(PG: Payment Success) --> PP8[Portal: Receive Success Callback]
+        PG_FAIL(PG: Payment Failure) --> PP9[Portal: Receive Failure Callback]
+
+        PP8 --> PP10[Portal: Display Payment Confirmation]
+        PP9 --> PP11[Portal: Display Payment Failure Message]
+
+        PP11 --> USR_RETRY{Customer Retries?}
+        USR_RETRY -- Yes --> USR8
+        USR_RETRY -- No --> USR_CONTACT(Customer Contacts Support)
+    end
+
+    subgraph 3. Payment Gateway (PG)
+        PP7 --> PG1[PG: Receive Payment Request]
+        PG1 --> PG2(PG: Authorize & Capture Payment)
+        PG2 -- Payment Approved --> PG_OK
+        PG2 -- Payment Declined / Error --> PG_FAIL
+    end
+
+    subgraph 4. CRM System
+        CRM1[CRM: Retrieve Customer Profile] <-- PP1
+        CRM2[CRM: Fetch Invoice Data] <-- PP2
+        CRM3[CRM: Update Invoice Status (Processing)] <-- PP6
+        CRM4[CRM: Record Payment Attempt Log] <-- PG1
+
+        PP8 --> CRM5[CRM: Record Successful Payment]
+        CRM5 --> CRM6[CRM: Update Invoice Status (Paid)]
+        CRM6 --> CRM7[CRM: Generate Payment Receipt]
+        CRM7 --> CRM8(CRM: Trigger Confirmation Email/SMS)
+        CRM8 --> CRM9[CRM: Update Customer Account Balance]
+        CRM9 --> CRM_END_S[End CRM: Success]
+
+        PP9 --> CRM10[CRM: Record Failed Payment Attempt]
+        CRM10 --> CRM11[CRM: Update Invoice Status (Payment Pending / Failed)]
+        CRM11 --> CRM12(CRM: Trigger Failure Notification/Internal Alert)
+        CRM12 --> CRM_END_F[End CRM: Failure]
+    end
+
+    %% Flow Connections
+    USR0 --> USR1
+    USR7 --> END[End]
+    PP10 --> END
+    USR_CONTACT --> END
+    CRM_END_S --> END
+    CRM_END_F --> END
+
+    %% Styling for better readability (optional but good for docs)
+    classDef start_end fill:#f9f,stroke:#333,stroke-width:2px;
+    class USR0,USR7,END,CRM_END_S,CRM_END_F start_end;
+
+    classDef decision fill:#ccf,stroke:#333,stroke-width:2px;
+    class USR2,USR5,USR_RETRY decision;
+
+    classDef process fill:#cef,stroke:#333;
+    class USR1,USR3,USR4,USR6,USR8,USR9,USR10,PP1,PP2,PP3,PP4,PP5,PP6,PP8,PP9,PP10,PP11,PG1,PG2,CRM1,CRM2,CRM3,CRM4,CRM5,CRM6,CRM7,CRM9,CRM10,CRM11 process;
+
+    classDef api_call fill:#fdd,stroke:#333,stroke-width:2px;
+    class PP7,PG_OK,PG_FAIL,CRM8,CRM12 api_call;
+
+    classDef note fill:#fffacd,stroke:#333,stroke-width:1px,border-radius:5px;
+    classDef title fill:#d0e0f0,stroke:#333,stroke-width:2px,font-weight:bold,font-size:1.2em;
+    class T title;

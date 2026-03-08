@@ -1,1 +1,111 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500"><rect width="800" height="500" fill="#f8fafc"/><rect x="32" y="32" width="736" height="436" rx="28" fill="#dbeafe"/><text x="72" y="120" font-family="Arial" font-size="32" fill="#0f172a">dashboard-metrics-overview</text><text x="72" y="172" font-family="Arial" font-size="20" fill="#334155">Fallback asset generated locally because Gemini output was unavailable.</text></svg>
+<svg width="850" height="480" viewBox="0 0 850 480" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="titleId descId">
+    <title id="titleId">CRM Dashboard Metrics Overview</title>
+    <desc id="descId">An infographic displaying key performance indicators for a CRM dashboard, including sales, leads, customer health, and activity metrics with their current values and trends.</desc>
+
+    <style>
+        /* General Styles */
+        .body-bg { fill: #f9fbfd; } /* A very light background for the SVG canvas */
+        .font-sans { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .text-dark { fill: #333333; }
+        .text-medium { fill: #555555; }
+        .text-light { fill: #777777; }
+        .text-primary { fill: #007bff; } /* A standard blue for accents */
+        .text-success { fill: #28a745; } /* Green for positive trends */
+        .text-danger { fill: #dc3545; }  /* Red for negative trends */
+        .text-info { fill: #17a2b8; }   /* Info blue for neutral/specific trends */
+
+        /* Titles and Descriptions */
+        .main-title { font-size: 32px; font-weight: 700; }
+        .main-description { font-size: 16px; }
+
+        /* Card Styles */
+        .card-bg {
+            fill: #ffffff;
+            stroke: #e0e0e0;
+            stroke-width: 1;
+            rx: 10; ry: 10; /* Rounded corners */
+            box-shadow: 0px 2px 5px rgba(0,0,0,0.05); /* Soft shadow effect */
+        }
+        .card-icon-bg { fill: #e6f2ff; rx: 6; ry: 6; } /* Light blue background for icons */
+        .card-icon { fill: #007bff; opacity: 0.8; } /* Icon color */
+        .card-title { font-size: 18px; font-weight: 600; }
+        .metric-value { font-size: 36px; font-weight: 700; }
+        .metric-sub-value { font-size: 15px; font-weight: 500; }
+        .metric-trend { font-size: 14px; font-weight: 600; }
+
+        /* Arrow styles */
+        .arrow-up { fill: #28a745; }
+        .arrow-down { fill: #dc3545; }
+        .arrow-flat { fill: #17a2b8; }
+
+        /* Icon Paths (simplified Material Design style) */
+        /* Dollar icon */
+        .icon-dollar { d: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 16h-2v-4H8V8h3V6h2v2h3v4h-3v4z"; transform: scale(0.9) translate(1.5, 1.5); }
+        /* Person Add icon */
+        .icon-person-add { d: "M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"; transform: scale(0.9) translate(1.5, 1.5); }
+        /* Group icon */
+        .icon-group { d: "M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.5.87 2.47 2.13 2.95 3.45H22v-2.5c0-2.33-4.67-3.5-7-3.5z"; transform: scale(0.9) translate(1.5, 1.5); }
+        /* Activity/Clipboard icon */
+        .icon-activity { d: "M16 9h-2V7h-2v2h-2V7H8v2H6V7H4v10h16V7h-4v2zm-4 4h2v2h-2v-2zm-2-2H8v2h2v-2z"; transform: scale(0.9) translate(1.5, 1.5); }
+
+    </style>
+
+    <rect x="0" y="0" width="850" height="480" class="body-bg"/>
+
+    <!-- Main Title and Description -->
+    <text x="40" y="55" class="font-sans main-title text-dark">CRM Dashboard Metrics Overview</text>
+    <text x="40" y="85" class="font-sans main-description text-medium">Key performance indicators across sales, leads, customer health, and team activity.</text>
+
+    <!-- Metric Card 1: Sales Performance (Revenue) -->
+    <g transform="translate(40, 130)">
+        <rect width="180" height="280" class="card-bg"/>
+        <rect x="20" y="20" width="40" height="40" class="card-icon-bg"/>
+        <path class="card-icon icon-dollar" transform="translate(20,20)" />
+        <text x="20" y="90" class="font-sans card-title text-medium">Total Revenue</text>
+        <text x="20" y="140" class="font-sans metric-value text-dark">$1,230,500</text>
+        <text x="20" y="170" class="font-sans metric-sub-value text-light">Opportunities Won: 120</text>
+        <path d="M 20 200 L 25 195 L 30 200 L 25 205 Z" class="arrow-up"/>
+        <text x="40" y="202" class="font-sans metric-trend text-success">12.5% vs. Last Month</text>
+        <text x="20" y="250" class="font-sans metric-sub-value text-light">Q1 Goal: $1.5M</text>
+    </g>
+
+    <!-- Metric Card 2: Lead Management -->
+    <g transform="translate(240, 130)">
+        <rect width="180" height="280" class="card-bg"/>
+        <rect x="20" y="20" width="40" height="40" class="card-icon-bg"/>
+        <path class="card-icon icon-person-add" transform="translate(20,20)"/>
+        <text x="20" y="90" class="font-sans card-title text-medium">New Leads</text>
+        <text x="20" y="140" class="font-sans metric-value text-dark">850</text>
+        <text x="20" y="170" class="font-sans metric-sub-value text-light">Conversion Rate: 18%</text>
+        <path d="M 20 200 L 25 195 L 30 200 L 25 205 Z" class="arrow-up"/>
+        <text x="40" y="202" class="font-sans metric-trend text-success">7.2% vs. Last Month</text>
+        <text x="20" y="250" class="font-sans metric-sub-value text-light">Avg. Age: 3 Days</text>
+    </g>
+
+    <!-- Metric Card 3: Customer Health -->
+    <g transform="translate(440, 130)">
+        <rect width="180" height="280" class="card-bg"/>
+        <rect x="20" y="20" width="40" height="40" class="card-icon-bg"/>
+        <path class="card-icon icon-group" transform="translate(20,20)"/>
+        <text x="20" y="90" class="font-sans card-title text-medium">Active Customers</text>
+        <text x="20" y="140" class="font-sans metric-value text-dark">5,120</text>
+        <text x="20" y="170" class="font-sans metric-sub-value text-light">Retention Rate: 92%</text>
+        <rect x="20" y="198" width="10" height="10" class="arrow-flat" rx="2" ry="2"/>
+        <text x="40" y="202" class="font-sans metric-trend text-info">Stable vs. Last Quarter</text>
+        <text x="20" y="250" class="font-sans metric-sub-value text-light">Churn Rate: 0.8%</text>
+    </g>
+
+    <!-- Metric Card 4: Sales Activity -->
+    <g transform="translate(640, 130)">
+        <rect width="180" height="280" class="card-bg"/>
+        <rect x="20" y="20" width="40" height="40" class="card-icon-bg"/>
+        <path class="card-icon icon-activity" transform="translate(20,20)"/>
+        <text x="20" y="90" class="font-sans card-title text-medium">Sales Activities</text>
+        <text x="20" y="140" class="font-sans metric-value text-dark">1,450</text>
+        <text x="20" y="170" class="font-sans metric-sub-value text-light">Avg. Response Time: 4h</text>
+        <path d="M 20 205 L 25 210 L 30 205 L 25 200 Z" class="arrow-down"/>
+        <text x="40" y="202" class="font-sans metric-trend text-danger">3.1% vs. Yesterday</text>
+        <text x="20" y="250" class="font-sans metric-sub-value text-light">Calls Made: 620</text>
+    </g>
+
+</svg>
