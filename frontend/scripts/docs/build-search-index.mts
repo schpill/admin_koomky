@@ -58,7 +58,7 @@ async function main() {
   }
 
   await fs.mkdir(path.dirname(outputFile), { recursive: true });
-  await fs.writeFile(outputFile, JSON.stringify(entries, null, 2));
+  await fs.writeFile(outputFile, `${JSON.stringify(entries, null, 2)}\n`);
 
   console.log(`Wrote ${entries.length} docs entries to ${outputFile}`);
 }
