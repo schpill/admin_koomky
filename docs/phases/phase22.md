@@ -8,7 +8,7 @@
 | **Milestone**       | M22 — v2.8.0 Release                           |
 | **PRD Sections**    | §4.1 FR-AUTH (remember_me), §4.39 FR-PROFILE   |
 | **Prerequisite**    | Phase 21 fully completed and tagged `v2.7.0`   |
-| **Status**          | todo                                           |
+| **Status**          | merged                                         |
 
 ---
 
