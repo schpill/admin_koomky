@@ -5,7 +5,7 @@ DOCKER_COMPOSE := $(shell $(DOCKER_COMPOSE) version > /dev/null 2>&1 && echo "$(
 PROD_HOST := gerald@163.172.110.246
 PROD_DIR  := /home/gerald/web/crm
 
-.PHONY: up upwc down restart build install test lint fresh seed shell-api shell-frontend deploy tinker import-prospects go-live
+.PHONY: up upwc down restart build install test lint fresh seed shell-api shell-frontend deploy tinker import-prospects go-live docs-diagrams docs-screenshots
 
 up:
 	$(DOCKER_COMPOSE) up -d --build
@@ -117,3 +117,9 @@ user:
 
 import-prospects:
 	$(DOCKER_COMPOSE) run --rm api php artisan leads:import-xlsx $(ARGS)
+
+docs-diagrams:
+	$(DOCKER_COMPOSE) run --rm frontend pnpm docs:diagrams
+
+docs-screenshots:
+	$(DOCKER_COMPOSE) run --rm frontend pnpm docs:screenshots

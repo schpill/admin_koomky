@@ -31,6 +31,7 @@ export function PageBreadcrumbs({ pathname }: PageBreadcrumbsProps) {
     calendar: t("sidebar.calendar"),
     leads: t("sidebar.leads"),
     documents: t("sidebar.documents"),
+    docs: t("sidebar.docs"),
     tickets: t("sidebar.tickets"),
     accounting: t("sidebar.accounting"),
     rag: t("sidebar.rag"),

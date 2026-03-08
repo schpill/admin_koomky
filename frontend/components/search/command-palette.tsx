@@ -2,21 +2,61 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { Calculator, Settings, User, Search } from "lucide-react";
+import { BookOpen, Calculator, Settings, User, Search } from "lucide-react";
 import { Command } from "cmdk";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { apiClient } from "@/lib/api";
 import { useDebounce } from "use-debounce";
 import { useI18n } from "@/components/providers/i18n-provider";
 
+type ClientResult = {
+  id: string | number;
+  name: string;
+  reference?: string;
+};
+
+type DocResult = {
+  slug: string;
+  title: string;
+  description: string;
+  module: string;
+  content: string;
+};
+
 export function CommandPalette() {
   const [open, setOpen] = React.useState(false);
   const [query, setQuery] = React.useState("");
   const [debouncedQuery] = useDebounce(query, 300);
-  const [results, setResults] = React.useState<any[]>([]);
+  const [results, setResults] = React.useState<ClientResult[]>([]);
+  const [docIndex, setDocIndex] = React.useState<DocResult[]>([]);
   const [isLoading, setIsLoading] = React.useState(false);
   const router = useRouter();
   const { t } = useI18n();
+
+  React.useEffect(() => {
+    let isMounted = true;
+
+    fetch("/docs/search-index.json")
+      .then(async (response) => {
+        if (!response.ok) {
+          throw new Error("Unable to load docs search index");
+        }
+
+        return (await response.json()) as DocResult[];
+      })
+      .then((entries) => {
+        if (!isMounted) return;
+        setDocIndex(entries);
+      })
+      .catch(() => {
+        if (!isMounted) return;
+        setDocIndex([]);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   React.useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -58,9 +98,20 @@ export function CommandPalette() {
     command();
   }, []);
 
+  const normalizedQuery = debouncedQuery.trim().toLowerCase();
+  const docResults = normalizedQuery
+    ? docIndex
+        .filter((entry) =>
+          `${entry.title} ${entry.description} ${entry.content}`
+            .toLowerCase()
+            .includes(normalizedQuery)
+        )
+        .slice(0, 8)
+    : [];
+
   const resultAnnouncement = isLoading
     ? t("common.loading")
-    : `${results.length} ${results.length === 1 ? "result" : "results"}`;
+    : `${results.length + docResults.length} ${results.length + docResults.length === 1 ? "result" : "results"}`;
 
   return (
     <>
@@ -120,6 +171,29 @@ export function CommandPalette() {
                       <span className="ml-2 text-xs text-muted-foreground">
                         {client.reference}
                       </span>
+                    </Command.Item>
+                  ))}
+                </Command.Group>
+              )}
+
+              {docResults.length > 0 && (
+                <Command.Group heading={t("commandPalette.docsGroup")}>
+                  {docResults.map((entry) => (
+                    <Command.Item
+                      key={entry.slug}
+                      value={`${entry.title} ${entry.description}`}
+                      onSelect={() =>
+                        runCommand(() => router.push(`/docs/${entry.slug}`))
+                      }
+                      className="relative flex cursor-default select-none items-start rounded-sm px-2 py-2 text-sm outline-none aria-selected:bg-accent aria-selected:text-accent-foreground"
+                    >
+                      <BookOpen className="mr-2 mt-0.5 h-4 w-4 shrink-0" />
+                      <div className="space-y-0.5">
+                        <div>{entry.title}</div>
+                        <div className="text-xs text-muted-foreground">
+                          {entry.description}
+                        </div>
+                      </div>
                     </Command.Item>
                   ))}
                 </Command.Group>

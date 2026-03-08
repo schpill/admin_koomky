@@ -1,0 +1,56 @@
+---
+title: "Calendrier"
+description: "Synchroniser les evenements, agendas externes et rappels automatiques."
+module: "calendar"
+---
+
+## Vue d'ensemble
+
+Synchroniser les evenements, agendas externes et rappels automatiques. Cette documentation explique quand utiliser le module, quels indicateurs surveiller et quelles transitions de statut verifier.
+
+<DocCallout type="tip" title="Point d'attention">Cadrez les roles, les donnees d'entree et les validations de sortie avant d'automatiser ce module.</DocCallout>
+
+## Concepts cles
+
+- Objectif metier: aligner les operations avec un referentiel partage.
+- Donnees pivots: contacts, documents, statuts, historiques et preuves d'action.
+- Signal de pilotage: identifier les blocages et les exceptions rapidement.
+
+## Fonctionnalites principales
+
+- Vue de liste pour prioriser et filtrer les elements actifs.
+- Ecran detail pour auditer l'historique et les actions de suivi.
+- Formulaires et automatismes pour reduire les taches manuelles.
+
+## Guide pas a pas
+
+<DocSteps>
+  <li>
+    <strong>Prepar er le contexte</strong> en verifiant les prerequis fonctionnels et les droits d'acces.
+    <DocScreenshot src="/docs/screenshots/calendar/overview.png" alt="Calendrier overview" caption="Vue representative du module Calendrier." />
+  </li>
+  <li>
+    <strong>Executer le flux principal</strong> en suivant les etapes metier attendues et les validations associees.
+  </li>
+  <li>
+    <strong>Controler le resultat</strong> en consultant les journaux, statuts et notifications du module.
+  </li>
+</DocSteps>
+
+## Diagrammes
+
+<DocDiagram src="/docs/diagrams/calendar-overview.mmd" title="Flux Calendrier" />
+
+## Infographie
+
+<DocInfographic src="/docs/infographics/calendar-overview.svg" alt="Infographie Calendrier" caption="Resume visuel du module Calendrier." />
+
+## FAQ
+
+### Quand utiliser ce module ?
+
+Des que l equipe a besoin d'un flux repetable avec trace, priorisation et point de controle explicite.
+
+### Quel est le risque principal ?
+
+Lancer les automatisations sans clarifier la qualite des donnees, ce qui degrade la confiance dans les sorties.
