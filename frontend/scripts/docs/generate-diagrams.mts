@@ -3,8 +3,7 @@ import path from "path";
 import { diagramDefinitions } from "../../content/docs/diagrams.config";
 
 const apiKey = process.env.GEMINI_API_KEY;
-const model =
-  process.env.GEMINI_GENERATION_MODEL || "gemini-2.5-flash";
+const model = process.env.GEMINI_GENERATION_MODEL || "gemini-2.5-flash";
 
 /**
  * Gemini often prefixes its answer with prose ("Sure, here is…") then
@@ -149,9 +148,7 @@ async function main() {
     await fs.writeFile(outputPath, content, "utf8");
   }
 
-  console.log(
-    `\nDone: ${ok} generated via Gemini, ${fallback} fallback(s).`
-  );
+  console.log(`\nDone: ${ok} generated via Gemini, ${fallback} fallback(s).`);
 }
 
 main().catch((error) => {
