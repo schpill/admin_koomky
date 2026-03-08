@@ -75,6 +75,7 @@ go-live:
 		docker-compose run --rm api php artisan route:cache && \
 		docker-compose run --rm api php artisan view:cache && \
 		docker-compose run --rm api php artisan event:cache && \
+		docker-compose build frontend && \
 		docker-compose run --rm --user root frontend pnpm install --frozen-lockfile && \
 		docker-compose run --rm --user root frontend pnpm build && \
 		docker-compose run --rm --user root frontend chown -R $$(id -u):$$(id -g) /app/node_modules /app/.next && \
