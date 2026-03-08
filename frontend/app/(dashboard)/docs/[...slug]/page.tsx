@@ -5,12 +5,12 @@ import { docsContentBySlug, readDocSource } from "@/lib/docs/content";
 import { getTableOfContents } from "@/lib/docs/search-index";
 
 type DocsCatchAllPageProps = {
-  params: Promise<{ slug?: string[] }>;
+  params: Promise<{ slug: string[] }>;
 };
 
 export async function generateMetadata({ params }: DocsCatchAllPageProps) {
   const { slug } = await params;
-  const resolvedSlug = slug?.join("/") ?? "getting-started";
+  const resolvedSlug = slug.join("/");
   const moduleKey = resolvedSlug.split("/")[0];
   const meta = DOC_MODULES_BY_SLUG[moduleKey];
 
@@ -28,7 +28,7 @@ export default async function DocsCatchAllPage({
   params,
 }: DocsCatchAllPageProps) {
   const { slug } = await params;
-  const resolvedSlug = slug?.join("/") ?? "getting-started";
+  const resolvedSlug = slug.join("/");
   const Content = docsContentBySlug[resolvedSlug];
   const source = await readDocSource(resolvedSlug);
   const moduleKey = resolvedSlug.split("/")[0];

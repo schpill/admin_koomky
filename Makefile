@@ -1,6 +1,6 @@
 DOCKER_UID := $(shell id -u)
 DOCKER_GID := $(shell id -g)
-DOCKER_COMPOSE := $(shell $(DOCKER_COMPOSE) version > /dev/null 2>&1 && echo "$(DOCKER_COMPOSE)" || echo "docker-compose")
+DOCKER_COMPOSE ?= $(shell if docker compose version > /dev/null 2>&1; then echo "docker compose"; else echo "docker-compose"; fi)
 
 PROD_HOST := gerald@163.172.110.246
 PROD_DIR  := /home/gerald/web/crm
@@ -119,7 +119,13 @@ import-prospects:
 	$(DOCKER_COMPOSE) run --rm api php artisan leads:import-xlsx $(ARGS)
 
 docs-diagrams:
-	$(DOCKER_COMPOSE) run --rm frontend pnpm docs:diagrams
+	$(DOCKER_COMPOSE) run --rm frontend sh -lc "pnpm install --frozen-lockfile && pnpm docs:diagrams"
 
 docs-screenshots:
-	$(DOCKER_COMPOSE) run --rm frontend pnpm docs:screenshots
+	$(DOCKER_COMPOSE) up -d api nginx frontend
+	$(DOCKER_COMPOSE) exec -T \
+		-e DOCS_SCREENSHOT_EMAIL \
+		-e DOCS_SCREENSHOT_PASSWORD \
+		-e DOCS_SCREENSHOT_BASE_URL=$${DOCS_SCREENSHOT_BASE_URL:-http://nginx} \
+		-e PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium \
+		frontend sh -lc "apk add --no-cache chromium >/dev/null && pnpm install --frozen-lockfile && until wget -q -O /dev/null $${DOCS_SCREENSHOT_BASE_URL}/auth/login; do sleep 2; done && pnpm docs:screenshots"
