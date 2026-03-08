@@ -8,7 +8,7 @@
 | **Milestone**       | M23 — v2.9.0 Release                                |
 | **PRD Sections**    | §4.40 FR-DOCS (nouveau)                             |
 | **Prerequisite**    | Phase 22 fully completed and tagged `v2.8.0`        |
-| **Status**          | todo                                                |
+| **Status**          | merged                                              |
 
 ---
 
