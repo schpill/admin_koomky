@@ -57,7 +57,12 @@ export const docsContentBySlug: Record<string, ComponentType> = {
 };
 
 export async function readDocSource(slug: string) {
-  const basePath = path.join(process.cwd(), "content", "docs", ...slug.split("/"));
+  const basePath = path.join(
+    process.cwd(),
+    "content",
+    "docs",
+    ...slug.split("/")
+  );
   const candidates = [`${basePath}.mdx`, path.join(basePath, "index.mdx")];
 
   for (const candidate of candidates) {

@@ -1,5 +1,11 @@
 import Link from "next/link";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { DOC_GROUPS, DOC_MODULES, getDocHref } from "@/lib/docs/config";
 
 export default function DocsHomePage() {
@@ -13,10 +19,12 @@ export default function DocsHomePage() {
           Documentation intégrée
         </h1>
         <p className="mt-4 max-w-3xl text-base leading-7 text-muted-foreground">
-          Un espace unique pour comprendre le CRM, visualiser les workflows clefs et retrouver rapidement les guides operatoires.
+          Un espace unique pour comprendre le CRM, visualiser les workflows
+          clefs et retrouver rapidement les guides operatoires.
         </p>
         <p className="mt-4 text-sm text-muted-foreground">
-          {DOC_MODULES.length} modules documentes, relies a la navigation globale et a la Command Palette.
+          {DOC_MODULES.length} modules documentes, relies a la navigation
+          globale et a la Command Palette.
         </p>
       </section>
 

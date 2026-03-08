@@ -40,7 +40,9 @@ export function DocDiagram({ src, title }: DocDiagramProps) {
         }
       } catch (err) {
         if (!cancelled) {
-          setError(err instanceof Error ? err.message : "Diagram render failed");
+          setError(
+            err instanceof Error ? err.message : "Diagram render failed"
+          );
         }
       }
     }
@@ -54,7 +56,9 @@ export function DocDiagram({ src, title }: DocDiagramProps) {
 
   return (
     <figure className="my-8 space-y-3 rounded-2xl border border-border/70 bg-background/80 p-4 shadow-xl shadow-primary/5">
-      {title ? <figcaption className="font-semibold">{title}</figcaption> : null}
+      {title ? (
+        <figcaption className="font-semibold">{title}</figcaption>
+      ) : null}
       {error ? (
         <p className="text-sm text-destructive">{error}</p>
       ) : (

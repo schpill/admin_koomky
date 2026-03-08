@@ -18,10 +18,12 @@ describe("DocScreenshot", () => {
     expect(screen.getByAltText("Dashboard overview")).toBeInTheDocument();
     expect(screen.getByText("Main dashboard widgets")).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole("button", { name: /dashboard overview/i }));
+    fireEvent.click(
+      screen.getByRole("button", { name: /dashboard overview/i })
+    );
 
-    expect(
-      screen.getAllByAltText("Dashboard overview").length
-    ).toBeGreaterThan(1);
+    expect(screen.getAllByAltText("Dashboard overview").length).toBeGreaterThan(
+      1
+    );
   });
 });

@@ -26,7 +26,9 @@ Créez, envoyez et relancez vos factures.
     expect(frontmatter.description).toBe("Piloter votre facturation");
     expect(frontmatter.module).toBe("invoices");
 
-    expect(stripMdx(source)).toContain("Créez, envoyez et relancez vos factures.");
+    expect(stripMdx(source)).toContain(
+      "Créez, envoyez et relancez vos factures."
+    );
     expect(stripMdx(source)).toContain("Utilisez les relances automatiques.");
   });
 

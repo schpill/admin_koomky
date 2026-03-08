@@ -22,7 +22,11 @@ describe("DocSidebar", () => {
       "aria-current",
       "page"
     );
-    expect(screen.getByRole("link", { name: /Démarrage rapide/i })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /Paramètres/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: /Démarrage rapide/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: /Paramètres/i })
+    ).toBeInTheDocument();
   });
 });

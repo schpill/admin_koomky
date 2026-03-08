@@ -36,6 +36,8 @@ describe("DocDiagram", () => {
     });
 
     expect(screen.getByText("Flow")).toBeInTheDocument();
-    expect(screen.getByTestId("doc-diagram-svg").innerHTML).toContain("Diagram");
+    expect(screen.getByTestId("doc-diagram-svg").innerHTML).toContain(
+      "Diagram"
+    );
   });
 });

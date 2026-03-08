@@ -19,7 +19,8 @@ export function DocSidebar() {
             {DOC_MODULES.filter((module) => module.category === group.key).map(
               (module) => {
                 const href = getDocHref(module.slug);
-                const active = pathname === href || pathname.startsWith(`${href}/`);
+                const active =
+                  pathname === href || pathname.startsWith(`${href}/`);
 
                 return (
                   <Link

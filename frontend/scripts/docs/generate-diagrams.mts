@@ -26,7 +26,9 @@ async function generateWithGemini(prompt: string) {
 
   const payload = await response.json();
   return (
-    payload.candidates?.[0]?.content?.parts?.map((part: { text?: string }) => part.text ?? "").join("") ?? null
+    payload.candidates?.[0]?.content?.parts
+      ?.map((part: { text?: string }) => part.text ?? "")
+      .join("") ?? null
   );
 }
 

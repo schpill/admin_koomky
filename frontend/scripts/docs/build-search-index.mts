@@ -3,7 +3,12 @@ import path from "path";
 import matter from "gray-matter";
 
 const docsRoot = path.join(process.cwd(), "content", "docs");
-const outputFile = path.join(process.cwd(), "public", "docs", "search-index.json");
+const outputFile = path.join(
+  process.cwd(),
+  "public",
+  "docs",
+  "search-index.json"
+);
 
 function toSearchEntry(input: { slugSegments: string[]; source: string }) {
   const parsed = matter(input.source);
